@@ -380,7 +380,7 @@ export default function IconsPage() {
                 alignItems: 'center',
                 gap: '12px',
                 padding: '12px 16px',
-                background: colors.background.primary,
+                background: colors.background.default,
                 border: `1px solid ${colors.border.light}`,
                 borderRadius: borderRadius.md,
                 marginBottom: '24px',
