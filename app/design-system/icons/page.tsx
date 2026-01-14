@@ -267,7 +267,7 @@ function SizeDemo() {
         alignItems: 'flex-end',
         gap: '32px',
         padding: '24px',
-        background: colors.background.subtle,
+        background: colors.neutral[100],
         borderRadius: borderRadius.lg,
       }}
     >
@@ -308,7 +308,7 @@ function StrokeDemo() {
         alignItems: 'center',
         gap: '32px',
         padding: '24px',
-        background: colors.background.subtle,
+        background: colors.neutral[100],
         borderRadius: borderRadius.lg,
       }}
     >
