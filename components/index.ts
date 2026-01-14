@@ -17,3 +17,10 @@ export type { TabProps, TabBarProps, TabItem, TabIconPosition, TabBarAlign } fro
 // Banner
 export { Banner, InfoIcon, SuccessIcon, WarningIcon, ErrorIcon, CloseIcon } from './Banner'
 export type { BannerProps, BannerVariant, BannerSize } from './Banner'
+
+// SegmentedControl
+export { SegmentedControl } from './SegmentedControl'
+export type { SegmentedControlProps, SegmentedControlSize, SegmentItem } from './SegmentedControl'
+
+// Icons
+export * from './Icons'

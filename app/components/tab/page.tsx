@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
 import { Tab, TabBar, TabItem, TabIconPosition, TabBarAlign } from '@/components'
 import { colors, typography, tab, borderRadius } from '@/styles/design-tokens'
 
@@ -131,6 +131,114 @@ export default function TabPage() {
       {/* ========== OVERVIEW TAB ========== */}
       {activePageTab === 'overview' && (
         <>
+          {/* ========== PROPERTIES PREVIEW (Interactive) ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Manipulate tab properties in real-time to see how they affect the component.
+            </p>
+
+            <div style={sharedStyles.card}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
+                {/* Preview/Code with Tabs */}
+                <div>
+                  <Playground
+                    preview={
+                      <TabBar
+                        tabs={demoIconPosition === 'only' || demoIconPosition === 'leading' || demoIconPosition === 'top'
+                          ? tabsWithIcons
+                          : sampleTabs.slice(0, 4)
+                        }
+                        activeTab={demoActiveTab}
+                        onTabChange={setDemoActiveTab}
+                        iconPosition={demoIconPosition}
+                        align={demoAlign}
+                        stretched={demoStretched}
+                        onDark={demoOnDark}
+                        inverted={demoInverted}
+                        hasDivider={demoDivider}
+                        scrollable={demoScrollable}
+                      />
+                    }
+                    code={`<TabBar
+  tabs={tabs}
+  activeTab={activeTab}
+  onTabChange={setActiveTab}
+  iconPosition="${demoIconPosition}"
+  align="${demoAlign}"${demoStretched ? '\n  stretched' : ''}${demoOnDark ? '\n  onDark' : ''}${demoInverted ? '\n  inverted' : ''}${!demoDivider ? '\n  hasDivider={false}' : ''}${demoScrollable ? '\n  scrollable' : ''}
+/>`}
+                    previewBackground={demoOnDark ? colors.brand.primary : colors.neutral[50]}
+                    previewPadding="32px"
+                    previewMinHeight="120px"
+                  />
+                </div>
+
+                {/* Controls */}
+                <div>
+                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Icon Position */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Icon Position
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {iconPositions.map(pos => (
+                          <PillButton
+                            key={pos}
+                            onClick={() => setDemoIconPosition(pos)}
+                            isActive={demoIconPosition === pos}
+                          >
+                            {pos}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Alignment */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Alignment
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {alignments.map(align => (
+                          <PillButton
+                            key={align}
+                            onClick={() => setDemoAlign(align)}
+                            isActive={demoAlign === align}
+                          >
+                            {align}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Toggles */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      {[
+                        { label: 'Stretched', value: demoStretched, setter: setDemoStretched },
+                        { label: 'On Dark', value: demoOnDark, setter: setDemoOnDark },
+                        { label: 'Inverted', value: demoInverted, setter: setDemoInverted },
+                        { label: 'Divider', value: demoDivider, setter: setDemoDivider },
+                        { label: 'Scrollable', value: demoScrollable, setter: setDemoScrollable },
+                      ].map(({ label, value, setter }) => (
+                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={value}
+                            onChange={(e) => setter(e.target.checked)}
+                            style={{ width: '16px', height: '16px' }}
+                          />
+                          <span style={{ ...typography.label.sm }}>{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Preview */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Preview</h2>
@@ -531,135 +639,6 @@ export default function TabPage() {
         </div>
       </section>
 
-      {/* ========== PROPERTIES PREVIEW (Interactive) ========== */}
-      <section style={sharedStyles.section}>
-        <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
-        <p style={sharedStyles.sectionDescription}>
-          Manipulate tab properties in real-time to see how they affect the component.
-        </p>
-
-        <div style={sharedStyles.card}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-            {/* Preview */}
-            <div>
-              <h3 style={sharedStyles.cardTitle}>Preview</h3>
-              <div style={{
-                background: demoOnDark ? colors.brand.primary : colors.neutral[50],
-                padding: '32px',
-                borderRadius: borderRadius.md,
-                minHeight: '120px',
-              }}>
-                <TabBar
-                  tabs={demoIconPosition === 'only' || demoIconPosition === 'leading' || demoIconPosition === 'top'
-                    ? tabsWithIcons
-                    : sampleTabs.slice(0, 4)
-                  }
-                  activeTab={demoActiveTab}
-                  onTabChange={setDemoActiveTab}
-                  iconPosition={demoIconPosition}
-                  align={demoAlign}
-                  stretched={demoStretched}
-                  onDark={demoOnDark}
-                  inverted={demoInverted}
-                  hasDivider={demoDivider}
-                  scrollable={demoScrollable}
-                />
-              </div>
-            </div>
-
-            {/* Controls */}
-            <div>
-              <h3 style={sharedStyles.cardTitle}>Properties</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {/* Icon Position */}
-                <div>
-                  <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                    Icon Position
-                  </label>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {iconPositions.map(pos => (
-                      <button
-                        key={pos}
-                        onClick={() => setDemoIconPosition(pos)}
-                        style={{
-                          padding: '8px 16px',
-                          border: `1px solid ${demoIconPosition === pos ? colors.brand.primary : colors.border.light}`,
-                          borderRadius: borderRadius.sm,
-                          background: demoIconPosition === pos ? colors.primary[50] : 'white',
-                          cursor: 'pointer',
-                          ...typography.label.sm,
-                        }}
-                      >
-                        {pos}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Alignment */}
-                <div>
-                  <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                    Alignment
-                  </label>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {alignments.map(align => (
-                      <button
-                        key={align}
-                        onClick={() => setDemoAlign(align)}
-                        style={{
-                          padding: '8px 16px',
-                          border: `1px solid ${demoAlign === align ? colors.brand.primary : colors.border.light}`,
-                          borderRadius: borderRadius.sm,
-                          background: demoAlign === align ? colors.primary[50] : 'white',
-                          cursor: 'pointer',
-                          ...typography.label.sm,
-                        }}
-                      >
-                        {align}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Toggles */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  {[
-                    { label: 'Stretched', value: demoStretched, setter: setDemoStretched },
-                    { label: 'On Dark', value: demoOnDark, setter: setDemoOnDark },
-                    { label: 'Inverted', value: demoInverted, setter: setDemoInverted },
-                    { label: 'Divider', value: demoDivider, setter: setDemoDivider },
-                    { label: 'Scrollable', value: demoScrollable, setter: setDemoScrollable },
-                  ].map(({ label, value, setter }) => (
-                    <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input
-                        type="checkbox"
-                        checked={value}
-                        onChange={(e) => setter(e.target.checked)}
-                        style={{ width: '16px', height: '16px' }}
-                      />
-                      <span style={{ ...typography.label.sm }}>{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Generated Code */}
-          <div style={{ marginTop: '24px' }}>
-            <h4 style={{ ...typography.label.md, marginBottom: '8px' }}>Generated Code</h4>
-            <CodeBlock>
-{`<TabBar
-  tabs={tabs}
-  activeTab={activeTab}
-  onTabChange={setActiveTab}
-  iconPosition="${demoIconPosition}"
-  align="${demoAlign}"${demoStretched ? '\n  stretched' : ''}${demoOnDark ? '\n  onDark' : ''}${demoInverted ? '\n  inverted' : ''}${!demoDivider ? '\n  hasDivider={false}' : ''}${demoScrollable ? '\n  scrollable' : ''}
-/>`}
-            </CodeBlock>
-          </div>
-        </div>
-      </section>
         </>
       )}
 

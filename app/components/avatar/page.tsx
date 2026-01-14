@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
 import { Avatar, AvatarGroup, AvatarSize, AvatarColor } from '@/components'
 import { colors, typography, avatar, borderRadius } from '@/styles/design-tokens'
 
@@ -32,7 +32,14 @@ export default function AvatarPage() {
 
   // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
-  
+
+  // Interactive playground state
+  const [demoSize, setDemoSize] = useState<AvatarSize>('md')
+  const [demoColor, setDemoColor] = useState<AvatarColor>(1)
+  const [demoUseImage, setDemoUseImage] = useState(true)
+  const [demoFocused, setDemoFocused] = useState(false)
+  const [demoOnDark, setDemoOnDark] = useState(false)
+
   // Custom tabs for component pages
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
@@ -51,6 +58,108 @@ export default function AvatarPage() {
       {/* ========== OVERVIEW TAB ========== */}
       {activePageTab === 'overview' && (
         <>
+          {/* ========== INTERACTIVE PLAYGROUND ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Manipulate avatar properties in real-time to see how they affect the component.
+            </p>
+
+            <div style={sharedStyles.card}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
+                {/* Preview/Code with Tabs */}
+                <div>
+                  <Playground
+                    preview={
+                      <Avatar
+                        src={demoUseImage ? 'https://i.pravatar.cc/150?img=1' : undefined}
+                        name="Alice Johnson"
+                        size={demoSize}
+                        color={demoColor}
+                        focused={demoFocused}
+                        onDark={demoOnDark}
+                      />
+                    }
+                    code={`<Avatar${demoUseImage ? '\n  src="https://i.pravatar.cc/150?img=1"' : ''}
+  name="Alice Johnson"
+  size="${demoSize}"${!demoUseImage ? `\n  color={${demoColor}}` : ''}${demoFocused ? '\n  focused' : ''}${demoOnDark ? '\n  onDark' : ''}
+/>`}
+                    previewBackground={demoOnDark ? colors.brand.primary : colors.neutral[50]}
+                  />
+                </div>
+
+                {/* Controls */}
+                <div>
+                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Size */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Size
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {sizes.map(s => (
+                          <PillButton
+                            key={s}
+                            onClick={() => setDemoSize(s)}
+                            isActive={demoSize === s}
+                          >
+                            {s}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Color (only shown when not using image) */}
+                    {!demoUseImage && (
+                      <div>
+                        <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                          Color
+                        </label>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          {colorVariants.map(c => (
+                            <button
+                              key={c}
+                              onClick={() => setDemoColor(c)}
+                              style={{
+                                width: '32px',
+                                height: '32px',
+                                border: `2px solid ${demoColor === c ? colors.brand.primary : 'transparent'}`,
+                                borderRadius: '9999px',
+                                background: avatar.colors[c],
+                                cursor: 'pointer',
+                              }}
+                              title={`Color ${c}`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Toggles */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      {[
+                        { label: 'Use Image', value: demoUseImage, setter: setDemoUseImage },
+                        { label: 'Focused', value: demoFocused, setter: setDemoFocused },
+                        { label: 'On Dark', value: demoOnDark, setter: setDemoOnDark },
+                      ].map(({ label, value, setter }) => (
+                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={value}
+                            onChange={(e) => setter(e.target.checked)}
+                            style={{ width: '16px', height: '16px' }}
+                          />
+                          <span style={{ ...typography.label.sm }}>{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Preview */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Preview</h2>
@@ -58,7 +167,7 @@ export default function AvatarPage() {
               Avatars can display a profile image or show initials when no image is available.
               They support 5 sizes and 8 color variants for text avatars.
             </p>
-            
+
             <div style={sharedStyles.card}>
               <div style={sharedStyles.row}>
                 <Avatar src="https://i.pravatar.cc/150?img=1" name="Alice Johnson" size="xl" />

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
 import { Button, ButtonGroup, DropdownIcon, ButtonSize, ButtonEmphasis } from '@/components'
 import { colors, typography, button, borderRadius } from '@/styles/design-tokens'
 
@@ -91,6 +91,106 @@ export default function ButtonPage() {
       {/* ========== OVERVIEW TAB ========== */}
       {activePageTab === 'overview' && (
         <>
+          {/* ========== INTERACTIVE PLAYGROUND ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Manipulate button properties in real-time to see how they affect the component.
+            </p>
+
+            <div style={sharedStyles.card}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
+                {/* Preview/Code with Tabs */}
+                <div>
+                  <Playground
+                    preview={
+                      <Button
+                        size={demoSize}
+                        emphasis={demoEmphasis}
+                        destructive={demoDestructive}
+                        loading={demoLoading}
+                        disabled={demoDisabled}
+                        leftIcon={demoLeftIcon ? <IconPlus size={demoSize === 'lg' ? 24 : 20} /> : undefined}
+                        rightIcon={demoRightIcon ? <DropdownIcon size={demoSize === 'lg' ? 20 : 16} /> : undefined}
+                      >
+                        Button
+                      </Button>
+                    }
+                    code={`<Button
+  size="${demoSize}"
+  emphasis="${demoEmphasis}"${demoDestructive ? '\n  destructive' : ''}${demoLoading ? '\n  loading' : ''}${demoDisabled ? '\n  disabled' : ''}${demoLeftIcon ? '\n  leftIcon={<IconPlus />}' : ''}${demoRightIcon ? '\n  rightIcon={<DropdownIcon />}' : ''}
+>
+  Button
+</Button>`}
+                  />
+                </div>
+
+                {/* Controls */}
+                <div>
+                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Size */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Size
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {sizes.map(s => (
+                          <PillButton
+                            key={s}
+                            onClick={() => setDemoSize(s)}
+                            isActive={demoSize === s}
+                          >
+                            {s}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Emphasis */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Emphasis
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {emphases.map(e => (
+                          <PillButton
+                            key={e}
+                            onClick={() => setDemoEmphasis(e)}
+                            isActive={demoEmphasis === e}
+                          >
+                            {e}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Toggles */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      {[
+                        { label: 'Destructive', value: demoDestructive, setter: setDemoDestructive },
+                        { label: 'Loading', value: demoLoading, setter: setDemoLoading },
+                        { label: 'Disabled', value: demoDisabled, setter: setDemoDisabled },
+                        { label: 'Left Icon', value: demoLeftIcon, setter: setDemoLeftIcon },
+                        { label: 'Right Icon', value: demoRightIcon, setter: setDemoRightIcon },
+                      ].map(({ label, value, setter }) => (
+                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={value}
+                            onChange={(e) => setter(e.target.checked)}
+                            style={{ width: '16px', height: '16px' }}
+                          />
+                          <span style={{ ...typography.label.sm }}>{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Preview */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Preview</h2>
@@ -479,134 +579,6 @@ export default function ButtonPage() {
                 <Button emphasis="high" size="lg" loading>Saving...</Button>
                 <Button emphasis="mid" size="lg" loading>Loading...</Button>
                 <Button emphasis="high" size="md" loading>Submit</Button>
-              </div>
-            </div>
-          </section>
-
-          {/* ========== INTERACTIVE PLAYGROUND ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Manipulate button properties in real-time to see how they affect the component.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-                {/* Preview */}
-                <div>
-                  <h3 style={sharedStyles.cardTitle}>Preview</h3>
-                  <div style={{
-                    background: colors.neutral[50],
-                    padding: '48px',
-                    borderRadius: borderRadius.md,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: '120px',
-                  }}>
-                    <Button
-                      size={demoSize}
-                      emphasis={demoEmphasis}
-                      destructive={demoDestructive}
-                      loading={demoLoading}
-                      disabled={demoDisabled}
-                      leftIcon={demoLeftIcon ? <IconPlus size={demoSize === 'lg' ? 24 : 20} /> : undefined}
-                      rightIcon={demoRightIcon ? <DropdownIcon size={demoSize === 'lg' ? 20 : 16} /> : undefined}
-                    >
-                      Button
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Controls */}
-                <div>
-                  <h3 style={sharedStyles.cardTitle}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {/* Size */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Size
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {sizes.map(s => (
-                          <button
-                            key={s}
-                            onClick={() => setDemoSize(s)}
-                            style={{
-                              padding: '8px 16px',
-                              border: `1px solid ${demoSize === s ? colors.brand.primary : colors.border.light}`,
-                              borderRadius: borderRadius.sm,
-                              background: demoSize === s ? colors.primary[50] : 'white',
-                              cursor: 'pointer',
-                              ...typography.label.sm,
-                            }}
-                          >
-                            {s}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Emphasis */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Emphasis
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {emphases.map(e => (
-                          <button
-                            key={e}
-                            onClick={() => setDemoEmphasis(e)}
-                            style={{
-                              padding: '8px 16px',
-                              border: `1px solid ${demoEmphasis === e ? colors.brand.primary : colors.border.light}`,
-                              borderRadius: borderRadius.sm,
-                              background: demoEmphasis === e ? colors.primary[50] : 'white',
-                              cursor: 'pointer',
-                              ...typography.label.sm,
-                            }}
-                          >
-                            {e}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Toggles */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      {[
-                        { label: 'Destructive', value: demoDestructive, setter: setDemoDestructive },
-                        { label: 'Loading', value: demoLoading, setter: setDemoLoading },
-                        { label: 'Disabled', value: demoDisabled, setter: setDemoDisabled },
-                        { label: 'Left Icon', value: demoLeftIcon, setter: setDemoLeftIcon },
-                        { label: 'Right Icon', value: demoRightIcon, setter: setDemoRightIcon },
-                      ].map(({ label, value, setter }) => (
-                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                          <input
-                            type="checkbox"
-                            checked={value}
-                            onChange={(e) => setter(e.target.checked)}
-                            style={{ width: '16px', height: '16px' }}
-                          />
-                          <span style={{ ...typography.label.sm }}>{label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Generated Code */}
-              <div style={{ marginTop: '24px' }}>
-                <h4 style={{ ...typography.label.md, marginBottom: '8px' }}>Generated Code</h4>
-                <CodeBlock>
-{`<Button
-  size="${demoSize}"
-  emphasis="${demoEmphasis}"${demoDestructive ? '\n  destructive' : ''}${demoLoading ? '\n  loading' : ''}${demoDisabled ? '\n  disabled' : ''}${demoLeftIcon ? '\n  leftIcon={<IconPlus />}' : ''}${demoRightIcon ? '\n  rightIcon={<DropdownIcon />}' : ''}
->
-  Button
-</Button>`}
-                </CodeBlock>
               </div>
             </div>
           </section>

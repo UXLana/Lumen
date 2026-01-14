@@ -10,7 +10,6 @@ import {
   zIndex,
   transitionPresets,
 } from '@/styles/design-tokens'
-import { SegmentedControl } from '@/components'
 
 // =============================================================================
 // SVG ICONS (Feather-style)
@@ -132,24 +131,6 @@ const IconComponents = () => (
   </svg>
 )
 
-// Icons page icon
-const IconIcons = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-    <circle cx="8.5" cy="8.5" r="1.5" />
-    <path d="M21 15l-5-5L5 21" />
-  </svg>
-)
-
-// Segmented Control icon
-const IconSegmentedControl = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="8" width="20" height="8" rx="4" />
-    <rect x="3" y="9" width="6" height="6" rx="3" fill="currentColor" fillOpacity="0.3" />
-    <line x1="12" y1="10" x2="12" y2="14" />
-  </svg>
-)
-
 // Icon mapping
 const iconMap: Record<string, React.FC> = {
   colors: IconColors,
@@ -158,12 +139,10 @@ const iconMap: Record<string, React.FC> = {
   radius: IconRadius,
   shadows: IconShadows,
   breakpoints: IconBreakpoints,
-  icons: IconIcons,
   avatar: IconAvatar,
   button: IconButton,
   tab: IconTab,
   banner: IconBanner,
-  'segmented-control': IconSegmentedControl,
   foundations: IconFoundations,
   components: IconComponents,
 }
@@ -177,13 +156,12 @@ export const navSections = [
     id: 'foundations',
     title: 'Foundations',
     items: [
-      { id: 'colors', label: 'Colors', href: '/design-system/colors' },
-      { id: 'typography', label: 'Typography', href: '/design-system/typography' },
-      { id: 'spacing', label: 'Spacing', href: '/design-system/spacing' },
-      { id: 'radius', label: 'Border Radius', href: '/design-system/radius' },
-      { id: 'shadows', label: 'Shadows', href: '/design-system/shadows' },
-      { id: 'breakpoints', label: 'Breakpoints', href: '/design-system/breakpoints' },
-      { id: 'icons', label: 'Icons', href: '/design-system/icons' },
+      { id: 'colors', label: 'Colors', href: '/styleguide/colors' },
+      { id: 'typography', label: 'Typography', href: '/styleguide/typography' },
+      { id: 'spacing', label: 'Spacing', href: '/styleguide/spacing' },
+      { id: 'radius', label: 'Border Radius', href: '/styleguide/radius' },
+      { id: 'shadows', label: 'Shadows', href: '/styleguide/shadows' },
+      { id: 'breakpoints', label: 'Breakpoints', href: '/styleguide/breakpoints' },
     ],
   },
   {
@@ -191,10 +169,9 @@ export const navSections = [
     title: 'Components',
     items: [
       { id: 'avatar', label: 'Avatar', href: '/components/avatar' },
-      { id: 'banner', label: 'Banner', href: '/components/banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
-      { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
+      { id: 'banner', label: 'Banner', href: '/components/banner' },
     ],
   },
 ]
@@ -213,7 +190,7 @@ export const innerPageTabs = [
 export const sharedStyles = {
   page: {
     minHeight: '100vh',
-    background: colors.background.default,
+    background: colors.background.paper,
     display: 'flex',
   },
 
@@ -360,12 +337,11 @@ export const sharedStyles = {
     transition: transitionPresets.default,
     marginBottom: '-1px',
     textDecoration: 'none',
-    outline: 'none',
   },
 
   tabActive: {
     color: colors.text.highEmphasis,
-    borderBottom: `2px solid ${colors.brand.primary}`,
+    borderBottomColor: colors.brand.primary,
   },
 
   main: {
@@ -389,14 +365,18 @@ export const sharedStyles = {
   },
   
   card: {
-    marginBottom: '32px',
+    background: colors.background.default,
+    borderRadius: borderRadius.lg,
+    padding: '24px',
+    boxShadow: shadows.sm,
+    border: `1px solid ${colors.border.light}`,
+    marginBottom: '24px',
   },
-
+  
   cardTitle: {
-    ...typography.heading.h4,
+    ...typography.heading.h5,
     color: colors.text.highEmphasis,
     marginBottom: '16px',
-    marginTop: '24px',
   },
   
   table: {
@@ -560,7 +540,7 @@ export function StyleguideLayout({
       {/* Sidebar */}
       <aside style={sharedStyles.sidebar}>
         <div style={sharedStyles.sidebarHeader}>
-          <Link href="/design-system" style={sharedStyles.sidebarTitle}>
+          <Link href="/styleguide" style={sharedStyles.sidebarTitle}>
             Metrc Design System
           </Link>
           <p style={sharedStyles.sidebarSubtitle}>v1.0.0</p>
@@ -615,152 +595,8 @@ export function StyleguideLayout({
 // UTILITY COMPONENTS
 // =============================================================================
 
-// Copy Icon SVG
-const IconCopy = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-  </svg>
-)
-
-// Check Icon SVG (for copied state)
-const IconCheck = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
-)
-
 export function CodeBlock({ children }: { children: string }) {
-  const [copied, setCopied] = useState(false)
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(children)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
-    }
-  }
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <button
-        onClick={handleCopy}
-        style={{
-          position: 'absolute',
-          top: '12px',
-          right: '12px',
-          background: copied ? colors.semantic.success : colors.neutral[200],
-          border: 'none',
-          borderRadius: borderRadius.sm,
-          padding: '6px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: transitionPresets.default,
-          color: copied ? 'white' : colors.text.mediumEmphasis,
-        }}
-        title={copied ? 'Copied!' : 'Copy code'}
-        aria-label={copied ? 'Copied!' : 'Copy code'}
-      >
-        {copied ? <IconCheck /> : <IconCopy />}
-      </button>
-      <pre style={sharedStyles.codeBlock}>{children}</pre>
-    </div>
-  )
-}
-
-// Preview/Code Toggle Component for Interactive Playgrounds
-type PlaygroundTab = 'preview' | 'code'
-
-interface PlaygroundProps {
-  preview: React.ReactNode
-  code: string
-  previewBackground?: string
-  previewPadding?: string
-  previewMinHeight?: string
-}
-
-export function Playground({
-  preview,
-  code,
-  previewBackground = colors.neutral[50],
-  previewPadding = '48px',
-  previewMinHeight = '120px',
-}: PlaygroundProps) {
-  const [activeTab, setActiveTab] = useState<PlaygroundTab>('preview')
-
-  const playgroundSegments = [
-    { id: 'preview', label: 'Preview' },
-    { id: 'code', label: 'Code' },
-  ]
-
-  return (
-    <div>
-      {/* Toggle using SegmentedControl component */}
-      <div style={{ marginBottom: '16px' }}>
-        <SegmentedControl
-          segments={playgroundSegments}
-          value={activeTab}
-          onChange={(id) => setActiveTab(id as PlaygroundTab)}
-          size="sm"
-        />
-      </div>
-
-      {/* Content with rounded grey background */}
-      <div style={{
-        background: previewBackground,
-        borderRadius: borderRadius.lg,
-        overflow: 'hidden',
-      }}>
-        {activeTab === 'preview' ? (
-          <div style={{
-            padding: previewPadding,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: previewMinHeight,
-          }}>
-            {preview}
-          </div>
-        ) : (
-          <div style={{ padding: '0' }}>
-            <CodeBlock>{code}</CodeBlock>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// Pill Button component for property controls
-interface PillButtonProps {
-  children: React.ReactNode
-  isActive?: boolean
-  onClick?: () => void
-  style?: React.CSSProperties
-}
-
-export function PillButton({ children, isActive = false, onClick, style }: PillButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        padding: '8px 16px',
-        border: `1px solid ${isActive ? colors.brand.primary : colors.border.light}`,
-        borderRadius: '9999px', // Full pill shape
-        background: isActive ? colors.primary[50] : 'white',
-        cursor: 'pointer',
-        ...typography.label.sm,
-        transition: transitionPresets.default,
-        ...style,
-      }}
-    >
-      {children}
-    </button>
-  )
+  return <pre style={sharedStyles.codeBlock}>{children}</pre>
 }
 
 export function SpecTable({ 

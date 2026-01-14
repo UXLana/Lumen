@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
 import { Banner, BannerVariant, BannerSize, Button } from '@/components'
 import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
 
@@ -44,6 +44,145 @@ export default function BannerPage() {
       {/* ========== OVERVIEW TAB ========== */}
       {activePageTab === 'overview' && (
         <>
+          {/* ========== INTERACTIVE PLAYGROUND ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Manipulate banner properties in real-time to see how they affect the component.
+            </p>
+
+            <div style={sharedStyles.card}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
+                {/* Preview/Code with Tabs */}
+                <div>
+                  <Playground
+                    preview={
+                      <Banner
+                        variant={demoVariant}
+                        size={demoSize}
+                        title={demoTitle || undefined}
+                        dismissible={demoDismissible}
+                        actions={demoActions ? (
+                          <>
+                            <Button size="md" emphasis="low">Secondary</Button>
+                            <Button size="md" emphasis="high">Primary</Button>
+                          </>
+                        ) : undefined}
+                      >
+                        {demoMessage || undefined}
+                      </Banner>
+                    }
+                    code={`<Banner
+  variant="${demoVariant}"
+  size="${demoSize}"${demoTitle ? `\n  title="${demoTitle}"` : ''}${demoDismissible ? '\n  dismissible' : ''}${demoActions ? '\n  actions={<>\n    <Button size="md" emphasis="low">Secondary</Button>\n    <Button size="md" emphasis="high">Primary</Button>\n  </>}' : ''}
+>${demoMessage ? `\n  ${demoMessage}\n` : ''}</Banner>`}
+                    previewPadding="32px"
+                    previewMinHeight="120px"
+                  />
+                </div>
+
+                {/* Controls */}
+                <div>
+                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Variant */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Variant
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {variants.map(v => (
+                          <PillButton
+                            key={v}
+                            onClick={() => setDemoVariant(v)}
+                            isActive={demoVariant === v}
+                          >
+                            {v}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Size */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Size
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {sizes.map(s => (
+                          <PillButton
+                            key={s}
+                            onClick={() => setDemoSize(s)}
+                            isActive={demoSize === s}
+                          >
+                            {s}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Title */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Title
+                      </label>
+                      <input
+                        type="text"
+                        value={demoTitle}
+                        onChange={(e) => setDemoTitle(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: spacing[2],
+                          border: `1px solid ${colors.border.light}`,
+                          borderRadius: borderRadius.sm,
+                          ...typography.body.sm,
+                        }}
+                      />
+                    </div>
+
+                    {/* Message */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Message
+                      </label>
+                      <textarea
+                        value={demoMessage}
+                        onChange={(e) => setDemoMessage(e.target.value)}
+                        rows={3}
+                        style={{
+                          width: '100%',
+                          padding: spacing[2],
+                          border: `1px solid ${colors.border.light}`,
+                          borderRadius: borderRadius.sm,
+                          ...typography.body.sm,
+                          resize: 'vertical',
+                        }}
+                      />
+                    </div>
+
+                    {/* Toggles */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {[
+                        { label: 'Dismissible', value: demoDismissible, setter: setDemoDismissible },
+                        { label: 'Show Actions', value: demoActions, setter: setDemoActions },
+                      ].map(({ label, value, setter }) => (
+                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={value}
+                            onChange={(e) => setter(e.target.checked)}
+                            style={{ width: '16px', height: '16px' }}
+                          />
+                          <span style={{ ...typography.label.sm }}>{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Preview */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Preview</h2>
@@ -339,168 +478,6 @@ export default function BannerPage() {
                 >
                   There are critical security updates that need your attention.
                 </Banner>
-              </div>
-            </div>
-          </section>
-
-          {/* ========== INTERACTIVE PLAYGROUND ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Manipulate banner properties in real-time to see how they affect the component.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-                {/* Preview */}
-                <div>
-                  <h3 style={sharedStyles.cardTitle}>Preview</h3>
-                  <div style={{
-                    background: colors.neutral[50],
-                    padding: '32px',
-                    borderRadius: borderRadius.md,
-                    minHeight: '120px',
-                  }}>
-                    <Banner
-                      variant={demoVariant}
-                      size={demoSize}
-                      title={demoTitle || undefined}
-                      dismissible={demoDismissible}
-                      actions={demoActions ? (
-                        <>
-                          <Button size="md" emphasis="low">Secondary</Button>
-                          <Button size="md" emphasis="high">Primary</Button>
-                        </>
-                      ) : undefined}
-                    >
-                      {demoMessage || undefined}
-                    </Banner>
-                  </div>
-                </div>
-
-                {/* Controls */}
-                <div>
-                  <h3 style={sharedStyles.cardTitle}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {/* Variant */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Variant
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {variants.map(v => (
-                          <button
-                            key={v}
-                            onClick={() => setDemoVariant(v)}
-                            style={{
-                              padding: '8px 16px',
-                              border: `1px solid ${demoVariant === v ? colors.brand.primary : colors.border.light}`,
-                              borderRadius: borderRadius.sm,
-                              background: demoVariant === v ? colors.primary[50] : 'white',
-                              cursor: 'pointer',
-                              ...typography.label.sm,
-                            }}
-                          >
-                            {v}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Size */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Size
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {sizes.map(s => (
-                          <button
-                            key={s}
-                            onClick={() => setDemoSize(s)}
-                            style={{
-                              padding: '8px 16px',
-                              border: `1px solid ${demoSize === s ? colors.brand.primary : colors.border.light}`,
-                              borderRadius: borderRadius.sm,
-                              background: demoSize === s ? colors.primary[50] : 'white',
-                              cursor: 'pointer',
-                              ...typography.label.sm,
-                            }}
-                          >
-                            {s}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Title */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Title
-                      </label>
-                      <input
-                        type="text"
-                        value={demoTitle}
-                        onChange={(e) => setDemoTitle(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: spacing[2],
-                          border: `1px solid ${colors.border.light}`,
-                          borderRadius: borderRadius.sm,
-                          ...typography.body.sm,
-                        }}
-                      />
-                    </div>
-
-                    {/* Message */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Message
-                      </label>
-                      <textarea
-                        value={demoMessage}
-                        onChange={(e) => setDemoMessage(e.target.value)}
-                        rows={3}
-                        style={{
-                          width: '100%',
-                          padding: spacing[2],
-                          border: `1px solid ${colors.border.light}`,
-                          borderRadius: borderRadius.sm,
-                          ...typography.body.sm,
-                          resize: 'vertical',
-                        }}
-                      />
-                    </div>
-
-                    {/* Toggles */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {[
-                        { label: 'Dismissible', value: demoDismissible, setter: setDemoDismissible },
-                        { label: 'Show Actions', value: demoActions, setter: setDemoActions },
-                      ].map(({ label, value, setter }) => (
-                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                          <input
-                            type="checkbox"
-                            checked={value}
-                            onChange={(e) => setter(e.target.checked)}
-                            style={{ width: '16px', height: '16px' }}
-                          />
-                          <span style={{ ...typography.label.sm }}>{label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Generated Code */}
-              <div style={{ marginTop: '24px' }}>
-                <h4 style={{ ...typography.label.md, marginBottom: '8px' }}>Generated Code</h4>
-                <CodeBlock>
-{`<Banner
-  variant="${demoVariant}"
-  size="${demoSize}"${demoTitle ? `\n  title="${demoTitle}"` : ''}${demoDismissible ? '\n  dismissible' : ''}${demoActions ? '\n  actions={<>\n    <Button size="md" emphasis="low">Secondary</Button>\n    <Button size="md" emphasis="high">Primary</Button>\n  </>}' : ''}
->${demoMessage ? `\n  ${demoMessage}\n` : ''}</Banner>`}
-                </CodeBlock>
               </div>
             </div>
           </section>
