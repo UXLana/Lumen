@@ -651,7 +651,7 @@ export function CodeBlock({ children }: { children: string }) {
           position: 'absolute',
           top: '12px',
           right: '12px',
-          background: copied ? colors.semantic.success : colors.neutral[200],
+          background: copied ? colors.semantic.success.main : colors.neutral[200],
           border: 'none',
           borderRadius: borderRadius.sm,
           padding: '6px',

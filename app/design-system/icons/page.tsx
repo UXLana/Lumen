@@ -543,8 +543,7 @@ export default function IconsPage() {
               Import icons individually from the Icons module.
             </p>
 
-            <CodeBlock
-              code={`import { IconHome, IconSettings, IconUser } from '@/components/Icons'
+            <CodeBlock>{`import { IconHome, IconSettings, IconUser } from '@/components/Icons'
 
 function MyComponent() {
   return (
@@ -554,8 +553,7 @@ function MyComponent() {
       <IconUser />
     </div>
   )
-}`}
-            />
+}`}</CodeBlock>
           </section>
 
           {/* Size Prop */}
@@ -565,8 +563,7 @@ function MyComponent() {
               Use the <code>size</code> prop to set icon dimensions. Accepts token names or pixel values.
             </p>
 
-            <CodeBlock
-              code={`// Using size tokens
+            <CodeBlock>{`// Using size tokens
 <IconStar size="xs" />  // 12px
 <IconStar size="sm" />  // 16px
 <IconStar size="md" />  // 20px (default)
@@ -575,8 +572,7 @@ function MyComponent() {
 <IconStar size="2xl" /> // 48px
 
 // Using custom pixel value
-<IconStar size={18} />  // 18px`}
-            />
+<IconStar size={18} />  // 18px`}</CodeBlock>
           </section>
 
           {/* Stroke Width */}
@@ -586,12 +582,10 @@ function MyComponent() {
               Customize stroke weight with the <code>strokeWidth</code> prop.
             </p>
 
-            <CodeBlock
-              code={`<IconHeart strokeWidth={1} />    // Thin
+            <CodeBlock>{`<IconHeart strokeWidth={1} />    // Thin
 <IconHeart strokeWidth={1.5} />  // Default
 <IconHeart strokeWidth={2} />    // Medium
-<IconHeart strokeWidth={2.5} />  // Bold`}
-            />
+<IconHeart strokeWidth={2.5} />  // Bold`}</CodeBlock>
           </section>
 
           {/* Accessibility */}
@@ -601,8 +595,7 @@ function MyComponent() {
               Use the <code>label</code> prop for accessible icons that convey meaning.
             </p>
 
-            <CodeBlock
-              code={`// Decorative icon (hidden from screen readers)
+            <CodeBlock>{`// Decorative icon (hidden from screen readers)
 <IconStar />
 // Renders: aria-hidden="true" role="presentation"
 
@@ -613,8 +606,7 @@ function MyComponent() {
 // Icon button example
 <button aria-label="Delete item">
   <IconTrash />
-</button>`}
-            />
+</button>`}</CodeBlock>
           </section>
 
           {/* TypeScript */}
@@ -624,8 +616,7 @@ function MyComponent() {
               Full TypeScript support with exported types.
             </p>
 
-            <CodeBlock
-              code={`import type { IconProps, IconSize } from '@/components/Icons'
+            <CodeBlock>{`import type { IconProps, IconSize } from '@/components/Icons'
 
 // IconProps interface
 interface IconProps extends React.SVGAttributes<SVGElement> {
@@ -640,8 +631,7 @@ type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 // Using types
 const MyIcon: React.FC<IconProps> = (props) => {
   return <IconHome {...props} />
-}`}
-            />
+}`}</CodeBlock>
           </section>
 
           {/* All Imports */}
@@ -651,8 +641,7 @@ const MyIcon: React.FC<IconProps> = (props) => {
               All icons can be imported from the Icons module.
             </p>
 
-            <CodeBlock
-              code={`import {
+            <CodeBlock>{`import {
   // Navigation
   IconHome, IconMenu, IconSearch,
   IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown,
@@ -692,8 +681,7 @@ const MyIcon: React.FC<IconProps> = (props) => {
   IconColors, IconTypography, IconSpacing, IconRadius,
   IconShadows, IconBreakpoints, IconAvatar, IconButton,
   IconTab, IconBanner, IconFoundations, IconComponents, IconIcons,
-} from '@/components/Icons'`}
-            />
+} from '@/components/Icons'`}</CodeBlock>
           </section>
         </>
       )}
