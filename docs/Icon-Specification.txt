@@ -1,0 +1,287 @@
+=============================================================================
+ICON SPECIFICATION
+Metrc Design System v1.0.0
+=============================================================================
+
+ICON STYLE: Outline/Stroke-Based (Similar to Heroicons/Feather)
+
+This specification ensures visual consistency when generating icons for the
+Metrc Design System. All icons should follow these guidelines.
+
+
+=============================================================================
+VISUAL SPECIFICATIONS
+=============================================================================
+
+STROKE PROPERTIES
+-----------------
+Property            Value               Notes
+────────────────────────────────────────────────────────────────────────────
+Stroke Width        2px                 Consistent across all icons
+Stroke Linecap      round               Rounded line endings
+Stroke Linejoin     round               Rounded corners at joints
+Fill                none                Icons are outline-only, never filled
+Stroke Color        currentColor        Inherits from parent text color
+
+
+VIEWBOX SIZES
+-------------
+Size        ViewBox         Use Case
+────────────────────────────────────────────────────────────────────────────
+Standard    0 0 24 24       Default size for most icons
+Compact     0 0 20 20       Smaller UI elements, badges, compact buttons
+
+
+OPTICAL SIZING
+--------------
+- Icons should be centered within the viewBox
+- Leave ~2px padding from edges for visual balance
+- Actual drawn content typically occupies 20x20 within 24x24 viewBox
+- Simple icons (arrows, plus) can extend closer to edges
+
+
+=============================================================================
+REACT COMPONENT STRUCTURE
+=============================================================================
+
+TEMPLATE
+--------
+```tsx
+function Icon{Name}({ 
+  size = 24, 
+  color = 'currentColor' 
+}: { 
+  size?: number
+  color?: string 
+}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="[PATH_DATA]"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+```
+
+REQUIRED ATTRIBUTES
+-------------------
+- width={size}           Dynamic sizing
+- height={size}          Maintains square aspect ratio
+- viewBox="0 0 24 24"    Consistent coordinate system
+- fill="none"            No fill - outline only
+- xmlns                  SVG namespace (for compatibility)
+
+
+PATH ATTRIBUTES
+---------------
+- stroke={color}         Uses color prop
+- strokeWidth="2"        Consistent 2px stroke
+- strokeLinecap="round"  Rounded line ends
+- strokeLinejoin="round" Rounded corners
+
+
+=============================================================================
+ICON CATEGORIES & EXAMPLES
+=============================================================================
+
+NAVIGATION
+----------
+- Chevrons: Simple angle paths for arrows
+- Arrows: Directional indicators
+- Menu: Hamburger, dots, grid patterns
+
+Example (Chevron Right):
+```
+d="M9 18L15 12L9 6"
+```
+
+ACTIONS
+-------
+- Plus/Add: Cross shape for adding
+- Edit/Pencil: Pencil with paper corner
+- Trash/Delete: Can shape with lid
+- Settings/Gear: Cog wheel with center circle
+
+Example (Plus):
+```
+d="M12 5V19M5 12H19"
+```
+
+OBJECTS
+-------
+- Home: House outline with door
+- User: Head and shoulders silhouette
+- Bell: Notification bell shape
+- Chart: Bar or line graph
+
+Example (Home):
+```
+d="M3 12L5 10M5 10L12 3L19 10M5 10V20C5 20.5523 5.44772 21 6 21H9M19 10L21 12M19 10V20C19 20.5523 18.5523 21 18 21H15M9 21C9.55228 21 10 20.5523 10 20V16C10 15.4477 10.4477 15 11 15H13C13.5523 15 14 15.4477 14 16V20C14 20.5523 14.4477 21 15 21M9 21H15"
+```
+
+STATUS
+------
+- Check: Checkmark for success
+- X/Close: X shape for close/error
+- Warning: Triangle with exclamation
+- Info: Circle with "i"
+
+
+=============================================================================
+DESIGN PRINCIPLES
+=============================================================================
+
+1. SIMPLICITY
+   - Use minimum paths to convey meaning
+   - Avoid unnecessary details
+   - Icons should be recognizable at small sizes (16-20px)
+
+2. CONSISTENCY
+   - Same stroke weight across all icons
+   - Same corner rounding (strokeLinejoin)
+   - Same line endings (strokeLinecap)
+   - Consistent visual weight/density
+
+3. CLARITY
+   - Clear silhouette even at small sizes
+   - Distinct from similar icons
+   - Universal recognition where possible
+
+4. ALIGNMENT
+   - Center icons optically (not mathematically)
+   - Account for visual weight distribution
+   - Pointed shapes may need slight offset
+
+
+=============================================================================
+DO'S AND DON'TS
+=============================================================================
+
+DO
+──────────────────────────────────────────────────────────────────────────
+✓ Use stroke-based outlines only
+✓ Keep strokeWidth="2" consistent
+✓ Use round linecaps and linejoins
+✓ Keep paths simple and clean
+✓ Center icons within viewBox
+✓ Use currentColor for inheritance
+✓ Test at multiple sizes (16px, 20px, 24px, 32px)
+✓ Use single continuous paths where possible
+
+DON'T
+──────────────────────────────────────────────────────────────────────────
+✗ Use filled shapes (fill attribute)
+✗ Mix stroke widths within an icon
+✗ Use square linecaps or mitered joins
+✗ Add decorative flourishes
+✗ Use gradients or multiple colors
+✗ Create overly complex paths
+✗ Hardcode colors (always use color prop)
+✗ Use transforms in the SVG (bake into paths)
+
+
+=============================================================================
+GENERATION PROMPT TEMPLATE
+=============================================================================
+
+When generating new icons, use this prompt structure:
+
+```
+Generate a React SVG icon component for: [DESCRIPTION]
+
+Requirements:
+- Outline/stroke style only (no fills)
+- ViewBox: 0 0 24 24
+- Stroke width: 2px
+- Stroke linecap: round
+- Stroke linejoin: round
+- Color prop with 'currentColor' default
+- Size prop with 24 default
+- Simple, clear paths that work at 16px-32px sizes
+- Follow Heroicons/Feather icon style
+
+Component structure:
+function Icon{Name}({ size = 24, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="..." stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+```
+
+
+=============================================================================
+EXISTING ICON INVENTORY
+=============================================================================
+
+Location: /components/Button/Button.tsx
+─────────────────────────────────────────
+- DropdownIcon      Chevron down caret (20x20)
+- LoadingSpinner    Animated circular spinner (24x24)
+
+Location: /components/Tab/Tab.tsx
+─────────────────────────────────────────
+- ChevronLeftIcon   Left arrow (24x24)
+- ChevronRightIcon  Right arrow (24x24)
+- TabIcon           Generic rectangle placeholder (20x20)
+
+Location: /app/components/button/page.tsx (Demo)
+─────────────────────────────────────────
+- IconPlus          Plus/add sign
+- IconHome          House shape
+- IconSettings      Gear/cog wheel
+- IconTrash         Trash can
+- IconEdit          Pencil with document
+
+Location: /app/components/tab/page.tsx (Demo)
+─────────────────────────────────────────
+- IconHome          House shape
+- IconSettings      Gear/cog wheel  
+- IconUser          Person silhouette
+- IconChart         Bar chart
+- IconBell          Notification bell
+
+
+=============================================================================
+ICON SIZING GUIDELINES
+=============================================================================
+
+Context               Recommended Size    Notes
+────────────────────────────────────────────────────────────────────────────
+Button (lg)           24px                Large buttons, primary actions
+Button (md)           20px                Medium buttons, secondary actions
+Tab (leading)         20px                Inline with text
+Tab (top)             24px                Above text, more prominence
+Tab (only)            20px                Icon-only tabs
+Navigation            24px                Main nav items
+Badges                16px                Small indicators
+Toolbar               20px                Compact tool buttons
+Cards                 24-32px             Feature icons
+
+
+=============================================================================
+REFERENCE LIBRARIES
+=============================================================================
+
+For visual reference and additional icons in compatible styles:
+
+- Heroicons: https://heroicons.com (Outline style)
+- Feather Icons: https://feathericons.com
+- Lucide: https://lucide.dev (Feather fork)
+
+These libraries use the same stroke-based outline style with 2px strokes.
+
+
+=============================================================================

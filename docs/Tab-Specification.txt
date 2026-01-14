@@ -1,0 +1,403 @@
+=============================================================================
+TAB COMPONENT SPECIFICATION
+Metrc Design System v1.0.0
+=============================================================================
+
+OVERVIEW
+--------
+Tabs organize content into separate views where only one view can be visible
+at a time. They enable users to switch between related content quickly without
+navigating to different pages.
+
+
+=============================================================================
+COMPONENT ANATOMY
+=============================================================================
+
+Tab Component Structure:
+┌─────────────────────────────────────────────────────────────────────────┐
+│  [Icon]  Label  [Badge]                                                 │
+│  ───────────────────── (Selected Indicator)                             │
+└─────────────────────────────────────────────────────────────────────────┘
+
+Tab Bar Structure:
+┌─────────────────────────────────────────────────────────────────────────┐
+│  [<]  │ Tab 1 │ Tab 2 │ Tab 3 │ Tab 4 │ Tab 5 │  [>]                   │
+│  ═══════════════════════════════════════════════════════════════════════│ ← Divider
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+=============================================================================
+ICON POSITIONS
+=============================================================================
+
+1. NONE (Default) - Text Only
+   ┌─────────────┐
+   │    Label    │
+   │  ─────────  │
+   └─────────────┘
+
+2. LEADING - Icon Left of Text
+   ┌─────────────┐
+   │  ⚙  Label   │
+   │  ─────────  │
+   └─────────────┘
+
+3. TOP - Icon Above Text
+   ┌─────────────┐
+   │     ⚙       │
+   │    Label    │
+   │  ─────────  │
+   └─────────────┘
+
+4. ONLY - Icon Only (No Text)
+   ┌─────────────┐
+   │     ⚙       │
+   │  ─────────  │
+   └─────────────┘
+
+
+=============================================================================
+DESIGN TOKENS
+=============================================================================
+
+TYPOGRAPHY
+----------
+Property          Value
+────────────────────────────────────
+Font Family       "DM Sans", sans-serif
+Font Size         14px
+Font Weight       600 (SemiBold)
+Line Height       16px
+Letter Spacing    -0.6px
+
+
+SIZES BY ICON POSITION
+----------------------
+Position    Height    Padding X    Padding Y    Gap    Icon Size
+────────────────────────────────────────────────────────────────
+none        48px      16px         14px         8px    20px
+top         62px      16px         8px          4px    24px
+leading     48px      16px         14px         8px    20px
+
+
+COLORS - LIGHT MODE
+-------------------
+State       Text Color           Background      Indicator
+──────────────────────────────────────────────────────────────
+active      rgba(0,0,0,0.95)     transparent     #13352C
+inactive    rgba(0,0,0,0.60)     transparent     transparent
+hover       rgba(0,0,0,0.80)     rgba(0,0,0,0.04)  transparent
+disabled    rgba(0,0,0,0.38)     transparent     transparent
+
+
+COLORS - DARK MODE (On Dark Surfaces)
+-------------------------------------
+State       Text Color              Background          Indicator
+──────────────────────────────────────────────────────────────────
+active      #FFFFFF                 transparent         #78CFB8
+inactive    rgba(255,255,255,0.60)  transparent         transparent
+hover       rgba(255,255,255,0.80)  rgba(255,255,255,0.08)  transparent
+disabled    rgba(255,255,255,0.38)  transparent         transparent
+
+
+SELECTED INDICATOR
+------------------
+Property        Value
+──────────────────────────
+Height          4px
+Border Radius   3px
+Padding X       4px (inset from tab edges)
+
+
+BORDER & FOCUS
+--------------
+Property            Value
+────────────────────────────────
+Tab Border Radius   6px (top corners only)
+Focus Ring Color    #3086BF
+Focus Ring Width    3px
+Focus Ring Radius   4px
+
+
+BADGE STYLING
+-------------
+Property            Value
+────────────────────────────────
+Min Width           20px
+Height              20px
+Padding             4px
+Border Radius       10px (pill)
+Background          #FFFFFF
+Inner Background    rgba(0,0,0,0.65)
+Inner Radius        9px
+Font Size           12px
+Font Weight         700 (Bold)
+Letter Spacing      -1px
+
+
+=============================================================================
+TAB BAR ALIGNMENT OPTIONS
+=============================================================================
+
+LEFT (Default)
+──────────────────────────────────────────────────────────────────────────
+│ Tab 1 │ Tab 2 │ Tab 3 │                                                │
+══════════════════════════════════════════════════════════════════════════
+
+CENTER
+──────────────────────────────────────────────────────────────────────────
+│                    │ Tab 1 │ Tab 2 │ Tab 3 │                           │
+══════════════════════════════════════════════════════════════════════════
+
+RIGHT
+──────────────────────────────────────────────────────────────────────────
+│                                                │ Tab 1 │ Tab 2 │ Tab 3 │
+══════════════════════════════════════════════════════════════════════════
+
+STRETCH (Full Width)
+──────────────────────────────────────────────────────────────────────────
+│      Tab 1      │      Tab 2      │      Tab 3      │      Tab 4      │
+══════════════════════════════════════════════════════════════════════════
+
+
+=============================================================================
+COMPONENT PROPS
+=============================================================================
+
+TAB PROPS
+---------
+Prop          Type                              Default    Description
+────────────────────────────────────────────────────────────────────────────
+label         string                            -          Tab label (required)
+isActive      boolean                           false      Selected state
+iconPosition  'none'|'top'|'leading'|'only'    'none'     Icon placement
+icon          ReactNode                         -          Icon element
+badge         number                            -          Badge count
+onDark        boolean                           false      Dark surface mode
+inverted      boolean                           false      Inverted style
+disabled      boolean                           false      Disabled state
+focused       boolean                           false      Show focus ring
+
+
+TAB BAR PROPS
+-------------
+Prop          Type                              Default    Description
+────────────────────────────────────────────────────────────────────────────
+tabs          TabItem[]                         -          Tab items (required)
+activeTab     string                            -          Active tab ID (required)
+onTabChange   (id: string) => void              -          Change callback (required)
+iconPosition  'none'|'top'|'leading'|'only'    'none'     Icon position
+align         'left'|'center'|'right'|'stretch' 'left'    Alignment
+stretched     boolean                           false      Full width tabs
+onDark        boolean                           false      Dark surface mode
+inverted      boolean                           false      Inverted style
+hasDivider    boolean                           true       Show bottom line
+scrollable    boolean                           false      Enable scrolling
+
+
+TAB ITEM INTERFACE
+------------------
+Property      Type         Required    Description
+────────────────────────────────────────────────────────────────────────────
+id            string       Yes         Unique identifier
+label         string       Yes         Tab label text
+icon          ReactNode    No          Icon element
+badge         number       No          Badge count
+disabled      boolean      No          Disabled state
+
+
+=============================================================================
+USAGE EXAMPLES
+=============================================================================
+
+BASIC USAGE
+-----------
+```tsx
+import { TabBar } from '@/components'
+
+const [activeTab, setActiveTab] = useState('1')
+
+const tabs = [
+  { id: '1', label: 'Overview' },
+  { id: '2', label: 'Details' },
+  { id: '3', label: 'Settings' },
+]
+
+<TabBar
+  tabs={tabs}
+  activeTab={activeTab}
+  onTabChange={setActiveTab}
+/>
+```
+
+
+WITH ICONS (LEADING)
+--------------------
+```tsx
+const tabsWithIcons = [
+  { id: '1', label: 'Home', icon: <IconHome /> },
+  { id: '2', label: 'Analytics', icon: <IconChart /> },
+  { id: '3', label: 'Settings', icon: <IconSettings /> },
+]
+
+<TabBar
+  tabs={tabsWithIcons}
+  activeTab={activeTab}
+  onTabChange={setActiveTab}
+  iconPosition="leading"
+/>
+```
+
+
+WITH ICONS (TOP)
+----------------
+```tsx
+<TabBar
+  tabs={tabsWithIcons}
+  activeTab={activeTab}
+  onTabChange={setActiveTab}
+  iconPosition="top"
+/>
+```
+
+
+WITH BADGES
+-----------
+```tsx
+const tabsWithBadges = [
+  { id: '1', label: 'All Items' },
+  { id: '2', label: 'Pending', badge: 12 },
+  { id: '3', label: 'Notifications', badge: 99 },
+]
+
+<TabBar
+  tabs={tabsWithBadges}
+  activeTab={activeTab}
+  onTabChange={setActiveTab}
+/>
+```
+
+
+STRETCHED TABS
+--------------
+```tsx
+<TabBar
+  tabs={tabs}
+  activeTab={activeTab}
+  onTabChange={setActiveTab}
+  align="stretch"
+  stretched
+/>
+```
+
+
+ON DARK SURFACE
+---------------
+```tsx
+<div style={{ background: '#13352C', padding: '24px' }}>
+  <TabBar
+    tabs={tabs}
+    activeTab={activeTab}
+    onTabChange={setActiveTab}
+    onDark
+  />
+</div>
+```
+
+
+SCROLLABLE TABS
+---------------
+```tsx
+const manyTabs = [
+  { id: '1', label: 'Overview' },
+  { id: '2', label: 'Details' },
+  { id: '3', label: 'Analytics' },
+  { id: '4', label: 'Settings' },
+  { id: '5', label: 'Activity Log' },
+  { id: '6', label: 'Notifications' },
+  { id: '7', label: 'Permissions' },
+]
+
+<TabBar
+  tabs={manyTabs}
+  activeTab={activeTab}
+  onTabChange={setActiveTab}
+  scrollable
+/>
+```
+
+
+=============================================================================
+DESIGN GUIDELINES
+=============================================================================
+
+WHEN TO USE TABS
+----------------
+✓ Organize related content that doesn't need to be viewed simultaneously
+✓ Allow users to quickly switch between views without page navigation
+✓ Group settings, content types, or data categories
+✓ Maintain context while exploring different aspects of content
+
+
+BEST PRACTICES
+--------------
+DO                                      DON'T
+────────────────────────────────────────────────────────────────────────────
+Keep labels short (1-2 words)           Use long sentences as labels
+Use icons consistently across tabs      Mix tabs with and without icons
+Limit to 2-7 tabs; scroll for more     Show too many tabs without scrolling
+Use badges sparingly                    Add badges to every tab
+Place primary/most used tab first       Randomly order tabs
+Maintain consistent icon position       Change icon positions mid-tab bar
+
+
+ICON POSITION GUIDELINES
+------------------------
+Position    Use Case
+────────────────────────────────────────────────────────────────────────────
+none        Default for text-based navigation
+leading     When icons help identify content quickly
+top         Mobile layouts or when icons need prominence
+only        Toolbar navigation with universally recognized icons
+
+
+MINIMUM TAB WIDTH
+-----------------
+- Ensure tabs have adequate touch targets (minimum 44px)
+- Don't compress labels to fit more tabs
+- Use scrollable mode for many tabs
+
+
+ACCESSIBILITY
+-------------
+- Tabs use role="tab" and aria-selected for screen readers
+- TabBar uses role="tablist" 
+- Keyboard navigation with arrow keys is recommended
+- Focus states are clearly visible (#3086BF ring)
+- Color contrast meets WCAG AA standards
+
+
+=============================================================================
+RELATED COMPONENTS
+=============================================================================
+
+- Button: For primary actions within tab content
+- Badge: Standalone badge component for notifications
+- NavigationMenu: For main app navigation (not content sections)
+
+
+=============================================================================
+CHANGELOG
+=============================================================================
+
+v1.0.0 (January 2026)
+- Initial release
+- Support for none, leading, top, and only icon positions
+- Light and dark mode variants
+- Badge support
+- Scrollable mode with navigation arrows
+- Full TypeScript support
+
+
+=============================================================================

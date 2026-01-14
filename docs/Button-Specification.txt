@@ -1,0 +1,581 @@
+================================================================================
+METRC DESIGN SYSTEM - BUTTON COMPONENT SPECIFICATION
+================================================================================
+
+Version: 1.0.0
+Source: Figma Design System (Trace-DLS-2.0)
+Node ID: 483:1378
+Last Updated: January 2026
+
+================================================================================
+OVERVIEW
+================================================================================
+
+The Button component allows users to take actions and make choices with a 
+single tap. Buttons communicate actions that users can take throughout the UI.
+
+Key Features:
+- Two sizes: Large (48px) and Medium (36px)
+- Three emphasis levels: High, Mid, Low
+- Four states: Enabled, Hover, Pressed, Disabled
+- Icon support: Left icon, Right icon, Icon-only
+- Dark surface support
+- Destructive variant for dangerous actions
+- Button groups for related actions
+
+================================================================================
+SIZE SPECIFICATIONS
+================================================================================
+
+LARGE (lg)
+----------
+- Height: 48px
+- Min Width: 100px
+- Padding X: 16px
+- Padding Y: 12px
+- Icon Size: 24px
+- Gap (between elements): 4px
+
+Usage: Used at the bottom of forms or areas where major prominence is needed.
+
+MEDIUM (md)
+-----------
+- Height: 36px
+- Min Width: 80px
+- Padding X: 12px
+- Padding Y: 8px
+- Icon Size: 20px
+- Gap (between elements): 4px
+
+Usage: Used in navigation bars, snackbars, alert dialogs, banners, and 
+mid-page content areas.
+
+ICON-ONLY BUTTONS
+-----------------
+Large Icon-Only: 40px × 40px
+Medium Icon-Only: 32px × 32px
+
+================================================================================
+TYPOGRAPHY SPECIFICATIONS
+================================================================================
+
+Font Family: DM Sans
+Font Weight: SemiBold (600)
+
+Large Button:
+- Font Size: 16px
+- Line Height: 18px
+- Letter Spacing: -0.9px
+
+Medium Button:
+- Font Size: 14px
+- Line Height: 16px
+- Letter Spacing: -0.35px
+
+================================================================================
+COLOR SPECIFICATIONS - LIGHT SURFACE
+================================================================================
+
+HIGH EMPHASIS (Primary/Solid)
+-----------------------------
+Enabled:
+  - Background: #13352C
+  - Text: #FFFFFF
+  - Border: transparent
+
+Hover:
+  - Background: #1A4A3D
+  - Text: #FFFFFF
+  - Border: transparent
+
+Pressed:
+  - Background: #0D2920
+  - Text: #FFFFFF
+  - Border: transparent
+
+Disabled:
+  - Background: #E0E0E0
+  - Text: rgba(0, 0, 0, 0.38)
+  - Border: transparent
+
+MID EMPHASIS (Secondary/Mint-Teal Filled)
+-----------------------------------------
+Enabled:
+  - Background: #78CFB8
+  - Text: #0B1E19
+  - Border: transparent
+
+Hover:
+  - Background: #68BFA8
+  - Text: #0B1E19
+  - Border: transparent
+
+Pressed:
+  - Background: #58AF98
+  - Text: #0B1E19
+  - Border: transparent
+
+Disabled:
+  - Background: rgba(120, 207, 184, 0.38)
+  - Text: rgba(0, 0, 0, 0.38)
+  - Border: transparent
+
+LOW EMPHASIS (Tertiary/Text)
+----------------------------
+Enabled:
+  - Background: transparent
+  - Text: #13352C
+  - Border: transparent
+
+Hover:
+  - Background: rgba(19, 53, 44, 0.08)
+  - Text: #13352C
+  - Border: transparent
+
+Pressed:
+  - Background: rgba(19, 53, 44, 0.16)
+  - Text: #13352C
+  - Border: transparent
+
+Disabled:
+  - Background: transparent
+  - Text: rgba(0, 0, 0, 0.38)
+  - Border: transparent
+
+================================================================================
+COLOR SPECIFICATIONS - DARK SURFACE
+================================================================================
+
+HIGH EMPHASIS (On Dark)
+-----------------------
+Enabled:
+  - Background: #FFFFFF
+  - Text: #13352C
+  - Border: transparent
+
+Hover:
+  - Background: rgba(255, 255, 255, 0.9)
+  - Text: #13352C
+  - Border: transparent
+
+Pressed:
+  - Background: rgba(255, 255, 255, 0.8)
+  - Text: #13352C
+  - Border: transparent
+
+Disabled:
+  - Background: rgba(255, 255, 255, 0.38)
+  - Text: rgba(255, 255, 255, 0.38)
+  - Border: transparent
+
+MID EMPHASIS (On Dark - Mint-Teal Filled)
+-----------------------------------------
+Enabled:
+  - Background: #78CFB8
+  - Text: #FFFFFF
+  - Border: transparent
+
+Hover:
+  - Background: #68BFA8
+  - Text: #FFFFFF
+  - Border: transparent
+
+Pressed:
+  - Background: #58AF98
+  - Text: #FFFFFF
+  - Border: transparent
+
+Disabled:
+  - Background: rgba(120, 207, 184, 0.38)
+  - Text: rgba(255, 255, 255, 0.38)
+  - Border: transparent
+
+LOW EMPHASIS (On Dark)
+----------------------
+Enabled:
+  - Background: transparent
+  - Text: #FFFFFF
+  - Border: transparent
+
+Hover:
+  - Background: rgba(255, 255, 255, 0.16)
+  - Text: #FFFFFF
+  - Border: transparent
+
+Pressed:
+  - Background: rgba(255, 255, 255, 0.24)
+  - Text: #FFFFFF
+  - Border: transparent
+
+Disabled:
+  - Background: transparent
+  - Text: rgba(255, 255, 255, 0.38)
+  - Border: transparent
+
+================================================================================
+DESTRUCTIVE BUTTON COLORS
+================================================================================
+
+HIGH EMPHASIS (Destructive)
+---------------------------
+Enabled:
+  - Background: #C10B1E
+  - Text: #FFFFFF
+  - Border: transparent
+
+Hover:
+  - Background: #A50A1A
+  - Text: #FFFFFF
+  - Border: transparent
+
+Pressed:
+  - Background: #8A0816
+  - Text: #FFFFFF
+  - Border: transparent
+
+Disabled:
+  - Background: #E0E0E0
+  - Text: rgba(0, 0, 0, 0.38)
+  - Border: transparent
+
+MID EMPHASIS (Destructive)
+--------------------------
+Enabled:
+  - Background: transparent
+  - Text: #C10B1E
+  - Border: #C10B1E (1px)
+
+Hover:
+  - Background: rgba(193, 11, 30, 0.08)
+  - Text: #C10B1E
+  - Border: #C10B1E (1px)
+
+Pressed:
+  - Background: rgba(193, 11, 30, 0.16)
+  - Text: #C10B1E
+  - Border: #C10B1E (1px)
+
+Disabled:
+  - Background: transparent
+  - Text: rgba(0, 0, 0, 0.38)
+  - Border: rgba(0, 0, 0, 0.12) (1px)
+
+================================================================================
+SHAPE & EFFECTS
+================================================================================
+
+Border Radius: 9999px (pill shape)
+Transition: 200ms ease-out
+
+Focus Ring:
+  - Color: #3086BF
+  - Width: 3px
+  - Offset: 5px (from button edge)
+  - Shape: Circular (9999px radius)
+
+================================================================================
+BUTTON GROUP SPACING
+================================================================================
+
+DEFAULT SPACING
+---------------
+- Gap between buttons: 8px
+- Bottom margin: 32px
+- Usage: Standard button groups in dialogs and forms
+
+FORM SPACING
+------------
+- Gap between buttons: 16px
+- Bottom margin: 32px
+- Usage: Form submission areas
+
+FORM MOBILE SPACING
+-------------------
+- Direction: Column (stacked vertically)
+- Gap between buttons: 16px
+- Bottom margin: 16px
+- Usage: Mobile form layouts with full-width buttons
+
+INLINE SPACING
+--------------
+- Gap between buttons: 8px
+- Bottom margin: 0px
+- Usage: Inline actions in tables, lists, cards
+
+================================================================================
+COMPONENT PROPS (TypeScript Interface)
+================================================================================
+
+interface ButtonProps {
+  // Size of the button
+  size?: 'lg' | 'md'  // Default: 'md'
+  
+  // Emphasis level of the button
+  emphasis?: 'high' | 'mid' | 'low'  // Default: 'high'
+  
+  // Whether button is displayed on a dark surface
+  onDark?: boolean  // Default: false
+  
+  // Whether this is a destructive action
+  destructive?: boolean  // Default: false
+  
+  // Icon to display before the text (left side)
+  leftIcon?: ReactNode
+  
+  // Icon to display after the text (right side / dropdown caret)
+  rightIcon?: ReactNode
+  
+  // Whether this is an icon-only button (no text)
+  iconOnly?: boolean  // Default: false
+  
+  // Loading state
+  loading?: boolean  // Default: false
+  
+  // Full width button
+  fullWidth?: boolean  // Default: false
+  
+  // Shows focus ring (for demonstration)
+  focused?: boolean  // Default: false
+  
+  // Standard button HTML attributes
+  disabled?: boolean
+  type?: 'button' | 'submit' | 'reset'
+  onClick?: (event: MouseEvent) => void
+  // ... extends React.ButtonHTMLAttributes<HTMLButtonElement>
+}
+
+interface ButtonGroupProps {
+  // Child buttons
+  children: ReactNode
+  
+  // Spacing variant
+  spacing?: 'default' | 'form' | 'formMobile' | 'inline'  // Default: 'default'
+  
+  // Alignment
+  align?: 'start' | 'center' | 'end' | 'stretch'  // Default: 'start'
+}
+
+================================================================================
+USAGE EXAMPLES
+================================================================================
+
+BASIC USAGE
+-----------
+import { Button } from '@/components'
+
+// Primary action
+<Button emphasis="high" size="lg">
+  Submit
+</Button>
+
+// Secondary action
+<Button emphasis="mid" size="md">
+  Cancel
+</Button>
+
+// Tertiary action
+<Button emphasis="low" size="md">
+  Learn More
+</Button>
+
+WITH ICONS
+----------
+// Left icon
+<Button leftIcon={<IconPlus />}>
+  Add Item
+</Button>
+
+// Right icon (dropdown)
+<Button rightIcon={<DropdownIcon />}>
+  Options
+</Button>
+
+// Icon only (always include aria-label!)
+<Button iconOnly leftIcon={<IconSettings />} aria-label="Settings" />
+
+DESTRUCTIVE ACTIONS
+-------------------
+<Button emphasis="high" destructive>
+  Delete
+</Button>
+
+<Button emphasis="mid" destructive>
+  Remove
+</Button>
+
+ON DARK SURFACES
+----------------
+<Button emphasis="high" onDark>
+  Action
+</Button>
+
+BUTTON GROUPS
+-------------
+import { Button, ButtonGroup } from '@/components'
+
+// Form actions
+<ButtonGroup spacing="form">
+  <Button emphasis="low">Cancel</Button>
+  <Button emphasis="high">Save</Button>
+</ButtonGroup>
+
+// Mobile stacked
+<ButtonGroup spacing="formMobile" align="stretch">
+  <Button emphasis="high">Continue</Button>
+  <Button emphasis="low">Go Back</Button>
+</ButtonGroup>
+
+LOADING STATE
+-------------
+<Button emphasis="high" loading>
+  Saving...
+</Button>
+
+================================================================================
+DESIGN GUIDANCE
+================================================================================
+
+WHEN TO USE EACH SIZE
+---------------------
+Large (lg):
+  - Bottom of forms
+  - Areas where major prominence is needed
+  - Primary calls-to-action
+  - Full-page layouts
+
+Medium (md):
+  - Navigation bars
+  - Snackbars
+  - Alert dialogs
+  - Banners
+  - Mid-page content areas
+  - Tables and lists
+
+WHEN TO USE EACH EMPHASIS
+-------------------------
+High (Primary):
+  - Most important action on screen
+  - Primary calls-to-action
+  - Form submission
+  - Limit: One per section/viewport
+
+Mid (Secondary):
+  - Alternative options
+  - Secondary actions
+  - Filter/sort controls
+  - Can use multiple
+
+Low (Tertiary):
+  - Least prominent actions
+  - Cancel buttons
+  - "Learn more" links
+  - Can use multiple
+
+BUTTON ORDERING
+---------------
+Always place low emphasis buttons before high emphasis buttons to create
+proper visual hierarchy:
+
+✓ Correct: [Cancel] [Save]
+✗ Wrong:   [Save] [Cancel]
+
+ICON GUIDELINES
+---------------
+- Left icons indicate what the action does (Add, Edit, Delete)
+- Right icons indicate additional options (dropdown, menu)
+- Icon-only buttons MUST have aria-label for accessibility
+- Keep icon size consistent with button size (24px for lg, 20px for md)
+
+DESTRUCTIVE ACTIONS
+-------------------
+- Use destructive styling for actions that delete data
+- Use for irreversible or dangerous operations
+- Consider using confirmation dialogs before destructive actions
+- Only high and mid emphasis levels support destructive variant
+
+SPACING IN DIALOGS
+------------------
+- Use default or form spacing in dialogs
+- Primary action should be on the right
+- Always provide a cancel/close option
+
+MOBILE CONSIDERATIONS
+---------------------
+- Use formMobile spacing for stacked button layouts
+- Consider full-width buttons on mobile
+- Ensure adequate touch target size (minimum 48px)
+
+================================================================================
+ACCESSIBILITY
+================================================================================
+
+- All buttons are keyboard accessible (Tab to focus, Enter/Space to activate)
+- Focus ring is visible and meets WCAG contrast requirements
+- Icon-only buttons require aria-label
+- Disabled buttons should have proper disabled styling
+- Loading buttons should indicate loading state to screen readers
+- Button groups should be wrapped in role="group"
+
+================================================================================
+TOKENS REFERENCE
+================================================================================
+
+Design tokens are located at: @/styles/design-tokens.ts
+
+Import tokens:
+  import { button, colors, fontFamilies } from '@/styles/design-tokens'
+
+Available token paths:
+  button.sizes.lg.*
+  button.sizes.md.*
+  button.iconOnlySizes.lg.*
+  button.iconOnlySizes.md.*
+  button.typography.lg.*
+  button.typography.md.*
+  button.emphasis.high.*
+  button.emphasis.mid.*
+  button.emphasis.low.*
+  button.emphasisOnDark.high.*
+  button.emphasisOnDark.mid.*
+  button.emphasisOnDark.low.*
+  button.destructive.high.*
+  button.destructive.mid.*
+  button.focus.*
+  button.borderRadius
+  button.transition
+  button.group.gap.*
+  button.group.marginBottom.*
+
+================================================================================
+RELATED COMPONENTS
+================================================================================
+
+- ButtonGroup: Groups related buttons together
+- DropdownIcon: Default dropdown caret icon for menu buttons
+- IconButton: Alias for Button with iconOnly prop
+
+================================================================================
+CHANGELOG
+================================================================================
+
+v1.0.0 (January 2026)
+- Initial release
+- Two sizes: lg, md
+- Three emphasis levels: high, mid, low
+- All states: enabled, hover, pressed, disabled
+- Icon support: left, right, icon-only
+- Dark surface support
+- Destructive variant
+- Button groups with multiple spacing options
+- Loading state
+- Full accessibility support
+
+================================================================================
+FIGMA REFERENCE
+================================================================================
+
+Design File: Trace-DLS-2.0
+Node ID: 483:1378
+URL: https://www.figma.com/design/14nQAZzn1odlvithVh91mI/Trace-DLS-2.0?node-id=483-1378
+
+================================================================================

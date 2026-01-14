@@ -1,0 +1,588 @@
+=============================================================================
+BANNER COMPONENT SPECIFICATION
+Metrc Design System v1.0.0
+=============================================================================
+
+OVERVIEW
+
+The Banner component displays important messages and notifications to users.
+Banners appear inline with content and can include titles, descriptions,
+actions, and optional dismiss functionality. They use semantic color variants
+with 2px borders for clear visual distinction.
+
+
+=============================================================================
+COMPONENT VARIANTS
+=============================================================================
+
+SEMANTIC VARIANTS
+-----------------
+Variant     Usage                           Color Scheme
+────────────────────────────────────────────────────────────────────────────
+info        Neutral information, tips       Blue (semantic.info)
+success     Successful action completion    Green (semantic.success)
+warning     Important non-critical warnings Orange (semantic.warning)
+error       Errors requiring attention      Red (semantic.error)
+
+
+SIZE VARIANTS
+-------------
+Size    Height      Padding         Icon    Usage
+────────────────────────────────────────────────────────────────────────────
+md      Auto        12px 16px       20px    Default, inline with content
+lg      Auto        16px 20px       24px    Page-level, critical messages
+
+
+=============================================================================
+VISUAL SPECIFICATIONS
+=============================================================================
+
+LAYOUT
+------
+Component Structure:
+┌─────────────────────────────────────────────────────────────────┐
+│ [Icon] [Title]                                          [Close] │
+│        [Description text]                                       │
+│        [Action Buttons]                                         │
+└─────────────────────────────────────────────────────────────────┘
+
+- Border: 2px solid (semantic color)
+- Border Radius: 8px (borderRadius.md)
+- Background: Semantic light color
+- Gap between elements: 12px (md) or 16px (lg)
+
+
+COLOR SPECIFICATIONS
+--------------------
+Variant     Background              Border                  Icon/Title
+────────────────────────────────────────────────────────────────────────────
+info        semantic.info.light     semantic.info.main      semantic.info.main
+success     semantic.success.light  semantic.success.main   semantic.success.main
+warning     semantic.warning.light  semantic.warning.main   semantic.warning.dark
+error       semantic.error.light    semantic.error.main     semantic.error.main
+
+
+TYPOGRAPHY
+----------
+Element         Size MD                 Size LG                 Weight
+────────────────────────────────────────────────────────────────────────────
+Title           label.md (14px/20px)    label.lg (16px/24px)    Medium (500)
+Description     body.sm (14px/20px)     body.md (16px/24px)     Regular (400)
+Text Color      text.highEmphasis       text.highEmphasis       -
+
+
+SPACING
+-------
+Property            Size MD         Size LG
+────────────────────────────────────────────────────────────────────────────
+Padding             12px 16px       16px 20px
+Gap (elements)      12px            16px
+Title margin-bottom 4px             4px
+Actions margin-top  12px            12px
+
+
+ICONS
+-----
+Context         Size    Source
+────────────────────────────────────────────────────────────────────────────
+Default icons   20/24   InfoIcon, SuccessIcon, WarningIcon, ErrorIcon
+Custom icon     20/24   User-provided
+Dismiss button  16      CloseIcon
+
+
+=============================================================================
+COMPONENT ANATOMY
+=============================================================================
+
+REQUIRED ELEMENTS
+-----------------
+✓ Icon (default or custom)
+✓ Title OR Description (at least one required)
+✓ Background with semantic color
+✓ 2px border with semantic color
+
+
+OPTIONAL ELEMENTS
+-----------------
+○ Title (if description provided)
+○ Description (if title provided)
+○ Dismiss button
+○ Action buttons (1-2 maximum recommended)
+
+
+ELEMENT HIERARCHY
+-----------------
+1. Icon (left, always visible)
+2. Content Area (flexible)
+   - Title (optional, bold)
+   - Description (optional, regular weight)
+   - Actions (optional, below description)
+3. Dismiss Button (right, optional)
+
+
+=============================================================================
+USAGE GUIDELINES
+=============================================================================
+
+WHEN TO USE
+-----------
+✓ Important announcements
+✓ System status updates
+✓ Contextual information
+✓ Success confirmations
+✓ Error notifications
+✓ Warnings requiring user awareness
+
+
+WHEN NOT TO USE
+---------------
+✗ Permanent UI elements (use Cards or Panels)
+✗ Form validation errors (use field-level validation)
+✗ Toast/snackbar messages (use Toast component)
+✗ Critical blocking errors (use Modal/Dialog)
+
+
+VARIANT SELECTION
+-----------------
+Use info when:
+- Announcing new features
+- Providing tips or helpful information
+- Displaying neutral system status
+
+Use success when:
+- Confirming successful actions
+- Showing completion status
+- Celebrating achievements
+
+Use warning when:
+- Subscription/trial expiring
+- Approaching limits
+- Non-critical issues requiring attention
+- Recommendations
+
+Use error when:
+- Operation failures
+- Connection errors
+- Critical issues blocking progress
+- Validation failures at page level
+
+
+SIZE SELECTION
+--------------
+Use md (default) when:
+- Inline with content sections
+- Multiple banners on same page
+- Space is limited
+
+Use lg when:
+- Page-level announcements
+- Critical system-wide messages
+- Hero/prominent areas
+- Single banner with high importance
+
+
+=============================================================================
+INTERACTIVE BEHAVIOR
+=============================================================================
+
+STATES
+------
+State       Visual Change                   Behavior
+────────────────────────────────────────────────────────────────────────────
+Default     Standard appearance             Static display
+Hover*      No change to banner             -
+Dismiss     Fade out and remove             Triggered by close button
+Action      Button states apply             Action buttons have hover/press
+
+*Banner itself has no hover state (not interactive)
+
+
+DISMISS BEHAVIOR
+----------------
+When dismissible={true}:
+1. Close button appears in top-right
+2. Clicking close triggers onDismiss callback
+3. Banner fades out and removes from DOM
+4. Parent should handle state management
+
+Best Practices:
+- Only make non-critical messages dismissible
+- Don't make error banners dismissible
+- Persist dismiss state if needed (via parent)
+
+
+ACTIONS
+-------
+Guidelines:
+- Maximum 2 action buttons recommended
+- Use Button component with appropriate emphasis
+- Primary action: emphasis="high"
+- Secondary action: emphasis="low"
+- Stack on mobile if needed
+
+
+=============================================================================
+ACCESSIBILITY
+=============================================================================
+
+ARIA ATTRIBUTES
+---------------
+Attribute       Value           Purpose
+────────────────────────────────────────────────────────────────────────────
+role            "alert"         Identifies as alert region
+aria-live       "polite"        Announces to screen readers
+aria-label      "Dismiss"       Close button label
+
+
+KEYBOARD NAVIGATION
+-------------------
+Action              Key         Behavior
+────────────────────────────────────────────────────────────────────────────
+Dismiss banner      Tab + Enter Focus close button, activate
+Trigger actions     Tab + Enter Focus action buttons, activate
+
+
+COLOR CONTRAST
+--------------
+All text combinations meet WCAG AA standards:
+- Title text: 7:1+ contrast ratio
+- Description text: 4.5:1+ contrast ratio
+- Icon: Semantic color with sufficient contrast
+
+
+SEMANTIC MEANING
+----------------
+✓ Variant type conveyed through text, not just color
+✓ Icons supplement meaning, not sole indicator
+✓ Title/description provide context
+✓ role="alert" for screen reader awareness
+
+
+=============================================================================
+CODE EXAMPLES
+=============================================================================
+
+BASIC USAGE
+-----------
+```tsx
+import { Banner } from '@/components'
+
+// Info banner
+<Banner variant="info" title="New Feature Available">
+  Check out our new dashboard redesign!
+</Banner>
+
+// Success banner
+<Banner variant="success" title="Changes Saved">
+  Your profile has been updated successfully.
+</Banner>
+
+// Warning banner
+<Banner variant="warning" title="Action Required">
+  Your subscription expires in 7 days.
+</Banner>
+
+// Error banner
+<Banner variant="error" title="Connection Error">
+  Unable to connect to the server.
+</Banner>
+```
+
+
+DISMISSIBLE BANNER
+------------------
+```tsx
+<Banner
+  variant="info"
+  title="Helpful Tip"
+  dismissible
+  onDismiss={() => console.log('Banner dismissed')}
+>
+  You can customize your dashboard layout.
+</Banner>
+```
+
+
+WITH ACTIONS
+------------
+```tsx
+<Banner
+  variant="warning"
+  title="Subscription Expiring Soon"
+  dismissible
+  actions={
+    <>
+      <Button size="md" emphasis="low">Remind Later</Button>
+      <Button size="md" emphasis="high">Renew Now</Button>
+    </>
+  }
+>
+  Your subscription will expire in 7 days.
+</Banner>
+```
+
+
+CUSTOM ICON
+-----------
+```tsx
+import { Banner } from '@/components'
+import { CustomIcon } from './icons'
+
+<Banner
+  variant="info"
+  title="Custom Icon"
+  icon={<CustomIcon size={20} />}
+>
+  Using a custom icon instead of the default.
+</Banner>
+```
+
+
+SIZE VARIANTS
+-------------
+```tsx
+// Medium (default)
+<Banner variant="success" size="md" title="Medium Size">
+  Standard size for inline use.
+</Banner>
+
+// Large
+<Banner variant="error" size="lg" title="Large Size">
+  Larger size for page-level messages.
+</Banner>
+```
+
+
+=============================================================================
+COMPONENT API
+=============================================================================
+
+PROPS
+-----
+Name            Type                                    Default     Required
+────────────────────────────────────────────────────────────────────────────
+variant         'info' | 'success' | 'warning' | 'error' 'info'     No
+size            'md' | 'lg'                             'md'        No
+title           string                                  -           No*
+children        ReactNode                               -           No*
+icon            ReactNode                               -           No
+dismissible     boolean                                 false       No
+onDismiss       () => void                              -           No
+actions         ReactNode                               -           No
+className       string                                  -           No
+style           CSSProperties                           -           No
+
+*Either title or children must be provided
+
+
+TYPES
+-----
+```tsx
+export type BannerVariant = 'info' | 'success' | 'warning' | 'error'
+export type BannerSize = 'md' | 'lg'
+
+export interface BannerProps {
+  variant?: BannerVariant
+  size?: BannerSize
+  title?: string
+  children?: React.ReactNode
+  icon?: React.ReactNode
+  dismissible?: boolean
+  onDismiss?: () => void
+  actions?: React.ReactNode
+  className?: string
+  style?: React.CSSProperties
+}
+```
+
+
+=============================================================================
+DESIGN TOKENS
+=============================================================================
+
+COLORS
+------
+All colors use semantic tokens from design-tokens.ts:
+- colors.semantic.info.{light, main, dark}
+- colors.semantic.success.{light, main, dark}
+- colors.semantic.warning.{light, main, dark}
+- colors.semantic.error.{light, main, dark}
+
+
+SPACING
+-------
+- spacing[1] = 4px   (title margin)
+- spacing[2] = 8px   (action gap)
+- spacing[3] = 12px  (md gap, padding)
+- spacing[4] = 16px  (lg gap, padding)
+- spacing[5] = 20px  (lg padding horizontal)
+
+
+TYPOGRAPHY
+----------
+- typography.label.md  (14px/20px, medium)
+- typography.label.lg  (16px/24px, medium)
+- typography.body.sm   (14px/20px, regular)
+- typography.body.md   (16px/24px, regular)
+
+
+BORDERS
+-------
+- borderRadius.md = 8px
+- borderRadius.sm = 4px (dismiss button)
+- Border width: 2px (all variants)
+
+
+TRANSITIONS
+-----------
+- transitionPresets.default = 200ms ease-out
+- transitionPresets.fast = 100ms ease-out
+
+
+=============================================================================
+BEST PRACTICES
+=============================================================================
+
+CONTENT GUIDELINES
+------------------
+✓ Keep messages concise (1-2 sentences)
+✓ Use clear, actionable language
+✓ State the issue and solution
+✓ Avoid jargon and technical terms
+✓ Use sentence case for titles
+✓ End descriptions with periods
+
+✗ Don't write multiple paragraphs
+✗ Don't use ALL CAPS
+✗ Don't include multiple topics
+✗ Don't be vague ("Something went wrong")
+
+
+PLACEMENT
+---------
+✓ Top of content area
+✓ Below page header/navigation
+✓ Above main content
+✓ Consistent position across pages
+
+✗ Middle of content
+✗ Multiple locations on same page
+✗ Overlapping other content
+
+
+ACTION BUTTONS
+--------------
+✓ Limit to 1-2 actions
+✓ Primary action uses high emphasis
+✓ Secondary action uses low emphasis
+✓ Use clear action verbs
+✓ Order: Cancel/Secondary → Primary
+
+✗ More than 2 actions
+✗ Generic labels ("Click Here")
+✗ All high emphasis
+✗ Unclear next steps
+
+
+DISMISSIBILITY
+--------------
+Make dismissible:
+✓ Tips and recommendations
+✓ Non-critical announcements
+✓ Success confirmations (after 1-2 seconds)
+✓ Informational messages
+
+Keep persistent:
+✓ Critical errors blocking workflow
+✓ Required actions before proceeding
+✓ Security warnings
+✓ System-wide outages
+
+
+=============================================================================
+RESPONSIVE BEHAVIOR
+=============================================================================
+
+MOBILE BREAKPOINTS
+------------------
+Small screens (< 640px):
+- Banner maintains same padding
+- Actions stack vertically if needed
+- Text wraps naturally
+- Icons remain same size
+- Dismiss button stays top-right
+
+Medium screens (640px - 1024px):
+- Standard horizontal layout
+- Actions display inline
+- Content area expands
+
+Large screens (> 1024px):
+- Full horizontal layout
+- Maximum width recommended: 1200px
+- Center align if needed
+
+
+=============================================================================
+IMPLEMENTATION NOTES
+=============================================================================
+
+STATE MANAGEMENT
+----------------
+- Dismiss state managed by parent
+- Use React.useState for dismiss tracking
+- Persist to localStorage if needed
+- Re-show on page reload if not persisted
+
+
+PERFORMANCE
+-----------
+- No animations on mount (instant display)
+- Smooth fade-out on dismiss (200ms)
+- Minimal re-renders (memoize if needed)
+- Lazy load actions if heavy components
+
+
+TESTING
+-------
+Test cases:
+✓ All variants render correctly
+✓ Dismiss functionality works
+✓ Actions trigger callbacks
+✓ Accessibility attributes present
+✓ Responsive behavior
+✓ Icon customization
+✓ Missing props handled gracefully
+
+
+=============================================================================
+RELATED COMPONENTS
+=============================================================================
+
+Component       When to Use Instead
+────────────────────────────────────────────────────────────────────────────
+Toast           Temporary, auto-dismiss notifications
+Modal           Blocking messages requiring immediate attention
+Alert Dialog    Critical decisions or confirmations
+Inline Alert    Form validation or field-level errors
+Status Badge    Compact status indicators
+Card            Static content containers
+
+
+=============================================================================
+CHANGELOG
+=============================================================================
+
+Version 1.0.0 (2026-01-11)
+--------------------------
+- Initial Banner component release
+- 4 semantic variants (info, success, warning, error)
+- 2 size options (md, lg)
+- Dismissible functionality
+- Action button support
+- Custom icon support
+- Full accessibility support
+- 2px border specification
+
+
+=============================================================================
