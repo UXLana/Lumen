@@ -24,3 +24,11 @@ export type { SegmentedControlProps, SegmentedControlSize, SegmentItem } from '.
 
 // Icons
 export * from './Icons'
+
+// Badge
+export { Badge } from './Badge'
+export type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from './Badge'
+
+// MarketplaceCard
+export { MarketplaceCard } from './MarketplaceCard'
+export type { MarketplaceCardProps, MarketplaceAppStatus, MarketplaceCardVariant } from './MarketplaceCard'

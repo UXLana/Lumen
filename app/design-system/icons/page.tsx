@@ -149,6 +149,8 @@ const iconCategories: IconCategory[] = [
       { name: 'IconButton', component: Icons.IconButton },
       { name: 'IconTab', component: Icons.IconTab },
       { name: 'IconBanner', component: Icons.IconBanner },
+      { name: 'IconBadge', component: Icons.IconBadge },
+      { name: 'IconLayoutCard', component: Icons.IconLayoutCard },
       { name: 'IconFoundations', component: Icons.IconFoundations },
       { name: 'IconComponents', component: Icons.IconComponents },
       { name: 'IconIcons', component: Icons.IconIcons },
@@ -680,7 +682,8 @@ const MyIcon: React.FC<IconProps> = (props) => {
   // Design System
   IconColors, IconTypography, IconSpacing, IconRadius,
   IconShadows, IconBreakpoints, IconAvatar, IconButton,
-  IconTab, IconBanner, IconFoundations, IconComponents, IconIcons,
+  IconTab, IconBanner, IconBadge, IconLayoutCard,
+  IconFoundations, IconComponents, IconIcons,
 } from '@/components/Icons'`}</CodeBlock>
           </section>
         </>

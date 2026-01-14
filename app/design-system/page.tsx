@@ -10,7 +10,7 @@ import {
   zIndex,
   transitionPresets,
 } from '@/styles/design-tokens'
-import { Avatar, AvatarGroup, Button, Tab, TabBar, Banner } from '@/components'
+import { Avatar, AvatarGroup, Button, Tab, TabBar, Banner, Badge, SegmentedControl, MarketplaceCard } from '@/components'
 
 // =============================================================================
 // STYLES
@@ -77,7 +77,7 @@ const styles = {
 
   tabActive: {
     color: colors.text.highEmphasis,
-    borderBottomColor: colors.brand.primary,
+    borderBottom: `2px solid ${colors.brand.primary}`,
   },
   
   sectionTitle: {
@@ -210,6 +210,13 @@ const foundationItems = [
     icon: '⊟',
     href: '/design-system/breakpoints',
   },
+  {
+    id: 'icons',
+    title: 'Icons',
+    description: 'Scalable SVG icons in Feather style',
+    icon: '◎',
+    href: '/design-system/icons',
+  },
 ]
 
 const componentItems = [
@@ -279,6 +286,55 @@ const componentItems = [
           This is an informational message.
         </Banner>
       </div>
+    ),
+  },
+  {
+    id: 'badge',
+    title: 'Badge',
+    description: 'Status indicators with semantic colors',
+    href: '/components/badge',
+    preview: (
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <Badge color="success" variant="subtle">Installed</Badge>
+        <Badge color="info" variant="subtle">Update Available</Badge>
+        <Badge color="neutral" variant="outlined">Uninstalled</Badge>
+        <Badge color="warning" variant="filled">Warning</Badge>
+      </div>
+    ),
+  },
+  {
+    id: 'segmented-control',
+    title: 'Segmented Control',
+    description: 'Tab-style selection for switching views',
+    href: '/components/segmented-control',
+    preview: (
+      <SegmentedControl
+        segments={[
+          { id: 'preview', label: 'Preview' },
+          { id: 'code', label: 'Code' },
+        ]}
+        value="preview"
+        onChange={() => {}}
+        size="md"
+      />
+    ),
+  },
+  {
+    id: 'marketplace-card',
+    title: 'Marketplace Card',
+    description: 'App store style cards with ratings and status',
+    href: '/components/marketplace-card',
+    preview: (
+      <MarketplaceCard
+        variant="compact"
+        name="Sample App"
+        description="A sample marketplace application"
+        publisher="Publisher"
+        category="Category"
+        rating={4.5}
+        status="installed"
+        isVerified
+      />
     ),
   },
 ]

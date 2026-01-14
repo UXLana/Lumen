@@ -776,3 +776,24 @@ export const IconIcons: React.FC<IconProps> = (props) => (
   </BaseIcon>
 )
 IconIcons.displayName = 'IconIcons'
+
+export const IconBadge: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <rect x="3" y="8" width="18" height="8" rx="4" />
+    <circle cx="7" cy="12" r="1.5" fill="currentColor" />
+    <line x1="11" y1="12" x2="17" y2="12" />
+  </BaseIcon>
+)
+IconBadge.displayName = 'IconBadge'
+
+export const IconLayoutCard: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <rect x="5" y="5" width="6" height="6" rx="1" />
+    <line x1="13" y1="6" x2="17" y2="6" />
+    <line x1="13" y1="9" x2="17" y2="9" />
+    <line x1="5" y1="14" x2="19" y2="14" />
+    <line x1="5" y1="17" x2="15" y2="17" />
+  </BaseIcon>
+)
+IconLayoutCard.displayName = 'IconLayoutCard'

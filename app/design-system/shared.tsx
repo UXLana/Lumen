@@ -11,137 +11,30 @@ import {
   transitionPresets,
 } from '@/styles/design-tokens'
 import { SegmentedControl } from '@/components'
+import {
+  IconColors,
+  IconTypography,
+  IconSpacing,
+  IconRadius,
+  IconShadows,
+  IconBreakpoints,
+  IconAvatar,
+  IconButton,
+  IconTab,
+  IconBanner,
+  IconFoundations,
+  IconComponents,
+  IconIcons,
+  IconBadge,
+  IconLayoutCard,
+  IconChevronRight,
+} from '@/components/Icons'
 
 // =============================================================================
-// SVG ICONS (Feather-style)
+// CUSTOM ICONS (Not in the main library)
 // =============================================================================
 
-const IconColors = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 2v20" />
-    <path d="M12 2a10 10 0 0 1 0 20" fill="currentColor" fillOpacity="0.3" stroke="none" />
-  </svg>
-)
-
-const IconTypography = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="4 7 4 4 20 4 20 7" />
-    <line x1="9" y1="20" x2="15" y2="20" />
-    <line x1="12" y1="4" x2="12" y2="20" />
-  </svg>
-)
-
-const IconSpacing = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-    <line x1="3" y1="9" x2="21" y2="9" />
-    <line x1="3" y1="15" x2="21" y2="15" />
-    <line x1="9" y1="3" x2="9" y2="21" />
-    <line x1="15" y1="3" x2="15" y2="21" />
-  </svg>
-)
-
-const IconRadius = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 9V6a3 3 0 0 1 3-3h3" />
-    <path d="M21 9V6a3 3 0 0 0-3-3h-3" />
-    <path d="M21 15v3a3 3 0 0 1-3 3h-3" />
-    <path d="M3 15v3a3 3 0 0 0 3 3h3" />
-  </svg>
-)
-
-const IconShadows = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="14" height="14" rx="2" />
-    <path d="M7 21h12a2 2 0 0 0 2-2V7" opacity="0.4" />
-  </svg>
-)
-
-const IconBreakpoints = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="3" width="20" height="14" rx="2" />
-    <line x1="8" y1="21" x2="16" y2="21" />
-    <line x1="12" y1="17" x2="12" y2="21" />
-  </svg>
-)
-
-const IconAvatar = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="8" r="4" />
-    <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-  </svg>
-)
-
-const IconButton = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="8" width="18" height="8" rx="4" />
-    <line x1="8" y1="12" x2="16" y2="12" />
-  </svg>
-)
-
-const IconTab = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 6h18" />
-    <path d="M3 12h18" />
-    <rect x="3" y="3" width="6" height="6" rx="1" fill="currentColor" fillOpacity="0.2" />
-  </svg>
-)
-
-const IconBanner = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="4" width="20" height="16" rx="2" />
-    <line x1="6" y1="8" x2="18" y2="8" />
-    <line x1="6" y1="12" x2="14" y2="12" />
-  </svg>
-)
-
-const IconChevron = ({ expanded }: { expanded: boolean }) => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{
-      transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
-      transition: 'transform 0.2s ease',
-    }}
-  >
-    <polyline points="9 18 15 12 9 6" />
-  </svg>
-)
-
-const IconFoundations = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 2 7 12 12 22 7 12 2" />
-    <polyline points="2 17 12 22 22 17" />
-    <polyline points="2 12 12 17 22 12" />
-  </svg>
-)
-
-const IconComponents = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="7" height="7" rx="1" />
-    <rect x="14" y="3" width="7" height="7" rx="1" />
-    <rect x="3" y="14" width="7" height="7" rx="1" />
-    <rect x="14" y="14" width="7" height="7" rx="1" />
-  </svg>
-)
-
-// Icons page icon
-const IconIcons = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-    <circle cx="8.5" cy="8.5" r="1.5" />
-    <path d="M21 15l-5-5L5 21" />
-  </svg>
-)
-
-// Segmented Control icon
+// Segmented Control icon (specific to this nav)
 const IconSegmentedControl = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="8" width="20" height="8" rx="4" />
@@ -150,22 +43,35 @@ const IconSegmentedControl = () => (
   </svg>
 )
 
-// Icon mapping
+// Animated chevron for nav sections
+const IconChevron = ({ expanded }: { expanded: boolean }) => (
+  <span style={{
+    display: 'flex',
+    transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
+    transition: 'transform 0.2s ease',
+  }}>
+    <IconChevronRight size="sm" />
+  </span>
+)
+
+// Icon mapping - wraps Icons library components
 const iconMap: Record<string, React.FC> = {
-  colors: IconColors,
-  typography: IconTypography,
-  spacing: IconSpacing,
-  radius: IconRadius,
-  shadows: IconShadows,
-  breakpoints: IconBreakpoints,
-  icons: IconIcons,
-  avatar: IconAvatar,
-  button: IconButton,
-  tab: IconTab,
-  banner: IconBanner,
+  colors: () => <IconColors size="md" />,
+  typography: () => <IconTypography size="md" />,
+  spacing: () => <IconSpacing size="md" />,
+  radius: () => <IconRadius size="md" />,
+  shadows: () => <IconShadows size="md" />,
+  breakpoints: () => <IconBreakpoints size="md" />,
+  icons: () => <IconIcons size="md" />,
+  avatar: () => <IconAvatar size="md" />,
+  badge: () => <IconBadge size="md" />,
+  banner: () => <IconBanner size="md" />,
+  button: () => <IconButton size="md" />,
+  'marketplace-card': () => <IconLayoutCard size="md" />,
   'segmented-control': IconSegmentedControl,
-  foundations: IconFoundations,
-  components: IconComponents,
+  tab: () => <IconTab size="md" />,
+  foundations: () => <IconFoundations size={18} />,
+  components: () => <IconComponents size={18} />,
 }
 
 // =============================================================================
@@ -191,8 +97,10 @@ export const navSections = [
     title: 'Components',
     items: [
       { id: 'avatar', label: 'Avatar', href: '/components/avatar' },
+      { id: 'badge', label: 'Badge', href: '/components/badge' },
       { id: 'banner', label: 'Banner', href: '/components/banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
+      { id: 'marketplace-card', label: 'Marketplace Card', href: '/components/marketplace-card' },
       { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
     ],
