@@ -190,7 +190,7 @@ function IconCard({
         padding: '16px 8px',
         borderRadius: borderRadius.md,
         border: `1px solid ${hovered ? colors.brand.primary : colors.border.light}`,
-        background: hovered ? colors.background.subtle : colors.background.primary,
+        background: hovered ? colors.neutral[100] : colors.background.default,
         cursor: 'pointer',
         transition: 'all 0.15s ease',
         position: 'relative',
