@@ -76,6 +76,14 @@ export default function MarketplaceCardPage() {
       {/* ========== OVERVIEW TAB ========== */}
       {activePageTab === 'overview' && (
         <>
+          {/* ========== QUICK START ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
+            <div style={{ maxWidth: '600px' }}>
+              <CodeBlock>{`import { MarketplaceCard } from '@/components'`}</CodeBlock>
+            </div>
+          </section>
+
           {/* ========== INTERACTIVE PLAYGROUND ========== */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
@@ -123,7 +131,7 @@ export default function MarketplaceCardPage() {
                 {/* Controls */}
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                     {/* Variant */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>

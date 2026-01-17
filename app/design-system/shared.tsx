@@ -307,12 +307,18 @@ export const sharedStyles = {
     marginTop: '24px',
   },
   
+  tableContainer: {
+    borderRadius: borderRadius.xl,
+    border: `1px solid ${colors.border.light}`,
+    overflow: 'hidden',
+  },
+
   table: {
     width: '100%',
     borderCollapse: 'collapse' as const,
     ...typography.body.sm,
   },
-  
+
   th: {
     padding: '12px 16px',
     textAlign: 'left' as const,
@@ -320,7 +326,7 @@ export const sharedStyles = {
     fontWeight: 600,
     borderBottom: `1px solid ${colors.border.light}`,
   },
-  
+
   td: {
     padding: '12px 16px',
     borderBottom: `1px solid ${colors.border.light}`,
@@ -671,31 +677,42 @@ export function PillButton({ children, isActive = false, onClick, style }: PillB
   )
 }
 
-export function SpecTable({ 
-  headers, 
-  rows 
-}: { 
+export function SpecTable({
+  headers,
+  rows
+}: {
   headers: string[]
-  rows: (string | React.ReactNode)[][] 
+  rows: (string | React.ReactNode)[][]
 }) {
   return (
-    <table style={sharedStyles.table}>
-      <thead>
-        <tr>
-          {headers.map((h, i) => (
-            <th key={i} style={sharedStyles.th}>{h}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, i) => (
-          <tr key={i}>
-            {row.map((cell, j) => (
-              <td key={j} style={sharedStyles.td}>{cell}</td>
+    <div style={sharedStyles.tableContainer}>
+      <table style={sharedStyles.table}>
+        <thead>
+          <tr>
+            {headers.map((h, i) => (
+              <th key={i} style={sharedStyles.th}>{h}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i}>
+              {row.map((cell, j) => (
+                <td
+                  key={j}
+                  style={{
+                    ...sharedStyles.td,
+                    // Remove bottom border on last row
+                    ...(i === rows.length - 1 ? { borderBottom: 'none' } : {}),
+                  }}
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
