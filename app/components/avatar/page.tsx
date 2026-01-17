@@ -39,6 +39,9 @@ export default function AvatarPage() {
   const [demoUseImage, setDemoUseImage] = useState(true)
   const [demoFocused, setDemoFocused] = useState(false)
   const [demoOnDark, setDemoOnDark] = useState(false)
+  const [avatarCount, setAvatarCount] = useState<number>(1)
+  const [maxVisible, setMaxVisible] = useState<number>(5)
+  const [demoName, setDemoName] = useState<string>('Alice Johnson')
 
   // Custom tabs for component pages
   const componentTabs = [
@@ -58,6 +61,14 @@ export default function AvatarPage() {
       {/* ========== OVERVIEW TAB ========== */}
       {activePageTab === 'overview' && (
         <>
+          {/* ========== QUICK START ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
+            <div style={{ maxWidth: '600px' }}>
+              <CodeBlock>{`import { Avatar, AvatarGroup } from '@/components'`}</CodeBlock>
+            </div>
+          </section>
+
           {/* ========== INTERACTIVE PLAYGROUND ========== */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
@@ -71,27 +82,59 @@ export default function AvatarPage() {
                 <div>
                   <Playground
                     preview={
-                      <Avatar
-                        src={demoUseImage ? 'https://i.pravatar.cc/150?img=1' : undefined}
-                        name="Alice Johnson"
-                        size={demoSize}
-                        color={demoColor}
-                        focused={demoFocused}
-                        onDark={demoOnDark}
-                      />
+                      avatarCount === 1 ? (
+                        <Avatar
+                          src={demoUseImage ? 'https://i.pravatar.cc/150?img=1' : undefined}
+                          name={demoName}
+                          size={demoSize}
+                          color={demoColor}
+                          focused={demoFocused}
+                          onDark={demoOnDark}
+                        />
+                      ) : (
+                        <AvatarGroup
+                          avatars={sampleUsers.slice(0, avatarCount).map((user, i) => ({
+                            ...user,
+                            src: demoUseImage ? user.src : undefined,
+                            color: !demoUseImage ? ((i % 8) + 1) as AvatarColor : undefined,
+                          }))}
+                          size={demoSize}
+                          max={maxVisible}
+                          compact
+                        />
+                      )
                     }
-                    code={`<Avatar${demoUseImage ? '\n  src="https://i.pravatar.cc/150?img=1"' : ''}
-  name="Alice Johnson"
+                    code={avatarCount === 1
+                      ? `import { Avatar } from '@/components'
+
+<Avatar${demoUseImage ? '\n  src="https://i.pravatar.cc/150?img=1"' : ''}
+  name="${demoName}"
   size="${demoSize}"${!demoUseImage ? `\n  color={${demoColor}}` : ''}${demoFocused ? '\n  focused' : ''}${demoOnDark ? '\n  onDark' : ''}
+/>`
+                      : `import { AvatarGroup } from '@/components'
+
+const users = [
+${sampleUsers.slice(0, avatarCount).map((user, i) =>
+  demoUseImage
+    ? `  { name: "${user.name}", src: "${user.src || ''}" }`
+    : `  { name: "${user.name}", color: ${(i % 8) + 1} }`
+).join(',\n')}
+]
+
+<AvatarGroup
+  avatars={users}
+  size="${demoSize}"
+  max={${maxVisible}}
+  compact
 />`}
-                    previewBackground={demoOnDark ? colors.brand.primary : colors.neutral[50]}
+                    previewBackground={demoOnDark && avatarCount === 1 ? colors.brand.primary : colors.neutral[50]}
                   />
                 </div>
 
                 {/* Controls */}
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                     {/* Size */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
@@ -110,7 +153,168 @@ export default function AvatarPage() {
                       </div>
                     </div>
 
-                    {/* Color (only shown when not using image) */}
+                    {/* Avatar Count & Max Visible - Side by side */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
+                      {/* Avatar Count - Stepper */}
+                      <div>
+                        <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                          Avatars
+                        </label>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <button
+                            onClick={() => setAvatarCount(Math.max(1, avatarCount - 1))}
+                            disabled={avatarCount <= 1}
+                            style={{
+                              width: '32px',
+                              height: '32px',
+                              border: `1px solid ${colors.border.light}`,
+                              borderRadius: borderRadius.md,
+                              background: 'white',
+                              cursor: avatarCount <= 1 ? 'not-allowed' : 'pointer',
+                              opacity: avatarCount <= 1 ? 0.5 : 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '18px',
+                              fontWeight: 500,
+                            }}
+                          >
+                            −
+                          </button>
+                          <span style={{ ...typography.body.md, minWidth: '24px', textAlign: 'center' }}>
+                            {avatarCount}
+                          </span>
+                          <button
+                            onClick={() => setAvatarCount(Math.min(8, avatarCount + 1))}
+                            disabled={avatarCount >= 8}
+                            style={{
+                              width: '32px',
+                              height: '32px',
+                              border: `1px solid ${colors.border.light}`,
+                              borderRadius: borderRadius.md,
+                              background: 'white',
+                              cursor: avatarCount >= 8 ? 'not-allowed' : 'pointer',
+                              opacity: avatarCount >= 8 ? 0.5 : 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '18px',
+                              fontWeight: 500,
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Max Visible - Only show when avatarCount > 1 */}
+                      {avatarCount > 1 && (
+                        <div>
+                          <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                            Max Visible
+                          </label>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <button
+                              onClick={() => setMaxVisible(Math.max(1, maxVisible - 1))}
+                              disabled={maxVisible <= 1}
+                              style={{
+                                width: '32px',
+                                height: '32px',
+                                border: `1px solid ${colors.border.light}`,
+                                borderRadius: borderRadius.md,
+                                background: 'white',
+                                cursor: maxVisible <= 1 ? 'not-allowed' : 'pointer',
+                                opacity: maxVisible <= 1 ? 0.5 : 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '18px',
+                                fontWeight: 500,
+                              }}
+                            >
+                              −
+                            </button>
+                            <span style={{ ...typography.body.md, minWidth: '24px', textAlign: 'center' }}>
+                              {maxVisible}
+                            </span>
+                            <button
+                              onClick={() => setMaxVisible(Math.min(avatarCount, maxVisible + 1))}
+                              disabled={maxVisible >= avatarCount}
+                              style={{
+                                width: '32px',
+                                height: '32px',
+                                border: `1px solid ${colors.border.light}`,
+                                borderRadius: borderRadius.md,
+                                background: 'white',
+                                cursor: maxVisible >= avatarCount ? 'not-allowed' : 'pointer',
+                                opacity: maxVisible >= avatarCount ? 0.5 : 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '18px',
+                                fontWeight: 500,
+                              }}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Display Type - Radio buttons for Image vs Initials */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Display
+                      </label>
+                      <div style={{ display: 'flex', gap: '16px' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input
+                            type="radio"
+                            name="displayType"
+                            checked={demoUseImage}
+                            onChange={() => setDemoUseImage(true)}
+                            style={{ width: '16px', height: '16px' }}
+                          />
+                          <span style={{ ...typography.label.sm }}>Image</span>
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input
+                            type="radio"
+                            name="displayType"
+                            checked={!demoUseImage}
+                            onChange={() => setDemoUseImage(false)}
+                            style={{ width: '16px', height: '16px' }}
+                          />
+                          <span style={{ ...typography.label.sm }}>Initials</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Name input - Only show when using initials */}
+                    {!demoUseImage && (
+                      <div>
+                        <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                          Name <span style={{ color: colors.text.lowEmphasis, fontWeight: 400 }}>(shows as initials)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={demoName}
+                          onChange={(e) => setDemoName(e.target.value)}
+                          placeholder="Enter name..."
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            border: `1px solid ${colors.border.light}`,
+                            borderRadius: borderRadius.md,
+                            fontSize: '14px',
+                            outline: 'none',
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {/* Color (only shown when using initials) */}
                     {!demoUseImage && (
                       <div>
                         <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
@@ -136,23 +340,31 @@ export default function AvatarPage() {
                       </div>
                     )}
 
-                    {/* Toggles */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      {[
-                        { label: 'Use Image', value: demoUseImage, setter: setDemoUseImage },
-                        { label: 'Focused', value: demoFocused, setter: setDemoFocused },
-                        { label: 'On Dark', value: demoOnDark, setter: setDemoOnDark },
-                      ].map(({ label, value, setter }) => (
-                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                    {/* State toggles - Checkboxes for Focused and On Dark */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        States
+                      </label>
+                      <div style={{ display: 'flex', gap: '24px' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                           <input
                             type="checkbox"
-                            checked={value}
-                            onChange={(e) => setter(e.target.checked)}
+                            checked={demoFocused}
+                            onChange={(e) => setDemoFocused(e.target.checked)}
                             style={{ width: '16px', height: '16px' }}
                           />
-                          <span style={{ ...typography.label.sm }}>{label}</span>
+                          <span style={{ ...typography.body.sm }}>Focused</span>
                         </label>
-                      ))}
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={demoOnDark}
+                            onChange={(e) => setDemoOnDark(e.target.checked)}
+                            style={{ width: '16px', height: '16px' }}
+                          />
+                          <span style={{ ...typography.body.sm }}>On Dark</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -160,27 +372,7 @@ export default function AvatarPage() {
             </div>
           </section>
 
-          {/* Preview */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Preview</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Avatars can display a profile image or show initials when no image is available.
-              They support 5 sizes and 8 color variants for text avatars.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={sharedStyles.row}>
-                <Avatar src="https://i.pravatar.cc/150?img=1" name="Alice Johnson" size="xl" />
-                <Avatar src="https://i.pravatar.cc/150?img=2" name="Bob Smith" size="lg" />
-                <Avatar src="https://i.pravatar.cc/150?img=3" name="Carol Williams" size="md" />
-                <Avatar name="David Brown" size="md" color={4} />
-                <Avatar name="Eve Davis" size="sm" color={5} />
-                <Avatar name="Frank Miller" size="xs" color={6} />
-              </div>
-            </div>
-          </section>
-
-          {/* ========== DESIGN TOKENS PREVIEW ========== */}
+          {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
             <p style={sharedStyles.sectionDescription}>
@@ -249,211 +441,19 @@ export default function AvatarPage() {
             </div>
           </section>
 
-          {/* ========== ALL VARIANTS ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>All Variants</h2>
-            <p style={sharedStyles.sectionDescription}>
-              All avatar variants displayed for visual comparison.
-            </p>
-
-            {/* Image Avatars - Sizes */}
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Image Avatars - Sizes</h3>
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '24px' }}>
-                {sizes.map(size => (
-                  <div key={size} style={{ textAlign: 'center' }}>
-                    <Avatar 
-                      src="https://i.pravatar.cc/150?img=1" 
-                      name="User"
-                      size={size}
-                    />
-                    <p style={{ ...typography.label.sm, color: colors.text.mediumEmphasis, marginTop: '12px' }}>
-                      {size.toUpperCase()}
-                    </p>
-                    <p style={{ ...typography.code.sm, color: colors.text.lowEmphasis }}>
-                      {avatar.sizes[size]}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Text Avatars - Sizes */}
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Text Avatars - Sizes</h3>
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '24px' }}>
-                {sizes.map(size => (
-                  <div key={size} style={{ textAlign: 'center' }}>
-                    <Avatar name="William Walker" size={size} color={1} />
-                    <p style={{ ...typography.label.sm, color: colors.text.mediumEmphasis, marginTop: '12px' }}>
-                      {size.toUpperCase()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Text Avatars - Color Variants */}
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Text Avatars - Color Variants</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Colors are automatically assigned based on the user's name for consistency.
-              </p>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                {colorVariants.map(color => (
-                  <div key={color} style={{ textAlign: 'center' }}>
-                    <Avatar name={`User ${color}`} size="md" color={color} />
-                    <p style={{ ...typography.code.sm, color: colors.text.lowEmphasis, marginTop: '8px' }}>
-                      {color}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Focus State */}
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Focus State</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                When focused via keyboard navigation, avatars display a focus ring.
-              </p>
-              <div style={sharedStyles.row}>
-                <Avatar src="https://i.pravatar.cc/150?img=1" name="User" size="xl" focused />
-                <Avatar name="William Walker" size="xl" color={1} focused />
-              </div>
-            </div>
-
-            {/* On Dark Surface */}
-            <div style={{ background: colors.brand.primary, padding: '32px', borderRadius: borderRadius.lg, marginBottom: '24px' }}>
-              <h3 style={{ ...typography.heading.h5, color: colors.text.highEmphasisOnDark, marginBottom: '24px' }}>
-                On Dark Surface
-              </h3>
-              <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
-                {sizes.map(size => (
-                  <Avatar key={size} src="https://i.pravatar.cc/150?img=1" name="User" size={size} onDark />
-                ))}
-              </div>
-              <div style={{ display: 'flex', gap: '16px' }}>
-                {sizes.map(size => (
-                  <Avatar key={size} name="William Walker" size={size} color={1} onDark />
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* ========== AVATAR GROUPS ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Avatar Groups</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Avatar groups indicate that multiple people have access to the content.
-            </p>
-            
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Standard Group</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                On desktop and tablet environments use standard groups.
-              </p>
-              <AvatarGroup avatars={sampleUsers.slice(0, 4)} size="md" />
-            </div>
-            
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Compact Group</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                On phones, and when space is tight, use a compact group with 30% overlap.
-              </p>
-              <AvatarGroup avatars={sampleUsers.slice(0, 4)} size="md" compact />
-            </div>
-            
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Group Growth</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Groups grow up to the max count, then show an overflow indicator.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <AvatarGroup avatars={sampleUsers.slice(0, 1)} size="md" compact />
-                <AvatarGroup avatars={sampleUsers.slice(0, 3)} size="md" compact />
-                <AvatarGroup avatars={sampleUsers.slice(0, 5)} size="md" compact max={5} />
-                <AvatarGroup avatars={sampleUsers} size="md" compact max={5} />
-              </div>
-            </div>
-          </section>
         </>
       )}
 
       {/* ========== IMPLEMENTATION TAB ========== */}
       {activePageTab === 'implementation' && (
         <>
-          {/* ========== USAGE ========== */}
+          {/* ========== IMPORT ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Usage</h2>
-            
+            <h2 style={sharedStyles.sectionTitle}>Import</h2>
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Import</h3>
               <CodeBlock>
 {`import { Avatar, AvatarGroup } from '@/components'
 import type { AvatarProps, AvatarSize, AvatarColor } from '@/components'`}
-              </CodeBlock>
-            </div>
-            
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
-              <CodeBlock>
-{`// Image avatar
-<Avatar 
-  src="/profile.jpg"
-  name="John Doe"
-  size="md"
-/>
-
-// Text avatar (initials)
-<Avatar 
-  name="Jane Smith"
-  size="lg"
-  color={3}
-/>
-
-// Avatar group
-<AvatarGroup
-  avatars={[
-    { name: "User 1", src: "/user1.jpg" },
-    { name: "User 2" },
-    { name: "User 3" },
-  ]}
-  max={5}
-  compact
-/>`}
-              </CodeBlock>
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>On Dark Surfaces</h3>
-              <CodeBlock>
-{`// Use onDark prop for dark backgrounds
-<Avatar 
-  src="/profile.jpg"
-  name="John Doe"
-  size="md"
-  onDark
-/>`}
-              </CodeBlock>
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Avatar Groups</h3>
-              <CodeBlock>
-{`// Standard group
-<AvatarGroup
-  avatars={users}
-  size="md"
-/>
-
-// Compact group (30% overlap)
-<AvatarGroup
-  avatars={users}
-  size="md"
-  compact
-  max={5}
-/>`}
               </CodeBlock>
             </div>
           </section>
