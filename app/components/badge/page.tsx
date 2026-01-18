@@ -174,93 +174,31 @@ export default function BadgePage() {
             </div>
           </section>
 
-          {/* ========== VARIANTS ========== */}
+          {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Variants</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Badges come in three visual variants: filled, outlined, and subtle.
-            </p>
+            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Filled</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                High emphasis, solid background. Use for primary status indicators.
-              </p>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                {badgeColors.map(color => (
-                  <Badge key={color} variant="filled" color={color}>
-                    {color}
-                  </Badge>
-                ))}
-              </div>
+              <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Size Specifications</h3>
+              <SpecTable
+                headers={['Size', 'Padding', 'Font Size', 'Icon Size']}
+                rows={[
+                  ['sm', '2px 8px', '12px', '12px'],
+                  ['md', '4px 10px', '14px', '14px'],
+                ]}
+              />
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Outlined</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Medium emphasis, border only. Use for secondary status or categories.
-              </p>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                {badgeColors.map(color => (
-                  <Badge key={color} variant="outlined" color={color}>
-                    {color}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Subtle</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Low emphasis, tinted background. Use for tags and filters.
-              </p>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                {badgeColors.map(color => (
-                  <Badge key={color} variant="subtle" color={color}>
-                    {color}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* ========== WITH ICONS ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>With Icons</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Badges can include leading icons for additional context.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <Badge variant="subtle" color="success" icon={<IconCheck size={12} />}>
-                  Verified
-                </Badge>
-                <Badge variant="outlined" color="neutral" icon={<IconInfo size={12} />}>
-                  Pending
-                </Badge>
-                <Badge variant="subtle" color="error" icon={<IconAlertCircle size={12} />}>
-                  Failed
-                </Badge>
-                <Badge variant="subtle" color="warning" icon={<IconAlertCircle size={12} />}>
-                  Warning
-                </Badge>
-              </div>
-            </div>
-          </section>
-
-          {/* ========== SIZES ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Sizes</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Two sizes available for different contexts.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <Badge variant="filled" color="brand" size="sm">Small</Badge>
-                <Badge variant="filled" color="brand" size="md">Medium</Badge>
-              </div>
+              <h3 style={sharedStyles.cardTitle}>Variant Styles</h3>
+              <SpecTable
+                headers={['Variant', 'Background', 'Border', 'Use Case']}
+                rows={[
+                  ['filled', 'Solid color', 'Same as background', 'High emphasis, primary status'],
+                  ['outlined', 'Transparent', 'Color border', 'Medium emphasis, categories'],
+                  ['subtle', 'Tinted color', 'None', 'Low emphasis, tags & filters'],
+                ]}
+              />
             </div>
           </section>
 

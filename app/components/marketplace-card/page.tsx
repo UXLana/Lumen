@@ -195,158 +195,32 @@ export default function MarketplaceCardPage() {
             </div>
           </section>
 
-          {/* ========== VARIANTS ========== */}
+          {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Variants</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Three layout variants for different contexts and screen sizes.
-            </p>
+            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
 
-            {/* Default Variant */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Default (with Hero Image)</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Full card with hero image area. Best for grid layouts and featured apps.
-              </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-                {sampleApps.slice(0, 2).map((app, i) => (
-                  <MarketplaceCard
-                    key={i}
-                    variant="default"
-                    {...app}
-                    status={i === 0 ? 'installed' : 'uninstalled'}
-                    onClick={() => {}}
-                  />
-                ))}
-              </div>
+              <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Variant Specifications</h3>
+              <SpecTable
+                headers={['Variant', 'Use Case', 'Features']}
+                rows={[
+                  ['default', 'Grid layouts, featured apps', 'Hero image, full details, large footprint'],
+                  ['compact', 'Sidebars, smaller containers', 'No hero image, denser information'],
+                  ['horizontal', 'Lists, search results', 'Row layout, minimal height'],
+                ]}
+              />
             </div>
 
-            {/* Compact Variant */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Compact</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                No hero image, more information density. Good for sidebars and smaller spaces.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '500px' }}>
-                {sampleApps.map((app, i) => (
-                  <MarketplaceCard
-                    key={i}
-                    variant="compact"
-                    {...app}
-                    status={i === 0 ? 'installed' : i === 1 ? 'update-available' : 'uninstalled'}
-                    onClick={() => {}}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Horizontal Variant */}
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Horizontal (List Item)</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Minimal, row-based layout for lists and tables.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {sampleApps.map((app, i) => (
-                  <MarketplaceCard
-                    key={i}
-                    variant="horizontal"
-                    {...app}
-                    status={i === 0 ? 'installed' : i === 1 ? 'update-available' : 'uninstalled'}
-                    onClick={() => {}}
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* ========== STATUS STATES ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Status States</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Cards display different status badges based on installation state.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
-                <div>
-                  <h4 style={{ ...typography.label.md, marginBottom: '12px' }}>Installed</h4>
-                  <MarketplaceCard
-                    variant="compact"
-                    name="App Name"
-                    description="App description text..."
-                    publisher="Publisher"
-                    category="Category"
-                    rating={4.5}
-                    status="installed"
-                    isVerified
-                    onClick={() => {}}
-                  />
-                </div>
-                <div>
-                  <h4 style={{ ...typography.label.md, marginBottom: '12px' }}>Uninstalled</h4>
-                  <MarketplaceCard
-                    variant="compact"
-                    name="App Name"
-                    description="App description text..."
-                    publisher="Publisher"
-                    category="Category"
-                    rating={4.5}
-                    status="uninstalled"
-                    isVerified
-                    onClick={() => {}}
-                  />
-                </div>
-                <div>
-                  <h4 style={{ ...typography.label.md, marginBottom: '12px' }}>Update Available</h4>
-                  <MarketplaceCard
-                    variant="compact"
-                    name="App Name"
-                    description="App description text..."
-                    publisher="Publisher"
-                    category="Category"
-                    rating={4.5}
-                    status="update-available"
-                    isVerified
-                    onClick={() => {}}
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ========== SELECTION STATE ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Selection State</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Cards can show a selected state for multi-select scenarios.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'flex', gap: '24px' }}>
-                <MarketplaceCard
-                  variant="horizontal"
-                  name="Selected App"
-                  description="This app is selected"
-                  publisher="Publisher"
-                  category="Category"
-                  rating={4.5}
-                  status="installed"
-                  isVerified
-                  selected
-                  onClick={() => {}}
-                />
-                <MarketplaceCard
-                  variant="horizontal"
-                  name="Unselected App"
-                  description="This app is not selected"
-                  publisher="Publisher"
-                  category="Category"
-                  rating={4.0}
-                  status="uninstalled"
-                  onClick={() => {}}
-                />
-              </div>
+              <h3 style={sharedStyles.cardTitle}>Status Badges</h3>
+              <SpecTable
+                headers={['Status', 'Badge Style', 'Color']}
+                rows={[
+                  ['installed', 'Subtle Success', 'Green tint'],
+                  ['uninstalled', 'Outlined Neutral', 'Gray border'],
+                  ['update-available', 'Subtle Info', 'Blue tint'],
+                ]}
+              />
             </div>
           </section>
         </>
