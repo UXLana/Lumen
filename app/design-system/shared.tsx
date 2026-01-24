@@ -27,6 +27,7 @@ import {
   IconIcons,
   IconBadge,
   IconLayoutCard,
+  IconListItem,
   IconChevronRight,
 } from '@/components/Icons'
 
@@ -67,6 +68,7 @@ const iconMap: Record<string, React.FC> = {
   badge: () => <IconBadge size="md" />,
   banner: () => <IconBanner size="md" />,
   button: () => <IconButton size="md" />,
+  'list-item': () => <IconListItem size="md" />,
   'marketplace-card': () => <IconLayoutCard size="md" />,
   'segmented-control': IconSegmentedControl,
   tab: () => <IconTab size="md" />,
@@ -100,6 +102,7 @@ export const navSections = [
       { id: 'badge', label: 'Badge', href: '/components/badge' },
       { id: 'banner', label: 'Banner', href: '/components/banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
+      { id: 'list-item', label: 'List Item', href: '/components/list-item' },
       { id: 'marketplace-card', label: 'Marketplace Card', href: '/components/marketplace-card' },
       { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
@@ -278,6 +281,7 @@ export const sharedStyles = {
 
   main: {
     padding: '40px 0',
+    maxWidth: '1400px',
   },
   
   section: {
@@ -657,15 +661,71 @@ interface PillButtonProps {
   style?: React.CSSProperties
 }
 
+// Styled Checkbox component matching design system
+interface StyledCheckboxProps {
+  checked: boolean
+  onChange: (checked: boolean) => void
+  label: string
+  disabled?: boolean
+}
+
+export function StyledCheckbox({ checked, onChange, label, disabled = false }: StyledCheckboxProps) {
+  return (
+    <label style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      opacity: disabled ? 0.5 : 1,
+    }}>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        disabled={disabled}
+        style={{
+          position: 'absolute',
+          opacity: 0,
+          width: 0,
+          height: 0,
+        }}
+      />
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect
+          x="2"
+          y="2"
+          width="16"
+          height="16"
+          rx="4"
+          stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.primary : 'rgba(0, 0, 0, 0.6)'}
+          strokeWidth="2"
+          fill={checked ? colors.brand.primary : 'transparent'}
+        />
+        {checked && (
+          <path
+            d="M6 10L9 13L14 7"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        )}
+      </svg>
+      <span style={typography.body.sm}>{label}</span>
+    </label>
+  )
+}
+
 export function PillButton({ children, isActive = false, onClick, style }: PillButtonProps) {
   return (
     <button
       onClick={onClick}
       style={{
         padding: '8px 16px',
-        border: `1px solid ${isActive ? colors.brand.primary : colors.border.light}`,
+        border: isActive ? 'none' : `1px solid ${colors.border.light}`,
         borderRadius: '9999px', // Full pill shape
-        background: isActive ? colors.primary[50] : 'white',
+        background: isActive ? colors.brand.primary : 'white',
+        color: isActive ? 'white' : colors.text.highEmphasis,
         cursor: 'pointer',
         ...typography.label.sm,
         transition: transitionPresets.default,

@@ -7,10 +7,33 @@ import {
   typography,
   borderRadius,
   shadows,
-  zIndex,
+  spacing,
+  fontFamilies,
   transitionPresets,
 } from '@/styles/design-tokens'
-import { Avatar, AvatarGroup, Button, Tab, TabBar, Banner, Badge, SegmentedControl, MarketplaceCard } from '@/components'
+import { Avatar, AvatarGroup, Button, Tab, TabBar, Banner, Badge, SegmentedControl, MarketplaceCard, ListItem, List } from '@/components'
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+type TabId = 'foundations' | 'components' | 'patterns' | 'resources'
+
+type FoundationItem = {
+  id: string
+  title: string
+  description: string
+  icon: string
+  href: string
+}
+
+type ComponentItem = {
+  id: string
+  title: string
+  description: string
+  href: string
+  preview: React.ReactNode
+}
 
 // =============================================================================
 // STYLES
@@ -23,49 +46,49 @@ const styles = {
   },
 
   hero: {
-    background: 'linear-gradient(135deg, #13352C 0%, #1A5C4A 50%, #3B9B7E 100%)',
-    padding: '24px 24px',
+    background: `linear-gradient(135deg, ${colors.brand.primary} 0%, ${colors.primary[600]} 50%, ${colors.primary[300]} 100%)`,
+    padding: spacing[6],
     borderRadius: borderRadius.lg,
-    margin: '0',
+    margin: spacing[0],
   },
 
   heroTitle: {
     ...typography.heading.h2,
     fontWeight: 700,
-    color: '#FFFFFF',
-    marginBottom: '8px',
+    color: colors.text.highEmphasisOnDark,
+    marginBottom: spacing[2],
   },
 
   heroSubtitle: {
     ...typography.body.md,
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: colors.text.mediumEmphasisOnDark,
     maxWidth: '600px',
-    margin: '0',
+    margin: spacing[0],
   },
   
   pageWrapper: {
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: '24px',
+    padding: spacing[6],
   },
 
   content: {
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: '40px 0',
+    padding: `${spacing[10]} ${spacing[0]}`,
   },
 
   tabsContainer: {
     display: 'flex',
-    gap: '8px',
-    marginTop: '24px',
+    gap: spacing[2],
+    marginTop: spacing[6],
     borderBottom: `1px solid ${colors.border.light}`,
-    paddingBottom: '0',
+    paddingBottom: spacing[0],
   },
 
   tab: {
     ...typography.label.md,
-    padding: '12px 16px',
+    padding: `${spacing[3]} ${spacing[4]}`,
     color: colors.text.mediumEmphasis,
     background: 'transparent',
     border: 'none',
@@ -83,20 +106,27 @@ const styles = {
   sectionTitle: {
     ...typography.heading.h3,
     color: colors.text.highEmphasis,
-    marginBottom: '24px',
+    marginBottom: spacing[6],
   },
   
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '24px',
-    marginBottom: '64px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: spacing[6],
+    marginBottom: spacing[16],
+  },
+  
+  gridTwoColumns: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gap: spacing[6],
+    marginBottom: spacing[16],
   },
   
   card: {
     background: colors.background.default,
     borderRadius: borderRadius.lg,
-    padding: '24px',
+    padding: spacing[6],
     boxShadow: shadows.sm,
     border: `1px solid ${colors.border.light}`,
     textDecoration: 'none',
@@ -104,22 +134,27 @@ const styles = {
     display: 'block',
   },
   
+  cardHover: {
+    boxShadow: shadows.md,
+    transform: 'translateY(-2px)',
+  },
+  
   cardIcon: {
-    width: '48px',
-    height: '48px',
+    width: spacing[12],
+    height: spacing[12],
     borderRadius: borderRadius.md,
     background: colors.primary[50],
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '24px',
-    marginBottom: '16px',
+    fontSize: spacing[6],
+    marginBottom: spacing[4],
   },
   
   cardTitle: {
     ...typography.heading.h5,
     color: colors.text.highEmphasis,
-    marginBottom: '8px',
+    marginBottom: spacing[2],
   },
   
   cardDescription: {
@@ -138,9 +173,14 @@ const styles = {
     transition: transitionPresets.default,
   },
   
+  componentCardHover: {
+    boxShadow: shadows.md,
+    transform: 'translateY(-2px)',
+  },
+  
   componentPreview: {
     background: colors.neutral[50],
-    padding: '32px',
+    padding: spacing[8],
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -148,13 +188,13 @@ const styles = {
   },
   
   componentInfo: {
-    padding: '20px',
+    padding: spacing[5],
   },
   
   componentTitle: {
     ...typography.label.lg,
     color: colors.text.highEmphasis,
-    marginBottom: '4px',
+    marginBottom: spacing[1],
   },
   
   componentDescription: {
@@ -167,7 +207,7 @@ const styles = {
 // DATA
 // =============================================================================
 
-const foundationItems = [
+const foundationItems: FoundationItem[] = [
   {
     id: 'colors',
     title: 'Colors',
@@ -219,14 +259,14 @@ const foundationItems = [
   },
 ]
 
-const componentItems = [
+const componentItems: ComponentItem[] = [
   {
     id: 'avatar',
     title: 'Avatar',
     description: 'User representation with image or initials',
     href: '/components/avatar',
     preview: (
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: spacing[3], alignItems: 'center' }}>
         <Avatar src="https://i.pravatar.cc/150?img=1" name="User" size="lg" />
         <Avatar name="Jane Smith" size="lg" color={3} />
         <AvatarGroup
@@ -247,7 +287,7 @@ const componentItems = [
     description: 'Interactive buttons with multiple emphasis levels',
     href: '/components/button',
     preview: (
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: spacing[3], alignItems: 'center' }}>
         <Button emphasis="high">Primary</Button>
         <Button emphasis="mid">Secondary</Button>
         <Button emphasis="low">Tertiary</Button>
@@ -267,7 +307,7 @@ const componentItems = [
           { id: '3', label: 'Settings' },
         ]}
         activeTab="1"
-        onTabChange={() => {}}
+        onTabChange={() => {}} // Preview only - no action needed
       />
     ),
   },
@@ -294,7 +334,7 @@ const componentItems = [
     description: 'Status indicators with semantic colors',
     href: '/components/badge',
     preview: (
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: spacing[2], alignItems: 'center', flexWrap: 'wrap' }}>
         <Badge color="success" variant="subtle">Installed</Badge>
         <Badge color="info" variant="subtle">Update Available</Badge>
         <Badge color="neutral" variant="outlined">Uninstalled</Badge>
@@ -314,9 +354,34 @@ const componentItems = [
           { id: 'code', label: 'Code' },
         ]}
         value="preview"
-        onChange={() => {}}
+        onChange={() => {}} // Preview only - no action needed
         size="md"
       />
+    ),
+  },
+  {
+    id: 'list-item',
+    title: 'List Item',
+    description: 'Versatile list items for menus and selections',
+    href: '/components/list-item',
+    preview: (
+      <div style={{ width: '100%', maxWidth: '320px' }}>
+        <List aria-label="Example list">
+          <ListItem
+            primary="Primary text"
+            secondary="Secondary text"
+            leftType="avatar"
+            avatarProps={{ name: "John Doe" }}
+          />
+          <ListItem
+            primary="With icon"
+            secondary="Icon on the left"
+            leftType="icon"
+            icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>}
+            divider
+          />
+        </List>
+      </div>
     ),
   },
   {
@@ -344,13 +409,15 @@ const componentItems = [
 // =============================================================================
 
 export default function StyleGuidePage() {
-  const [activeTab, setActiveTab] = React.useState('foundations')
+  const [activeTab, setActiveTab] = React.useState<TabId>('foundations')
+  const [hoveredCard, setHoveredCard] = React.useState<string | null>(null)
+  const [hoveredComponentCard, setHoveredComponentCard] = React.useState<string | null>(null)
 
   const tabs = [
-    { id: 'foundations', label: 'Foundations' },
-    { id: 'components', label: 'Components' },
-    { id: 'patterns', label: 'Patterns' },
-    { id: 'resources', label: 'Resources' },
+    { id: 'foundations' as TabId, label: 'Foundations' },
+    { id: 'components' as TabId, label: 'Components' },
+    { id: 'patterns' as TabId, label: 'Patterns' },
+    { id: 'resources' as TabId, label: 'Resources' },
   ]
 
   return (
@@ -366,10 +433,14 @@ export default function StyleGuidePage() {
         </header>
 
         {/* Tabs - Outside the header */}
-        <nav style={styles.tabsContainer}>
+        <nav style={styles.tabsContainer} role="tablist" aria-label="Design system sections">
           {tabs.map((tab) => (
             <button
               key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              aria-controls={`${tab.id}-panel`}
+              id={`${tab.id}-tab`}
               style={{
                 ...styles.tab,
                 ...(activeTab === tab.id ? styles.tabActive : {}),
@@ -385,22 +456,23 @@ export default function StyleGuidePage() {
         <main style={styles.content}>
           {/* Foundations Tab */}
           {activeTab === 'foundations' && (
-            <section>
+            <section
+              id="foundations-panel"
+              role="tabpanel"
+              aria-labelledby="foundations-tab"
+            >
               <h2 style={styles.sectionTitle}>Foundations</h2>
               <div style={styles.grid}>
                 {foundationItems.map((item) => (
                   <Link
                     key={item.id}
                     href={item.href}
-                    style={styles.card}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = shadows.md
-                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    style={{
+                      ...styles.card,
+                      ...(hoveredCard === item.id ? styles.cardHover : {}),
                     }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = shadows.sm
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}
+                    onMouseEnter={() => setHoveredCard(item.id)}
+                    onMouseLeave={() => setHoveredCard(null)}
                   >
                     <div style={styles.cardIcon}>{item.icon}</div>
                     <h3 style={styles.cardTitle}>{item.title}</h3>
@@ -413,22 +485,23 @@ export default function StyleGuidePage() {
 
           {/* Components Tab */}
           {activeTab === 'components' && (
-            <section>
+            <section
+              id="components-panel"
+              role="tabpanel"
+              aria-labelledby="components-tab"
+            >
               <h2 style={styles.sectionTitle}>Components</h2>
-              <div style={{ ...styles.grid, gridTemplateColumns: 'repeat(2, 1fr)' }}>
+              <div style={styles.gridTwoColumns}>
                 {componentItems.map((item) => (
                   <Link
                     key={item.id}
                     href={item.href}
-                    style={styles.componentCard}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = shadows.md
-                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    style={{
+                      ...styles.componentCard,
+                      ...(hoveredComponentCard === item.id ? styles.componentCardHover : {}),
                     }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = shadows.sm
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}
+                    onMouseEnter={() => setHoveredComponentCard(item.id)}
+                    onMouseLeave={() => setHoveredComponentCard(null)}
                   >
                     <div style={styles.componentPreview}>
                       {item.preview}
@@ -445,15 +518,19 @@ export default function StyleGuidePage() {
 
           {/* Patterns Tab */}
           {activeTab === 'patterns' && (
-            <section>
+            <section
+              id="patterns-panel"
+              role="tabpanel"
+              aria-labelledby="patterns-tab"
+            >
               <h2 style={styles.sectionTitle}>Patterns</h2>
               <div style={{
                 ...styles.card,
                 textAlign: 'center' as const,
-                padding: '64px 24px',
+                padding: `${spacing[16]} ${spacing[6]}`,
               }}>
-                <div style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.3 }}>+</div>
-                <h3 style={{ ...styles.cardTitle, marginBottom: '8px' }}>Coming Soon</h3>
+                <div style={{ fontSize: spacing[12], marginBottom: spacing[4], opacity: 0.3 }}>+</div>
+                <h3 style={{ ...styles.cardTitle, marginBottom: spacing[2] }}>Coming Soon</h3>
                 <p style={styles.cardDescription}>
                   Design patterns and best practices for common UI scenarios.
                 </p>
@@ -463,16 +540,19 @@ export default function StyleGuidePage() {
 
           {/* Resources Tab */}
           {activeTab === 'resources' && (
-            <section>
+            <section
+              id="resources-panel"
+              role="tabpanel"
+              aria-labelledby="resources-tab"
+            >
               <h2 style={styles.sectionTitle}>Resources</h2>
               <div style={styles.card}>
-                <h3 style={{ ...styles.cardTitle, marginBottom: '16px' }}>Quick Start</h3>
+                <h3 style={{ ...styles.cardTitle, marginBottom: spacing[4] }}>Quick Start</h3>
                 <pre style={{
                   background: colors.neutral[100],
-                  padding: '20px',
+                  padding: spacing[5],
                   borderRadius: borderRadius.md,
-                  fontSize: '13px',
-                  fontFamily: '"JetBrains Mono", monospace',
+                  ...typography.code.sm,
                   overflow: 'auto',
                 }}>
 {`// Import design tokens

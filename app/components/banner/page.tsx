@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
 import { Banner, BannerVariant, BannerSurface, BannerButtonAlignment } from '@/components'
 import { colors, typography, spacing, borderRadius, bannerIcon } from '@/styles/design-tokens'
 
@@ -277,20 +277,16 @@ export default function BannerPage() {
 
                     {/* Toggles */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {[
-                        { label: 'Dismissible', value: demoDismissible, setter: setDemoDismissible },
-                        { label: 'On Dark Background', value: demoOnDark, setter: setDemoOnDark },
-                      ].map(({ label, value, setter }) => (
-                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                          <input
-                            type="checkbox"
-                            checked={value}
-                            onChange={(e) => setter(e.target.checked)}
-                            style={{ width: '16px', height: '16px' }}
-                          />
-                          <span style={{ ...typography.label.sm }}>{label}</span>
-                        </label>
-                      ))}
+                      <StyledCheckbox
+                        checked={demoDismissible}
+                        onChange={setDemoDismissible}
+                        label="Dismissible"
+                      />
+                      <StyledCheckbox
+                        checked={demoOnDark}
+                        onChange={setDemoOnDark}
+                        label="On Dark Background"
+                      />
                     </div>
                   </div>
                 </div>

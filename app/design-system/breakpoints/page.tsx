@@ -26,51 +26,20 @@ export default function BreakpointsPage() {
       <section style={sharedStyles.section}>
         <h2 style={sharedStyles.sectionTitle}>Breakpoints</h2>
         <p style={sharedStyles.sectionDescription}>
-          Responsive breakpoints for adaptive layouts across device sizes.
+          Responsive breakpoints for adaptive layouts across device sizes. Each breakpoint represents the minimum width where styles apply.
         </p>
-        
-        <div style={sharedStyles.card}>
-          <div style={{ position: 'relative', height: '120px', background: colors.neutral[100], borderRadius: borderRadius.md, overflow: 'hidden' }}>
-            {Object.entries(breakpoints).map(([name, value], index) => {
-              const width = parseInt(value)
-              const maxWidth = 1536
-              const percentage = (width / maxWidth) * 100
-              const hue = 150 + (index * 30)
-              
-              return (
-                <div key={name} style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  width: `${percentage}%`,
-                  height: `${20 + (index * 15)}px`,
-                  background: `hsl(${hue}, 50%, 45%)`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  paddingRight: '8px',
-                  color: 'white',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                }}>
-                  {name}: {value}
-                </div>
-              )
-            })}
-          </div>
-        </div>
         
         <div style={sharedStyles.card}>
           <h3 style={sharedStyles.cardTitle}>Specifications</h3>
           <SpecTable
-            headers={['Token', 'Value', 'Target Devices']}
+            headers={['Token', 'Min Width', 'Target Devices', 'Common Use']}
             rows={[
-              [<code>breakpoints.xs</code>, breakpoints.xs, 'Small phones'],
-              [<code>breakpoints.sm</code>, breakpoints.sm, 'Large phones'],
-              [<code>breakpoints.md</code>, breakpoints.md, 'Tablets (portrait)'],
-              [<code>breakpoints.lg</code>, breakpoints.lg, 'Tablets (landscape), small laptops'],
-              [<code>breakpoints.xl</code>, breakpoints.xl, 'Desktops'],
-              [<code>breakpoints.2xl</code>, breakpoints['2xl'], 'Large desktops'],
+              [<code key="xs">breakpoints.xs</code>, breakpoints.xs, 'Small phones', 'Base mobile styles'],
+              [<code key="sm">breakpoints.sm</code>, breakpoints.sm, 'Large phones', 'Expanded mobile layouts'],
+              [<code key="md">breakpoints.md</code>, breakpoints.md, 'Tablets (portrait)', 'Two-column layouts'],
+              [<code key="lg">breakpoints.lg</code>, breakpoints.lg, 'Tablets (landscape), laptops', 'Desktop navigation, sidebars'],
+              [<code key="xl">breakpoints.xl</code>, breakpoints.xl, 'Desktops', 'Full desktop experience'],
+              [<code key="2xl">breakpoints['2xl']</code>, breakpoints['2xl'], 'Large desktops', 'Extra wide layouts'],
             ]}
           />
         </div>

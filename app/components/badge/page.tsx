@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
 import { Badge, BadgeVariant, BadgeColor, BadgeSize } from '@/components'
 import { IconCheck, IconAlertCircle, IconInfo } from '@/components/Icons'
 import { colors, typography } from '@/styles/design-tokens'
@@ -96,6 +96,7 @@ export default function BadgePage() {
 >
   Label
 </Badge>`}
+                    previewPadding="56px 24px"
                     previewBackground={colors.neutral[50]}
                   />
                 </div>
@@ -159,15 +160,11 @@ export default function BadgePage() {
                     </div>
 
                     {/* Icon Toggle */}
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input
-                        type="checkbox"
-                        checked={demoShowIcon}
-                        onChange={(e) => setDemoShowIcon(e.target.checked)}
-                        style={{ width: '16px', height: '16px' }}
-                      />
-                      <span style={{ ...typography.label.sm }}>Show Icon</span>
-                    </label>
+                    <StyledCheckbox
+                      checked={demoShowIcon}
+                      onChange={setDemoShowIcon}
+                      label="Show Icon"
+                    />
                   </div>
                 </div>
               </div>

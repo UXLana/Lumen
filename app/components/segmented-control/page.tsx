@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
 import { SegmentedControl, SegmentItem, SegmentedControlSize } from '@/components'
 import { colors, typography, borderRadius } from '@/styles/design-tokens'
 
@@ -109,7 +109,7 @@ export default function SegmentedControlPage() {
   size="${demoSize}"${demoFullWidth ? '\n  fullWidth' : ''}${demoOnDark ? '\n  onDark' : ''}
 />`}
                     previewBackground={demoOnDark ? colors.brand.primary : colors.neutral[50]}
-                    previewPadding="32px"
+                    previewPadding="56px 24px"
                     previewMinHeight="100px"
                   />
                 </div>
@@ -138,20 +138,16 @@ export default function SegmentedControlPage() {
 
                     {/* Toggles */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      {[
-                        { label: 'Full Width', value: demoFullWidth, setter: setDemoFullWidth },
-                        { label: 'On Dark', value: demoOnDark, setter: setDemoOnDark },
-                      ].map(({ label, value, setter }) => (
-                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                          <input
-                            type="checkbox"
-                            checked={value}
-                            onChange={(e) => setter(e.target.checked)}
-                            style={{ width: '16px', height: '16px' }}
-                          />
-                          <span style={{ ...typography.label.sm }}>{label}</span>
-                        </label>
-                      ))}
+                      <StyledCheckbox
+                        checked={demoFullWidth}
+                        onChange={setDemoFullWidth}
+                        label="Full Width"
+                      />
+                      <StyledCheckbox
+                        checked={demoOnDark}
+                        onChange={setDemoOnDark}
+                        label="On Dark"
+                      />
                     </div>
                   </div>
                 </div>

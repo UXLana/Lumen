@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
 import { MarketplaceCard, MarketplaceAppStatus, MarketplaceCardVariant } from '@/components'
 import { colors, typography } from '@/styles/design-tokens'
 
@@ -124,6 +124,7 @@ export default function MarketplaceCardPage() {
   status="${demoStatus}"${demoVerified ? '\n  isVerified' : ''}${demoSelected ? '\n  selected' : ''}
   onClick={() => handleClick()}
 />`}
+                    previewPadding="56px 24px"
                     previewBackground={colors.neutral[100]}
                   />
                 </div>
@@ -170,24 +171,16 @@ export default function MarketplaceCardPage() {
 
                     {/* Toggles */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input
-                          type="checkbox"
-                          checked={demoVerified}
-                          onChange={(e) => setDemoVerified(e.target.checked)}
-                          style={{ width: '16px', height: '16px' }}
-                        />
-                        <span style={{ ...typography.label.sm }}>Verified</span>
-                      </label>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input
-                          type="checkbox"
-                          checked={demoSelected}
-                          onChange={(e) => setDemoSelected(e.target.checked)}
-                          style={{ width: '16px', height: '16px' }}
-                        />
-                        <span style={{ ...typography.label.sm }}>Selected</span>
-                      </label>
+                      <StyledCheckbox
+                        checked={demoVerified}
+                        onChange={setDemoVerified}
+                        label="Verified"
+                      />
+                      <StyledCheckbox
+                        checked={demoSelected}
+                        onChange={setDemoSelected}
+                        label="Selected"
+                      />
                     </div>
                   </div>
                 </div>

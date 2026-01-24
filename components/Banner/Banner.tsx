@@ -1,15 +1,13 @@
 'use client'
 
 import React, { forwardRef } from 'react'
+import { fontFamilies, banner, bannerIcon } from '@/styles/design-tokens'
 import {
-  colors,
-  typography,
-  spacing,
-  borderRadius,
-  fontFamilies,
-  transitionPresets,
-  banner,
-} from '@/styles/design-tokens'
+  IconInfoFilled,
+  IconSuccessFilled,
+  IconWarningFilled,
+  IconErrorFilled,
+} from '@/components/Icons'
 
 // =============================================================================
 // TYPES & CONTRACTS
@@ -17,7 +15,7 @@ import {
 
 /**
  * Banner variant based on semantic meaning
- * - info: Informational message (blue)
+ * - info: Informational message (blue/purple)
  * - success: Success or confirmation message (green)
  * - warning: Warning or caution message (orange)
  * - error: Error or critical message (red)
@@ -32,6 +30,26 @@ export type BannerVariant = 'info' | 'success' | 'warning' | 'error'
 export type BannerSize = 'md' | 'lg'
 
 /**
+ * Banner style options
+ * - inline: Rounded corners (16px border radius) with 2px outline
+ */
+export type BannerStyle = 'inline'
+
+/**
+ * Banner surface options (for playground only)
+ * - color: Colored background matching the variant
+ * - light: White/light background
+ */
+export type BannerSurface = 'color' | 'light'
+
+/**
+ * Button alignment options (for playground only)
+ * - side: Buttons aligned to the right of the content
+ * - below: Buttons positioned below the content
+ */
+export type BannerButtonAlignment = 'side' | 'below'
+
+/**
  * Banner component props
  */
 export interface BannerProps {
@@ -39,9 +57,15 @@ export interface BannerProps {
   variant?: BannerVariant
   /** Size of the banner */
   size?: BannerSize
-  /** Main title/heading */
+  /** Style of the banner (inline with rounded corners and outline) */
+  bannerStyle?: BannerStyle
+  /** Surface type - playground only (color or light background) */
+  surface?: BannerSurface
+  /** Button alignment - playground only (side or below) */
+  buttonAlignment?: BannerButtonAlignment
+  /** Main title/heading (displayed above children if provided) */
   title?: string
-  /** Description text */
+  /** Main content text */
   children?: React.ReactNode
   /** Icon to display on the left */
   icon?: React.ReactNode
@@ -49,116 +73,28 @@ export interface BannerProps {
   dismissible?: boolean
   /** Callback when banner is dismissed */
   onDismiss?: () => void
-  /** Action button(s) */
+  /** Primary action button */
+  primaryAction?: {
+    label: string
+    onClick: () => void
+  }
+  /** Secondary action button */
+  secondaryAction?: {
+    label: string
+    onClick: () => void
+  }
+  /** Legacy: Action button(s) - for backwards compatibility */
   actions?: React.ReactNode
+  /** Display on dark background */
+  onDark?: boolean
   /** Additional CSS class name */
   className?: string
   /** Additional inline styles */
   style?: React.CSSProperties
 }
 
-// =============================================================================
-// ICONS
-// =============================================================================
-
 /**
- * Info icon (circle with "i")
- */
-export function InfoIcon({ size = 24, color = 'currentColor' }: { size?: number; color?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ flexShrink: 0 }}
-    >
-      <path
-        d="M12 16V12M12 8H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-/**
- * Success icon (checkmark in circle)
- */
-export function SuccessIcon({ size = 24, color = 'currentColor' }: { size?: number; color?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ flexShrink: 0 }}
-    >
-      <path
-        d="M9 12L11 14L15 10M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-/**
- * Warning icon (triangle with exclamation)
- */
-export function WarningIcon({ size = 24, color = 'currentColor' }: { size?: number; color?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ flexShrink: 0 }}
-    >
-      <path
-        d="M12 9V13M12 17H12.01M10.29 3.86L1.82 18C1.64537 18.3024 1.55296 18.6453 1.55199 18.9945C1.55101 19.3437 1.64151 19.6871 1.81442 19.9905C1.98733 20.2939 2.23672 20.5467 2.53771 20.7239C2.83869 20.9011 3.18109 20.9962 3.53 21H20.47C20.8189 20.9962 21.1613 20.9011 21.4623 20.7239C21.7633 20.5467 22.0127 20.2939 22.1856 19.9905C22.3585 19.6871 22.449 19.3437 22.448 18.9945C22.447 18.6453 22.3546 18.3024 22.18 18L13.71 3.86C13.5317 3.56611 13.2807 3.32312 12.9812 3.15448C12.6817 2.98585 12.3437 2.89725 12 2.89725C11.6563 2.89725 11.3183 2.98585 11.0188 3.15448C10.7193 3.32312 10.4683 3.56611 10.29 3.86Z"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-/**
- * Error icon (X in circle)
- */
-export function ErrorIcon({ size = 24, color = 'currentColor' }: { size?: number; color?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ flexShrink: 0 }}
-    >
-      <path
-        d="M10 14L12 12M12 12L14 10M12 12L10 10M12 12L14 14M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-/**
- * Close icon (X)
+ * Close icon (X) - exported for external use
  */
 export function CloseIcon({ size = 20, color = 'currentColor' }: { size?: number; color?: string }) {
   return (
@@ -181,52 +117,121 @@ export function CloseIcon({ size = 20, color = 'currentColor' }: { size?: number
   )
 }
 
+// Legacy icon exports for backwards compatibility
+export { IconInfoFilled as InfoIcon } from '@/components/Icons'
+export { IconSuccessFilled as SuccessIcon } from '@/components/Icons'
+export { IconWarningFilled as WarningIcon } from '@/components/Icons'
+export { IconErrorFilled as ErrorIcon } from '@/components/Icons'
+
 // =============================================================================
 // VARIANT STYLES
 // =============================================================================
 
 interface VariantStyle {
-  background: string
-  border: string
+  surface: string
+  divider: string
+  iconBackground: string
   icon: string
-  title: string
-  text: string
-  iconComponent: React.ComponentType<{ size?: number; color?: string }>
+  iconComponent: React.ComponentType<{ size?: number | 'sm' | 'md' | 'lg'; color?: string }>
 }
 
-const variantStyles: Record<BannerVariant, VariantStyle> = {
+// Map banner variants to their styles based on surface type
+const getVariantStyle = (variant: BannerVariant, surface: BannerSurface): VariantStyle => {
+  const colorStyles = banner.variantsColor
+  const lightStyles = banner.variantsLight
+
+  const iconComponents: Record<BannerVariant, React.ComponentType<{ size?: number | 'sm' | 'md' | 'lg'; color?: string }>> = {
+    info: IconInfoFilled,
+    success: IconSuccessFilled,
+    warning: IconWarningFilled,
+    error: IconErrorFilled,
+  }
+
+  const styles = surface === 'color' ? colorStyles : lightStyles
+
+  return {
+    surface: styles[variant].surface,
+    divider: styles[variant].divider,
+    iconBackground: styles[variant].iconBackground,
+    icon: styles[variant].icon,
+    iconComponent: iconComponents[variant],
+  }
+}
+
+// Dark mode variant styles
+const variantStylesOnDark: Record<BannerVariant, VariantStyle> = {
   info: {
-    background: banner.variants.info.background,
-    border: banner.variants.info.border,
-    icon: banner.variants.info.icon,
-    title: banner.variants.info.title,
-    text: banner.variants.info.text,
-    iconComponent: InfoIcon,
+    surface: 'rgba(122, 145, 255, 0.15)',
+    divider: 'rgba(122, 145, 255, 0.3)',
+    iconBackground: bannerIcon.variantsOnDark.information.background,
+    icon: bannerIcon.variantsOnDark.information.icon,
+    iconComponent: IconInfoFilled,
   },
   success: {
-    background: banner.variants.success.background,
-    border: banner.variants.success.border,
-    icon: banner.variants.success.icon,
-    title: banner.variants.success.title,
-    text: banner.variants.success.text,
-    iconComponent: SuccessIcon,
+    surface: 'rgba(0, 173, 130, 0.15)',
+    divider: 'rgba(0, 173, 130, 0.3)',
+    iconBackground: bannerIcon.variantsOnDark.success.background,
+    icon: bannerIcon.variantsOnDark.success.icon,
+    iconComponent: IconSuccessFilled,
   },
   warning: {
-    background: banner.variants.warning.background,
-    border: banner.variants.warning.border,
-    icon: banner.variants.warning.icon,
-    title: banner.variants.warning.title,
-    text: banner.variants.warning.text,
-    iconComponent: WarningIcon,
+    surface: 'rgba(230, 130, 0, 0.15)',
+    divider: 'rgba(230, 130, 0, 0.3)',
+    iconBackground: bannerIcon.variantsOnDark.warning.background,
+    icon: bannerIcon.variantsOnDark.warning.icon,
+    iconComponent: IconWarningFilled,
   },
   error: {
-    background: banner.variants.error.background,
-    border: banner.variants.error.border,
-    icon: banner.variants.error.icon,
-    title: banner.variants.error.title,
-    text: banner.variants.error.text,
-    iconComponent: ErrorIcon,
+    surface: 'rgba(248, 104, 118, 0.15)',
+    divider: 'rgba(248, 104, 118, 0.3)',
+    iconBackground: bannerIcon.variantsOnDark.important.background,
+    icon: bannerIcon.variantsOnDark.important.icon,
+    iconComponent: IconErrorFilled,
   },
+}
+
+// =============================================================================
+// ACTION BUTTON COMPONENT
+// =============================================================================
+
+interface ActionButtonProps {
+  label: string
+  onClick: () => void
+  onDark?: boolean
+}
+
+function ActionButton({ label, onClick, onDark = false }: ActionButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: `${banner.button.paddingY} ${banner.button.paddingX}`,
+        borderRadius: banner.button.borderRadius,
+        background: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+        fontFamily: fontFamilies.body,
+        fontSize: banner.button.typography.fontSize,
+        fontWeight: banner.button.typography.fontWeight,
+        lineHeight: banner.button.typography.lineHeight,
+        letterSpacing: banner.button.typography.letterSpacing,
+        color: onDark ? banner.text.actionOnDark : banner.text.action,
+        transition: banner.transition,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = onDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.04)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'transparent'
+      }}
+    >
+      {label}
+    </button>
+  )
 }
 
 // =============================================================================
@@ -236,11 +241,21 @@ const variantStyles: Record<BannerVariant, VariantStyle> = {
 /**
  * Banner component - displays important messages to users
  *
+ * Features filled icons with colored backgrounds matching the Figma design system.
+ * Supports light and dark modes, dismissible functionality, and action buttons.
+ *
  * @example
  * ```tsx
- * <Banner variant="info" title="New Feature Available">
- *   Check out our new dashboard redesign!
- * </Banner>
+ * // Basic usage
+ * <Banner variant="info" title="Example text" />
+ *
+ * // With actions
+ * <Banner
+ *   variant="warning"
+ *   title="Your subscription will expire in 7 days."
+ *   primaryAction={{ label: "Learn More", onClick: () => {} }}
+ *   secondaryAction={{ label: "Dismiss", onClick: () => {} }}
+ * />
  * ```
  */
 export const Banner = forwardRef<HTMLDivElement, BannerProps>(
@@ -248,19 +263,27 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
     {
       variant = 'info',
       size = 'md',
+      bannerStyle = 'inline',
+      surface = 'color',
+      buttonAlignment = 'side',
       title,
       children,
       icon,
       dismissible = false,
       onDismiss,
+      primaryAction,
+      secondaryAction,
       actions,
+      onDark = false,
       className = '',
       style = {},
       ...props
     },
     ref
   ) => {
-    const variantStyle = variantStyles[variant]
+    const variantStyle = onDark
+      ? variantStylesOnDark[variant]
+      : getVariantStyle(variant, surface)
     const IconComponent = variantStyle.iconComponent
 
     const [dismissed, setDismissed] = React.useState(false)
@@ -274,23 +297,81 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       return null
     }
 
-    const sizeTokens = banner.sizes[size]
-    const typographyTokens = banner.typography[size]
+    const hasActions = primaryAction || secondaryAction || actions
+    const isSideAlignment = buttonAlignment === 'side'
+    const isBelow = buttonAlignment === 'below'
 
+    // Icon container size (40px with 8px padding = 24px icon)
+    const iconContainerSize = 40
+
+    // Base container styles - matching Figma exactly
+    // Side alignment: 56px height, row layout, full width
+    // Below alignment: ~100px height, column layout
     const baseStyles: React.CSSProperties = {
+      position: 'relative',
       display: 'flex',
-      alignItems: 'flex-start',
-      gap: sizeTokens.gap,
-      padding: `${sizeTokens.paddingY} ${sizeTokens.paddingX}`,
-      background: variantStyle.background,
-      border: `${banner.border.width} solid ${variantStyle.border}`,
-      borderRadius: banner.border.radius,
+      flexDirection: isBelow ? 'column' : 'row',
+      alignItems: isBelow ? 'flex-start' : 'center',
+      width: '100%',
+      height: isBelow ? 'auto' : '56px',
+      minHeight: isBelow ? '100px' : '56px',
+      padding: '0',
+      paddingLeft: `${6 + iconContainerSize + 8}px`, // 6px left (8-2 for border) + icon (40px) + 8px gap = 54px
+      paddingRight: '6px', // 8px - 2px border
+      background: variantStyle.surface,
+      borderRadius: banner.border.radius.inline,
+      border: `2px solid ${variantStyle.divider}`,
+      opacity: 1,
       fontFamily: fontFamilies.body,
       transition: banner.transition,
+      boxSizing: 'border-box',
       ...style,
     }
 
-    const iconSize = parseInt(sizeTokens.iconSize)
+    // Icon container styles (positioned absolutely, vertically centered for side, top for below)
+    const iconContainerStyles: React.CSSProperties = {
+      position: 'absolute',
+      left: '6px', // 8px - 2px border
+      top: isBelow ? '6px' : '50%', // 8px - 2px border for below alignment
+      transform: isBelow ? 'none' : 'translateY(-50%)',
+      flexShrink: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: iconContainerSize,
+      height: iconContainerSize,
+      borderRadius: '16px',
+      background: variantStyle.iconBackground,
+    }
+
+    // Content area styles
+    const contentStyles: React.CSSProperties = {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      minWidth: 0,
+      paddingTop: isBelow ? '6px' : '0',
+      paddingBottom: isBelow ? '6px' : '0',
+      paddingRight: isBelow ? '6px' : '0',
+    }
+
+    // Actions container styles
+    const actionsContainerStyles: React.CSSProperties = {
+      display: 'flex',
+      alignItems: 'center',
+      gap: banner.spacing.actionGap,
+      flexShrink: 0,
+      ...(isBelow
+        ? {
+            justifyContent: 'flex-end',
+            width: '100%',
+            paddingRight: '8px',
+            paddingBottom: '8px',
+          }
+        : {}),
+    }
 
     return (
       <div
@@ -301,21 +382,25 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
         style={baseStyles}
         {...props}
       >
-        {/* Icon */}
-        <div style={{ flexShrink: 0, marginTop: banner.spacing.iconMarginTop }}>
-          {icon || <IconComponent size={iconSize} color={variantStyle.icon} />}
-        </div>
+        {/* Icon with background container (positioned absolutely) */}
+        {icon ? (
+          <div style={{ ...iconContainerStyles, padding: 0 }}>{icon}</div>
+        ) : (
+          <div style={iconContainerStyles}>
+            <IconComponent size="md" color={variantStyle.icon} />
+          </div>
+        )}
 
         {/* Content */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={contentStyles}>
           {title && (
             <div
               style={{
-                fontSize: typographyTokens.title.fontSize,
-                fontWeight: typographyTokens.title.fontWeight,
-                lineHeight: typographyTokens.title.lineHeight,
-                letterSpacing: typographyTokens.title.letterSpacing,
-                color: variantStyle.title,
+                fontSize: '16px',
+                fontWeight: 400,
+                lineHeight: '24px',
+                letterSpacing: '0.15px',
+                color: onDark ? banner.text.primaryOnDark : banner.text.primary,
                 marginBottom: children ? banner.spacing.titleMarginBottom : 0,
               }}
             >
@@ -325,22 +410,41 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
           {children && (
             <div
               style={{
-                fontSize: typographyTokens.description.fontSize,
-                fontWeight: typographyTokens.description.fontWeight,
-                lineHeight: typographyTokens.description.lineHeight,
-                letterSpacing: typographyTokens.description.letterSpacing,
-                color: variantStyle.text,
+                fontSize: '16px',
+                fontWeight: 400,
+                lineHeight: '24px',
+                letterSpacing: '0.15px',
+                color: onDark ? banner.text.primaryOnDark : banner.text.primary,
               }}
             >
               {children}
             </div>
           )}
-          {actions && (
-            <div style={{ marginTop: banner.spacing.actionsMarginTop, display: 'flex', gap: banner.spacing.actionGap }}>
-              {actions}
-            </div>
-          )}
         </div>
+
+        {/* Actions */}
+        {hasActions && (
+          <div style={actionsContainerStyles}>
+            {/* Legacy actions support */}
+            {actions}
+
+            {/* New action buttons */}
+            {secondaryAction && (
+              <ActionButton
+                label={secondaryAction.label}
+                onClick={secondaryAction.onClick}
+                onDark={onDark}
+              />
+            )}
+            {primaryAction && (
+              <ActionButton
+                label={primaryAction.label}
+                onClick={primaryAction.onClick}
+                onDark={onDark}
+              />
+            )}
+          </div>
+        )}
 
         {/* Dismiss button */}
         {dismissible && (
@@ -361,10 +465,11 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
               borderRadius: banner.dismiss.borderRadius,
               transition: banner.transition,
               opacity: banner.dismiss.opacity.default,
+              marginLeft: hasActions ? '8px' : '0',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.opacity = banner.dismiss.opacity.hover.toString()
-              e.currentTarget.style.background = banner.dismiss.background.hover
+              e.currentTarget.style.background = onDark ? 'rgba(255, 255, 255, 0.1)' : banner.dismiss.background.hover
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.opacity = banner.dismiss.opacity.default.toString()
@@ -374,6 +479,7 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
             <CloseIcon size={parseInt(banner.dismiss.iconSize)} color={variantStyle.icon} />
           </button>
         )}
+
       </div>
     )
   }

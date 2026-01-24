@@ -1,1 +1,5 @@
 export * from './Icons'
+export * from './IconInfoFilled'
+export * from './IconSuccessFilled'
+export * from './IconWarningFilled'
+export * from './IconErrorFilled'

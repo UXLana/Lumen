@@ -1,2 +1,9 @@
-export { Banner, InfoIcon, SuccessIcon, WarningIcon, ErrorIcon, CloseIcon } from './Banner'
-export type { BannerProps, BannerVariant, BannerSize } from './Banner'
+export { Banner, CloseIcon, InfoIcon, SuccessIcon, WarningIcon, ErrorIcon } from './Banner'
+export type {
+  BannerProps,
+  BannerVariant,
+  BannerSize,
+  BannerStyle,
+  BannerSurface,
+  BannerButtonAlignment,
+} from './Banner'

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
 import { Avatar, AvatarGroup, AvatarSize, AvatarColor } from '@/components'
 import { colors, typography, avatar, borderRadius } from '@/styles/design-tokens'
 
@@ -127,6 +127,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
   max={${maxVisible}}
   compact
 />`}
+                    previewPadding="56px 24px"
                     previewBackground={demoOnDark && avatarCount === 1 ? colors.brand.primary : colors.neutral[50]}
                   />
                 </div>
@@ -346,24 +347,16 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                         States
                       </label>
                       <div style={{ display: 'flex', gap: '24px' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                          <input
-                            type="checkbox"
-                            checked={demoFocused}
-                            onChange={(e) => setDemoFocused(e.target.checked)}
-                            style={{ width: '16px', height: '16px' }}
-                          />
-                          <span style={{ ...typography.body.sm }}>Focused</span>
-                        </label>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                          <input
-                            type="checkbox"
-                            checked={demoOnDark}
-                            onChange={(e) => setDemoOnDark(e.target.checked)}
-                            style={{ width: '16px', height: '16px' }}
-                          />
-                          <span style={{ ...typography.body.sm }}>On Dark</span>
-                        </label>
+                        <StyledCheckbox
+                          checked={demoFocused}
+                          onChange={setDemoFocused}
+                          label="Focused"
+                        />
+                        <StyledCheckbox
+                          checked={demoOnDark}
+                          onChange={setDemoOnDark}
+                          label="On Dark"
+                        />
                       </div>
                     </div>
                   </div>

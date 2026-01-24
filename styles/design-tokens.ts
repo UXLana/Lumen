@@ -1104,6 +1104,57 @@ export const tab = {
 } as const;
 
 // =============================================================================
+// BANNER ICON TOKENS (Contextual Banner Icons from Figma)
+// =============================================================================
+
+export const bannerIcon = {
+  // Size
+  size: '24px',
+  padding: '8px',
+  borderRadius: '16px',
+
+  // Variants - Light mode
+  variants: {
+    information: {
+      background: '#EBEFFF',
+      icon: '#6E61FF',
+    },
+    success: {
+      background: '#DEEDE9',
+      icon: '#1B7F66',
+    },
+    warning: {
+      background: '#F9ECDC',
+      icon: '#D17600',
+    },
+    important: {
+      background: '#FBE4E7',
+      icon: '#DC0C22',
+    },
+  },
+
+  // Variants - Dark mode (onDark)
+  variantsOnDark: {
+    information: {
+      background: 'rgba(122, 145, 255, 0.25)',
+      icon: '#7A91FF',
+    },
+    success: {
+      background: 'rgba(0, 173, 130, 0.25)',
+      icon: '#00AD82',
+    },
+    warning: {
+      background: 'rgba(230, 130, 0, 0.25)',
+      icon: '#E68200',
+    },
+    important: {
+      background: 'rgba(248, 104, 118, 0.25)',
+      icon: '#F86876',
+    },
+  },
+} as const;
+
+// =============================================================================
 // BANNER TOKENS
 // =============================================================================
 
@@ -1134,10 +1185,10 @@ export const banner = {
         letterSpacing: '0.1px',
       },
       description: {
-        fontSize: '14px',
+        fontSize: '16px',
         fontWeight: 400,
-        lineHeight: '20px',
-        letterSpacing: '0px',
+        lineHeight: '24px',
+        letterSpacing: '0.15px',
       },
     },
     lg: {
@@ -1151,12 +1202,68 @@ export const banner = {
         fontSize: '16px',
         fontWeight: 400,
         lineHeight: '24px',
-        letterSpacing: '0px',
+        letterSpacing: '0.15px',
       },
     },
   },
 
-  // Colors per variant (from Figma)
+  // Colors per variant - Color surface (from Figma)
+  variantsColor: {
+    info: {
+      surface: '#F4F6FF',
+      divider: '#D1D9FF',
+      iconBackground: '#EBEFFF',
+      icon: '#6E61FF',
+    },
+    success: {
+      surface: '#EDF6F4',
+      divider: '#C5E2DB',
+      iconBackground: '#DEEDE9',
+      icon: '#1B7F66',
+    },
+    warning: {
+      surface: '#FCF6ED',
+      divider: '#F2DABA',
+      iconBackground: '#F9ECDC',
+      icon: '#D17600',
+    },
+    error: {
+      surface: '#FDF2F3',
+      divider: '#F8CFD3',
+      iconBackground: '#FBE4E7',
+      icon: '#DC0C22',
+    },
+  },
+
+  // Colors per variant - Light surface (from Figma)
+  variantsLight: {
+    info: {
+      surface: '#FFFFFF',
+      divider: 'rgba(0, 0, 0, 0.15)',
+      iconBackground: '#EBEFFF',
+      icon: '#6E61FF',
+    },
+    success: {
+      surface: '#FFFFFF',
+      divider: 'rgba(0, 0, 0, 0.15)',
+      iconBackground: '#DEEDE9',
+      icon: '#1B7F66',
+    },
+    warning: {
+      surface: '#FFFFFF',
+      divider: 'rgba(0, 0, 0, 0.15)',
+      iconBackground: '#F9ECDC',
+      icon: '#D17600',
+    },
+    error: {
+      surface: '#FFFFFF',
+      divider: 'rgba(0, 0, 0, 0.15)',
+      iconBackground: '#FBE4E7',
+      icon: '#DC0C22',
+    },
+  },
+
+  // Legacy colors per variant (for backwards compatibility)
   variants: {
     info: {
       background: '#E3F2FD',
@@ -1188,18 +1295,51 @@ export const banner = {
     },
   },
 
+  // Text colors
+  text: {
+    primary: 'rgba(0, 0, 0, 0.95)',
+    action: '#0B1E19',
+    // On dark background text colors
+    primaryOnDark: 'rgba(255, 255, 255, 0.95)',
+    actionOnDark: 'rgba(255, 255, 255, 0.87)',
+  },
+
   // Spacing (from Figma)
   spacing: {
     titleMarginBottom: '4px',
     actionsMarginTop: '12px',
     actionGap: '8px',
     iconMarginTop: '2px',
+    iconContainerPadding: '8px',
+    contentPaddingLeft: '48px', // Icon container width (40px) + gap (8px)
   },
 
-  // Border (from Figma - 2px border requirement)
+  // Border (from Figma)
   border: {
-    width: '2px',
-    radius: '8px',
+    width: '1px',
+    radius: {
+      inline: '16px',
+      fullBleed: '0px',
+    },
+  },
+
+  // Icon container (from Figma)
+  iconContainer: {
+    size: '40px',
+    borderRadius: '16px',
+  },
+
+  // Button styles (from Figma)
+  button: {
+    paddingX: '8px',
+    paddingY: '6px',
+    borderRadius: '50px',
+    typography: {
+      fontSize: '14px',
+      fontWeight: 600,
+      lineHeight: '16px',
+      letterSpacing: '-0.35px',
+    },
   },
 
   // Dismiss button (from Figma)
@@ -1214,6 +1354,402 @@ export const banner = {
     background: {
       default: 'transparent',
       hover: 'rgba(0, 0, 0, 0.08)',
+    },
+  },
+
+  // Transition
+  transition: '200ms ease-out',
+} as const;
+
+// =============================================================================
+// SIDEBAR TOKENS
+// =============================================================================
+
+export const sidebar = {
+  // Sidebar dimensions
+  width: '200px',
+  collapsedWidth: '64px',
+
+  // Padding
+  padding: {
+    x: '12px',
+    y: '16px',
+  },
+
+  // Logo section
+  logo: {
+    height: '48px',
+    gap: '12px',
+  },
+
+  // Navigation item
+  navItem: {
+    height: '40px',
+    paddingX: '12px',
+    paddingY: '10px',
+    gap: '12px',
+    borderRadius: '8px',
+    iconSize: '20px',
+    typography: {
+      fontSize: '14px',
+      fontWeight: 500,
+      lineHeight: '20px',
+    },
+  },
+
+  // Section
+  section: {
+    marginTop: '24px',
+    labelMarginBottom: '8px',
+    labelTypography: {
+      fontSize: '12px',
+      fontWeight: 600,
+      lineHeight: '16px',
+      letterSpacing: '0.5px',
+      textTransform: 'uppercase' as const,
+    },
+  },
+
+  // Colors
+  colors: {
+    background: '#FFFFFF',
+    border: 'rgba(0, 0, 0, 0.08)',
+    item: {
+      default: {
+        background: 'transparent',
+        text: 'rgba(0, 0, 0, 0.70)',
+        icon: 'rgba(0, 0, 0, 0.50)',
+      },
+      hover: {
+        background: 'rgba(0, 0, 0, 0.04)',
+        text: 'rgba(0, 0, 0, 0.95)',
+        icon: 'rgba(0, 0, 0, 0.70)',
+      },
+      active: {
+        background: '#13352C',
+        text: '#FFFFFF',
+        icon: '#FFFFFF',
+      },
+    },
+    sectionLabel: 'rgba(0, 0, 0, 0.50)',
+  },
+
+  // Transition
+  transition: '200ms ease-out',
+} as const;
+
+// =============================================================================
+// HEADER TOKENS
+// =============================================================================
+
+export const header = {
+  // Dimensions
+  height: '64px',
+
+  // Padding
+  padding: {
+    x: '24px',
+    y: '12px',
+  },
+
+  // Search bar
+  search: {
+    width: '400px',
+    height: '40px',
+    paddingX: '16px',
+    paddingY: '10px',
+    borderRadius: '20px',
+    iconSize: '20px',
+    gap: '12px',
+    typography: {
+      fontSize: '14px',
+      fontWeight: 400,
+      lineHeight: '20px',
+    },
+    colors: {
+      background: '#F5F5F5',
+      backgroundFocus: '#FFFFFF',
+      border: 'transparent',
+      borderFocus: '#13352C',
+      placeholder: 'rgba(0, 0, 0, 0.50)',
+      text: 'rgba(0, 0, 0, 0.95)',
+      icon: 'rgba(0, 0, 0, 0.50)',
+    },
+  },
+
+  // Icon buttons
+  iconButton: {
+    size: '40px',
+    iconSize: '24px',
+    borderRadius: '8px',
+    colors: {
+      default: {
+        background: 'transparent',
+        icon: 'rgba(0, 0, 0, 0.70)',
+      },
+      hover: {
+        background: 'rgba(0, 0, 0, 0.04)',
+        icon: 'rgba(0, 0, 0, 0.95)',
+      },
+    },
+  },
+
+  // Organization dropdown
+  orgDropdown: {
+    height: '40px',
+    paddingX: '12px',
+    borderRadius: '8px',
+    gap: '8px',
+    typography: {
+      name: {
+        fontSize: '14px',
+        fontWeight: 500,
+        lineHeight: '20px',
+      },
+      label: {
+        fontSize: '12px',
+        fontWeight: 400,
+        lineHeight: '16px',
+      },
+    },
+  },
+
+  // Colors
+  colors: {
+    background: '#FFFFFF',
+    border: 'rgba(0, 0, 0, 0.08)',
+  },
+
+  // Transition
+  transition: '200ms ease-out',
+} as const;
+
+// =============================================================================
+// STATS CARD TOKENS
+// =============================================================================
+
+export const statsCard = {
+  // Dimensions
+  minWidth: '160px',
+  height: '88px',
+
+  // Padding
+  padding: {
+    x: '20px',
+    y: '16px',
+  },
+
+  // Icon
+  icon: {
+    size: '48px',
+    containerSize: '48px',
+    borderRadius: '12px',
+    background: '#F5F5F5',
+  },
+
+  // Typography
+  typography: {
+    label: {
+      fontSize: '14px',
+      fontWeight: 400,
+      lineHeight: '20px',
+      color: 'rgba(0, 0, 0, 0.60)',
+    },
+    value: {
+      fontSize: '28px',
+      fontWeight: 600,
+      lineHeight: '36px',
+      color: 'rgba(0, 0, 0, 0.95)',
+    },
+  },
+
+  // Spacing
+  gap: '16px',
+  contentGap: '4px',
+
+  // Colors
+  colors: {
+    background: '#F5F5F5',
+    border: 'rgba(0, 0, 0, 0.08)',
+  },
+
+  // Border
+  borderRadius: '12px',
+} as const;
+
+// =============================================================================
+// PRODUCT CARD TOKENS
+// =============================================================================
+
+export const productCard = {
+  // Dimensions
+  width: '100%',
+  minWidth: '280px',
+
+  // Image area
+  image: {
+    height: '160px',
+    background: '#F5F5F5',
+    borderRadius: '8px',
+    iconSize: '48px',
+    iconColor: 'rgba(0, 0, 0, 0.20)',
+  },
+
+  // Content area
+  content: {
+    padding: '16px',
+    gap: '8px',
+  },
+
+  // Typography
+  typography: {
+    brand: {
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: '16px',
+      color: 'rgba(0, 0, 0, 0.60)',
+    },
+    name: {
+      fontSize: '16px',
+      fontWeight: 600,
+      lineHeight: '24px',
+      color: 'rgba(0, 0, 0, 0.95)',
+    },
+    sku: {
+      fontSize: '12px',
+      fontWeight: 400,
+      lineHeight: '16px',
+      color: 'rgba(0, 0, 0, 0.50)',
+    },
+    marketLabel: {
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: '16px',
+      color: 'rgba(0, 0, 0, 0.60)',
+    },
+    marketCount: {
+      fontSize: '12px',
+      fontWeight: 400,
+      lineHeight: '16px',
+      color: 'rgba(0, 0, 0, 0.50)',
+    },
+  },
+
+  // Gap badge
+  gapBadge: {
+    height: '24px',
+    paddingX: '8px',
+    borderRadius: '12px',
+    background: 'rgba(0, 0, 0, 0.08)',
+    typography: {
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: '16px',
+      color: 'rgba(0, 0, 0, 0.70)',
+    },
+  },
+
+  // Tags
+  tags: {
+    gap: '8px',
+    marginTop: '12px',
+  },
+
+  // Markets
+  markets: {
+    marginTop: '12px',
+    gap: '8px',
+    badge: {
+      size: '28px',
+      fontSize: '11px',
+      fontWeight: 600,
+      borderRadius: '4px',
+      colors: {
+        default: {
+          background: '#F5F5F5',
+          text: 'rgba(0, 0, 0, 0.70)',
+        },
+        highlighted: {
+          background: '#78CFB8',
+          text: '#0B1E19',
+        },
+      },
+    },
+  },
+
+  // Border
+  border: {
+    width: '1px',
+    color: 'rgba(0, 0, 0, 0.08)',
+    radius: '12px',
+  },
+
+  // Hover state
+  hover: {
+    shadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    borderColor: 'rgba(0, 0, 0, 0.12)',
+  },
+
+  // Transition
+  transition: '200ms ease-out',
+} as const;
+
+// =============================================================================
+// PAGINATION TOKENS
+// =============================================================================
+
+export const pagination = {
+  // Container
+  height: '40px',
+  gap: '16px',
+
+  // Typography
+  typography: {
+    text: {
+      fontSize: '14px',
+      fontWeight: 400,
+      lineHeight: '20px',
+      color: 'rgba(0, 0, 0, 0.70)',
+    },
+    pageInfo: {
+      fontSize: '14px',
+      fontWeight: 500,
+      lineHeight: '20px',
+      color: 'rgba(0, 0, 0, 0.95)',
+    },
+  },
+
+  // Dropdown
+  dropdown: {
+    height: '32px',
+    paddingX: '12px',
+    borderRadius: '6px',
+    gap: '8px',
+    border: '1px solid rgba(0, 0, 0, 0.12)',
+    background: '#FFFFFF',
+  },
+
+  // Navigation buttons
+  navButton: {
+    size: '32px',
+    iconSize: '20px',
+    borderRadius: '6px',
+    colors: {
+      default: {
+        background: 'transparent',
+        icon: 'rgba(0, 0, 0, 0.50)',
+        border: 'rgba(0, 0, 0, 0.12)',
+      },
+      hover: {
+        background: 'rgba(0, 0, 0, 0.04)',
+        icon: 'rgba(0, 0, 0, 0.70)',
+        border: 'rgba(0, 0, 0, 0.20)',
+      },
+      disabled: {
+        background: 'transparent',
+        icon: 'rgba(0, 0, 0, 0.20)',
+        border: 'rgba(0, 0, 0, 0.08)',
+      },
     },
   },
 
@@ -1245,7 +1781,13 @@ export const theme = {
   avatar,
   button,
   tab,
+  bannerIcon,
   banner,
+  sidebar,
+  header,
+  statsCard,
+  productCard,
+  pagination,
 } as const;
 
 export type Theme = typeof theme;

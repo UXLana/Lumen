@@ -4,7 +4,8 @@ import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../shared'
 import { colors, borderRadius, fontFamilies } from '@/styles/design-tokens'
 import * as Icons from '@/components/Icons'
-import type { IconSize } from '@/components/Icons'
+import { BannerIcon } from '@/components/Icons'
+import type { IconSize, BannerIconVariant } from '@/components/Icons'
 
 // =============================================================================
 // ICON DATA - Organized by category
@@ -234,7 +235,7 @@ function IconCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'rgba(19, 53, 44, 0.95)',
+            background: colors.brand.primary,
             color: 'white',
             fontSize: '11px',
             fontWeight: 600,
@@ -367,15 +368,28 @@ export default function IconsPage() {
       onTabChange={setActiveTab}
       tabs={[
         { id: 'overview', label: 'Overview' },
-        { id: 'specs', label: 'Specifications' },
-        { id: 'code', label: 'Code' },
+        { id: 'implementation', label: 'Implementation' },
       ]}
     >
       {/* Overview Tab */}
       {activeTab === 'overview' && (
         <>
-          {/* Search */}
+          {/* Quick Start */}
           <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
+            <div style={{ maxWidth: '600px' }}>
+              <CodeBlock>{`import { IconHome, IconSettings, IconUser } from '@/components/Icons'`}</CodeBlock>
+            </div>
+          </section>
+
+          {/* Icon Library */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Icon Library</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Browse all {totalIcons} icons. Click any icon to copy its component name.
+            </p>
+
+            {/* Search */}
             <div
               style={{
                 display: 'flex',
@@ -458,12 +472,36 @@ export default function IconsPage() {
         </>
       )}
 
-      {/* Specs Tab */}
-      {activeTab === 'specs' && (
+      {/* Implementation Tab */}
+      {activeTab === 'implementation' && (
         <>
-          {/* Size Scale */}
+          {/* Usage */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Size Scale</h2>
+            <h2 style={sharedStyles.sectionTitle}>Usage</h2>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Import</h3>
+              <CodeBlock>{`import { IconHome, IconSettings, IconUser } from '@/components/Icons'
+import type { IconProps, IconSize } from '@/components/Icons'`}</CodeBlock>
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
+              <CodeBlock>{`function MyComponent() {
+  return (
+    <div>
+      <IconHome />
+      <IconSettings />
+      <IconUser />
+    </div>
+  )
+}`}</CodeBlock>
+            </div>
+          </section>
+
+          {/* Sizes */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Sizes</h2>
             <p style={sharedStyles.sectionDescription}>
               Icons are available in 6 preset sizes that map to the design system token scale.
             </p>
@@ -472,7 +510,8 @@ export default function IconsPage() {
               <SizeDemo />
             </div>
 
-            <div style={{ marginTop: '24px' }}>
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Size Tokens</h3>
               <SpecTable
                 headers={['Token', 'Size', 'Use Case']}
                 rows={[
@@ -484,6 +523,20 @@ export default function IconsPage() {
                   ['2xl', '48px', 'Empty states, onboarding, feature highlights'],
                 ]}
               />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Size Prop</h3>
+              <CodeBlock>{`// Using size tokens
+<IconStar size="xs" />  // 12px
+<IconStar size="sm" />  // 16px
+<IconStar size="md" />  // 20px (default)
+<IconStar size="lg" />  // 24px
+<IconStar size="xl" />  // 32px
+<IconStar size="2xl" /> // 48px
+
+// Using custom pixel value
+<IconStar size={18} />  // 18px`}</CodeBlock>
             </div>
           </section>
 
@@ -498,7 +551,8 @@ export default function IconsPage() {
               <StrokeDemo />
             </div>
 
-            <div style={{ marginTop: '24px' }}>
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Stroke Weights</h3>
               <SpecTable
                 headers={['Weight', 'Value', 'Use Case']}
                 rows={[
@@ -509,16 +563,132 @@ export default function IconsPage() {
                 ]}
               />
             </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Stroke Width Prop</h3>
+              <CodeBlock>{`<IconHeart strokeWidth={1} />    // Thin
+<IconHeart strokeWidth={1.5} />  // Default
+<IconHeart strokeWidth={2} />    // Medium
+<IconHeart strokeWidth={2.5} />  // Bold`}</CodeBlock>
+            </div>
           </section>
 
-          {/* Grid & ViewBox */}
+          {/* Banner Icons */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Technical Specifications</h2>
+            <h2 style={sharedStyles.sectionTitle}>Banner Icons</h2>
             <p style={sharedStyles.sectionDescription}>
-              All icons follow consistent technical specifications for scalability and alignment.
+              Status icons with colored circular backgrounds for use in banners, alerts, and notifications.
             </p>
 
             <div style={sharedStyles.card}>
+              <h3 style={{ ...sharedStyles.cardTitle, marginBottom: '16px' }}>Light Mode</h3>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '24px',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  marginBottom: '32px',
+                }}
+              >
+                {(['information', 'success', 'warning', 'important'] as BannerIconVariant[]).map((variant) => (
+                  <div
+                    key={variant}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <BannerIcon variant={variant} />
+                    <span style={{ fontSize: '12px', color: colors.text.mediumEmphasis, textTransform: 'capitalize' }}>
+                      {variant}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <h3 style={{ ...sharedStyles.cardTitle, marginBottom: '16px' }}>Dark Mode (onDark)</h3>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '24px',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  padding: '24px',
+                  background: colors.brand.primary,
+                  borderRadius: borderRadius.md,
+                }}
+              >
+                {(['information', 'success', 'warning', 'important'] as BannerIconVariant[]).map((variant) => (
+                  <div
+                    key={variant}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <BannerIcon variant={variant} onDark />
+                    <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', textTransform: 'capitalize' }}>
+                      {variant}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>BannerIcon Usage</h3>
+              <CodeBlock>{`import { BannerIcon } from '@/components/Icons'
+
+// Light mode variants
+<BannerIcon variant="information" />
+<BannerIcon variant="success" />
+<BannerIcon variant="warning" />
+<BannerIcon variant="important" />
+
+// Dark mode variants (for dark backgrounds)
+<BannerIcon variant="information" onDark />
+<BannerIcon variant="success" onDark />
+<BannerIcon variant="warning" onDark />
+<BannerIcon variant="important" onDark />`}</CodeBlock>
+            </div>
+          </section>
+
+          {/* Props */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Props</h2>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>IconProps</h3>
+              <SpecTable
+                headers={['Prop', 'Type', 'Default', 'Description']}
+                rows={[
+                  [<code key="size">size</code>, <code key="size-type">IconSize | number</code>, <code key="size-default">'md'</code>, 'Size of the icon'],
+                  [<code key="stroke">strokeWidth</code>, <code key="stroke-type">number</code>, <code key="stroke-default">1.5</code>, 'Stroke weight in pixels'],
+                  [<code key="label">label</code>, <code key="label-type">string</code>, '-', 'Accessible label for screen readers'],
+                  [<code key="class">className</code>, <code key="class-type">string</code>, '-', 'Additional CSS classes'],
+                  [<code key="style">style</code>, <code key="style-type">CSSProperties</code>, '-', 'Inline styles'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>BannerIconProps</h3>
+              <SpecTable
+                headers={['Prop', 'Type', 'Default', 'Description']}
+                rows={[
+                  [<code key="variant">variant</code>, <code key="variant-type">'information' | 'success' | 'warning' | 'important'</code>, '-', 'Status variant'],
+                  [<code key="onDark">onDark</code>, <code key="onDark-type">boolean</code>, <code key="onDark-default">false</code>, 'Use dark mode colors'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Technical Specifications</h3>
               <SpecTable
                 headers={['Property', 'Value', 'Notes']}
                 rows={[
@@ -532,63 +702,6 @@ export default function IconsPage() {
               />
             </div>
           </section>
-        </>
-      )}
-
-      {/* Code Tab */}
-      {activeTab === 'code' && (
-        <>
-          {/* Basic Usage */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Basic Usage</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Import icons individually from the Icons module.
-            </p>
-
-            <CodeBlock>{`import { IconHome, IconSettings, IconUser } from '@/components/Icons'
-
-function MyComponent() {
-  return (
-    <div>
-      <IconHome />
-      <IconSettings />
-      <IconUser />
-    </div>
-  )
-}`}</CodeBlock>
-          </section>
-
-          {/* Size Prop */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Size Prop</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Use the <code>size</code> prop to set icon dimensions. Accepts token names or pixel values.
-            </p>
-
-            <CodeBlock>{`// Using size tokens
-<IconStar size="xs" />  // 12px
-<IconStar size="sm" />  // 16px
-<IconStar size="md" />  // 20px (default)
-<IconStar size="lg" />  // 24px
-<IconStar size="xl" />  // 32px
-<IconStar size="2xl" /> // 48px
-
-// Using custom pixel value
-<IconStar size={18} />  // 18px`}</CodeBlock>
-          </section>
-
-          {/* Stroke Width */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Stroke Width</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Customize stroke weight with the <code>strokeWidth</code> prop.
-            </p>
-
-            <CodeBlock>{`<IconHeart strokeWidth={1} />    // Thin
-<IconHeart strokeWidth={1.5} />  // Default
-<IconHeart strokeWidth={2} />    // Medium
-<IconHeart strokeWidth={2.5} />  // Bold`}</CodeBlock>
-          </section>
 
           {/* Accessibility */}
           <section style={sharedStyles.section}>
@@ -597,7 +710,9 @@ function MyComponent() {
               Use the <code>label</code> prop for accessible icons that convey meaning.
             </p>
 
-            <CodeBlock>{`// Decorative icon (hidden from screen readers)
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Decorative vs Meaningful Icons</h3>
+              <CodeBlock>{`// Decorative icon (hidden from screen readers)
 <IconStar />
 // Renders: aria-hidden="true" role="presentation"
 
@@ -609,6 +724,7 @@ function MyComponent() {
 <button aria-label="Delete item">
   <IconTrash />
 </button>`}</CodeBlock>
+            </div>
           </section>
 
           {/* TypeScript */}
@@ -618,7 +734,9 @@ function MyComponent() {
               Full TypeScript support with exported types.
             </p>
 
-            <CodeBlock>{`import type { IconProps, IconSize } from '@/components/Icons'
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Types</h3>
+              <CodeBlock>{`import type { IconProps, IconSize } from '@/components/Icons'
 
 // IconProps interface
 interface IconProps extends React.SVGAttributes<SVGElement> {
@@ -634,16 +752,18 @@ type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 const MyIcon: React.FC<IconProps> = (props) => {
   return <IconHome {...props} />
 }`}</CodeBlock>
+            </div>
           </section>
 
-          {/* All Imports */}
+          {/* All Available Icons */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Available Icons</h2>
+            <h2 style={sharedStyles.sectionTitle}>All Available Icons</h2>
             <p style={sharedStyles.sectionDescription}>
-              All icons can be imported from the Icons module.
+              Complete list of all icons available for import.
             </p>
 
-            <CodeBlock>{`import {
+            <div style={sharedStyles.card}>
+              <CodeBlock>{`import {
   // Navigation
   IconHome, IconMenu, IconSearch,
   IconArrowLeft, IconArrowRight, IconArrowUp, IconArrowDown,
@@ -685,6 +805,7 @@ const MyIcon: React.FC<IconProps> = (props) => {
   IconTab, IconBanner, IconBadge, IconLayoutCard,
   IconFoundations, IconComponents, IconIcons,
 } from '@/components/Icons'`}</CodeBlock>
+            </div>
           </section>
         </>
       )}

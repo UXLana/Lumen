@@ -797,3 +797,96 @@ export const IconLayoutCard: React.FC<IconProps> = (props) => (
   </BaseIcon>
 )
 IconLayoutCard.displayName = 'IconLayoutCard'
+
+export const IconListItem: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <line x1="8" y1="6" x2="21" y2="6" />
+    <line x1="8" y1="12" x2="21" y2="12" />
+    <line x1="8" y1="18" x2="21" y2="18" />
+    <circle cx="4" cy="6" r="1.5" fill="currentColor" />
+    <circle cx="4" cy="12" r="1.5" fill="currentColor" />
+    <circle cx="4" cy="18" r="1.5" fill="currentColor" />
+  </BaseIcon>
+)
+IconListItem.displayName = 'IconListItem'
+
+// =============================================================================
+// BANNER ICONS (Contextual/Status Icons with Background)
+// =============================================================================
+
+import { bannerIcon } from '@/styles/design-tokens'
+import { IconInfoFilled } from './IconInfoFilled'
+import { IconSuccessFilled } from './IconSuccessFilled'
+import { IconWarningFilled } from './IconWarningFilled'
+import { IconErrorFilled } from './IconErrorFilled'
+
+/**
+ * Banner icon variant types
+ */
+export type BannerIconVariant = 'information' | 'success' | 'warning' | 'important'
+
+/**
+ * Props for BannerIcon component
+ */
+export interface BannerIconProps {
+  /** Icon variant - determines color scheme */
+  variant?: BannerIconVariant
+  /** Use dark mode colors (for dark backgrounds) */
+  onDark?: boolean
+  /** Additional CSS class name */
+  className?: string
+  /** Additional inline styles */
+  style?: React.CSSProperties
+}
+
+/**
+ * BannerIcon - Contextual status icon with colored background
+ *
+ * Used in banners, alerts, and notifications to provide visual context
+ * for different message types.
+ *
+ * @example
+ * ```tsx
+ * <BannerIcon variant="success" />
+ * <BannerIcon variant="warning" onDark />
+ * ```
+ */
+export const BannerIcon: React.FC<BannerIconProps> = ({
+  variant = 'information',
+  onDark = false,
+  className = '',
+  style = {},
+}) => {
+  const tokens = onDark ? bannerIcon.variantsOnDark[variant] : bannerIcon.variants[variant]
+
+  const containerStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: bannerIcon.padding,
+    borderRadius: bannerIcon.borderRadius,
+    backgroundColor: tokens.background,
+    flexShrink: 0,
+    ...style,
+  }
+
+  const renderIcon = () => {
+    switch (variant) {
+      case 'information':
+        return <IconInfoFilled size="lg" color={tokens.icon} />
+      case 'success':
+        return <IconSuccessFilled size="lg" color={tokens.icon} />
+      case 'warning':
+        return <IconWarningFilled size="lg" color={tokens.icon} />
+      case 'important':
+        return <IconErrorFilled size="lg" color={tokens.icon} />
+    }
+  }
+
+  return (
+    <div className={className} style={containerStyle}>
+      {renderIcon()}
+    </div>
+  )
+}
+BannerIcon.displayName = 'BannerIcon'

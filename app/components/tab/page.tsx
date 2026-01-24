@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
 import { Tab, TabBar, TabItem, TabIconPosition, TabBarAlign } from '@/components'
 import { colors, typography, tab, borderRadius } from '@/styles/design-tokens'
 
@@ -176,7 +176,7 @@ export default function TabPage() {
   align="${demoAlign}"${demoStretched ? '\n  stretched' : ''}${demoOnDark ? '\n  onDark' : ''}${demoInverted ? '\n  inverted' : ''}${!demoDivider ? '\n  hasDivider={false}' : ''}${demoScrollable ? '\n  scrollable' : ''}
 />`}
                     previewBackground={demoOnDark ? colors.brand.primary : colors.neutral[50]}
-                    previewPadding="32px"
+                    previewPadding="56px 24px"
                     previewMinHeight="120px"
                   />
                 </div>
@@ -223,23 +223,31 @@ export default function TabPage() {
 
                     {/* Toggles */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      {[
-                        { label: 'Stretched', value: demoStretched, setter: setDemoStretched },
-                        { label: 'On Dark', value: demoOnDark, setter: setDemoOnDark },
-                        { label: 'Inverted', value: demoInverted, setter: setDemoInverted },
-                        { label: 'Divider', value: demoDivider, setter: setDemoDivider },
-                        { label: 'Scrollable', value: demoScrollable, setter: setDemoScrollable },
-                      ].map(({ label, value, setter }) => (
-                        <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                          <input
-                            type="checkbox"
-                            checked={value}
-                            onChange={(e) => setter(e.target.checked)}
-                            style={{ width: '16px', height: '16px' }}
-                          />
-                          <span style={{ ...typography.label.sm }}>{label}</span>
-                        </label>
-                      ))}
+                      <StyledCheckbox
+                        checked={demoStretched}
+                        onChange={setDemoStretched}
+                        label="Stretched"
+                      />
+                      <StyledCheckbox
+                        checked={demoOnDark}
+                        onChange={setDemoOnDark}
+                        label="On Dark"
+                      />
+                      <StyledCheckbox
+                        checked={demoInverted}
+                        onChange={setDemoInverted}
+                        label="Inverted"
+                      />
+                      <StyledCheckbox
+                        checked={demoDivider}
+                        onChange={setDemoDivider}
+                        label="Divider"
+                      />
+                      <StyledCheckbox
+                        checked={demoScrollable}
+                        onChange={setDemoScrollable}
+                        label="Scrollable"
+                      />
                     </div>
                   </div>
                 </div>
