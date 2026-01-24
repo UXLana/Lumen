@@ -2,35 +2,101 @@
 
 import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton } from '../../design-system/shared'
-import { Banner, BannerVariant, BannerSize, Button } from '@/components'
-import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
+import { Banner, BannerVariant, BannerSurface, BannerButtonAlignment } from '@/components'
+import { colors, typography, spacing, borderRadius, bannerIcon } from '@/styles/design-tokens'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
 
 type PageTab = 'overview' | 'implementation'
+type ButtonOption = 'none' | 'one' | 'both'
 
 export default function BannerPage() {
   const variants: BannerVariant[] = ['info', 'success', 'warning', 'error']
-  const sizes: BannerSize[] = ['md', 'lg']
+  const surfaces: BannerSurface[] = ['color', 'light']
+  const buttonAlignments: BannerButtonAlignment[] = ['side', 'below']
+  const buttonOptions: { value: ButtonOption; label: string }[] = [
+    { value: 'none', label: 'None' },
+    { value: 'one', label: '1 Button' },
+    { value: 'both', label: '2 Buttons' },
+  ]
 
   // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
 
   // Interactive state for property manipulation
   const [demoVariant, setDemoVariant] = useState<BannerVariant>('info')
-  const [demoSize, setDemoSize] = useState<BannerSize>('md')
-  const [demoTitle, setDemoTitle] = useState('Important Information')
-  const [demoMessage, setDemoMessage] = useState('This is a banner message that provides context to the user.')
+  const [demoSurface, setDemoSurface] = useState<BannerSurface>('color')
+  const [demoButtonAlignment, setDemoButtonAlignment] = useState<BannerButtonAlignment>('side')
+  const [demoButtonOption, setDemoButtonOption] = useState<ButtonOption>('both')
+  const [demoTitle, setDemoTitle] = useState('Example text')
+  const [demoMessage, setDemoMessage] = useState('')
   const [demoDismissible, setDemoDismissible] = useState(false)
-  const [demoActions, setDemoActions] = useState(false)
+  const [demoOnDark, setDemoOnDark] = useState(false)
 
   // Custom tabs for component pages
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
   ]
+
+  // Generate action props based on button option
+  // Note: onClick handlers are intentionally empty for playground demonstration
+  const getActionProps = () => {
+    if (demoButtonOption === 'none') {
+      return {}
+    }
+    if (demoButtonOption === 'one') {
+      return {
+        primaryAction: {
+          label: 'Button',
+          onClick: () => { /* Playground demo - no action */ },
+        },
+      }
+    }
+    // both
+    return {
+      primaryAction: {
+        label: 'Button',
+        onClick: () => { /* Playground demo - no action */ },
+      },
+      secondaryAction: {
+        label: 'Button',
+        onClick: () => { /* Playground demo - no action */ },
+      },
+    }
+  }
+
+  // Generate code string based on current settings
+  const generateCode = () => {
+    const lines = ['<Banner']
+    lines.push(`  variant="${demoVariant}"`)
+    if (demoSurface !== 'color') lines.push(`  surface="${demoSurface}"`)
+    if (demoButtonAlignment !== 'side') lines.push(`  buttonAlignment="${demoButtonAlignment}"`)
+    // Escape quotes in title to generate valid JSX
+    if (demoTitle) lines.push(`  title="${demoTitle.replace(/"/g, '\\"')}"`)
+    if (demoOnDark) lines.push('  onDark={true}')
+    if (demoDismissible) lines.push('  dismissible={true}')
+
+    if (demoButtonOption === 'one') {
+      lines.push('  primaryAction={{ label: "Button", onClick: () => {} }}')
+    } else if (demoButtonOption === 'both') {
+      lines.push('  primaryAction={{ label: "Button", onClick: () => {} }}')
+      lines.push('  secondaryAction={{ label: "Button", onClick: () => {} }}')
+    }
+
+    // Escape special characters in message for valid JSX
+    if (demoMessage) {
+      lines.push('>')
+      lines.push(`  ${demoMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;')}`)
+      lines.push('</Banner>')
+    } else {
+      lines.push('/>')
+    }
+
+    return lines.join('\n')
+  }
 
   return (
     <StyleguideLayout
@@ -60,39 +126,41 @@ export default function BannerPage() {
             </p>
 
             <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: spacing[12] }}>
                 {/* Preview/Code with Tabs */}
                 <div>
                   <Playground
                     preview={
-                      <Banner
-                        variant={demoVariant}
-                        size={demoSize}
-                        title={demoTitle || undefined}
-                        dismissible={demoDismissible}
-                        actions={demoActions ? (
-                          <>
-                            <Button size="md" emphasis="low">Secondary</Button>
-                            <Button size="md" emphasis="high">Primary</Button>
-                          </>
-                        ) : undefined}
-                      >
-                        {demoMessage || undefined}
-                      </Banner>
+                      <div style={{
+                        width: '100%',
+                        padding: demoOnDark ? spacing[4] : '0',
+                        background: demoOnDark ? colors.brand.primary : 'transparent',
+                        borderRadius: demoOnDark ? borderRadius.md : undefined,
+                        boxSizing: 'border-box',
+                      }}>
+                        <Banner
+                          variant={demoVariant}
+                          surface={demoSurface}
+                          buttonAlignment={demoButtonAlignment}
+                          title={demoTitle || undefined}
+                          dismissible={demoDismissible}
+                          onDark={demoOnDark}
+                          {...getActionProps()}
+                        >
+                          {demoMessage || undefined}
+                        </Banner>
+                      </div>
                     }
-                    code={`<Banner
-  variant="${demoVariant}"
-  size="${demoSize}"${demoTitle ? `\n  title="${demoTitle}"` : ''}${demoDismissible ? '\n  dismissible' : ''}${demoActions ? '\n  actions={<>\n    <Button size="md" emphasis="low">Secondary</Button>\n    <Button size="md" emphasis="high">Primary</Button>\n  </>}' : ''}
->${demoMessage ? `\n  ${demoMessage}\n` : ''}</Banner>`}
-                    previewPadding="32px"
-                    previewMinHeight="120px"
+                    code={generateCode()}
+                    previewPadding={`${spacing[14]} ${spacing[6]}`}
+                    previewMinHeight="168px"
                   />
                 </div>
 
                 {/* Controls */}
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     {/* Variant */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
@@ -111,19 +179,55 @@ export default function BannerPage() {
                       </div>
                     </div>
 
-                    {/* Size */}
+                    {/* Surface */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Size
+                        Surface
                       </label>
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        {sizes.map(s => (
+                        {surfaces.map(s => (
                           <PillButton
                             key={s}
-                            onClick={() => setDemoSize(s)}
-                            isActive={demoSize === s}
+                            onClick={() => setDemoSurface(s)}
+                            isActive={demoSurface === s}
                           >
                             {s}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Button Alignment */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Button Alignment
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {buttonAlignments.map(a => (
+                          <PillButton
+                            key={a}
+                            onClick={() => setDemoButtonAlignment(a)}
+                            isActive={demoButtonAlignment === a}
+                          >
+                            {a}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Buttons */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Buttons
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {buttonOptions.map(opt => (
+                          <PillButton
+                            key={opt.value}
+                            onClick={() => setDemoButtonOption(opt.value)}
+                            isActive={demoButtonOption === opt.value}
+                          >
+                            {opt.label}
                           </PillButton>
                         ))}
                       </div>
@@ -143,6 +247,7 @@ export default function BannerPage() {
                           padding: spacing[2],
                           border: `1px solid ${colors.border.light}`,
                           borderRadius: borderRadius.sm,
+                          boxSizing: 'border-box',
                           ...typography.body.sm,
                         }}
                       />
@@ -151,17 +256,19 @@ export default function BannerPage() {
                     {/* Message */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Message
+                        Description (optional)
                       </label>
                       <textarea
                         value={demoMessage}
                         onChange={(e) => setDemoMessage(e.target.value)}
-                        rows={3}
+                        rows={2}
+                        placeholder="Add a description..."
                         style={{
                           width: '100%',
                           padding: spacing[2],
                           border: `1px solid ${colors.border.light}`,
                           borderRadius: borderRadius.sm,
+                          boxSizing: 'border-box',
                           ...typography.body.sm,
                           resize: 'vertical',
                         }}
@@ -172,7 +279,7 @@ export default function BannerPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {[
                         { label: 'Dismissible', value: demoDismissible, setter: setDemoDismissible },
-                        { label: 'Show Actions', value: demoActions, setter: setDemoActions },
+                        { label: 'On Dark Background', value: demoOnDark, setter: setDemoOnDark },
                       ].map(({ label, value, setter }) => (
                         <label key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                           <input
@@ -195,125 +302,65 @@ export default function BannerPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
             <p style={sharedStyles.sectionDescription}>
-              Color tokens, typography, spacing, and border values used in the banner component.
+              Typography, spacing, and border values used in the banner component.
             </p>
-
-            {/* Color Tokens */}
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Color Tokens by Variant</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
-                {variants.map((variant) => {
-                  const bgColor = colors.semantic[variant].light
-                  const borderColor = colors.semantic[variant].main
-                  const iconColor = variant === 'warning' ? colors.semantic[variant].dark : colors.semantic[variant].main
-
-                  return (
-                    <div key={variant}>
-                      <h4 style={{ ...typography.label.md, marginBottom: '12px', textTransform: 'capitalize' }}>
-                        {variant}
-                      </h4>
-                      {/* Background */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                        <div style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '4px',
-                          background: bgColor,
-                          border: '1px solid rgba(0,0,0,0.1)',
-                        }} />
-                        <div>
-                          <div style={{ ...typography.label.sm }}>Background</div>
-                          <div style={{ ...typography.code.sm, fontSize: '10px', color: colors.text.mediumEmphasis }}>
-                            {bgColor}
-                          </div>
-                        </div>
-                      </div>
-                      {/* Border */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                        <div style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '4px',
-                          background: borderColor,
-                          border: '1px solid rgba(0,0,0,0.1)',
-                        }} />
-                        <div>
-                          <div style={{ ...typography.label.sm }}>Border (2px)</div>
-                          <div style={{ ...typography.code.sm, fontSize: '10px', color: colors.text.mediumEmphasis }}>
-                            {borderColor}
-                          </div>
-                        </div>
-                      </div>
-                      {/* Icon */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{
-                          width: '32px',
-                          height: '32px',
-                          borderRadius: '4px',
-                          background: iconColor,
-                          border: '1px solid rgba(0,0,0,0.1)',
-                        }} />
-                        <div>
-                          <div style={{ ...typography.label.sm }}>Icon</div>
-                          <div style={{ ...typography.code.sm, fontSize: '10px', color: colors.text.mediumEmphasis }}>
-                            {iconColor}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
 
             {/* Typography Tokens */}
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Typography Tokens</h3>
               <SpecTable
-                headers={['Element', 'Size MD', 'Size LG', 'Font Weight']}
+                headers={['Element', 'Font Size', 'Line Height', 'Font Weight']}
                 rows={[
-                  [
-                    'Title',
-                    `${typography.label.md.fontSize} / ${typography.label.md.lineHeight}`,
-                    `${typography.label.lg.fontSize} / ${typography.label.lg.lineHeight}`,
-                    'Medium (500)',
-                  ],
-                  [
-                    'Description',
-                    `${typography.body.sm.fontSize} / ${typography.body.sm.lineHeight}`,
-                    `${typography.body.md.fontSize} / ${typography.body.md.lineHeight}`,
-                    'Regular (400)',
-                  ],
+                  ['Title', '16px', '24px', 'Regular (400)'],
+                  ['Description', '16px', '24px', 'Regular (400)'],
+                  ['Button', '14px', '20px', 'Medium (500)'],
                 ]}
               />
             </div>
 
             {/* Spacing Tokens */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Spacing Tokens</h3>
+              <h3 style={sharedStyles.cardTitle}>Spacing & Size Tokens</h3>
               <SpecTable
-                headers={['Size', 'Padding', 'Gap', 'Border Width']}
+                headers={['Element', 'Value', 'Description']}
                 rows={[
-                  ['md', `${spacing[3]} ${spacing[4]} (12px 16px)`, spacing[3] + ' (12px)', '2px'],
-                  ['lg', `${spacing[4]} ${spacing[5]} (16px 20px)`, spacing[4] + ' (16px)', '2px'],
+                  ['Banner Height (side)', '56px', 'Fixed height for side button alignment'],
+                  ['Banner Height (below)', 'auto (min 100px)', 'Flexible height for below button alignment'],
+                  ['Icon Container', '40px × 40px', 'Container with 16px border radius'],
+                  ['Icon Size', '24px', 'Icon inside container'],
+                  ['Left Padding', '56px', '8px + 40px icon + 8px gap'],
                 ]}
               />
             </div>
 
-            {/* Border Radius */}
+            {/* Border Radius & Outline */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Border Radius</h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{
-                  width: '120px',
-                  height: '60px',
-                  background: colors.semantic.info.light,
-                  border: `2px solid ${colors.semantic.info.main}`,
-                  borderRadius: borderRadius.md,
-                }} />
-                <div>
-                  <div style={{ ...typography.label.md }}>Medium Radius</div>
-                  <code style={{ ...typography.code.sm }}>{borderRadius.md}</code>
+              <h3 style={sharedStyles.cardTitle}>Border Radius & Outline</h3>
+              <div style={{ display: 'flex', gap: '32px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{
+                    width: '120px',
+                    height: '60px',
+                    background: '#EBEFFF',
+                    borderRadius: '16px',
+                    border: '2px solid rgba(209, 217, 255, 0.6)',
+                  }} />
+                  <div>
+                    <div style={{ ...typography.label.md }}>Banner</div>
+                    <code style={{ ...typography.code.sm }}>16px radius, 2px outline @ 60%</code>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    background: bannerIcon.variants.information.background,
+                    borderRadius: '16px',
+                  }} />
+                  <div>
+                    <div style={{ ...typography.label.md }}>Icon Container</div>
+                    <code style={{ ...typography.code.sm }}>16px</code>
+                  </div>
                 </div>
               </div>
             </div>
@@ -333,7 +380,7 @@ export default function BannerPage() {
               <h3 style={sharedStyles.cardTitle}>Import</h3>
               <CodeBlock>
 {`import { Banner } from '@/components'
-import type { BannerProps, BannerVariant, BannerSize } from '@/components'`}
+import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment } from '@/components'`}
               </CodeBlock>
             </div>
 
@@ -341,71 +388,68 @@ import type { BannerProps, BannerVariant, BannerSize } from '@/components'`}
               <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
               <CodeBlock>
 {`// Informational banner
-<Banner variant="info" title="New Feature">
-  Check out our new dashboard!
-</Banner>
+<Banner variant="info" title="New Feature" />
 
 // Success banner
-<Banner variant="success" title="Saved Successfully">
-  Your changes have been saved.
-</Banner>
+<Banner variant="success" title="Saved Successfully" />
 
 // Warning banner
-<Banner variant="warning" title="Action Required">
-  Please update your payment method.
-</Banner>
+<Banner variant="warning" title="Action Required" />
 
 // Error banner
-<Banner variant="error" title="Connection Error">
-  Unable to reach the server.
-</Banner>`}
-              </CodeBlock>
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Dismissible Banner</h3>
-              <CodeBlock>
-{`<Banner
-  variant="info"
-  title="New Features"
-  dismissible
-  onDismiss={() => console.log('Banner dismissed')}
->
-  We've added new reporting capabilities.
-</Banner>`}
+<Banner variant="error" title="Connection Error" />`}
               </CodeBlock>
             </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>With Actions</h3>
               <CodeBlock>
-{`<Banner
+{`// Single action
+<Banner
+  variant="info"
+  title="New features available"
+  primaryAction={{ label: "Learn More", onClick: () => {} }}
+/>
+
+// Two actions
+<Banner
   variant="warning"
   title="Subscription Expiring"
-  actions={
-    <>
-      <Button size="md" emphasis="low">Remind Later</Button>
-      <Button size="md" emphasis="high">Renew Now</Button>
-    </>
-  }
->
-  Your subscription expires in 7 days.
-</Banner>`}
+  primaryAction={{ label: "Renew Now", onClick: () => {} }}
+  secondaryAction={{ label: "Remind Later", onClick: () => {} }}
+/>`}
               </CodeBlock>
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Size Variants</h3>
+              <h3 style={sharedStyles.cardTitle}>Surface Variants</h3>
               <CodeBlock>
-{`// Medium (default)
-<Banner variant="info" size="md" title="Medium Banner">
-  Standard size for most use cases.
-</Banner>
+{`// Color surface (default) - themed background
+<Banner variant="info" surface="color" title="Color surface" />
 
-// Large
-<Banner variant="success" size="lg" title="Large Banner">
-  Larger size for more prominent messages.
-</Banner>`}
+// Light surface - white background
+<Banner variant="info" surface="light" title="Light surface" />`}
+              </CodeBlock>
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Button Alignment</h3>
+              <CodeBlock>
+{`// Side alignment (default) - buttons on the right
+<Banner
+  variant="info"
+  buttonAlignment="side"
+  title="Side aligned buttons"
+  primaryAction={{ label: "Action", onClick: () => {} }}
+/>
+
+// Below alignment - buttons below the content
+<Banner
+  variant="info"
+  buttonAlignment="below"
+  title="Below aligned buttons"
+  primaryAction={{ label: "Action", onClick: () => {} }}
+/>`}
               </CodeBlock>
             </div>
           </section>
@@ -420,13 +464,15 @@ import type { BannerProps, BannerVariant, BannerSize } from '@/components'`}
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
                   [<code>variant</code>, <code>'info' | 'success' | 'warning' | 'error'</code>, <code>'info'</code>, 'Semantic variant'],
-                  [<code>size</code>, <code>'md' | 'lg'</code>, <code>'md'</code>, 'Size of the banner'],
+                  [<code>surface</code>, <code>'color' | 'light'</code>, <code>'color'</code>, 'Background surface type'],
+                  [<code>buttonAlignment</code>, <code>'side' | 'below'</code>, <code>'side'</code>, 'Button position'],
                   [<code>title</code>, <code>string</code>, '-', 'Main heading text'],
                   [<code>children</code>, <code>ReactNode</code>, '-', 'Description content'],
-                  [<code>icon</code>, <code>ReactNode</code>, '-', 'Custom icon (overrides default)'],
+                  [<code>primaryAction</code>, <code>{'{ label: string; onClick: () => void }'}</code>, '-', 'Primary action button'],
+                  [<code>secondaryAction</code>, <code>{'{ label: string; onClick: () => void }'}</code>, '-', 'Secondary action button'],
                   [<code>dismissible</code>, <code>boolean</code>, <code>false</code>, 'Show dismiss button'],
                   [<code>onDismiss</code>, <code>{'() => void'}</code>, '-', 'Dismiss callback'],
-                  [<code>actions</code>, <code>ReactNode</code>, '-', 'Action buttons'],
+                  [<code>onDark</code>, <code>boolean</code>, <code>false</code>, 'Display on dark background'],
                 ]}
               />
             </div>
@@ -450,17 +496,6 @@ import type { BannerProps, BannerVariant, BannerSize } from '@/components'`}
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>When to Use Each Size</h3>
-              <SpecTable
-                headers={['Size', 'Usage']}
-                rows={[
-                  [<code>md</code>, 'Default size for most banners, inline with content'],
-                  [<code>lg</code>, 'Page-level banners, critical announcements, hero areas'],
-                ]}
-              />
-            </div>
-
-            <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
               <SpecTable
                 headers={['Do', "Don't"]}
@@ -470,7 +505,6 @@ import type { BannerProps, BannerVariant, BannerSize } from '@/components'`}
                   ['Limit to 1-2 actions maximum', 'Add more than 2 action buttons'],
                   ['Make dismissible for non-critical messages', 'Make critical error banners dismissible'],
                   ['Use consistent placement (top of content)', 'Scatter banners throughout the page'],
-                  ['Ensure 2px border for visual clarity', 'Use thin or missing borders'],
                 ]}
               />
             </div>
