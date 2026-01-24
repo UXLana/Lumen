@@ -7,6 +7,12 @@ import { IconPlus, IconSettings } from '@/components/Icons'
 import { colors, typography, button, borderRadius } from '@/styles/design-tokens'
 
 // =============================================================================
+// TYPES
+// =============================================================================
+
+type PageTab = 'overview' | 'implementation'
+
+// =============================================================================
 // PAGE COMPONENT
 // =============================================================================
 
