@@ -15,6 +15,7 @@
 | `/design-system-builder` | Maintain design system docs & UI |
 | `/design-system-ui` | Improve design system app UX |
 | `/design-system-librarian` | Organize & catalog the library |
+| `/design-accessibility` | Audit accessibility (WCAG 2.2 + Section 508) |
 
 ## Planning & Strategy
 

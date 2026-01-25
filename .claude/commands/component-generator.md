@@ -83,6 +83,44 @@ ComponentName.displayName = 'ComponentName'
 - [ ] Screen reader announcements
 - [ ] Reduced motion support
 
+---
+
+## Post-Generation Workflow (REQUIRED)
+
+After generating a component, this skill MUST automatically run the following skills in sequence:
+
+### Step 1: Accessibility Audit
+```
+→ Invoke /design-accessibility [ComponentName]
+```
+Run a WCAG 2.2 AA compliance audit on the newly created component. Address any Critical or Serious issues before proceeding.
+
+### Step 2: Design System Integration
+```
+→ Invoke /design-system-builder
+```
+Add the component to the design system:
+- Generate navigation icon via `/icon-generator`
+- Update `shared.tsx`: iconMap + navSections
+- Update `page.tsx`: componentItems array
+- Create documentation page at `/app/components/[name]/page.tsx`
+
+### Workflow Summary
+
+```
+Component Generation Complete
+         ↓
+/design-accessibility [ComponentName]
+         ↓ (fix any Critical/Serious issues)
+/design-system-builder
+         ↓
+✓ Component ready for use
+```
+
+**CRITICAL**: Do not consider the component generation complete until both post-generation skills have been executed and all accessibility issues are resolved.
+
+---
+
 ## User Input Required
 
 $ARGUMENTS
