@@ -11,7 +11,7 @@ import {
   fontFamilies,
   transitionPresets,
 } from '@/styles/design-tokens'
-import { Avatar, AvatarGroup, Button, Tab, TabBar, Banner, Badge, SegmentedControl, MarketplaceCard, ListItem, List } from '@/components'
+import { Avatar, AvatarGroup, Button, Tab, TabBar, Banner, Badge, SegmentedControl, MarketplaceCard, ListItem, List, Stepper } from '@/components'
 
 // =============================================================================
 // TYPES
@@ -400,6 +400,24 @@ const componentItems: ComponentItem[] = [
         status="installed"
         isVerified
       />
+    ),
+  },
+  {
+    id: 'stepper',
+    title: 'Stepper',
+    description: 'Vertical progress indicator for multi-step processes',
+    href: '/components/stepper',
+    preview: (
+      <div style={{ width: '100%', maxWidth: '280px' }}>
+        <Stepper
+          steps={[
+            { id: '1', label: 'Account Setup' },
+            { id: '2', label: 'Personal Info' },
+            { id: '3', label: 'Review' },
+          ]}
+          activeStep={1}
+        />
+      </div>
     ),
   },
 ]

@@ -45,9 +45,7 @@ export default function ListItemPage() {
   const [demoRoundedCorners, setDemoRoundedCorners] = useState(true)
   const [demoLabelValuePair, setDemoLabelValuePair] = useState(false)
   const [demoLowEmphasis, setDemoLowEmphasis] = useState(false)
-  const [demoPrimary, setDemoPrimary] = useState('Primary string')
-  const [demoSecondary, setDemoSecondary] = useState('Secondary string')
-  const [demoTertiary, setDemoTertiary] = useState('Tertiary string')
+  const [demoTextLines, setDemoTextLines] = useState<1 | 2 | 3>(2)
 
   // Selection list examples state
   const [checkboxSelections, setCheckboxSelections] = useState<Record<string, boolean>>({
@@ -66,6 +64,12 @@ export default function ListItemPage() {
   const leftTypes: ListItemLeftType[] = ['none', 'avatar', 'icon', 'checkbox', 'radio']
   const rightTypes: ListItemRightType[] = ['none', 'iconButton', 'toggle', 'icon', 'text']
   const statuses: ListItemStatus[] = ['enabled', 'hover', 'pressed', 'nonActionable']
+  const textLineOptions: (1 | 2 | 3)[] = [1, 2, 3]
+
+  // Generate text strings based on line count
+  const getPrimaryText = () => 'Primary text'
+  const getSecondaryText = () => demoTextLines >= 2 ? 'Secondary text' : undefined
+  const getTertiaryText = () => demoTextLines === 3 && !demoLabelValuePair ? 'Tertiary text' : undefined
 
   return (
     <StyleguideLayout
@@ -103,9 +107,9 @@ export default function ListItemPage() {
                       <div style={{ width: '100%', maxWidth: '400px', background: 'white', borderRadius: '8px' }}>
                         <List roundedCorners={demoRoundedCorners}>
                           <ListItem
-                            primary={demoPrimary}
-                            secondary={demoSecondary}
-                            tertiary={demoLabelValuePair ? undefined : demoTertiary}
+                            primary={getPrimaryText()}
+                            secondary={getSecondaryText()}
+                            tertiary={getTertiaryText()}
                             leftType={demoLeftType}
                             avatarProps={demoLeftType === 'avatar' ? { name: 'John Doe', src: 'https://i.pravatar.cc/150?img=1' } : undefined}
                             icon={demoLeftType === 'icon' ? sampleIcon : undefined}
@@ -127,7 +131,7 @@ export default function ListItemPage() {
                     }
                     code={`<List${!demoRoundedCorners ? ' roundedCorners={false}' : ''}>
   <ListItem
-    primary="${demoPrimary}"${demoSecondary ? `\n    secondary="${demoSecondary}"` : ''}${!demoLabelValuePair && demoTertiary ? `\n    tertiary="${demoTertiary}"` : ''}${demoLeftType !== 'none' ? `\n    leftType="${demoLeftType}"` : ''}${demoLeftType === 'avatar' ? `\n    avatarProps={{ name: "John Doe", src: "..." }}` : ''}${demoLeftType === 'icon' ? `\n    icon={<PhoneIcon />}` : ''}${(demoLeftType === 'checkbox' || demoLeftType === 'radio') ? `\n    selected={${demoSelected}}` : ''}${demoStatus !== 'enabled' ? `\n    status="${demoStatus}"` : ''}${demoLabelValuePair ? `\n    labelValuePair` : ''}${demoLowEmphasis ? `\n    lowEmphasis` : ''}${demoDivider && !demoRoundedCorners ? `\n    divider` : ''}${!demoRoundedCorners ? `\n    roundedCorners={false}` : ''}${demoRightType !== 'none' ? `\n    rightType="${demoRightType}"` : ''}${demoRightType === 'icon' ? `\n    rightIcon={<ChevronRightIcon />}` : ''}${demoRightType === 'text' ? `\n    rightText="Value"` : ''}${demoRightType === 'toggle' ? `\n    toggleChecked={${demoToggleChecked}}\n    onToggleChange={setToggleChecked}` : ''}
+    primary="${getPrimaryText()}"${getSecondaryText() ? `\n    secondary="${getSecondaryText()}"` : ''}${getTertiaryText() ? `\n    tertiary="${getTertiaryText()}"` : ''}${demoLeftType !== 'none' ? `\n    leftType="${demoLeftType}"` : ''}${demoLeftType === 'avatar' ? `\n    avatarProps={{ name: "John Doe", src: "..." }}` : ''}${demoLeftType === 'icon' ? `\n    icon={<PhoneIcon />}` : ''}${(demoLeftType === 'checkbox' || demoLeftType === 'radio') ? `\n    selected={${demoSelected}}` : ''}${demoStatus !== 'enabled' ? `\n    status="${demoStatus}"` : ''}${demoLabelValuePair ? `\n    labelValuePair` : ''}${demoLowEmphasis ? `\n    lowEmphasis` : ''}${demoDivider && !demoRoundedCorners ? `\n    divider` : ''}${!demoRoundedCorners ? `\n    roundedCorners={false}` : ''}${demoRightType !== 'none' ? `\n    rightType="${demoRightType}"` : ''}${demoRightType === 'icon' ? `\n    rightIcon={<ChevronRightIcon />}` : ''}${demoRightType === 'text' ? `\n    rightText="Value"` : ''}${demoRightType === 'toggle' ? `\n    toggleChecked={${demoToggleChecked}}\n    onToggleChange={setToggleChecked}` : ''}
   />
 </List>`}
                     previewPadding="24px"
@@ -140,6 +144,24 @@ export default function ListItemPage() {
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    {/* Text Lines */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Text Lines
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {textLineOptions.map(lines => (
+                          <PillButton
+                            key={lines}
+                            onClick={() => setDemoTextLines(lines)}
+                            isActive={demoTextLines === lines}
+                          >
+                            {lines} {lines === 1 ? 'line' : 'lines'}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Left Type */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>

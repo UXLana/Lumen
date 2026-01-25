@@ -43,6 +43,7 @@ const BaseIcon: React.FC<BaseIconProps> = ({
   strokeWidth = 1.5,
   label,
   children,
+  style,
   ...props
 }) => {
   const pixelSize = getSize(size)
@@ -60,6 +61,10 @@ const BaseIcon: React.FC<BaseIconProps> = ({
       aria-label={label}
       aria-hidden={!label}
       role={label ? 'img' : 'presentation'}
+      style={{
+        shapeRendering: 'geometricPrecision',
+        ...style,
+      }}
       {...props}
     >
       {children}
@@ -87,6 +92,24 @@ export const IconMenu: React.FC<IconProps> = (props) => (
   </BaseIcon>
 )
 IconMenu.displayName = 'IconMenu'
+
+export const IconSidebarOpen: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <line x1="9" y1="3" x2="9" y2="21" />
+    <polyline points="14 9 17 12 14 15" />
+  </BaseIcon>
+)
+IconSidebarOpen.displayName = 'IconSidebarOpen'
+
+export const IconSidebarClose: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <line x1="9" y1="3" x2="9" y2="21" />
+    <polyline points="16 9 13 12 16 15" />
+  </BaseIcon>
+)
+IconSidebarClose.displayName = 'IconSidebarClose'
 
 export const IconSearch: React.FC<IconProps> = (props) => (
   <BaseIcon {...props}>
@@ -809,6 +832,69 @@ export const IconListItem: React.FC<IconProps> = (props) => (
   </BaseIcon>
 )
 IconListItem.displayName = 'IconListItem'
+
+export const IconStepper: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <circle cx="6" cy="5" r="3" fill="currentColor" fillOpacity="0.3" />
+    <line x1="6" y1="8" x2="6" y2="12" />
+    <circle cx="6" cy="15" r="3" />
+    <line x1="6" y1="18" x2="6" y2="22" opacity="0.4" />
+    <line x1="11" y1="5" x2="20" y2="5" />
+    <line x1="11" y1="15" x2="20" y2="15" />
+  </BaseIcon>
+)
+IconStepper.displayName = 'IconStepper'
+
+// =============================================================================
+// STATUS/STATE ICONS (for Stepper, Progress, Workflows)
+// =============================================================================
+
+/**
+ * IconStatusComplete - Filled circle with checkmark
+ * Used to indicate a completed step or task
+ */
+export const IconStatusComplete: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props} strokeWidth={0}>
+    <circle cx="12" cy="12" r="10" fill="currentColor" />
+    <path
+      d="M8 12l3 3 5-6"
+      stroke="white"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+  </BaseIcon>
+)
+IconStatusComplete.displayName = 'IconStatusComplete'
+
+/**
+ * IconStatusInProgress - Half-filled circle indicator
+ * Used to indicate an in-progress step or task
+ */
+export const IconStatusInProgress: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <circle cx="12" cy="12" r="9" />
+    <path
+      d="M12 3a9 9 0 0 1 0 18"
+      fill="currentColor"
+      fillOpacity="0.3"
+      stroke="none"
+    />
+  </BaseIcon>
+)
+IconStatusInProgress.displayName = 'IconStatusInProgress'
+
+/**
+ * IconStatusNotStarted - Empty circle outline
+ * Used to indicate a pending/not-started step or task
+ */
+export const IconStatusNotStarted: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <circle cx="12" cy="12" r="9" />
+  </BaseIcon>
+)
+IconStatusNotStarted.displayName = 'IconStatusNotStarted'
 
 // =============================================================================
 // BANNER ICONS (Contextual/Status Icons with Background)

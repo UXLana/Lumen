@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../shared'
 import { colors, borderRadius, fontFamilies } from '@/styles/design-tokens'
 import * as Icons from '@/components/Icons'
@@ -64,6 +64,9 @@ const iconCategories: IconCategory[] = [
       { name: 'IconCheckCircle', component: Icons.IconCheckCircle },
       { name: 'IconXCircle', component: Icons.IconXCircle },
       { name: 'IconLoader', component: Icons.IconLoader },
+      { name: 'IconStatusComplete', component: Icons.IconStatusComplete },
+      { name: 'IconStatusInProgress', component: Icons.IconStatusInProgress },
+      { name: 'IconStatusNotStarted', component: Icons.IconStatusNotStarted },
     ],
   },
   {
@@ -138,26 +141,26 @@ const iconCategories: IconCategory[] = [
   },
   {
     name: 'Design System',
-    description: 'Icons specific to the MTR Design System navigation.',
+    description: 'Icons used in the MTR Design System navigation.',
     icons: [
-      { name: 'IconColors', component: Icons.IconColors },
-      { name: 'IconTypography', component: Icons.IconTypography },
-      { name: 'IconSpacing', component: Icons.IconSpacing },
-      { name: 'IconRadius', component: Icons.IconRadius },
-      { name: 'IconShadows', component: Icons.IconShadows },
-      { name: 'IconBreakpoints', component: Icons.IconBreakpoints },
-      { name: 'IconAvatar', component: Icons.IconAvatar },
-      { name: 'IconButton', component: Icons.IconButton },
-      { name: 'IconTab', component: Icons.IconTab },
-      { name: 'IconBanner', component: Icons.IconBanner },
-      { name: 'IconBadge', component: Icons.IconBadge },
-      { name: 'IconLayoutCard', component: Icons.IconLayoutCard },
       { name: 'IconFoundations', component: Icons.IconFoundations },
       { name: 'IconComponents', component: Icons.IconComponents },
-      { name: 'IconIcons', component: Icons.IconIcons },
     ],
   },
 ]
+
+// =============================================================================
+// HELPER: Convert icon name to SVG filename
+// =============================================================================
+
+function iconNameToFilename(name: string): string {
+  // Remove 'Icon' prefix and convert to kebab-case
+  // e.g., IconArrowLeft -> arrow-left, IconCheckCircle -> check-circle
+  return name
+    .replace(/^Icon/, '')
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .toLowerCase()
+}
 
 // =============================================================================
 // ICON CARD COMPONENT
@@ -172,18 +175,55 @@ function IconCard({
   IconComponent: React.FC<Icons.IconProps>
   size?: IconSize
 }) {
-  const [copied, setCopied] = useState(false)
+  const [feedback, setFeedback] = useState<'copied' | 'svg-copied' | null>(null)
   const [hovered, setHovered] = useState(false)
 
-  const copyToClipboard = () => {
+  const performCopy = () => {
     navigator.clipboard.writeText(`<${name} />`)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
+    setFeedback('copied')
+    setTimeout(() => setFeedback(null), 1500)
+  }
+
+  const copyToClipboard = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    performCopy()
+  }
+
+  const copySvgToClipboard = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const card = (e.currentTarget as HTMLElement).closest('[data-icon-card]')
+    const svg = card?.querySelector('svg')
+    if (svg) {
+      const clonedSvg = svg.cloneNode(true) as SVGElement
+      // Set standard attributes for Figma compatibility
+      clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+      clonedSvg.setAttribute('width', '24')
+      clonedSvg.setAttribute('height', '24')
+      // Remove React-specific attributes
+      clonedSvg.removeAttribute('aria-hidden')
+      clonedSvg.removeAttribute('role')
+      const svgString = new XMLSerializer().serializeToString(clonedSvg)
+      navigator.clipboard.writeText(svgString)
+      setFeedback('svg-copied')
+      setTimeout(() => setFeedback(null), 1500)
+    }
   }
 
   return (
     <div
-      onClick={copyToClipboard}
+      data-icon-card
+      onClick={() => {
+        performCopy()
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Copy ${name}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          performCopy()
+        }
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -194,7 +234,6 @@ function IconCard({
         borderRadius: borderRadius.md,
         border: `1px solid ${hovered ? colors.brand.primary : colors.border.light}`,
         background: hovered ? colors.neutral[100] : colors.background.default,
-        cursor: 'pointer',
         transition: 'all 0.15s ease',
         position: 'relative',
       }}
@@ -223,11 +262,85 @@ function IconCard({
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           width: '100%',
+          marginBottom: hovered ? '8px' : '0',
+          transition: 'margin 0.15s ease',
         }}
       >
         {name.replace('Icon', '')}
       </div>
-      {copied && (
+
+      {/* Action buttons - appear on hover */}
+      {hovered && !feedback && (
+        <div
+          style={{
+            display: 'flex',
+            gap: '4px',
+            marginTop: '4px',
+          }}
+        >
+          <button
+            onClick={copyToClipboard}
+            title="Copy component name"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '28px',
+              height: '28px',
+              border: `1px solid ${colors.border.light}`,
+              borderRadius: borderRadius.sm,
+              background: colors.background.default,
+              cursor: 'pointer',
+              color: colors.text.mediumEmphasis,
+              transition: 'all 0.15s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = colors.brand.primary
+              e.currentTarget.style.color = 'white'
+              e.currentTarget.style.borderColor = colors.brand.primary
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = colors.background.default
+              e.currentTarget.style.color = colors.text.mediumEmphasis
+              e.currentTarget.style.borderColor = colors.border.light
+            }}
+          >
+            <Icons.IconCopy size="sm" />
+          </button>
+          <button
+            onClick={copySvgToClipboard}
+            title="Copy SVG for Figma"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '28px',
+              height: '28px',
+              border: `1px solid ${colors.border.light}`,
+              borderRadius: borderRadius.sm,
+              background: colors.background.default,
+              cursor: 'pointer',
+              color: colors.text.mediumEmphasis,
+              transition: 'all 0.15s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = colors.brand.primary
+              e.currentTarget.style.color = 'white'
+              e.currentTarget.style.borderColor = colors.brand.primary
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = colors.background.default
+              e.currentTarget.style.color = colors.text.mediumEmphasis
+              e.currentTarget.style.borderColor = colors.border.light
+            }}
+          >
+            <Icons.IconImage size="sm" />
+          </button>
+        </div>
+      )}
+
+      {/* Feedback overlay */}
+      {feedback && (
         <div
           style={{
             position: 'absolute',
@@ -242,7 +355,7 @@ function IconCard({
             borderRadius: borderRadius.md,
           }}
         >
-          Copied!
+          {feedback === 'copied' ? 'Copied!' : 'SVG Copied!'}
         </div>
       )}
     </div>
@@ -345,6 +458,7 @@ function StrokeDemo() {
 export default function IconsPage() {
   const [activeTab, setActiveTab] = useState('overview')
   const [searchQuery, setSearchQuery] = useState('')
+  const searchInputRef = useRef<HTMLInputElement | null>(null)
 
   // Filter icons based on search
   const filteredCategories = iconCategories
@@ -404,9 +518,12 @@ export default function IconsPage() {
             >
               <Icons.IconSearch size="sm" style={{ color: colors.text.mediumEmphasis }} />
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search icons..."
                 value={searchQuery}
+                id="icon-search-input"
+                aria-label="Search icons"
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
                   flex: 1,
@@ -414,7 +531,6 @@ export default function IconsPage() {
                   background: 'transparent',
                   fontSize: '14px',
                   color: colors.text.highEmphasis,
-                  outline: 'none',
                 }}
               />
               {searchQuery && (
@@ -778,6 +894,7 @@ const MyIcon: React.FC<IconProps> = (props) => {
   // Status
   IconInfo, IconAlertCircle, IconAlertTriangle,
   IconCheckCircle, IconXCircle, IconLoader,
+  IconStatusComplete, IconStatusInProgress, IconStatusNotStarted,
 
   // Objects
   IconFile, IconFolder, IconImage,
@@ -800,10 +917,7 @@ const MyIcon: React.FC<IconProps> = (props) => {
   IconMail, IconBell, IconMessageCircle,
 
   // Design System
-  IconColors, IconTypography, IconSpacing, IconRadius,
-  IconShadows, IconBreakpoints, IconAvatar, IconButton,
-  IconTab, IconBanner, IconBadge, IconLayoutCard,
-  IconFoundations, IconComponents, IconIcons,
+  IconFoundations, IconComponents,
 } from '@/components/Icons'`}</CodeBlock>
             </div>
           </section>

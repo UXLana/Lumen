@@ -42,7 +42,7 @@ export default function TypographyPage() {
   return (
     <StyleguideLayout
       title="Typography"
-      description="Typography system using DM Sans for display and body text, with JetBrains Mono for code. Designed for clarity and readability."
+      description="Typography system using DM Sans for UI text and system monospace for code. Designed for clarity and readability."
       activeId="typography"
       activeTab={activeTab}
       onTabChange={setActiveTab}
@@ -54,49 +54,47 @@ export default function TypographyPage() {
       <section style={sharedStyles.section}>
         <h2 style={sharedStyles.sectionTitle}>Font Families</h2>
         <p style={sharedStyles.sectionDescription}>
-          The design system uses two font families for different purposes.
+          The design system uses DM Sans for UI text and system monospace for code.
         </p>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-          <div style={sharedStyles.card}>
-            <h3 style={sharedStyles.cardTitle}>DM Sans</h3>
-            <p style={{ ...typography.body.md, marginBottom: '16px' }}>
-              Primary typeface for all display, heading, body, and label text.
-            </p>
-            <p style={{ fontFamily: fontFamilies.display, fontSize: '32px', fontWeight: 600 }}>
-              Aa Bb Cc Dd Ee
-            </p>
-            <p style={{ fontFamily: fontFamilies.display, fontSize: '18px', marginTop: '8px' }}>
-              ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>
-              abcdefghijklmnopqrstuvwxyz<br/>
-              0123456789
-            </p>
-          </div>
-          
-          <div style={sharedStyles.card}>
-            <h3 style={sharedStyles.cardTitle}>JetBrains Mono</h3>
-            <p style={{ ...typography.body.md, marginBottom: '16px' }}>
-              Monospace typeface for code, technical content, and data.
-            </p>
-            <p style={{ fontFamily: fontFamilies.mono, fontSize: '24px', fontWeight: 400 }}>
-              Aa Bb Cc Dd Ee
-            </p>
-            <p style={{ fontFamily: fontFamilies.mono, fontSize: '14px', marginTop: '8px' }}>
-              ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>
-              abcdefghijklmnopqrstuvwxyz<br/>
-              0123456789 {"{}[]()<>=+-*/"} 
-            </p>
-          </div>
+
+        <div style={sharedStyles.card}>
+          <h3 style={sharedStyles.cardTitle}>DM Sans</h3>
+          <p style={{ ...typography.body.md, marginBottom: '16px' }}>
+            Primary typeface for display, heading, body, and label text.
+          </p>
+          <p style={{ fontFamily: fontFamilies.display, fontSize: '32px', fontWeight: 600 }}>
+            Aa Bb Cc Dd Ee
+          </p>
+          <p style={{ fontFamily: fontFamilies.display, fontSize: '18px', marginTop: '8px' }}>
+            ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>
+            abcdefghijklmnopqrstuvwxyz<br/>
+            0123456789
+          </p>
         </div>
-        
+
+        <div style={{ ...sharedStyles.card, marginTop: '24px' }}>
+          <h3 style={sharedStyles.cardTitle}>System Monospace</h3>
+          <p style={{ ...typography.body.md, marginBottom: '16px' }}>
+            System monospace typeface for code blocks and technical content.
+          </p>
+          <code style={{ display: 'block', fontSize: '32px', background: 'transparent', fontFamily: fontFamilies.mono }}>
+            Aa Bb Cc Dd Ee
+          </code>
+          <code style={{ display: 'block', fontSize: '18px', marginTop: '8px', background: 'transparent', fontFamily: fontFamilies.mono }}>
+            ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>
+            abcdefghijklmnopqrstuvwxyz<br/>
+            0123456789
+          </code>
+        </div>
+
         <div style={{ ...sharedStyles.card, marginTop: '24px' }}>
           <h3 style={sharedStyles.cardTitle}>Specifications</h3>
           <SpecTable
             headers={['Token', 'Value', 'Usage']}
             rows={[
-              [<code>fontFamilies.display</code>, '"DM Sans", sans-serif', 'Display, headings, body text'],
+              [<code>fontFamilies.display</code>, '"DM Sans", sans-serif', 'Display, headings'],
               [<code>fontFamilies.body</code>, '"DM Sans", sans-serif', 'Body text, labels'],
-              [<code>fontFamilies.mono</code>, '"JetBrains Mono", monospace', 'Code, technical content'],
+              [<code>fontFamilies.mono</code>, 'ui-monospace, system', 'Code, technical content'],
             ]}
           />
         </div>
@@ -261,13 +259,13 @@ export default function TypographyPage() {
           </p>
 
           <div style={sharedStyles.card}>
-            <h3 style={sharedStyles.cardTitle}>Font Families</h3>
+            <h3 style={sharedStyles.cardTitle}>Font Family</h3>
             <SpecTable
               headers={['Token', 'Value', 'Usage']}
               rows={[
-                [<code key="fd">fontFamilies.display</code>, '"DM Sans", sans-serif', 'Display, headings, body text'],
+                [<code key="fd">fontFamilies.display</code>, '"DM Sans", sans-serif', 'Display, headings'],
                 [<code key="fb">fontFamilies.body</code>, '"DM Sans", sans-serif', 'Body text, labels'],
-                [<code key="fm">fontFamilies.mono</code>, '"JetBrains Mono", monospace', 'Code, technical content'],
+                [<code key="fm">fontFamilies.mono</code>, 'ui-monospace, system', 'Code, technical content'],
               ]}
             />
           </div>

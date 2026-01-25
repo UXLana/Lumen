@@ -2,13 +2,14 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html,
 body {
-  font-family: 'DM Sans', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -47,6 +48,36 @@ body {
   outline-offset: 2px;
 }
 
-code {
-  font-family: 'JetBrains Mono', monospace;
+/* SVG icon rendering optimizations */
+svg {
+  shape-rendering: geometricPrecision;
+  text-rendering: geometricPrecision;
+  fill-rule: evenodd;
+  clip-rule: evenodd;
+}
+
+/* Crisp icon rendering at all sizes */
+svg path,
+svg line,
+svg polyline,
+svg polygon,
+svg circle,
+svg rect,
+svg ellipse {
+  vector-effect: non-scaling-stroke;
+}
+
+/* Smooth transitions for icon color changes */
+svg[stroke="currentColor"] {
+  transition: color 0.15s ease;
+}
+
+code,
+pre,
+kbd,
+samp,
+table code,
+td code,
+p code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
 }

@@ -129,7 +129,7 @@ export const colors = {
 export const fontFamilies = {
   display: '"DM Sans", sans-serif',
   body: '"DM Sans", sans-serif',
-  mono: '"JetBrains Mono", "Fira Code", monospace',
+  mono: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
 } as const;
 
 export const fontWeights = {
@@ -706,37 +706,38 @@ export const button = {
     },
   },
 
-  // Typography per size (from Figma - DM Sans SemiBold)
+  // Typography per size (from Figma - DM Sans Regular)
   typography: {
     lg: {
       fontSize: '16px',
-      fontWeight: 600,
+      fontWeight: 400,
       lineHeight: '18px',
       letterSpacing: '-0.9px',
     },
     md: {
       fontSize: '14px',
-      fontWeight: 600,
+      fontWeight: 400,
       lineHeight: '16px',
-      letterSpacing: '-0.35px',
+      letterSpacing: '-0.9px',
     },
   },
 
   // Colors per emphasis level - LIGHT MODE (from Figma)
+  // High emphasis uses brand colors for consistency
   emphasis: {
     high: {
       enabled: {
-        background: '#13352C',
+        background: '#13352C', // colors.brand.primary
         text: '#FFFFFF',
         border: 'transparent',
       },
       hover: {
-        background: '#1A4A3D',
+        background: '#1A4A3D', // colors.brand.primaryLight
         text: '#FFFFFF',
         border: 'transparent',
       },
       pressed: {
-        background: '#0D2920',
+        background: '#0D2920', // colors.brand.primaryDark
         text: '#FFFFFF',
         border: 'transparent',
       },
@@ -921,8 +922,8 @@ export const button = {
     offset: '5px',
   },
 
-  // Border radius (from Figma - pill shape)
-  borderRadius: '9999px',
+  // Border radius (16px for primary buttons)
+  borderRadius: '16px',
 
   // Transition
   transition: '200ms ease-out',
@@ -1758,6 +1759,114 @@ export const pagination = {
 } as const;
 
 // =============================================================================
+// STEPPER TOKENS
+// =============================================================================
+
+export const stepper = {
+  // Step indicator (circular button)
+  step: {
+    size: '32px',
+    borderRadius: '50%',
+
+    // Colors per state
+    colors: {
+      completed: {
+        background: '#1B7F66',
+        text: '#FFFFFF',
+        border: 'transparent',
+      },
+      active: {
+        background: '#1B7F66',
+        text: '#FFFFFF',
+        border: 'transparent',
+      },
+      pending: {
+        background: '#FFFFFF',
+        text: 'rgba(0, 0, 0, 0.60)',
+        border: 'rgba(0, 0, 0, 0.15)',
+      },
+      disabled: {
+        background: '#FFFFFF',
+        text: 'rgba(0, 0, 0, 0.60)',
+        border: 'rgba(0, 0, 0, 0.15)',
+      },
+    },
+
+    // Typography for step number
+    typography: {
+      fontWeight: 600,
+      fontSize: '14px',
+      lineHeight: '18px',
+      letterSpacing: '-0.55px',
+    },
+  },
+
+  // Connector lines between steps
+  connector: {
+    width: '2px',
+
+    colors: {
+      completed: '#1B7F66',
+      pending: 'rgba(0, 0, 0, 0.15)',
+    },
+  },
+
+  // Step content area
+  content: {
+    paddingLeft: '16px',
+
+    // Label typography
+    label: {
+      active: {
+        fontSize: '16px',
+        fontWeight: 400,
+        lineHeight: '22px',
+        letterSpacing: '-0.35px',
+        color: 'rgba(0, 0, 0, 0.95)',
+      },
+      inactive: {
+        fontSize: '16px',
+        fontWeight: 400,
+        lineHeight: '22px',
+        letterSpacing: '-0.35px',
+        color: 'rgba(0, 0, 0, 0.60)',
+      },
+    },
+
+    // Metadata typography (optional subtitle)
+    metadata: {
+      fontSize: '14px',
+      fontWeight: 400,
+      lineHeight: '18px',
+      letterSpacing: '-0.3px',
+      color: 'rgba(0, 0, 0, 0.60)',
+    },
+  },
+
+  // Spacing
+  spacing: {
+    labelPaddingY: '21px',
+    contentGap: '16px',
+    buttonGap: '16px',
+  },
+
+  // Focus ring
+  focus: {
+    color: '#3086BF',
+    width: '3px',
+    offset: '5px',
+  },
+
+  // Hover state
+  hover: {
+    background: 'rgba(27, 127, 102, 0.08)',
+  },
+
+  // Transition
+  transition: '200ms ease-out',
+} as const;
+
+// =============================================================================
 // THEME EXPORT
 // =============================================================================
 
@@ -1788,6 +1897,7 @@ export const theme = {
   statsCard,
   productCard,
   pagination,
+  stepper,
 } as const;
 
 export type Theme = typeof theme;
