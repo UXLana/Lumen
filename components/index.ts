@@ -63,3 +63,7 @@ export type { PaginationProps } from './Pagination'
 // ListItem
 export { ListItem, List } from './ListItem'
 export type { ListItemProps, ListProps, ListItemLeftType, ListItemRightType, ListItemLines, ListItemStatus } from './ListItem'
+
+// Stepper
+export { Stepper, StepperStep, LinearStepper, NonLinearStepper, DefaultStepIndicator } from './Stepper'
+export type { StepperProps, StepperStepProps, StepItem, StepStatus, StepperVariant, LinearStepperProps, NonLinearStepperProps, StepIndicatorProps } from './Stepper'
