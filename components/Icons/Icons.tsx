@@ -869,32 +869,46 @@ export const IconStatusComplete: React.FC<IconProps> = (props) => (
 IconStatusComplete.displayName = 'IconStatusComplete'
 
 /**
- * IconStatusInProgress - Half-filled circle indicator
- * Used to indicate an in-progress step or task
+ * IconStatusInProgress - Half-filled circle
+ * Used to indicate an in-progress/active step or task
+ * Right half is filled at 30% opacity to convey partial completion
  */
 export const IconStatusInProgress: React.FC<IconProps> = (props) => (
   <BaseIcon {...props}>
     <circle cx="12" cy="12" r="9" />
-    <path
-      d="M12 3a9 9 0 0 1 0 18"
-      fill="currentColor"
-      fillOpacity="0.3"
-      stroke="none"
-    />
+    <path d="M12 3a9 9 0 0 1 0 18" fill="currentColor" fillOpacity="0.3" stroke="none" />
   </BaseIcon>
 )
 IconStatusInProgress.displayName = 'IconStatusInProgress'
 
 /**
- * IconStatusNotStarted - Empty circle outline
+ * IconStatusNotStarted - Dashed circle outline
  * Used to indicate a pending/not-started step or task
  */
 export const IconStatusNotStarted: React.FC<IconProps> = (props) => (
   <BaseIcon {...props}>
-    <circle cx="12" cy="12" r="9" />
+    <circle cx="12" cy="12" r="9" strokeDasharray="4 3" />
   </BaseIcon>
 )
 IconStatusNotStarted.displayName = 'IconStatusNotStarted'
+
+/**
+ * IconStatusDisabled - Dashed circle outline
+ * Used to indicate a disabled step or task
+ * A11y: strokeOpacity="0.6" ensures 3:1+ contrast ratio (WCAG 1.4.11)
+ */
+export const IconStatusDisabled: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <circle
+      cx="12"
+      cy="12"
+      r="9"
+      strokeDasharray="4 3"
+      strokeOpacity="0.6"
+    />
+  </BaseIcon>
+)
+IconStatusDisabled.displayName = 'IconStatusDisabled'
 
 // =============================================================================
 // BANNER ICONS (Contextual/Status Icons with Background)

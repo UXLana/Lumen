@@ -302,15 +302,15 @@ export default function StepperPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Non-Linear Status Icons</h3>
               <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Icons are inset in a circle with 2px grey border. Step button is 32px, inner icon container is 24px, icon paths are 20px.
+                Icons are centered inside a 32px circle with 2px border. The border color matches the connector line color (green for completed/active, grey for pending/disabled). The circle has a white background.
               </p>
               <SpecTable
-                headers={['Status', 'Icon', 'Icon Size', 'Container', 'Step Button', 'Icon Color', 'Border Color']}
+                headers={['Status', 'Icon', 'Icon Size', 'Circle Size', 'Border Color', 'Background', 'Icon Color']}
                 rows={[
-                  [<code key="completed">completed</code>, 'Checkmark', '20px', '24px', '32px', 'rgba(255, 255, 255, 0.95)', 'rgba(255, 255, 255, 0.3)'],
-                  [<code key="active">active</code>, 'Circular arrow', '20px', '24px', '32px', 'rgba(255, 255, 255, 0.95)', 'rgba(255, 255, 255, 0.3)'],
-                  [<code key="pending">pending</code>, 'Dashed circle', '20px', '24px', '32px', 'rgba(0, 0, 0, 0.6)', 'rgba(0, 0, 0, 0.15)'],
-                  [<code key="disabled">disabled</code>, 'Dashed circle', '20px', '24px', '32px', 'rgba(0, 0, 0, 0.6)', 'rgba(0, 0, 0, 0.15)'],
+                  [<code key="completed">completed</code>, 'Filled checkmark', '20px', '32px', stepperTokens.connector.colors.completed, '#FFFFFF', stepperTokens.connector.colors.completed],
+                  [<code key="active">active</code>, 'Half-filled circle', '20px', '32px', stepperTokens.connector.colors.completed, '#FFFFFF', stepperTokens.connector.colors.completed],
+                  [<code key="pending">pending</code>, 'Dashed circle', '20px', '32px', stepperTokens.connector.colors.pending, '#FFFFFF', 'rgba(0, 0, 0, 0.38)'],
+                  [<code key="disabled">disabled</code>, 'Dashed circle (faded)', '20px', '32px', stepperTokens.connector.colors.pending, '#FFFFFF', 'rgba(0, 0, 0, 0.38)'],
                 ]}
               />
             </div>
@@ -383,8 +383,8 @@ export default function StepperPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Default Non-Linear</h3>
               <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Uses 12x12px circle indicators: black with 10% opacity for pending states,
-                white with 90% opacity for completed/active states.
+                Uses status icons (completed, in-progress, not-started) inside a 32px circle with 2px border.
+                Border color matches connector line: green for completed/active, grey for pending/disabled.
               </p>
               <Playground
                 preview={

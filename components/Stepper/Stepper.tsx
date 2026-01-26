@@ -11,6 +11,7 @@ import {
   IconStatusComplete,
   IconStatusInProgress,
   IconStatusNotStarted,
+  IconStatusDisabled,
 } from '@/components/Icons/Icons'
 
 // =============================================================================
@@ -68,43 +69,45 @@ export interface StepIndicatorProps {
  * Default circle indicator for non-linear stepper with status icons
  *
  * Figma specs:
- * - Outer container: 24px (sits inside 32px step button)
- * - Inner icon: 20px (~83% of container, with 8.33% inset)
- * - Icons have 2px grey border for inset effect
+ * - Outer container: 32px with 2px border (matches connector line width)
+ * - Inner icon: 20px centered within the circle
+ * - Border color matches connector: green (#1B7F66) for completed/active, grey for pending/disabled
+ * - Background is white to create a "window" effect with connector passing behind
  */
 export function DefaultStepIndicator({
   status,
   isHovered = false,
   isFocused = false,
-  size = 24
+  size = 32
 }: StepIndicatorProps) {
   const isCompleted = status === 'completed'
   const isActive = status === 'active'
   const isDisabled = status === 'disabled'
   const isPending = status === 'pending'
 
-  // Icon color based on status (from Figma)
-  const getIconColor = () => {
-    if (isCompleted || isActive) {
-      return 'rgba(255, 255, 255, 0.95)'
-    }
-    return 'rgba(0, 0, 0, 0.6)'
-  }
-
-  // Border color - grey for the inset effect (from Figma)
+  // Border color matches connector line color
   const getBorderColor = () => {
     if (isCompleted || isActive) {
-      return 'rgba(255, 255, 255, 0.3)'
+      return stepper.connector.colors.completed // #1B7F66 green
     }
-    return 'rgba(0, 0, 0, 0.15)'
+    return stepper.connector.colors.pending // grey
+  }
+
+  // Icon color based on status
+  const getIconColor = () => {
+    if (isCompleted) {
+      return stepper.connector.colors.completed // green for completed checkmark
+    }
+    if (isActive) {
+      return stepper.connector.colors.completed // green for in-progress
+    }
+    return 'rgba(0, 0, 0, 0.38)' // grey for pending/disabled
   }
 
   // Render the appropriate icon based on status
-  // Using design system icons: IconStatusComplete, IconStatusInProgress, IconStatusNotStarted
   const renderIcon = () => {
     const iconColor = getIconColor()
-    // Icons use 'md' size (20px) from design system
-    const iconSize = Math.round(size * 0.833) // 20px when size is 24px
+    const iconSize = 20 // Fixed 20px for the status icons
 
     if (isCompleted) {
       return <IconStatusComplete size={iconSize} style={{ color: iconColor }} />
@@ -112,7 +115,10 @@ export function DefaultStepIndicator({
     if (isActive) {
       return <IconStatusInProgress size={iconSize} style={{ color: iconColor }} />
     }
-    // pending or disabled
+    if (isDisabled) {
+      return <IconStatusDisabled size={iconSize} style={{ color: iconColor }} />
+    }
+    // pending
     return <IconStatusNotStarted size={iconSize} style={{ color: iconColor }} />
   }
 
@@ -123,11 +129,13 @@ export function DefaultStepIndicator({
         height: `${size}px`,
         borderRadius: '50%',
         border: `2px solid ${getBorderColor()}`,
+        backgroundColor: '#FFFFFF',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         boxSizing: 'border-box',
-        transition: 'border-color 0.2s ease',
+        position: 'relative',
+        zIndex: 2,
       }}
       aria-hidden="true"
     >
@@ -323,13 +331,24 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
 
     const stepColors = getStepColors()
 
-    // Container styles
+    // Step is clickable if onClick is provided and step is not disabled
+    // Active steps with action buttons are still clickable (user can click other steps)
+    const isClickable = Boolean(onClick && !isDisabled)
+
+    // Container styles with hover background for clickable steps
     const containerStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'flex-start',
       position: 'relative',
-      width: '100%',
-      cursor: onClick && !isDisabled ? 'pointer' : 'default',
+      width: 'calc(100% + 16px)',
+      marginLeft: '-8px',
+      marginRight: '-8px',
+      paddingLeft: '8px',
+      paddingRight: '8px',
+      borderRadius: '8px',
+      cursor: isClickable ? 'pointer' : 'default',
+      transition: 'background-color 0.15s ease',
+      backgroundColor: isClickable && isHovered ? 'rgba(0, 0, 0, 0.06)' : 'transparent',
       ...style,
     }
 
@@ -367,23 +386,35 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
     }
 
     // Step indicator styles
-    const stepIndicatorStyles: React.CSSProperties = {
-      position: 'absolute',
-      left: 0,
-      top: '16px',
-      width: stepper.step.size,
-      height: stepper.step.size,
-      borderRadius: '50%',
-      backgroundColor: stepColors.background,
-      border: stepColors.border !== 'transparent' ? `2px solid ${stepColors.border}` : 'none',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      transition: stepper.transition,
-      ...(isHovered && onClick && !isDisabled && {
-        backgroundColor: isCompleted || isActive ? stepColors.background : stepper.hover.background,
-      }),
-    }
+    // For non-linear variant, the DefaultStepIndicator handles its own styling
+    // For linear variant, we use the traditional colored circle with number/checkmark
+    const stepIndicatorStyles: React.CSSProperties = isNonLinear
+      ? {
+          // Non-linear: transparent container, DefaultStepIndicator provides the circle
+          position: 'absolute',
+          left: 0,
+          top: '16px',
+          width: stepper.step.size,
+          height: stepper.step.size,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2,
+        }
+      : {
+          // Linear: colored circle with number or checkmark
+          position: 'absolute',
+          left: 0,
+          top: '16px',
+          width: stepper.step.size,
+          height: stepper.step.size,
+          borderRadius: '50%',
+          backgroundColor: stepColors.background,
+          border: stepColors.border !== 'transparent' ? `2px solid ${stepColors.border}` : 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }
 
     // Step number/icon styles
     const stepNumberStyles: React.CSSProperties = {
@@ -537,13 +568,13 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
     }
 
     const handleClick = () => {
-      if (onClick && !isDisabled) {
+      if (isClickable && onClick) {
         onClick()
       }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (onClick && !isDisabled && (e.key === 'Enter' || e.key === ' ')) {
+      if (isClickable && onClick && (e.key === 'Enter' || e.key === ' ')) {
         e.preventDefault()
         onClick()
       }
@@ -552,7 +583,7 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
     // Render the step indicator content
     const renderIndicatorContent = () => {
       if (isNonLinear) {
-        // Non-linear: Use custom indicator component or default circle
+        // Non-linear: Use custom indicator component or default circle with status icons
         if (customIcon) {
           return customIcon
         }
@@ -561,7 +592,7 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
             status={status}
             isHovered={isHovered}
             isFocused={focused}
-            size={24}
+            size={32}
           />
         )
       }
@@ -602,21 +633,23 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onFocus={(e) => {
-          if (onClick && !isDisabled) {
+          if (isClickable) {
             // WCAG 2.4.7 & 2.4.11: Visible focus indicator with sufficient contrast
             e.currentTarget.style.outline = `3px solid ${stepper.focus.color}`
             e.currentTarget.style.outlineOffset = '2px'
           }
         }}
         onBlur={(e) => {
-          e.currentTarget.style.outline = 'none'
-          e.currentTarget.style.outlineOffset = '0'
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+            e.currentTarget.style.outline = 'none'
+            e.currentTarget.style.outlineOffset = '0'
+          }
         }}
-        role={onClick ? 'button' : undefined}
-        tabIndex={onClick && !isDisabled ? 0 : undefined}
+        role={isClickable ? 'button' : undefined}
+        tabIndex={isClickable ? 0 : undefined}
         aria-disabled={isDisabled}
         aria-current={isActive ? 'step' : undefined}
-        aria-label={onClick ? getAccessibleLabel() : undefined}
+        aria-label={isClickable ? getAccessibleLabel() : undefined}
       >
         {/* Focus ring */}
         {focused && <span style={focusRingStyles} aria-hidden="true" />}
@@ -796,6 +829,10 @@ export function Stepper({
     border: 0,
   }
 
+  const safeActiveStep =
+    steps.length > 0 ? Math.min(Math.max(activeStep, 0), steps.length - 1) : 0
+  const liveRegionLabel = steps[safeActiveStep]?.label ?? ''
+
   return (
     <div
       className={className}
@@ -809,7 +846,8 @@ export function Stepper({
         aria-live="polite"
         aria-atomic="true"
       >
-        Step {activeStep + 1} of {steps.length}: {steps[activeStep]?.label}
+        Step {steps.length > 0 ? safeActiveStep + 1 : 0} of {steps.length}
+        {liveRegionLabel ? `: ${liveRegionLabel}` : ''}
       </div>
       <ol style={{ listStyle: 'none', padding: 0, margin: 0, width: '100%' }}>
         {steps.map((step, index) => {
