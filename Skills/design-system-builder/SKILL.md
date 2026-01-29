@@ -1,257 +1,397 @@
 ---
 name: design-system-builder
-description: Build and maintain the MTR Design System shell, documentation UI, and token visualization pages. Use this skill when working on the design system infrastructure itself - navigation, layout, shared components, or token pages. This skill orchestrates integration of icons and components created by other skills.
+description: Adds components and foundations to the MTR Design System. Orchestrates icon-generator, component-generator, and frontend-design. Manages the Handover Protocol to ensure code and documentation stay in sync via the Council of Agents.
 ---
 
-# Design System Builder
+# Design System Builder (Orchestrator)
 
-Build and maintain the MTR Design System documentation shell, navigation, and token visualization pages.
+The Project Manager for MTR Design System. Coordinates workers, manages task state, and enforces the Handover Protocol.
 
-## Scope
+---
 
-This skill owns:
-- **Shell/Layout**: `StyleguideLayout`, sidebar navigation, header
-- **Shared Components**: `CodeBlock`, `SpecTable`, `Playground`, `PillButton`
-- **Navigation**: `navSections` structure, routing
-- **Token Pages**: `/design-system/colors`, `/typography`, `/spacing`, etc.
-- **Integration Patterns**: How icons and components get added to the system
+## Part 1: Core Functionality (Original)
 
-This skill does NOT own:
-- Actual icon SVG creation → use `icon-generator`
-- Actual component implementation → use `component-generator`
+### What This Skill Does
 
-## File Ownership
+1. **Adds new components** to the design system with full integration
+2. **Updates existing components** with new props, variants, or behaviors
+3. **Adds foundations** (tokens, patterns, utilities)
+4. **Orchestrates worker skills** in the correct sequence
+5. **Integrates outputs** into the documentation site
 
-```
-/app/design-system/
-  shared.tsx              ← THIS SKILL OWNS
-  page.tsx                ← THIS SKILL OWNS (landing page)
-  colors/page.tsx         ← THIS SKILL OWNS
-  typography/page.tsx     ← THIS SKILL OWNS
-  spacing/page.tsx        ← THIS SKILL OWNS
-  radius/page.tsx         ← THIS SKILL OWNS
-  shadows/page.tsx        ← THIS SKILL OWNS
-  breakpoints/page.tsx    ← THIS SKILL OWNS
-  icons/page.tsx          ← THIS SKILL OWNS (icon gallery, not icons themselves)
-```
+### Worker Skills Orchestrated
 
-## Navigation Structure
+| Skill | Purpose | When Invoked |
+|-------|---------|--------------|
+| `/frontend-design` | UX patterns, visual styling | First—establishes design direction |
+| `/icon-generator` | SVG icon assets | When component needs icons |
+| `/component-generator` | React/TypeScript code | After design, writes `.tsx` |
 
-The sidebar navigation is defined in `shared.tsx`:
+### Integration Points
 
-```tsx
-export const navSections = [
-  {
-    id: 'foundations',
-    title: 'Foundations',
-    items: [
-      { id: 'colors', label: 'Colors', href: '/design-system/colors' },
-      { id: 'typography', label: 'Typography', href: '/design-system/typography' },
-      { id: 'spacing', label: 'Spacing', href: '/design-system/spacing' },
-      { id: 'radius', label: 'Border Radius', href: '/design-system/radius' },
-      { id: 'shadows', label: 'Shadows', href: '/design-system/shadows' },
-      { id: 'breakpoints', label: 'Breakpoints', href: '/design-system/breakpoints' },
-      { id: 'icons', label: 'Icons', href: '/design-system/icons' },
-    ],
-  },
-  {
-    id: 'components',
-    title: 'Components',
-    items: [
-      // Components are added here by component-generator
-      { id: 'avatar', label: 'Avatar', href: '/components/avatar' },
-      { id: 'banner', label: 'Banner', href: '/components/banner' },
-      { id: 'button', label: 'Button', href: '/components/button' },
-      // ...
-    ],
-  },
-]
+After workers complete, Builder handles integration into the docs site:
+
+#### 1. Icon Map (`iconMap.ts`)
+```typescript
+// Add new icons to the map
+export const iconMap = {
+  // ... existing icons
+  IconNewComponent: IconNewComponent,
+};
 ```
 
-## Adding a New Component to Navigation
-
-When `component-generator` creates a new component, update `shared.tsx`:
-
-1. Add to `navSections.components.items`:
-```tsx
-{ id: 'tooltip', label: 'Tooltip', href: '/components/tooltip' },
-```
-
-2. Add icon to `iconMap` (if custom icon needed):
-```tsx
-const iconMap: Record<string, React.FC> = {
-  // ...existing
-  tooltip: IconTooltip,
+#### 2. Navigation Sections (`navSections.ts`)
+```typescript
+// Add component to appropriate nav section
+{
+  title: 'Components',
+  items: [
+    // ... existing items
+    { name: 'NewComponent', href: '/components/new-component' },
+  ]
 }
 ```
 
-## StyleguideLayout
+#### 3. Component Items (`componentItems.ts`)
+```typescript
+// Register component for docs
+{
+  name: 'NewComponent',
+  description: 'Brief description of the component',
+  icon: IconNewComponent,
+  status: 'stable', // or 'beta', 'deprecated'
+}
+```
 
-The main layout wrapper for all documentation pages:
+#### 4. Documentation Page
+Create MDX file at `src/pages/components/new-component.mdx` with:
+- Overview and description
+- Props table
+- Usage examples (Preview blocks)
+- Best practices
+- Accessibility notes
 
-```tsx
-<StyleguideLayout
-  title="Page Title"
-  description="Brief description of this page."
-  activeId="page-id"  // Must match navSections item id
-  activeTab={activeTab}
-  onTabChange={setActiveTab}
-  tabs={[
-    { id: 'overview', label: 'Overview' },
-    { id: 'specs', label: 'Specifications' },
-    { id: 'code', label: 'Code' },
-  ]}
+### Site Infrastructure
+
+The Builder understands and maintains these key files:
+
+| File | Purpose |
+|------|---------|
+| `StyleguideLayout.tsx` | Main layout wrapper for all doc pages |
+| `CodeBlock.tsx` | Syntax-highlighted code display |
+| `SpecTable.tsx` | Props/tokens specification tables |
+| `Playground.tsx` | Interactive component demos |
+| `Preview.tsx` | Static component examples |
+
+### Temp Component Mode
+
+For rapid iteration, Builder can create temporary components:
+
+```
+/build temp Button --variant=loading
+```
+
+This creates a working prototype without full integration, useful for:
+- Testing ideas quickly
+- Stakeholder demos
+- Design validation
+
+### Component Checklist
+
+Before marking a component complete, verify:
+
+- [ ] Component code is typed and functional
+- [ ] All variants and states implemented
+- [ ] Icons generated (if needed)
+- [ ] Token compliance verified
+- [ ] Props table documented
+- [ ] Usage examples provided
+- [ ] Accessibility considered
+- [ ] Navigation updated
+- [ ] Icon map updated (if applicable)
+
+---
+
+## Part 2: Council Architecture (v2.1 Extension)
+
+This section extends the Builder with automated task management and multi-agent coordination.
+
+### The Council of Design
+
+Builder acts as **Orchestrator** for specialized agents:
+
+| Role | Skill | Responsibility |
+|------|-------|----------------|
+| **Orchestrator** | `design-system-builder` (this) | Project manager. Creates tasks, manages queue. |
+| **Auditor** | `design-system-librarian` | Syncs code to docs, validates tokens. |
+| **Creative** | `design-system-storyteller` | Writes realistic usage examples. |
+| **QA** | `design-system-guard` | Final semantic and accessibility checks. |
+| **Advisors** | `design-system-perspectives` | Surfaces tradeoffs before building (optional). |
+
+### The Shared Brain
+
+All agents read/write to `_design_task.md` to maintain state:
+
+```markdown
+# Active Design Task: [Component Name]
+**Status:** [Analyzing | Building | Syncing Docs | Reviewing | Complete]
+**Last Touch:** [Agent Name] @ [Timestamp]
+
+## 0. Perspectives (Pre-Build Analysis)
+[Only present if perspectives were invoked]
+
+## 1. Librarian's Audit (The Technical Truth)
+- [ ] **Prop Discrepancies:** ...
+- [ ] **Token Violations:** ...
+
+## 2. Storyteller's Gaps (The Creative Needs)
+- [ ] **Missing Examples:** ...
+
+## 3. Handover Log
+- [x] Builder modified `Component.tsx` (14:02)
+- [ ] Librarian sync initiated...
+```
+
+### Task System
+
+For larger projects, Builder creates task files:
+
+```
+_tasks/
+  _index.md              # Dashboard: all components & statuses
+  _template.task.md      # Template for new tasks
+  Button.task.md         # Active task for Button
+  Card.task.md           # Active task for Card
+```
+
+### The Handover Protocol
+
+**Golden Rule:** No skill modifies a `.tsx` file without triggering the cleanup crew.
+
+```
+User Request
+     │
+     ▼
+┌─────────────────────────────────────┐
+│  BUILDER: Analyze & Plan            │
+│  - New component or update?         │
+│  - Risky? → invoke perspectives     │
+│  - Create _design_task.md           │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────┐
+│  BUILDER: Execute Workers           │
+│  1. /frontend-design (UX patterns)  │
+│  2. /icon-generator (if needed)     │
+│  3. /component-generator (code)     │
+│  4. Integration (this skill):       │
+│     - Update iconMap                │
+│     - Update navSections            │
+│     - Update componentItems         │
+│     - Create doc page               │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────┐
+│  HANDOVER: Log & Trigger            │
+│  - Log "Code modified" to task file │
+│  - Update status → 🔄 Syncing       │
+│  - Invoke /design-system-librarian  │
+└──────────────┬──────────────────────┘
+               │
+               ▼
+┌─────────────────────────────────────┐
+│  LIBRARIAN → STORYTELLER → GUARD    │
+│  (Automated chain continues)        │
+└─────────────────────────────────────┘
+```
+
+### Risk Detection (Optional Perspectives)
+
+Before building, assess if request is "risky":
+
+| Trigger | Invoke Perspectives? |
+|---------|---------------------|
+| New component API design | ✅ Yes |
+| Breaking changes to existing API | ✅ Yes |
+| Token architecture changes | ✅ Yes |
+| Ambiguous requirements | ✅ Yes |
+| Adding prop to existing component | ❌ No |
+| Styling tweaks within tokens | ❌ No |
+| Bug fixes | ❌ No |
+| Documentation-only updates | ❌ No |
+
+If risky:
+```
+1. Invoke /design-system-perspectives
+2. Wait for user confirmation
+3. Then proceed to workers
+```
+
+### Escalation Handling
+
+If any agent raises an issue:
+
+| Level | Action |
+|-------|--------|
+| **WARN** | Auto-fix applied, log in task file, continue |
+| **BLOCK** | Halt queue, surface options to user, wait for decision |
+| **CRITICAL** | Halt immediately, flag dashboard, require manual review |
+
+### Status Icons
+
+| Icon | Status | Meaning |
+|------|--------|---------|
+| 🚧 | Building | Code being written |
+| 🔄 | Syncing | Librarian updating docs |
+| 📝 | Examples | Storyteller filling gaps |
+| 🔍 | Reviewing | Guard running checks |
+| ⚠️ | Blocked | Escalation needs human input |
+| ✅ | Complete | All checks passed |
+
+---
+
+## System Instructions
+
+### When invoked:
+
+1. **Analyze the request**
+   - Is this a new component, update, or foundation?
+   - Is this risky/ambiguous? (see Risk Detection)
+   - What workers are needed?
+
+2. **If risky:** Invoke `/design-system-perspectives` and wait for confirmation
+
+3. **Create/update task file**
+   - Initialize `_design_task.md` with status: "Building"
+   - Log the request and scope
+
+4. **Execute workers in sequence**
+   - `/frontend-design` for UX patterns
+   - `/icon-generator` for icons (if needed)
+   - `/component-generator` for React code
+
+5. **Handle integration**
+   - Update iconMap (if new icons)
+   - Update navSections
+   - Update componentItems
+   - Create/update MDX documentation page
+
+6. **Execute Handover Protocol (CRITICAL)**
+   - Log "Code modified" to task file
+   - Update status → "Syncing Docs"
+   - Invoke `/design-system-librarian sync [Component]`
+   - Report to user: "Build complete. Documentation sync started..."
+
+7. **Monitor chain completion**
+   - Librarian → Storyteller → Guard
+   - Report final status to user
+
+### Response format:
+
+```
+Starting work on [Component] [new/update].
+
+**Task file:** `_design_task.md` created
+
+**Scope identified:**
+- [Requirement 1]
+- [Requirement 2]
+
+**Queue:**
+1. ⏳ frontend-design (starting)
+2. 🔒 icon-generator
+3. 🔒 component-generator
+4. 🔒 integration
+5. 🔒 librarian sync
+6. 🔒 storyteller
+7. 🔒 guard
+
+Building...
+```
+
+---
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/build [component]` | Full build with Handover Protocol |
+| `/build temp [component]` | Quick prototype without full integration |
+| `/build --skip-perspectives` | Skip risk analysis, proceed directly |
+| `/build --skip-handover` | Build only, no doc sync (use sparingly) |
+| `/build status` | Show current task queue and status |
+
+---
+
+## Example Interaction
+
+**User:** "Add a Tooltip component with arrow positioning"
+
+**Builder:**
+
+> Before I proceed, this is a new component API—let me surface the tradeoffs.
 >
-  {/* Tab content */}
-</StyleguideLayout>
-```
+> [Invokes /design-system-perspectives]
+>
+> **Council Assessment:**
+> - ✅ Upside: Fills documented gap, enables onboarding flows
+> - ⚠️ Risk: Arrow positioning has 12+ edge cases, z-index conflicts likely
+> - ⚖️ Tradeoff: Build custom (more control) vs wrap Radix (faster)
+>
+> Recommendation: Proceed with caution—scope to 4 positions for MVP
+>
+> Should I continue with the build?
 
-## Shared Components
+**User:** "Yes, proceed with 4 positions"
 
-### CodeBlock
-```tsx
-<CodeBlock>{`const code = "here"`}</CodeBlock>
-```
-- Syntax highlighting
-- Copy button
-- Monospace font
+**Builder:**
 
-### SpecTable
-```tsx
-<SpecTable
-  headers={['Property', 'Value', 'Notes']}
-  rows={[
-    ['Height', '48px', 'Large variant'],
-  ]}
-/>
-```
+> Starting work on Tooltip (new component).
+>
+> **Task file:** `_design_task.md` created
+>
+> **Scope confirmed:**
+> - Tooltip component with content prop
+> - 4 arrow positions: top, right, bottom, left
+> - Trigger on hover/focus
+> - Uses existing motion tokens
+>
+> **Queue:**
+> 1. ⏳ frontend-design (starting)
+> 2. 🔒 component-generator
+> 3. 🔒 integration
+> 4. 🔒 librarian sync
+> 5. 🔒 storyteller
+> 6. 🔒 guard
+>
+> Building...
 
-### Playground
-```tsx
-<Playground
-  preview={<Component />}
-  code={`<Component />`}
-  previewBackground={colors.neutral[50]}
-/>
-```
-- Toggle between Preview and Code views
-- Uses SegmentedControl
+[After build completes]
 
-### PillButton
-```tsx
-<PillButton isActive={selected} onClick={() => setSelected(true)}>
-  Option
-</PillButton>
-```
-- For property selectors in demos
+> Build complete. `Tooltip.tsx` created.
+>
+> **Integration done:**
+> - ✅ Added to navSections
+> - ✅ Added to componentItems
+> - ✅ Created `tooltip.mdx`
+>
+> **Queue:**
+> 1. ✅ frontend-design
+> 2. ✅ component-generator
+> 3. ✅ integration
+> 4. ⏳ librarian sync (starting)
+> 5. 🔒 storyteller
+> 6. 🔒 guard
+>
+> Documentation sync started...
 
-## Shared Styles
-
-```tsx
-import { sharedStyles } from '../shared'
-
-// Section container
-<section style={sharedStyles.section}>
-
-// Headings
-<h2 style={sharedStyles.sectionTitle}>Title</h2>
-<p style={sharedStyles.sectionDescription}>Description</p>
-
-// Cards
-<div style={sharedStyles.card}>
-
-// Tables
-<table style={sharedStyles.table}>
-  <th style={sharedStyles.th}>
-  <td style={sharedStyles.td}>
-
-// Layout
-<div style={sharedStyles.grid}>
-<div style={sharedStyles.row}>
-```
-
-## Token Page Template
-
-For foundation pages (colors, typography, etc.):
-
-```tsx
-'use client'
-
-import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../shared'
-import { colors, tokenName } from '@/styles/design-tokens'
-
-export default function TokenNamePage() {
-  const [activeTab, setActiveTab] = useState('overview')
-
-  return (
-    <StyleguideLayout
-      title="Token Name"
-      description="Description of this token category."
-      activeId="token-id"
-      activeTab={activeTab}
-      onTabChange={setActiveTab}
-      tabs={[
-        { id: 'overview', label: 'Overview' },
-        { id: 'specs', label: 'Specifications' },
-        { id: 'code', label: 'Code' },
-      ]}
-    >
-      {activeTab === 'overview' && (
-        <>
-          {/* Visual examples of tokens */}
-        </>
-      )}
-
-      {activeTab === 'specs' && (
-        <>
-          {/* Token values table */}
-          <SpecTable
-            headers={['Token', 'Value', 'Usage']}
-            rows={[
-              ['token.name', '#value', 'Description'],
-            ]}
-          />
-        </>
-      )}
-
-      {activeTab === 'code' && (
-        <>
-          <CodeBlock>{`import { tokenName } from '@/styles/design-tokens'`}</CodeBlock>
-        </>
-      )}
-    </StyleguideLayout>
-  )
-}
-```
-
-## Integration Checklist
-
-When a new icon is added (by `icon-generator`):
-- [ ] Icon added to `/components/Icons/Icons.tsx`
-- [ ] Icon added to `iconCategories` in `/app/design-system/icons/page.tsx`
-- [ ] Icon added to code imports list in icons page
-
-When a new component is added (by `component-generator`):
-- [ ] Component created in `/components/ComponentName/`
-- [ ] Component exported from `/components/index.ts`
-- [ ] Navigation updated in `shared.tsx` → `navSections.components.items`
-- [ ] Icon added to `iconMap` in `shared.tsx` (optional)
-- [ ] Documentation page created at `/app/components/component-name/page.tsx`
-
-## Design Tokens Reference
-
-The design system uses tokens from `@/styles/design-tokens`. See `references/design-tokens.md` for complete inventory.
-
-Quick reference:
-- `colors.brand.primary` - #13352C
-- `colors.text.highEmphasis` - rgba(0,0,0,0.95)
-- `borderRadius.md` - 8px
-- `spacing[4]` - 16px
-- `typography.heading.h3` - heading style object
-- `transitionPresets.default` - 200ms ease-out
+---
 
 ## Reference Files
 
-- **Design tokens:** See `references/design-tokens.md`
-- **Documentation patterns:** See `references/documentation-patterns.md`
+- **Architecture:** `Agentic_architecture.md`
+- **Task template:** `_tasks/_template.task.md`
+- **Dashboard:** `_tasks/_index.md`
+- **Tokens:** `references/tokens.md` (via brand-tokens-translator)
