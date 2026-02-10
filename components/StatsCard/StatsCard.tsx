@@ -79,7 +79,7 @@ export function StatsCard({
 
   // Default icon (box/cube)
   const defaultIcon = (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <path d="M21 16V8C20.9996 7.6493 20.9071 7.30483 20.7315 7.00017C20.556 6.69552 20.3037 6.44179 20 6.26L13 2.26C12.696 2.07787 12.3511 1.98152 12 1.98152C11.6489 1.98152 11.304 2.07787 11 2.26L4 6.26C3.69626 6.44179 3.44398 6.69552 3.26846 7.00017C3.09294 7.30483 3.00036 7.6493 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9998C3.44398 17.3045 3.69626 17.5582 4 17.74L11 21.74C11.304 21.9221 11.6489 22.0185 12 22.0185C12.3511 22.0185 12.696 21.9221 13 21.74L20 17.74C20.3037 17.5582 20.556 17.3045 20.7315 16.9998C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M3.27002 6.96L12 12.01L20.73 6.96" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M12 22.08V12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -136,7 +136,7 @@ export function StatsCardGroup({
     backgroundColor: 'transparent',
     border: 'none',
     cursor: 'pointer',
-    color: colors.text.lowEmphasis,
+    color: colors.text.lowEmphasis.onLight,
   }
 
   const editIcon = (

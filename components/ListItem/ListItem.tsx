@@ -6,7 +6,8 @@ import {
   fontFamilies,
   spacing,
   borderRadius,
-  transitionPresets
+  transitionPresets,
+  avatar,
 } from '@/styles/design-tokens'
 import { Avatar, type AvatarProps } from '@/components/Avatar/Avatar'
 
@@ -181,11 +182,11 @@ const listItem = {
       nonActionable: 'rgba(0, 0, 0, 0.38)',
     },
     divider: 'rgba(0, 0, 0, 0.12)',
-    focus: '#3086BF',
+    focus: avatar.focus.color,
     toggle: {
       track: 'rgba(0, 0, 0, 0.38)',
       trackActive: colors.brand.primary,
-      thumb: '#FFFFFF',
+      thumb: colors.surface.default,
     },
   },
 

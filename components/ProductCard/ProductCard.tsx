@@ -70,7 +70,7 @@ export function ProductCard({
     minWidth: productCard.minWidth,
     border: `${productCard.border.width} solid ${isHovered ? productCard.hover.borderColor : productCard.border.color}`,
     borderRadius: productCard.border.radius,
-    backgroundColor: colors.neutral[0],
+    backgroundColor: colors.surface.light,
     cursor: onClick ? 'pointer' : 'default',
     transition: `all ${transitionPresets.default}`,
     boxShadow: isHovered ? productCard.hover.shadow : 'none',
@@ -170,18 +170,18 @@ export function ProductCard({
     height: '28px',
     padding: '0 12px',
     borderRadius: '6px',
-    backgroundColor: colors.neutral[100],
+    backgroundColor: colors.surface.lightDarker,
     fontFamily: fontFamilies.body,
     fontSize: '12px',
     fontWeight: 500,
     lineHeight: '16px',
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
   }
 
   const outlinedTagStyle: React.CSSProperties = {
     ...tagStyle,
     backgroundColor: 'transparent',
-    border: `1px solid ${colors.border.light}`,
+    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
   }
 
   const marketsContainerStyle: React.CSSProperties = {
@@ -233,7 +233,7 @@ export function ProductCard({
 
   // Placeholder icon (box)
   const placeholderIcon = (
-    <svg style={placeholderIconStyle} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg style={placeholderIconStyle} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M42 32V16C41.9993 15.2986 41.8142 14.6097 41.463 14.0003C41.1119 13.391 40.6075 12.8836 40 12.52L26 4.52C25.392 4.17574 24.7022 3.9931 24 3.9931C23.2978 3.9931 22.608 4.17574 22 4.52L8 12.52C7.39253 12.8836 6.88795 13.391 6.53692 14.0003C6.18588 14.6097 6.00072 15.2986 6 16V32C6.00072 32.7014 6.18588 33.3903 6.53692 33.9997C6.88795 34.609 7.39253 35.1164 8 35.48L22 43.48C22.608 43.8243 23.2978 44.0069 24 44.0069C24.7022 44.0069 25.392 43.8243 26 43.48L40 35.48C40.6075 35.1164 41.1119 34.609 41.463 33.9997C41.8142 33.3903 41.9993 32.7014 42 32Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M6.54004 13.92L24 24.02L41.46 13.92" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M24 44.16V24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -314,6 +314,7 @@ export function ProductCard({
         onClick={onClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        aria-label={`View ${brand} ${name}`}
       >
         {content}
       </button>

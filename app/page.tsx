@@ -18,14 +18,14 @@ export default function Home() {
       }}>
         <h1 style={{
           ...typography.display.xl,
-          color: colors.text.highEmphasisOnDark,
+          color: colors.text.highEmphasis.onDark,
           marginBottom: '16px',
         }}>
           MTR Design System
         </h1>
         <p style={{
           ...typography.body.lg,
-          color: colors.text.mediumEmphasisOnDark,
+          color: colors.text.lowEmphasis.onDark,
           marginBottom: '48px',
         }}>
           Core Library — Design tokens, typography, colors, and more
@@ -37,7 +37,7 @@ export default function Home() {
             alignItems: 'center',
             gap: '8px',
             padding: '16px 32px',
-            background: colors.neutral[0],
+            background: colors.surface.default,
             color: colors.brand.primary,
             borderRadius: '12px',
             textDecoration: 'none',

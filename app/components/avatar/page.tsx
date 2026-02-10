@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { Avatar, AvatarGroup, AvatarSize, AvatarColor } from '@/components'
 import { colors, typography, avatar, borderRadius } from '@/styles/design-tokens'
 
@@ -65,7 +65,11 @@ export default function AvatarPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Avatar, AvatarGroup } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { Avatar, AvatarGroup } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Avatar, AvatarGroup } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -128,7 +132,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
   compact
 />`}
                     previewPadding="56px 24px"
-                    previewBackground={demoOnDark && avatarCount === 1 ? colors.brand.primary : colors.neutral[50]}
+                    previewBackground={demoOnDark && avatarCount === 1 ? colors.brand.primary : colors.surface.paper}
                   />
                 </div>
 
@@ -168,7 +172,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                             style={{
                               width: '32px',
                               height: '32px',
-                              border: `1px solid ${colors.border.light}`,
+                              border: `1px solid ${colors.stroke.light}`,
                               borderRadius: borderRadius.md,
                               background: 'white',
                               cursor: avatarCount <= 1 ? 'not-allowed' : 'pointer',
@@ -191,7 +195,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                             style={{
                               width: '32px',
                               height: '32px',
-                              border: `1px solid ${colors.border.light}`,
+                              border: `1px solid ${colors.stroke.light}`,
                               borderRadius: borderRadius.md,
                               background: 'white',
                               cursor: avatarCount >= 8 ? 'not-allowed' : 'pointer',
@@ -221,7 +225,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                               style={{
                                 width: '32px',
                                 height: '32px',
-                                border: `1px solid ${colors.border.light}`,
+                                border: `1px solid ${colors.stroke.light}`,
                                 borderRadius: borderRadius.md,
                                 background: 'white',
                                 cursor: maxVisible <= 1 ? 'not-allowed' : 'pointer',
@@ -244,7 +248,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                               style={{
                                 width: '32px',
                                 height: '32px',
-                                border: `1px solid ${colors.border.light}`,
+                                border: `1px solid ${colors.stroke.light}`,
                                 borderRadius: borderRadius.md,
                                 background: 'white',
                                 cursor: maxVisible >= avatarCount ? 'not-allowed' : 'pointer',
@@ -296,7 +300,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                     {!demoUseImage && (
                       <div>
                         <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                          Name <span style={{ color: colors.text.lowEmphasis, fontWeight: 400 }}>(shows as initials)</span>
+                          Name <span style={{ color: colors.text.lowEmphasis.onLight, fontWeight: 400 }}>(shows as initials)</span>
                         </label>
                         <input
                           type="text"
@@ -306,7 +310,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                           style={{
                             width: '100%',
                             padding: '8px 12px',
-                            border: `1px solid ${colors.border.light}`,
+                            border: `1px solid ${colors.stroke.light}`,
                             borderRadius: borderRadius.md,
                             fontSize: '14px',
                             outline: 'none',
@@ -367,20 +371,20 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Size, color, and typography tokens used in the avatar component.
-            </p>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
+                Size, color, and typography tokens used in the avatar component. Click any token to copy it. Pixel values shown in parentheses are for reference only.
+              </p>
 
-            {/* Size Specifications */}
+              {/* Size Specifications */}
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Size Specifications</h3>
               <SpecTable
                 headers={['Size', 'Dimensions', 'Border Radius', 'Use Case']}
                 rows={sizes.map(size => [
                   <code key={size}>{size}</code>,
-                  avatar.sizes[size],
-                  avatar.borderRadius[size],
+                  <TokenValue key={`dim-${size}`} token={`avatar.sizes.${size}`} value={avatar.sizes[size]} />,
+                  <TokenValue key={`br-${size}`} token={`avatar.borderRadius.${size}`} value={avatar.borderRadius[size]} />,
                   size === 'xl' ? 'Profile headers' :
                   size === 'lg' ? 'Profile cards' :
                   size === 'md' ? 'Lists, comments (default)' :
@@ -389,49 +393,75 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                 ])}
               />
             </div>
-            
+
             {/* Color Tokens */}
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Color Tokens</h3>
               <SpecTable
-                headers={['Variant', 'Color Value', 'Token']}
+                headers={['Variant', 'Preview', 'Token', 'Value']}
                 rows={colorVariants.map(color => [
                   `Color ${color}`,
                   <div key={color} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '20px', height: '20px', background: avatar.colors[color], borderRadius: '4px', border: `1px solid ${colors.border.light}` }} />
-                    {avatar.colors[color]}
+                    <div style={{ width: '24px', height: '24px', background: avatar.colors[color], borderRadius: '4px', border: `1px solid ${colors.stroke.light}` }} />
                   </div>,
-                  <code key={`token-${color}`}>avatar.colors[{color}]</code>,
+                  <CopyableToken key={`token-${color}`} token={`avatar.colors[${color}]`} />,
+                  <PixelValue key={`value-${color}`} value={avatar.colors[color]} />,
                 ])}
               />
             </div>
-            
+
             {/* Typography Specifications */}
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Typography Specifications</h3>
               <SpecTable
-                headers={['Size', 'Font Size', 'Letter Spacing', 'Font Weight']}
+                headers={['Size', 'Font Size', 'Font Weight']}
                 rows={sizes.map(size => [
                   <code key={size}>{size}</code>,
-                  avatar.typography[size].fontSize,
-                  '-',
-                  avatar.typography[size].fontWeight.toString(),
+                  <TokenValue key={`fs-${size}`} token={`avatar.typography.${size}.fontSize`} value={avatar.typography[size].fontSize} />,
+                  <TokenValue key={`fw-${size}`} token={`avatar.typography.${size}.fontWeight`} value={avatar.typography[size].fontWeight.toString()} />,
                 ])}
               />
             </div>
 
             {/* Focus Ring Specifications */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Focus Ring Specifications</h3>
+              <h3 style={sharedStyles.cardTitle}>Focus Ring</h3>
               <SpecTable
-                headers={['Property', 'Value', 'Token']}
+                headers={['Property', 'Token', 'Value']}
                 rows={[
-                  ['Color', avatar.focus.color, <code key="fc">avatar.focus.color</code>],
-                  ['Width', avatar.focus.width, <code key="fw">avatar.focus.width</code>],
-                  ['Offset', avatar.focus.offset, <code key="fo">avatar.focus.offset</code>],
+                  ['Color', <CopyableToken key="fc" token="avatar.focus.color" />, <PixelValue key="fcv" value={avatar.focus.color} />],
+                  ['Width', <CopyableToken key="fw" token="avatar.focus.width" />, <PixelValue key="fwv" value={avatar.focus.width} />],
+                  ['Offset', <CopyableToken key="fo" token="avatar.focus.offset" />, <PixelValue key="fov" value={avatar.focus.offset} />],
                 ]}
               />
             </div>
+
+            {/* Border Specifications */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Border (onDark mode)</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Width', <CopyableToken key="bw" token="avatar.border.width" />, <PixelValue key="bwv" value={avatar.border.width} />],
+                  ['Color', <CopyableToken key="bc" token="avatar.border.color" />, <PixelValue key="bcv" value={avatar.border.color} />],
+                ]}
+              />
+            </div>
+
+            {/* Group Settings */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Avatar Group Settings</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Overlap Ratio', <CopyableToken key="or" token="avatar.group.overlapRatio" />, <PixelValue key="orv" value={avatar.group.overlapRatio.toString()} />],
+                  ['Border Width', <CopyableToken key="gbw" token="avatar.group.borderWidth" />, <PixelValue key="gbwv" value={avatar.group.borderWidth} />],
+                  ['Border Color', <CopyableToken key="gbc" token="avatar.group.borderColor" />, <PixelValue key="gbcv" value={avatar.group.borderColor} />],
+                  ['Max Visible', <CopyableToken key="mv" token="avatar.group.maxVisible" />, <PixelValue key="mvv" value={avatar.group.maxVisible.toString()} />],
+                ]}
+              />
+            </div>
+            </CollapsibleSection>
           </section>
 
         </>

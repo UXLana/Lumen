@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { Stepper, StepperStep, LinearStepper, NonLinearStepper, DefaultStepIndicator, StepItem, StepStatus, StepIndicatorProps } from '@/components'
 import { colors, typography, stepper as stepperTokens, borderRadius } from '@/styles/design-tokens'
 
@@ -120,7 +120,11 @@ export default function StepperPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Stepper, LinearStepper, NonLinearStepper } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { Stepper, LinearStepper, NonLinearStepper } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Stepper, LinearStepper, NonLinearStepper } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -149,18 +153,18 @@ export default function StepperPage() {
                           onSecondaryClick={handlePrevious}
                           clickable={demoClickable}
                           stepContent={[
-                            <div key="1" style={{ padding: '16px', background: colors.neutral[100], borderRadius: '8px' }}>
-                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.mediumEmphasis }}>
+                            <div key="1" style={{ padding: '16px', background: '#F5F5F5', borderRadius: '8px' }}>
+                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
                                 Step 1 content goes here
                               </p>
                             </div>,
-                            <div key="2" style={{ padding: '16px', background: colors.neutral[100], borderRadius: '8px' }}>
-                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.mediumEmphasis }}>
+                            <div key="2" style={{ padding: '16px', background: '#F5F5F5', borderRadius: '8px' }}>
+                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
                                 Step 2 content goes here
                               </p>
                             </div>,
-                            <div key="3" style={{ padding: '16px', background: colors.neutral[100], borderRadius: '8px' }}>
-                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.mediumEmphasis }}>
+                            <div key="3" style={{ padding: '16px', background: '#F5F5F5', borderRadius: '8px' }}>
+                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
                                 Step 3 content goes here
                               </p>
                             </div>,
@@ -250,39 +254,24 @@ export default function StepperPage() {
             </div>
           </section>
 
-          {/* ========== STEP STATES ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Step States</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Each step can be in one of four states: completed, active, pending, or disabled.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
-                {(['completed', 'active', 'pending', 'disabled'] as StepStatus[]).map((status) => (
-                  <div key={status}>
-                    <h4 style={{ ...typography.label.md, marginBottom: '16px', textTransform: 'capitalize' }}>
-                      {status}
-                    </h4>
-                    <StepperStep
-                      stepNumber={1}
-                      label="Step Label"
-                      status={status}
-                      showTopConnector={false}
-                      showBottomConnector={false}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Colors and spacing values used in the stepper component.
-            </p>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
+                Colors and spacing values used in the stepper component. Click any token to copy it. Pixel values shown in parentheses are for reference only.
+              </p>
+
+              {/* Step Indicator Dimensions */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Step Indicator Dimensions</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Size', <CopyableToken key="ss" token="stepper.step.size" />, <PixelValue key="ssv" value={stepperTokens.step.size} />],
+                  ['Border Radius', <CopyableToken key="sbr" token="stepper.step.borderRadius" />, <PixelValue key="sbrv" value={stepperTokens.step.borderRadius} />],
+                ]}
+              />
+            </div>
 
             {/* Step Indicator Colors */}
             <div style={sharedStyles.card}>
@@ -290,42 +279,124 @@ export default function StepperPage() {
               <SpecTable
                 headers={['State', 'Background', 'Text', 'Border']}
                 rows={[
-                  [<code key="completed">completed</code>, stepperTokens.step.colors.completed.background, stepperTokens.step.colors.completed.text, stepperTokens.step.colors.completed.border],
-                  [<code key="active">active</code>, stepperTokens.step.colors.active.background, stepperTokens.step.colors.active.text, stepperTokens.step.colors.active.border],
-                  [<code key="pending">pending</code>, stepperTokens.step.colors.pending.background, stepperTokens.step.colors.pending.text, stepperTokens.step.colors.pending.border],
-                  [<code key="disabled">disabled</code>, stepperTokens.step.colors.disabled.background, stepperTokens.step.colors.disabled.text, stepperTokens.step.colors.disabled.border],
+                  [
+                    <code key="completed">completed</code>,
+                    <TokenValue key="cb" token="stepper.step.colors.completed.background" value={stepperTokens.step.colors.completed.background} />,
+                    <TokenValue key="ct" token="stepper.step.colors.completed.text" value={stepperTokens.step.colors.completed.text} />,
+                    <PixelValue key="cbr" value={stepperTokens.step.colors.completed.border} />,
+                  ],
+                  [
+                    <code key="active">active</code>,
+                    <TokenValue key="ab" token="stepper.step.colors.active.background" value={stepperTokens.step.colors.active.background} />,
+                    <TokenValue key="at" token="stepper.step.colors.active.text" value={stepperTokens.step.colors.active.text} />,
+                    <PixelValue key="abr" value={stepperTokens.step.colors.active.border} />,
+                  ],
+                  [
+                    <code key="pending">pending</code>,
+                    <TokenValue key="pb" token="stepper.step.colors.pending.background" value={stepperTokens.step.colors.pending.background} />,
+                    <TokenValue key="pt" token="stepper.step.colors.pending.text" value={stepperTokens.step.colors.pending.text} />,
+                    <TokenValue key="pbr" token="stepper.step.colors.pending.border" value={stepperTokens.step.colors.pending.border} />,
+                  ],
+                  [
+                    <code key="disabled">disabled</code>,
+                    <TokenValue key="db" token="stepper.step.colors.disabled.background" value={stepperTokens.step.colors.disabled.background} />,
+                    <TokenValue key="dt" token="stepper.step.colors.disabled.text" value={stepperTokens.step.colors.disabled.text} />,
+                    <TokenValue key="dbr" token="stepper.step.colors.disabled.border" value={stepperTokens.step.colors.disabled.border} />,
+                  ],
                 ]}
               />
             </div>
 
-            {/* Non-Linear Indicator Icons */}
+            {/* Step Typography */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Non-Linear Status Icons</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Icons are centered inside a 32px circle with 2px border. The border color matches the connector line color (green for completed/active, grey for pending/disabled). The circle has a white background.
-              </p>
+              <h3 style={sharedStyles.cardTitle}>Step Number Typography</h3>
               <SpecTable
-                headers={['Status', 'Icon', 'Icon Size', 'Circle Size', 'Border Color', 'Background', 'Icon Color']}
+                headers={['Property', 'Token', 'Value']}
                 rows={[
-                  [<code key="completed">completed</code>, 'Filled checkmark', '20px', '32px', stepperTokens.connector.colors.completed, '#FFFFFF', stepperTokens.connector.colors.completed],
-                  [<code key="active">active</code>, 'Half-filled circle', '20px', '32px', stepperTokens.connector.colors.completed, '#FFFFFF', stepperTokens.connector.colors.completed],
-                  [<code key="pending">pending</code>, 'Dashed circle', '20px', '32px', stepperTokens.connector.colors.pending, '#FFFFFF', 'rgba(0, 0, 0, 0.38)'],
-                  [<code key="disabled">disabled</code>, 'Dashed circle (faded)', '20px', '32px', stepperTokens.connector.colors.pending, '#FFFFFF', 'rgba(0, 0, 0, 0.38)'],
+                  ['Font Weight', <CopyableToken key="fw" token="stepper.step.typography.fontWeight" />, <PixelValue key="fwv" value={stepperTokens.step.typography.fontWeight.toString()} />],
+                  ['Font Size', <CopyableToken key="fs" token="stepper.step.typography.fontSize" />, <PixelValue key="fsv" value={stepperTokens.step.typography.fontSize} />],
+                  ['Line Height', <CopyableToken key="lh" token="stepper.step.typography.lineHeight" />, <PixelValue key="lhv" value={stepperTokens.step.typography.lineHeight} />],
+                  ['Letter Spacing', <CopyableToken key="ls" token="stepper.step.typography.letterSpacing" />, <PixelValue key="lsv" value={stepperTokens.step.typography.letterSpacing} />],
                 ]}
               />
             </div>
 
-            {/* Connector Colors */}
+            {/* Connector */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Connector Colors</h3>
+              <h3 style={sharedStyles.cardTitle}>Connector Line</h3>
               <SpecTable
-                headers={['State', 'Color']}
+                headers={['Property', 'Token', 'Value']}
                 rows={[
-                  [<code key="completed">completed</code>, stepperTokens.connector.colors.completed],
-                  [<code key="pending">pending</code>, stepperTokens.connector.colors.pending],
+                  ['Width', <CopyableToken key="cw" token="stepper.connector.width" />, <PixelValue key="cwv" value={stepperTokens.connector.width} />],
+                  ['Completed Color', <CopyableToken key="cc" token="stepper.connector.colors.completed" />, <PixelValue key="ccv" value={stepperTokens.connector.colors.completed} />],
+                  ['Pending Color', <CopyableToken key="cp" token="stepper.connector.colors.pending" />, <PixelValue key="cpv" value={stepperTokens.connector.colors.pending} />],
                 ]}
               />
             </div>
+
+            {/* Content/Label Typography */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Label Typography</h3>
+              <SpecTable
+                headers={['State', 'Font Size', 'Font Weight', 'Line Height', 'Color']}
+                rows={[
+                  [
+                    'Active',
+                    <TokenValue key="afs" token="stepper.content.label.active.fontSize" value={stepperTokens.content.label.active.fontSize} />,
+                    <TokenValue key="afw" token="stepper.content.label.active.fontWeight" value={stepperTokens.content.label.active.fontWeight.toString()} />,
+                    <TokenValue key="alh" token="stepper.content.label.active.lineHeight" value={stepperTokens.content.label.active.lineHeight} />,
+                    <TokenValue key="ac" token="stepper.content.label.active.color" value={stepperTokens.content.label.active.color} />,
+                  ],
+                  [
+                    'Inactive',
+                    <TokenValue key="ifs" token="stepper.content.label.inactive.fontSize" value={stepperTokens.content.label.inactive.fontSize} />,
+                    <TokenValue key="ifw" token="stepper.content.label.inactive.fontWeight" value={stepperTokens.content.label.inactive.fontWeight.toString()} />,
+                    <TokenValue key="ilh" token="stepper.content.label.inactive.lineHeight" value={stepperTokens.content.label.inactive.lineHeight} />,
+                    <TokenValue key="ic" token="stepper.content.label.inactive.color" value={stepperTokens.content.label.inactive.color} />,
+                  ],
+                ]}
+              />
+            </div>
+
+            {/* Spacing */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Spacing</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Content Padding Left', <CopyableToken key="cpl" token="stepper.content.paddingLeft" />, <PixelValue key="cplv" value={stepperTokens.content.paddingLeft} />],
+                  ['Label Padding Y', <CopyableToken key="lpy" token="stepper.spacing.labelPaddingY" />, <PixelValue key="lpyv" value={stepperTokens.spacing.labelPaddingY} />],
+                  ['Content Gap', <CopyableToken key="cg" token="stepper.spacing.contentGap" />, <PixelValue key="cgv" value={stepperTokens.spacing.contentGap} />],
+                  ['Button Gap', <CopyableToken key="bg" token="stepper.spacing.buttonGap" />, <PixelValue key="bgv" value={stepperTokens.spacing.buttonGap} />],
+                ]}
+              />
+            </div>
+
+            {/* Focus Ring */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Focus Ring</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Color', <CopyableToken key="fc" token="stepper.focus.color" />, <PixelValue key="fcv" value={stepperTokens.focus.color} />],
+                  ['Width', <CopyableToken key="fw" token="stepper.focus.width" />, <PixelValue key="fwv" value={stepperTokens.focus.width} />],
+                  ['Offset', <CopyableToken key="fo" token="stepper.focus.offset" />, <PixelValue key="fov" value={stepperTokens.focus.offset} />],
+                ]}
+              />
+            </div>
+
+            {/* Animation */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Animation</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Transition', <CopyableToken key="tr" token="stepper.transition" />, <PixelValue key="trv" value={stepperTokens.transition} />],
+                  ['Hover Background', <CopyableToken key="hb" token="stepper.hover.background" />, <PixelValue key="hbv" value={stepperTokens.hover.background} />],
+                ]}
+              />
+            </div>
+            </CollapsibleSection>
           </section>
         </>
       )}
@@ -382,7 +453,7 @@ export default function StepperPage() {
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Default Non-Linear</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: '16px' }}>
                 Uses status icons (completed, in-progress, not-started) inside a 32px circle with 2px border.
                 Border color matches connector line: green for completed/active, grey for pending/disabled.
               </p>
@@ -422,7 +493,7 @@ export default function StepperPage() {
             {/* Custom Indicator */}
             <div style={{ ...sharedStyles.card, marginTop: '32px' }}>
               <h3 style={sharedStyles.cardTitle}>Custom Indicator Component</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: '16px' }}>
                 Replace the default circle with a custom indicator component. The component receives
                 status, isHovered, isFocused, and size props.
               </p>
@@ -473,76 +544,6 @@ function IconStepIndicator({ status, size = 12 }: StepIndicatorProps) {
               />
             </div>
 
-            {/* Per-Step Custom Icons */}
-            <div style={{ ...sharedStyles.card, marginTop: '32px' }}>
-              <h3 style={sharedStyles.cardTitle}>Per-Step Custom Icons</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
-                Add custom icons to individual steps using the `icon` property on StepItem.
-                This overrides the indicatorComponent for that specific step.
-              </p>
-              <Playground
-                preview={
-                  <div style={{ width: '100%', maxWidth: '350px' }}>
-                    <NonLinearStepper
-                      steps={[
-                        {
-                          id: '1',
-                          label: 'User Profile',
-                          icon: (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                              <circle cx="6" cy="4" r="2.5" stroke="rgba(255,255,255,0.9)" strokeWidth="1.5" />
-                              <path d="M2 10.5C2 8.5 3.5 7 6 7C8.5 7 10 8.5 10 10.5" stroke="rgba(255,255,255,0.9)" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
-                          ),
-                        },
-                        {
-                          id: '2',
-                          label: 'Settings',
-                          icon: (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                              <circle cx="6" cy="6" r="1.5" stroke="rgba(0,0,0,0.1)" strokeWidth="1.5" />
-                              <path d="M6 1V2.5M6 9.5V11M1 6H2.5M9.5 6H11" stroke="rgba(0,0,0,0.1)" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
-                          ),
-                        },
-                        {
-                          id: '3',
-                          label: 'Complete',
-                          icon: (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                              <path d="M2.5 6L5 8.5L9.5 3.5" stroke="rgba(0,0,0,0.1)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          ),
-                        },
-                      ]}
-                      activeStep={0}
-                    />
-                  </div>
-                }
-                code={`<NonLinearStepper
-  steps={[
-    {
-      id: '1',
-      label: 'User Profile',
-      icon: <UserIcon />,  // Custom icon component
-    },
-    {
-      id: '2',
-      label: 'Settings',
-      icon: <GearIcon />,
-    },
-    {
-      id: '3',
-      label: 'Complete',
-      icon: <CheckIcon />,
-    },
-  ]}
-  activeStep={0}
-/>`}
-                previewPadding="32px 24px"
-                previewMinHeight="280px"
-              />
-            </div>
           </section>
 
           {/* ========== COMPARISON ========== */}
@@ -793,7 +794,7 @@ const stepsWithIcons = [
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Accessibility</h3>
-              <ul style={{ ...typography.body.md, color: colors.text.mediumEmphasis, paddingLeft: '20px' }}>
+              <ul style={{ ...typography.body.md, color: colors.text.lowEmphasis.onLight, paddingLeft: '20px' }}>
                 <li>Uses semantic navigation role with aria-label</li>
                 <li>Steps have aria-current=&quot;step&quot; for active state</li>
                 <li>Disabled steps have aria-disabled attribute</li>

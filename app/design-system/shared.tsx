@@ -45,9 +45,10 @@ const IconChevron = ({ expanded }: { expanded: boolean }) => (
 )
 
 // Icon mapping - first-level section icons only
+// Using size 20 (md) for crisp rendering at all states
 const iconMap: Record<string, React.FC> = {
-  foundations: () => <IconFoundations size={18} />,
-  components: () => <IconComponents size={18} />,
+  foundations: () => <IconFoundations size="md" />,
+  components: () => <IconComponents size="md" />,
 }
 
 // =============================================================================
@@ -72,12 +73,15 @@ export const navSections = [
     id: 'components',
     title: 'Components',
     items: [
+      { id: 'accordion', label: 'Accordion', href: '/components/accordion' },
       { id: 'avatar', label: 'Avatar', href: '/components/avatar' },
       { id: 'badge', label: 'Badge', href: '/components/badge' },
       { id: 'banner', label: 'Banner', href: '/components/banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
+      { id: 'left-nav', label: 'Left Nav', href: '/components/left-nav' },
       { id: 'list-item', label: 'List Item', href: '/components/list-item' },
       { id: 'marketplace-card', label: 'Marketplace Card', href: '/components/marketplace-card' },
+      { id: 'product-card', label: 'Product Card', href: '/components/product-card' },
       { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'stepper', label: 'Stepper', href: '/components/stepper' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
@@ -99,7 +103,7 @@ export const innerPageTabs = [
 export const sharedStyles = {
   page: {
     minHeight: '100vh',
-    background: colors.background.default,
+    background: colors.surface.light,
     display: 'flex',
     position: 'relative' as const,
   },
@@ -134,7 +138,7 @@ export const sharedStyles = {
   sidebarOverlay: {
     position: 'fixed' as const,
     inset: 0,
-    background: colors.background.overlay,
+    background: colors.scrim,
     zIndex: zIndex.header - 1,
     opacity: 0,
     pointerEvents: 'none' as const,
@@ -157,14 +161,14 @@ export const sharedStyles = {
     borderRadius: borderRadius.sm,
     cursor: 'pointer',
     transition: transitionPresets.default,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
     padding: 0,
     marginLeft: 'auto',
   },
 
   sidebarToggleHover: {
     background: 'rgba(0, 0, 0, 0.06)',
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
   },
 
   sidebarNav: {
@@ -180,7 +184,7 @@ export const sharedStyles = {
     gap: '12px',
     padding: '10px 12px',
     borderRadius: borderRadius.md,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
     textDecoration: 'none',
     fontSize: '14px',
     fontWeight: 500,
@@ -191,21 +195,21 @@ export const sharedStyles = {
 
   sidebarNavItemHover: {
     background: 'rgba(0, 0, 0, 0.04)',
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
   },
 
   sidebarNavItemActive: {
     background: 'rgba(0, 0, 0, 0.08)',
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
   },
 
   popover: {
     position: 'fixed' as const,
     left: `${SIDEBAR_COLLAPSED_WIDTH + 8}px`,
-    background: colors.background.default,
+    background: colors.surface.light,
     borderRadius: borderRadius.lg,
     boxShadow: shadows.lg,
-    border: `1px solid ${colors.border.light}`,
+    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
     padding: '8px 0',
     minWidth: '200px',
     zIndex: zIndex.modal,
@@ -214,7 +218,7 @@ export const sharedStyles = {
   popoverItem: {
     display: 'block',
     padding: '10px 16px',
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
     textDecoration: 'none',
     ...typography.body.sm,
     fontWeight: 500,
@@ -222,13 +226,13 @@ export const sharedStyles = {
   },
 
   popoverItemHover: {
-    background: colors.neutral[100],
-    color: colors.text.highEmphasis,
+    background: colors.surface.lightDarker,
+    color: colors.text.highEmphasis.onLight,
   },
 
   popoverItemActive: {
-    background: colors.neutral[100],
-    color: colors.brand.primary,
+    background: colors.surface.lightDarker,
+    color: colors.brand.default,
     fontWeight: 600,
   },
 
@@ -240,7 +244,7 @@ export const sharedStyles = {
 
   sidebarTitle: {
     ...typography.heading.h5,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     marginBottom: '4px',
     textDecoration: 'none',
     display: 'block',
@@ -248,7 +252,7 @@ export const sharedStyles = {
 
   sidebarSubtitle: {
     ...typography.body.sm,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
   },
 
   navSection: {
@@ -269,7 +273,7 @@ export const sharedStyles = {
   navSectionTitle: {
     fontSize: '13px',
     fontWeight: 600,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
   },
@@ -286,7 +290,7 @@ export const sharedStyles = {
   navLink: {
     padding: '10px 12px',
     borderRadius: borderRadius.md,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
     textDecoration: 'none',
     fontSize: '14px',
     fontWeight: 500,
@@ -296,12 +300,12 @@ export const sharedStyles = {
 
   navLinkActive: {
     background: 'rgba(0, 0, 0, 0.08)',
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
   },
 
   navLinkHover: {
     background: 'rgba(0, 0, 0, 0.04)',
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
   },
 
   content: {
@@ -350,14 +354,14 @@ export const sharedStyles = {
     display: 'flex',
     gap: '8px',
     marginTop: '24px',
-    borderBottom: `1px solid ${colors.border.light}`,
+    borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
     paddingBottom: '0',
   },
 
   tab: {
     ...typography.label.md,
     padding: '12px 16px',
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
     background: 'transparent',
     border: 'none',
     borderBottom: '2px solid transparent',
@@ -369,8 +373,8 @@ export const sharedStyles = {
   },
 
   tabActive: {
-    color: colors.text.highEmphasis,
-    borderBottom: `2px solid ${colors.brand.primary}`,
+    color: colors.text.highEmphasis.onLight,
+    borderBottom: `2px solid ${colors.brand.default}`,
   },
 
   main: {
@@ -384,13 +388,13 @@ export const sharedStyles = {
   
   sectionTitle: {
     ...typography.heading.h3,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     marginBottom: '8px',
   },
   
   sectionDescription: {
     ...typography.body.md,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
     marginBottom: '24px',
   },
   
@@ -400,14 +404,14 @@ export const sharedStyles = {
 
   cardTitle: {
     ...typography.heading.h4,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     marginBottom: '16px',
     marginTop: '24px',
   },
   
   tableContainer: {
     borderRadius: borderRadius.xl,
-    border: `1px solid ${colors.border.light}`,
+    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
     overflow: 'hidden',
   },
 
@@ -420,25 +424,25 @@ export const sharedStyles = {
   th: {
     padding: '12px 16px',
     textAlign: 'left' as const,
-    background: colors.neutral[100],
+    background: colors.surface.lightDarker,
     fontWeight: 600,
-    borderBottom: `1px solid ${colors.border.light}`,
+    borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
   },
 
   td: {
     padding: '12px 16px',
-    borderBottom: `1px solid ${colors.border.light}`,
+    borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
   },
   
   codeBlock: {
-    background: colors.neutral[100],
+    background: colors.surface.lightDarker,
     padding: '16px 20px',
     borderRadius: borderRadius.md,
     fontFamily: fontFamilies.mono,
     fontSize: '13px',
     lineHeight: '1.6',
     overflowX: 'auto' as const,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
   },
   
   grid: {
@@ -529,11 +533,20 @@ function NavSection({
         onMouseLeave={() => setIsHeaderHovered(false)}
         role="button"
         tabIndex={0}
+        aria-expanded={expanded}
         onKeyDown={handleKeyDown}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {SectionIcon && (
-            <span style={{ display: 'flex', opacity: 0.7 }}>
+            <span style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '20px',
+              height: '20px',
+              flexShrink: 0,
+              opacity: 0.7,
+            }}>
               <SectionIcon />
             </span>
           )}
@@ -624,7 +637,18 @@ function NavRailItem({
       onMouseEnter={showPopover}
       onMouseLeave={hidePopover}
     >
-      {SectionIcon && <SectionIcon />}
+      {SectionIcon && (
+        <span style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '20px',
+          height: '20px',
+          flexShrink: 0,
+        }}>
+          <SectionIcon />
+        </span>
+      )}
 
       {/* Popover */}
       {isHovered && (
@@ -641,7 +665,7 @@ function NavRailItem({
             ...typography.label.sm,
             fontSize: '11px',
             fontWeight: 600,
-            color: colors.text.lowEmphasis,
+            color: colors.text.lowEmphasis.onLight,
             textTransform: 'uppercase' as const,
             letterSpacing: '0.5px',
           }}>
@@ -874,10 +898,12 @@ export function StyleguideLayout({
           </header>
 
           {/* Tabs - Outside the header */}
-          <nav style={sharedStyles.tabsContainer}>
+          <nav role="tablist" style={sharedStyles.tabsContainer}>
             {displayTabs.map((tab) => (
               <button
                 key={tab.id}
+                role="tab"
+                aria-selected={currentTab === tab.id}
                 style={{
                   ...sharedStyles.tab,
                   ...(currentTab === tab.id ? sharedStyles.tabActive : {}),
@@ -926,7 +952,7 @@ export function CodeBlock({ children }: { children: string }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy:', err)
+      // silently handle
     }
   }
 
@@ -938,7 +964,7 @@ export function CodeBlock({ children }: { children: string }) {
           position: 'absolute',
           top: '12px',
           right: '12px',
-          background: copied ? colors.semantic.success.main : colors.neutral[200],
+          background: copied ? colors.status.success : colors.surface.lightDarker,
           border: 'none',
           borderRadius: borderRadius.sm,
           padding: '6px',
@@ -947,7 +973,7 @@ export function CodeBlock({ children }: { children: string }) {
           alignItems: 'center',
           justifyContent: 'center',
           transition: transitionPresets.default,
-          color: copied ? 'white' : colors.text.mediumEmphasis,
+          color: copied ? 'white' : colors.text.lowEmphasis.onLight,
         }}
         title={copied ? 'Copied!' : 'Copy code'}
         aria-label={copied ? 'Copied!' : 'Copy code'}
@@ -973,7 +999,7 @@ interface PlaygroundProps {
 export function Playground({
   preview,
   code,
-  previewBackground = colors.neutral[50],
+  previewBackground = colors.surface.lightDarker,
   previewPadding = '48px',
   previewMinHeight = '120px',
 }: PlaygroundProps) {
@@ -1001,6 +1027,10 @@ export function Playground({
         background: previewBackground,
         borderRadius: borderRadius.lg,
         overflow: 'hidden',
+        // Add border when background is white for visual separation
+        ...(previewBackground === colors.surface.light || previewBackground === '#ffffff' || previewBackground === 'white'
+          ? { border: `2px solid ${colors.border.lowEmphasis.onLight}` }
+          : {}),
       }}>
         {activeTab === 'preview' ? (
           <div style={{
@@ -1066,9 +1096,9 @@ export function StyledCheckbox({ checked, onChange, label, disabled = false }: S
           width="16"
           height="16"
           rx="4"
-          stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.primary : 'rgba(0, 0, 0, 0.6)'}
+          stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.default : 'rgba(0, 0, 0, 0.6)'}
           strokeWidth="2"
-          fill={checked ? colors.brand.primary : 'transparent'}
+          fill={checked ? colors.brand.default : 'transparent'}
         />
         {checked && (
           <path
@@ -1091,10 +1121,10 @@ export function PillButton({ children, isActive = false, onClick, style }: PillB
       onClick={onClick}
       style={{
         padding: '8px 16px',
-        border: isActive ? 'none' : `1px solid ${colors.border.light}`,
+        border: isActive ? 'none' : `1px solid ${colors.border.lowEmphasis.onLight}`,
         borderRadius: '9999px', // Full pill shape
-        background: isActive ? colors.brand.primary : 'white',
-        color: isActive ? 'white' : colors.text.highEmphasis,
+        background: isActive ? colors.brand.default : 'white',
+        color: isActive ? 'white' : colors.text.highEmphasis.onLight,
         cursor: 'pointer',
         ...typography.label.sm,
         transition: transitionPresets.default,
@@ -1105,6 +1135,220 @@ export function PillButton({ children, isActive = false, onClick, style }: PillB
     </button>
   )
 }
+
+// =============================================================================
+// COLLAPSIBLE SECTION COMPONENT
+// =============================================================================
+
+interface CollapsibleSectionProps {
+  title: string
+  children: React.ReactNode
+  defaultOpen?: boolean
+}
+
+export function CollapsibleSection({ title, children, defaultOpen = false }: CollapsibleSectionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+
+  return (
+    <div style={{
+      border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+      borderRadius: borderRadius.lg,
+      overflow: 'hidden',
+      marginBottom: '16px',
+    }}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '16px 20px',
+          background: colors.surface.lightDarker,
+          border: 'none',
+          cursor: 'pointer',
+          ...typography.label.md,
+          color: colors.text.highEmphasis.onLight,
+        }}
+      >
+        <span>{title}</span>
+        <span style={{
+          display: 'flex',
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: 'transform 0.2s ease',
+          color: colors.text.lowEmphasis.onLight,
+        }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      {isOpen && (
+        <div style={{ padding: '20px' }}>
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// =============================================================================
+// TOKEN VALUE COMPONENT
+// =============================================================================
+
+// Component for displaying copyable token values with pixel reference
+interface TokenValueProps {
+  /** The token path to copy (e.g., 'button.sizes.lg.height') */
+  token: string
+  /** The resolved value for reference (e.g., '48px') */
+  value: string
+  /** Optional: show only the value (useful when token column is separate) */
+  valueOnly?: boolean
+}
+
+export function TokenValue({ token, value, valueOnly = false }: TokenValueProps) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(token)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch (err) {
+      // silently handle
+    }
+  }
+
+  if (valueOnly) {
+    return (
+      <span style={{
+        ...typography.code.sm,
+        color: colors.text.lowEmphasis.onLight,
+      }}>
+        {value}
+      </span>
+    )
+  }
+
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+      <button
+        onClick={handleCopy}
+        title={copied ? 'Copied!' : `Copy: ${token}`}
+        aria-label={copied ? 'Copied!' : `Copy token: ${token}`}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          background: copied ? colors.surface.success : colors.surface.lightDarker,
+          border: 'none',
+          borderRadius: borderRadius.sm,
+          padding: '4px 8px',
+          cursor: 'pointer',
+          transition: transitionPresets.default,
+          maxWidth: '100%',
+        }}
+      >
+        <code style={{
+          ...typography.code.sm,
+          color: copied ? colors.status.success : colors.text.highEmphasis.onLight,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}>
+          {token}
+        </code>
+        <span style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          color: copied ? colors.status.success : colors.text.lowEmphasis.onLight,
+        }}>
+          {copied ? <IconCheck /> : <IconCopy />}
+        </span>
+      </button>
+      <span style={{
+        ...typography.code.sm,
+        color: colors.text.lowEmphasis.onLight,
+        whiteSpace: 'nowrap',
+      }}>
+        ({value})
+      </span>
+    </span>
+  )
+}
+
+// Simplified token display for tables - just the token with copy
+interface CopyableTokenProps {
+  /** The token path to copy */
+  token: string
+}
+
+export function CopyableToken({ token }: CopyableTokenProps) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(token)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch (err) {
+      // silently handle
+    }
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      title={copied ? 'Copied!' : `Copy: ${token}`}
+      aria-label={copied ? 'Copied!' : `Copy token: ${token}`}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        background: copied ? colors.surface.success : colors.surface.lightDarker,
+        border: 'none',
+        borderRadius: borderRadius.sm,
+        padding: '4px 8px',
+        cursor: 'pointer',
+        transition: transitionPresets.default,
+      }}
+    >
+      <code style={{
+        ...typography.code.sm,
+        color: copied ? colors.status.success : colors.text.highEmphasis.onLight,
+      }}>
+        {token}
+      </code>
+      <span style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        color: copied ? colors.status.success : colors.text.lowEmphasis.onLight,
+      }}>
+        {copied ? <IconCheck /> : <IconCopy />}
+      </span>
+    </button>
+  )
+}
+
+// Pixel reference value (non-copyable, just for reference)
+export function PixelValue({ value }: { value: string }) {
+  return (
+    <span style={{
+      ...typography.code.sm,
+      color: colors.text.lowEmphasis.onLight,
+    }}>
+      {value}
+    </span>
+  )
+}
+
+// =============================================================================
+// SPEC TABLE COMPONENT
+// =============================================================================
 
 export function SpecTable({
   headers,

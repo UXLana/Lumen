@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { Tab, TabBar, TabItem, TabIconPosition, TabBarAlign } from '@/components'
 import { colors, typography, tab, borderRadius } from '@/styles/design-tokens'
 
@@ -135,7 +135,11 @@ export default function TabPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Tab, TabBar } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { Tab, TabBar } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Tab, TabBar } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -175,7 +179,7 @@ export default function TabPage() {
   iconPosition="${demoIconPosition}"
   align="${demoAlign}"${demoStretched ? '\n  stretched' : ''}${demoOnDark ? '\n  onDark' : ''}${demoInverted ? '\n  inverted' : ''}${!demoDivider ? '\n  hasDivider={false}' : ''}${demoScrollable ? '\n  scrollable' : ''}
 />`}
-                    previewBackground={demoOnDark ? colors.brand.primary : colors.neutral[50]}
+                    previewBackground={demoOnDark ? colors.brand.primary : colors.surface.paper}
                     previewPadding="56px 24px"
                     previewMinHeight="120px"
                   />
@@ -256,13 +260,13 @@ export default function TabPage() {
           </section>
 
           {/* ========== DESIGN TOKENS ========== */}
-      <section style={sharedStyles.section}>
-        <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
-        <p style={sharedStyles.sectionDescription}>
-          Color tokens, typography scale, and spacing values used in the tab component.
-        </p>
+          <section style={sharedStyles.section}>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
+                Color tokens, typography scale, and spacing values used in the tab component.
+              </p>
 
-        {/* Color Tokens */}
+              {/* Color Tokens */}
         <div style={sharedStyles.card}>
           <h3 style={sharedStyles.cardTitle}>Color Tokens</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
@@ -282,7 +286,7 @@ export default function TabPage() {
                     }} />
                     <div>
                       <div style={{ ...typography.label.sm }}>{state}</div>
-                      <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{stateColors.text}</div>
+                      <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{stateColors.text}</div>
                     </div>
                   </div>
                 )
@@ -305,7 +309,7 @@ export default function TabPage() {
                     }} />
                     <div>
                       <div style={{ ...typography.label.sm }}>{state}</div>
-                      <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{stateColors.text}</div>
+                      <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{stateColors.text}</div>
                     </div>
                   </div>
                 )
@@ -324,7 +328,7 @@ export default function TabPage() {
                 }} />
                 <div>
                   <div style={{ ...typography.label.sm }}>Light</div>
-                  <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{tab.colors.light.active.indicator}</div>
+                  <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{tab.colors.light.active.indicator}</div>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
@@ -336,7 +340,7 @@ export default function TabPage() {
                 }} />
                 <div>
                   <div style={{ ...typography.label.sm }}>Dark</div>
-                  <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{tab.colors.dark.active.indicator}</div>
+                  <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{tab.colors.dark.active.indicator}</div>
                 </div>
               </div>
             </div>
@@ -347,13 +351,13 @@ export default function TabPage() {
         <div style={sharedStyles.card}>
           <h3 style={sharedStyles.cardTitle}>Typography Tokens</h3>
           <SpecTable
-            headers={['Property', 'Value']}
+            headers={['Property', 'Token', 'Value']}
             rows={[
-              ['Font Family', tab.typography.fontFamily],
-              ['Font Size', tab.typography.fontSize],
-              ['Font Weight', tab.typography.fontWeight.toString()],
-              ['Line Height', tab.typography.lineHeight],
-              ['Letter Spacing', tab.typography.letterSpacing],
+              ['Font Family', <CopyableToken key="ff" token="tab.typography.fontFamily" />, <PixelValue key="ffv" value={tab.typography.fontFamily} />],
+              ['Font Size', <CopyableToken key="fs" token="tab.typography.fontSize" />, <PixelValue key="fsv" value={tab.typography.fontSize} />],
+              ['Font Weight', <CopyableToken key="fw" token="tab.typography.fontWeight" />, <PixelValue key="fwv" value={tab.typography.fontWeight.toString()} />],
+              ['Line Height', <CopyableToken key="lh" token="tab.typography.lineHeight" />, <PixelValue key="lhv" value={tab.typography.lineHeight} />],
+              ['Letter Spacing', <CopyableToken key="ls" token="tab.typography.letterSpacing" />, <PixelValue key="lsv" value={tab.typography.letterSpacing} />],
             ]}
           />
         </div>
@@ -362,54 +366,36 @@ export default function TabPage() {
         <div style={sharedStyles.card}>
           <h3 style={sharedStyles.cardTitle}>Spacing Tokens</h3>
           <SpecTable
-            headers={['Icon Position', 'Height', 'Padding X', 'Padding Y', 'Gap', 'Icon Size']}
+            headers={['Icon Position', 'Height Token', 'Height', 'Padding X', 'Padding Y', 'Gap', 'Icon Size']}
             rows={(['none', 'top', 'leading'] as const).map(pos => [
               <code key={pos}>{pos}</code>,
-              tab.sizes[pos].height,
-              tab.sizes[pos].paddingX,
-              tab.sizes[pos].paddingY,
-              tab.sizes[pos].gap,
-              tab.sizes[pos].iconSize,
+              <CopyableToken key={`${pos}-h`} token={`tab.sizes.${pos}.height`} />,
+              <PixelValue key={`${pos}-hv`} value={tab.sizes[pos].height} />,
+              <PixelValue key={`${pos}-px`} value={tab.sizes[pos].paddingX} />,
+              <PixelValue key={`${pos}-py`} value={tab.sizes[pos].paddingY} />,
+              <PixelValue key={`${pos}-g`} value={tab.sizes[pos].gap} />,
+              <PixelValue key={`${pos}-is`} value={tab.sizes[pos].iconSize} />,
             ])}
           />
         </div>
 
-        {/* Border & Focus Tokens */}
-        <div style={sharedStyles.card}>
-          <h3 style={sharedStyles.cardTitle}>Border & Focus Tokens</h3>
-          <div style={{ display: 'flex', gap: '48px' }}>
-            <div>
-              <h4 style={{ ...typography.label.sm, marginBottom: '8px' }}>Border Radius (Top Corners)</h4>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{
-                  width: '80px',
-                  height: '48px',
-                  background: colors.neutral[200],
-                  borderTopLeftRadius: tab.borderRadius,
-                  borderTopRightRadius: tab.borderRadius,
-                }} />
-                <code style={{ ...typography.code.sm }}>{tab.borderRadius}</code>
+              {/* Border & Focus Tokens */}
+              <div style={sharedStyles.card}>
+                <h3 style={sharedStyles.cardTitle}>Border & Focus Tokens</h3>
+                <SpecTable
+                  headers={['Property', 'Token', 'Value']}
+                  rows={[
+                    ['Border Radius', <CopyableToken key="br" token="tab.borderRadius" />, <PixelValue key="brv" value={tab.borderRadius} />],
+                    ['Focus Color', <CopyableToken key="fc" token="tab.focus.color" />, <PixelValue key="fcv" value={tab.focus.color} />],
+                    ['Focus Width', <CopyableToken key="fw" token="tab.focus.width" />, <PixelValue key="fwv" value={tab.focus.width} />],
+                    ['Focus Radius', <CopyableToken key="fr" token="tab.focus.borderRadius" />, <PixelValue key="frv" value={tab.focus.borderRadius} />],
+                    ['Indicator Height', <CopyableToken key="ih" token="tab.indicator.height" />, <PixelValue key="ihv" value={tab.indicator.height} />],
+                    ['Indicator Radius', <CopyableToken key="ir" token="tab.indicator.borderRadius" />, <PixelValue key="irv" value={tab.indicator.borderRadius} />],
+                  ]}
+                />
               </div>
-            </div>
-            <div>
-              <h4 style={{ ...typography.label.sm, marginBottom: '8px' }}>Focus Ring</h4>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{
-                  width: '80px',
-                  height: '48px',
-                  background: 'transparent',
-                  border: `${tab.focus.width} solid ${tab.focus.color}`,
-                  borderRadius: tab.focus.borderRadius,
-                }} />
-                <div>
-                  <div style={{ ...typography.code.sm }}>Color: {tab.focus.color}</div>
-                  <div style={{ ...typography.code.sm }}>Width: {tab.focus.width}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </CollapsibleSection>
+          </section>
 
         </>
       )}
@@ -568,7 +554,7 @@ const tabs = [
 
         <div style={sharedStyles.card}>
           <h3 style={sharedStyles.cardTitle}>When to Use</h3>
-          <ul style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, margin: 0, paddingLeft: '20px' }}>
+          <ul style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, margin: 0, paddingLeft: '20px' }}>
             <li style={{ marginBottom: '8px' }}>Organize related content that doesn't need to be viewed simultaneously</li>
             <li style={{ marginBottom: '8px' }}>Allow users to quickly switch between views without page navigation</li>
             <li style={{ marginBottom: '8px' }}>Group settings, content types, or data categories</li>

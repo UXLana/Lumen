@@ -13,6 +13,12 @@ import {
 // =============================================================================
 
 export interface HeaderProps {
+  /** Logo element displayed at the left */
+  logo?: React.ReactNode
+  /** App/Brand name displayed next to logo */
+  appName?: string
+  /** App description/subtitle */
+  appDescription?: string
   /** Search placeholder text */
   searchPlaceholder?: string
   /** Search value */
@@ -27,6 +33,8 @@ export interface HeaderProps {
   orgBadge?: React.ReactNode
   /** Right side actions (notifications, help, etc.) */
   actions?: React.ReactNode
+  /** Whether to show the apps grid button */
+  showAppsButton?: boolean
   /** Custom styles */
   style?: React.CSSProperties
 }
@@ -189,8 +197,8 @@ function OrgDropdown({ name, label, badge }: OrgDropdownProps) {
     width: '32px',
     height: '32px',
     borderRadius: '6px',
-    backgroundColor: colors.brand.primary,
-    color: colors.neutral[0],
+    backgroundColor: colors.brand.default,
+    color: colors.text.highEmphasis.onDark,
     fontFamily: fontFamilies.body,
     fontSize: '12px',
     fontWeight: 600,
@@ -207,7 +215,7 @@ function OrgDropdown({ name, label, badge }: OrgDropdownProps) {
     fontSize: header.orgDropdown.typography.name.fontSize,
     fontWeight: header.orgDropdown.typography.name.fontWeight,
     lineHeight: header.orgDropdown.typography.name.lineHeight,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
   }
 
   const labelStyleCss: React.CSSProperties = {
@@ -215,7 +223,7 @@ function OrgDropdown({ name, label, badge }: OrgDropdownProps) {
     fontSize: header.orgDropdown.typography.label.fontSize,
     fontWeight: header.orgDropdown.typography.label.fontWeight,
     lineHeight: header.orgDropdown.typography.label.lineHeight,
-    color: colors.text.lowEmphasis,
+    color: colors.text.lowEmphasis.onLight,
   }
 
   return (
@@ -238,6 +246,9 @@ function OrgDropdown({ name, label, badge }: OrgDropdownProps) {
 // =============================================================================
 
 export function Header({
+  logo,
+  appName,
+  appDescription,
   searchPlaceholder,
   searchValue,
   onSearchChange,
@@ -245,6 +256,7 @@ export function Header({
   orgLabel = 'Organization',
   orgBadge,
   actions,
+  showAppsButton = true,
   style,
 }: HeaderProps) {
   const headerStyle: React.CSSProperties = {
@@ -261,8 +273,42 @@ export function Header({
   const leftSectionStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
+    gap: '16px',
+  }
+
+  const logoContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  }
+
+  const brandTextStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+  }
+
+  const appNameStyle: React.CSSProperties = {
+    fontFamily: fontFamilies.body,
+    fontSize: '14px',
+    fontWeight: 600,
+    lineHeight: 1.2,
+    color: colors.text.highEmphasis.onLight,
+  }
+
+  const appDescriptionStyle: React.CSSProperties = {
+    fontFamily: fontFamilies.body,
+    fontSize: '11px',
+    fontWeight: 400,
+    lineHeight: 1.2,
+    color: colors.text.lowEmphasis.onLight,
+  }
+
+  const centerSectionStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
+    padding: '0 24px',
   }
 
   const rightSectionStyle: React.CSSProperties = {
@@ -270,6 +316,24 @@ export function Header({
     alignItems: 'center',
     gap: '8px',
   }
+
+  // Sidebar toggle icon
+  const sidebarIcon = (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+      <line x1="9" y1="3" x2="9" y2="21" stroke="currentColor" strokeWidth="1.5"/>
+    </svg>
+  )
+
+  // Apps grid icon
+  const appsIcon = (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+      <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+      <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+      <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+    </svg>
+  )
 
   // Notification bell icon
   const notificationIcon = (
@@ -288,10 +352,44 @@ export function Header({
     </svg>
   )
 
+  // Settings icon
+  const settingsIcon = (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+
   return (
-    <header style={headerStyle}>
-      {/* Center - Search */}
+    <header style={headerStyle} role="banner">
+      {/* Left - Logo/Brand and Apps Button */}
       <div style={leftSectionStyle}>
+        {/* Sidebar toggle (optional) */}
+        {showAppsButton && (
+          <IconButton icon={sidebarIcon} ariaLabel="Toggle sidebar" />
+        )}
+
+        {/* Apps grid button */}
+        {showAppsButton && (
+          <IconButton icon={appsIcon} ariaLabel="Apps menu" />
+        )}
+
+        {/* Logo and Brand Name */}
+        {(logo || appName) && (
+          <div style={logoContainerStyle}>
+            {logo}
+            {(appName || appDescription) && (
+              <div style={brandTextStyle}>
+                {appName && <span style={appNameStyle}>{appName}</span>}
+                {appDescription && <span style={appDescriptionStyle}>{appDescription}</span>}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Center - Search */}
+      <div style={centerSectionStyle}>
         <SearchInput
           placeholder={searchPlaceholder}
           value={searchValue}
@@ -305,6 +403,7 @@ export function Header({
           <>
             <IconButton icon={notificationIcon} ariaLabel="Notifications" />
             <IconButton icon={helpIcon} ariaLabel="Help" />
+            <IconButton icon={settingsIcon} ariaLabel="Settings" />
           </>
         )}
         <OrgDropdown
@@ -318,6 +417,105 @@ export function Header({
 }
 
 Header.displayName = 'Header'
+
+// =============================================================================
+// CANOPY LOGO COMPONENT
+// =============================================================================
+
+export interface CanopyLogoProps {
+  /** Logo size */
+  size?: 'sm' | 'md' | 'lg'
+  /** Whether to show the text alongside the logo */
+  showText?: boolean
+}
+
+/**
+ * Canopy Logo - Tree icon with shield shape
+ * Based on the Canopy branding - a tree within a shield/badge shape
+ */
+export function CanopyLogo({ size = 'md', showText = true }: CanopyLogoProps) {
+  const sizes = {
+    sm: { logo: 28, fontSize: '14px', descFontSize: '10px', gap: '8px' },
+    md: { logo: 32, fontSize: '16px', descFontSize: '11px', gap: '10px' },
+    lg: { logo: 40, fontSize: '18px', descFontSize: '12px', gap: '12px' },
+  }
+
+  const s = sizes[size]
+
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: s.gap,
+  }
+
+  const logoStyle: React.CSSProperties = {
+    width: s.logo,
+    height: s.logo,
+    flexShrink: 0,
+  }
+
+  const textContainerStyle: React.CSSProperties = {
+    display: showText ? 'flex' : 'none',
+    flexDirection: 'column',
+  }
+
+  const nameStyle: React.CSSProperties = {
+    fontFamily: fontFamilies.body,
+    fontSize: s.fontSize,
+    fontWeight: 600,
+    lineHeight: 1.2,
+    color: '#3D5A4C', // Canopy green
+  }
+
+  return (
+    <div style={containerStyle}>
+      {/* Canopy Tree Logo SVG */}
+      <svg
+        style={logoStyle}
+        viewBox="0 0 48 48"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="Canopy logo"
+      >
+        {/* Shield outline */}
+        <path
+          d="M24 4C14 4 6 8 6 8V24C6 34 14 42 24 46C34 42 42 34 42 24V8C42 8 34 4 24 4Z"
+          stroke="#3D5A4C"
+          strokeWidth="2"
+          fill="none"
+        />
+        {/* Tree trunk */}
+        <path
+          d="M24 38V28"
+          stroke="#5A7A68"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        {/* Tree roots */}
+        <path
+          d="M21 38C21 36 22 34 24 34C26 34 27 36 27 38"
+          stroke="#5A7A68"
+          strokeWidth="1.5"
+          fill="none"
+        />
+        {/* Tree canopy - layered circles for organic tree shape */}
+        <ellipse cx="24" cy="20" rx="10" ry="8" fill="#6B8E7A" />
+        <ellipse cx="20" cy="18" rx="6" ry="5" fill="#5A7A68" />
+        <ellipse cx="28" cy="18" rx="6" ry="5" fill="#5A7A68" />
+        <ellipse cx="24" cy="15" rx="7" ry="5" fill="#4A6A58" />
+        <ellipse cx="24" cy="22" rx="8" ry="5" fill="#7A9E8A" />
+      </svg>
+
+      {showText && (
+        <div style={textContainerStyle}>
+          <span style={nameStyle}>Canopy</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+CanopyLogo.displayName = 'CanopyLogo'
 
 // Export sub-components for flexibility
 export { SearchInput, IconButton, OrgDropdown }

@@ -203,7 +203,7 @@ export function Avatar({
     fontSize: typographyStyle.fontSize,
     fontWeight: typographyStyle.fontWeight,
     lineHeight: typographyStyle.lineHeight,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     userSelect: 'none',
   }
   
@@ -316,11 +316,11 @@ export function AvatarGroup({
     paddingLeft: '8px',
     paddingRight: '8px',
     borderRadius: avatarBorderRadius,
-    backgroundColor: colors.neutral[100],
+    backgroundColor: colors.surface.lightDarker,
     fontFamily: fontFamilies.display,
     fontSize: avatar.typography[size].fontSize,
     fontWeight: 600,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
     cursor: onOverflowClick ? 'pointer' : 'default',
     userSelect: 'none',
     flexShrink: 0,
@@ -338,7 +338,7 @@ export function AvatarGroup({
   return (
     <div className={className} style={containerStyles} role="group" aria-label="Avatar group">
       {visibleAvatars.map((avatarProps, index) => (
-        <div key={index} style={avatarWrapperStyles(index)}>
+        <div key={avatarProps.name || index} style={avatarWrapperStyles(index)}>
           <Avatar
             {...avatarProps}
             size={size}

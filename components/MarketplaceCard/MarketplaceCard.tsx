@@ -101,10 +101,10 @@ const Rating: React.FC<{ value: number; count?: number }> = ({ value, count }) =
       alignItems: 'center',
       gap: spacing[1],
       fontSize: typography.body.sm.fontSize,
-      color: colors.text.mediumEmphasis,
+      color: colors.text.lowEmphasis.onLight,
     }}
   >
-    <span style={{ fontWeight: fontWeights.medium, color: colors.text.highEmphasis }}>
+    <span style={{ fontWeight: fontWeights.medium, color: colors.text.highEmphasis.onLight }}>
       {value.toFixed(1)}
     </span>
     <IconStar
@@ -112,7 +112,7 @@ const Rating: React.FC<{ value: number; count?: number }> = ({ value, count }) =
       style={{ color: '#F5A623', fill: '#F5A623' }}
     />
     {count !== undefined && (
-      <span style={{ color: colors.text.lowEmphasis }}>({count})</span>
+      <span style={{ color: colors.text.lowEmphasis.onLight }}>({count})</span>
     )}
   </span>
 )
@@ -127,10 +127,10 @@ const VerifiedBadge: React.FC = () => (
       alignItems: 'center',
       gap: spacing[1],
       fontSize: typography.body.xs.fontSize,
-      color: colors.semantic.success.main,
+      color: colors.status.success,
     }}
   >
-    <IconCheck size={12} style={{ color: colors.semantic.success.main }} />
+    <IconCheck size={12} style={{ color: colors.status.success }} />
     Verified Application
   </span>
 )
@@ -168,9 +168,9 @@ const DefaultCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
       flexDirection: 'column',
       width: '100%',
       maxWidth: '380px',
-      backgroundColor: colors.background.default,
+      backgroundColor: colors.surface.light,
       borderRadius: borderRadius.lg,
-      border: `1px solid ${selected ? colors.brand.primary : isHovered ? colors.border.main : colors.border.light}`,
+      border: `1px solid ${selected ? colors.brand.default : isHovered ? colors.border.midEmphasis.onLight : colors.border.lowEmphasis.onLight}`,
       boxShadow: isHovered ? shadows.md : shadows.sm,
       overflow: 'hidden',
       cursor: onClick ? 'pointer' : 'default',
@@ -181,7 +181,7 @@ const DefaultCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
     const heroStyles: React.CSSProperties = {
       width: '100%',
       height: '160px',
-      backgroundColor: colors.neutral[100],
+      backgroundColor: '#F5F5F5',
       backgroundImage: heroImageUrl ? `url(${heroImageUrl})` : undefined,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -220,13 +220,13 @@ const DefaultCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
       gap: spacing[2],
       flexWrap: 'wrap',
       fontSize: typography.body.sm.fontSize,
-      color: colors.text.mediumEmphasis,
+      color: colors.text.lowEmphasis.onLight,
     }
 
     const descriptionStyles: React.CSSProperties = {
       fontSize: typography.body.sm.fontSize,
       lineHeight: typography.body.sm.lineHeight,
-      color: colors.text.mediumEmphasis,
+      color: colors.text.lowEmphasis.onLight,
       display: '-webkit-box',
       WebkitLineClamp: 2,
       WebkitBoxOrient: 'vertical',
@@ -271,7 +271,7 @@ const DefaultCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
                     fontFamily: fontFamilies.body,
                     fontSize: typography.body.md.fontSize,
                     fontWeight: fontWeights.semibold,
-                    color: colors.text.highEmphasis,
+                    color: colors.text.highEmphasis.onLight,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -291,7 +291,7 @@ const DefaultCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
               {/* Meta info row */}
               <div style={metaStyles}>
                 <Rating value={rating} />
-                <span style={{ color: colors.text.highEmphasis, fontWeight: fontWeights.medium }}>
+                <span style={{ color: colors.text.highEmphasis.onLight, fontWeight: fontWeights.medium }}>
                   {publisher}
                 </span>
                 <span>{category}</span>
@@ -349,9 +349,9 @@ const CompactCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
       alignItems: 'flex-start',
       gap: spacing[3],
       padding: spacing[4],
-      backgroundColor: colors.background.default,
+      backgroundColor: colors.surface.light,
       borderRadius: borderRadius.lg,
-      border: `1px solid ${selected ? colors.brand.primary : isHovered ? colors.border.main : colors.border.light}`,
+      border: `1px solid ${selected ? colors.brand.default : isHovered ? colors.border.midEmphasis.onLight : colors.border.lowEmphasis.onLight}`,
       boxShadow: isHovered ? shadows.sm : 'none',
       cursor: onClick ? 'pointer' : 'default',
       transition: transitionPresets.default,
@@ -392,7 +392,7 @@ const CompactCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
                 fontFamily: fontFamilies.body,
                 fontSize: typography.body.md.fontSize,
                 fontWeight: fontWeights.semibold,
-                color: colors.text.highEmphasis,
+                color: colors.text.highEmphasis.onLight,
               }}
             >
               {name}
@@ -408,7 +408,7 @@ const CompactCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
               alignItems: 'center',
               gap: spacing[2],
               fontSize: typography.body.sm.fontSize,
-              color: colors.text.mediumEmphasis,
+              color: colors.text.lowEmphasis.onLight,
               marginBottom: spacing[1],
             }}
           >
@@ -423,7 +423,7 @@ const CompactCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
             style={{
               marginTop: spacing[2],
               fontSize: typography.body.sm.fontSize,
-              color: colors.text.mediumEmphasis,
+              color: colors.text.lowEmphasis.onLight,
               display: '-webkit-box',
               WebkitLineClamp: 1,
               WebkitBoxOrient: 'vertical',
@@ -473,9 +473,9 @@ const HorizontalCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
       alignItems: 'center',
       gap: spacing[3],
       padding: `${spacing[3]} ${spacing[4]}`,
-      backgroundColor: selected ? colors.neutral[50] : isHovered ? colors.neutral[50] : colors.background.default,
+      backgroundColor: selected ? colors.surface.lightDarker : isHovered ? colors.surface.lightDarker : colors.surface.light,
       borderRadius: borderRadius.md,
-      border: `1px solid ${selected ? colors.brand.primary : colors.border.light}`,
+      border: `1px solid ${selected ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
       cursor: onClick ? 'pointer' : 'default',
       transition: transitionPresets.default,
       ...style,
@@ -507,13 +507,13 @@ const HorizontalCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
                 fontFamily: fontFamilies.body,
                 fontSize: typography.body.md.fontSize,
                 fontWeight: fontWeights.semibold,
-                color: colors.text.highEmphasis,
+                color: colors.text.highEmphasis.onLight,
               }}
             >
               {name}
             </span>
             {isVerified && (
-              <IconCheck size={14} style={{ color: colors.semantic.success.main }} />
+              <IconCheck size={14} style={{ color: colors.status.success }} />
             )}
           </div>
           <div
@@ -522,7 +522,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
               alignItems: 'center',
               gap: spacing[2],
               fontSize: typography.body.sm.fontSize,
-              color: colors.text.mediumEmphasis,
+              color: colors.text.lowEmphasis.onLight,
             }}
           >
             <span>{publisher}</span>

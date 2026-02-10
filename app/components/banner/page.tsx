@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { Banner, BannerVariant, BannerSurface, BannerButtonAlignment } from '@/components'
-import { colors, typography, spacing, borderRadius, bannerIcon } from '@/styles/design-tokens'
+import { colors, typography, spacing, borderRadius, bannerIcon, banner } from '@/styles/design-tokens'
 
 // =============================================================================
 // PAGE COMPONENT
@@ -114,7 +114,11 @@ export default function BannerPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Banner } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { Banner } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Banner } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -245,7 +249,7 @@ export default function BannerPage() {
                         style={{
                           width: '100%',
                           padding: spacing[2],
-                          border: `1px solid ${colors.border.light}`,
+                          border: `1px solid ${colors.stroke.light}`,
                           borderRadius: borderRadius.sm,
                           boxSizing: 'border-box',
                           ...typography.body.sm,
@@ -266,7 +270,7 @@ export default function BannerPage() {
                         style={{
                           width: '100%',
                           padding: spacing[2],
-                          border: `1px solid ${colors.border.light}`,
+                          border: `1px solid ${colors.stroke.light}`,
                           borderRadius: borderRadius.sm,
                           boxSizing: 'border-box',
                           ...typography.body.sm,
@@ -296,20 +300,20 @@ export default function BannerPage() {
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Typography, spacing, and border values used in the banner component.
-            </p>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
+                Typography, spacing, and border values used in the banner component.
+              </p>
 
-            {/* Typography Tokens */}
+              {/* Typography Tokens */}
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Typography Tokens</h3>
               <SpecTable
-                headers={['Element', 'Font Size', 'Line Height', 'Font Weight']}
+                headers={['Element', 'Token', 'Font Size', 'Line Height', 'Font Weight']}
                 rows={[
-                  ['Title', '16px', '24px', 'Regular (400)'],
-                  ['Description', '16px', '24px', 'Regular (400)'],
-                  ['Button', '14px', '20px', 'Medium (500)'],
+                  ['Title', <CopyableToken key="t-tok" token="banner.typography.title" />, <PixelValue key="t-fs" value="16px" />, <PixelValue key="t-lh" value="24px" />, <PixelValue key="t-fw" value="400" />],
+                  ['Description', <CopyableToken key="d-tok" token="banner.typography.message" />, <PixelValue key="d-fs" value="16px" />, <PixelValue key="d-lh" value="24px" />, <PixelValue key="d-fw" value="400" />],
+                  ['Button', <CopyableToken key="b-tok" token="banner.button.typography" />, <PixelValue key="b-fs" value="14px" />, <PixelValue key="b-lh" value="20px" />, <PixelValue key="b-fw" value="500" />],
                 ]}
               />
             </div>
@@ -318,13 +322,14 @@ export default function BannerPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Spacing & Size Tokens</h3>
               <SpecTable
-                headers={['Element', 'Value', 'Description']}
+                headers={['Element', 'Token', 'Value', 'Description']}
                 rows={[
-                  ['Banner Height (side)', '56px', 'Fixed height for side button alignment'],
-                  ['Banner Height (below)', 'auto (min 100px)', 'Flexible height for below button alignment'],
-                  ['Icon Container', '40px × 40px', 'Container with 16px border radius'],
-                  ['Icon Size', '24px', 'Icon inside container'],
-                  ['Left Padding', '56px', '8px + 40px icon + 8px gap'],
+                  ['Banner Height (side)', <CopyableToken key="hs" token="banner.sizing.minHeight.side" />, <PixelValue key="hsv" value="56px" />, 'Fixed height for side button alignment'],
+                  ['Banner Height (below)', <CopyableToken key="hb" token="banner.sizing.minHeight.below" />, <PixelValue key="hbv" value="100px" />, 'Min height for below button alignment'],
+                  ['Padding', <CopyableToken key="p" token="banner.padding" />, <PixelValue key="pv" value="8px" />, 'Internal padding'],
+                  ['Icon Container', <CopyableToken key="ic" token="bannerIcon.sizing.container" />, <PixelValue key="icv" value="40px" />, 'Icon container size'],
+                  ['Icon Size', <CopyableToken key="is" token="bannerIcon.sizing.icon" />, <PixelValue key="isv" value="24px" />, 'Icon inside container'],
+                  ['Content Gap', <CopyableToken key="cg" token="banner.spacing.contentGap" />, <PixelValue key="cgv" value="8px" />, 'Gap between icon and content'],
                 ]}
               />
             </div>
@@ -332,34 +337,31 @@ export default function BannerPage() {
             {/* Border Radius & Outline */}
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Border Radius & Outline</h3>
-              <div style={{ display: 'flex', gap: '32px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{
-                    width: '120px',
-                    height: '60px',
-                    background: '#EBEFFF',
-                    borderRadius: '16px',
-                    border: '2px solid rgba(209, 217, 255, 0.6)',
-                  }} />
-                  <div>
-                    <div style={{ ...typography.label.md }}>Banner</div>
-                    <code style={{ ...typography.code.sm }}>16px radius, 2px outline @ 60%</code>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{
-                    width: '40px',
-                    height: '40px',
-                    background: bannerIcon.variants.information.background,
-                    borderRadius: '16px',
-                  }} />
-                  <div>
-                    <div style={{ ...typography.label.md }}>Icon Container</div>
-                    <code style={{ ...typography.code.sm }}>16px</code>
-                  </div>
-                </div>
-              </div>
+              <SpecTable
+                headers={['Element', 'Token', 'Value']}
+                rows={[
+                  ['Banner Radius', <CopyableToken key="br" token="banner.borderRadius" />, <PixelValue key="brv" value="16px" />],
+                  ['Icon Container Radius', <CopyableToken key="icr" token="bannerIcon.borderRadius" />, <PixelValue key="icrv" value="16px" />],
+                  ['Outline Width', <CopyableToken key="ow" token="banner.outline.width" />, <PixelValue key="owv" value="2px" />],
+                  ['Outline Opacity', <CopyableToken key="oo" token="banner.outline.opacity" />, <PixelValue key="oov" value="0.6" />],
+                ]}
+              />
             </div>
+
+            {/* Color Tokens */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Color Tokens (Color Surface)</h3>
+              <SpecTable
+                headers={['Variant', 'Background Token', 'Icon BG Token', 'Icon Color Token']}
+                rows={[
+                  ['info', <CopyableToken key="i-bg" token="banner.variants.info.color.background" />, <CopyableToken key="i-ibg" token="bannerIcon.variants.information.background" />, <CopyableToken key="i-ic" token="bannerIcon.variants.information.iconColor" />],
+                  ['success', <CopyableToken key="s-bg" token="banner.variants.success.color.background" />, <CopyableToken key="s-ibg" token="bannerIcon.variants.success.background" />, <CopyableToken key="s-ic" token="bannerIcon.variants.success.iconColor" />],
+                  ['warning', <CopyableToken key="w-bg" token="banner.variants.warning.color.background" />, <CopyableToken key="w-ibg" token="bannerIcon.variants.warning.background" />, <CopyableToken key="w-ic" token="bannerIcon.variants.warning.iconColor" />],
+                  ['error', <CopyableToken key="e-bg" token="banner.variants.error.color.background" />, <CopyableToken key="e-ibg" token="bannerIcon.variants.error.background" />, <CopyableToken key="e-ic" token="bannerIcon.variants.error.iconColor" />],
+                ]}
+              />
+            </div>
+            </CollapsibleSection>
           </section>
 
         </>

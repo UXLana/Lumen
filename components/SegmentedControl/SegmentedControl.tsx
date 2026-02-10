@@ -138,7 +138,7 @@ export function SegmentedControl({
     display: 'inline-flex',
     alignItems: 'center',
     padding: config.padding,
-    background: onDark ? 'rgba(255, 255, 255, 0.1)' : colors.neutral[100],
+    background: onDark ? 'rgba(255, 255, 255, 0.1)' : colors.surface.lightDarker,
     borderRadius: config.borderRadius,
     gap: '4px',
     ...(fullWidth && { width: '100%' }),
@@ -178,12 +178,12 @@ export function SegmentedControl({
           ? onDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'
           : 'transparent',
       color: isDisabled
-        ? colors.text.disabled
+        ? colors.text.disabled.onLight
         : isSelected
-          ? colors.text.highEmphasis
+          ? colors.text.highEmphasis.onLight
           : onDark
             ? 'rgba(255, 255, 255, 0.7)'
-            : colors.text.mediumEmphasis,
+            : colors.text.lowEmphasis.onLight,
 
       // Shape
       borderRadius: config.segmentBorderRadius,
@@ -202,7 +202,7 @@ export function SegmentedControl({
   }
 
   return (
-    <div className={className} style={containerStyles} role="group">
+    <div className={className} style={containerStyles} role="radiogroup" aria-label="Segmented control">
       {segments.map((segment) => (
         <button
           key={segment.id}

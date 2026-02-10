@@ -1,2 +1,2 @@
-export { Header, SearchInput, IconButton, OrgDropdown } from './Header'
-export type { HeaderProps } from './Header'
+export { Header, SearchInput, IconButton, OrgDropdown, CanopyLogo } from './Header'
+export type { HeaderProps, CanopyLogoProps } from './Header'

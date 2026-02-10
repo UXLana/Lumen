@@ -13,7 +13,7 @@ function SpacingBar({ name, value }: { name: string; value: string }) {
   
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
-      <div style={{ width: '60px', ...typography.code.sm, color: colors.text.mediumEmphasis }}>
+      <div style={{ width: '60px', ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>
         {name}
       </div>
       <div 
@@ -25,7 +25,7 @@ function SpacingBar({ name, value }: { name: string; value: string }) {
           borderRadius: borderRadius.xs,
         }}
       />
-      <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis }}>
+      <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>
         {value}
       </div>
     </div>
@@ -135,7 +135,7 @@ export default function SpacingPage() {
             {[4, 8, 12, 16, 24, 32].map((size) => (
               <div key={size} style={{ textAlign: 'center' }}>
                 <div style={{
-                  background: colors.primary[100],
+                  background: '#C6E7DA',
                   padding: `${size}px`,
                   borderRadius: borderRadius.md,
                   marginBottom: '8px',
@@ -147,7 +147,7 @@ export default function SpacingPage() {
                     borderRadius: borderRadius.sm,
                   }} />
                 </div>
-                <span style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{size}px</span>
+                <span style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{size}px</span>
               </div>
             ))}
           </div>
@@ -158,7 +158,7 @@ export default function SpacingPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {[4, 8, 16, 24].map((gap) => (
               <div key={gap}>
-                <span style={{ ...typography.label.sm, color: colors.text.mediumEmphasis, display: 'block', marginBottom: '8px' }}>
+                <span style={{ ...typography.label.sm, color: colors.text.lowEmphasis.onLight, display: 'block', marginBottom: '8px' }}>
                   gap: {gap}px
                 </span>
                 <div style={{ display: 'flex', gap: `${gap}px` }}>
@@ -253,7 +253,7 @@ export default function SpacingPage() {
 
           <div style={sharedStyles.card}>
             <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.mediumEmphasis }}>
+            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.lowEmphasis.onLight }}>
               <li style={{ marginBottom: '8px' }}>Use the numeric scale for precise control</li>
               <li style={{ marginBottom: '8px' }}>Use semantic aliases for consistent component spacing</li>
               <li style={{ marginBottom: '8px' }}>Maintain visual rhythm by sticking to the 4px grid</li>

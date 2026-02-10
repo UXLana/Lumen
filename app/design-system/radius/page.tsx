@@ -40,8 +40,8 @@ export default function RadiusPage() {
                   borderRadius: value,
                   margin: '0 auto 12px',
                 }} />
-                <div style={{ ...typography.label.sm, color: colors.text.highEmphasis }}>{name}</div>
-                <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{value}</div>
+                <div style={{ ...typography.label.sm, color: colors.text.highEmphasis.onLight }}>{name}</div>
+                <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{value}</div>
               </div>
             ))}
           </div>
@@ -80,17 +80,17 @@ export default function RadiusPage() {
                 <div style={{
                   width: '100%',
                   height: '60px',
-                  background: colors.primary[100],
+                  background: '#C6E7DA',
                   borderRadius: value,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: `1px solid ${colors.border.light}`,
+                  border: `1px solid ${colors.stroke.light}`,
                   marginBottom: '8px',
                 }}>
                   <span style={{ ...typography.label.sm, color: colors.brand.primary }}>{name}</span>
                 </div>
-                <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis, textAlign: 'center' }}>
+                <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight, textAlign: 'center' }}>
                   {value}
                 </div>
               </div>
@@ -141,14 +141,14 @@ export default function RadiusPage() {
               <div key={r} style={{
                 width: '120px',
                 height: '100px',
-                background: colors.background.default,
+                background: colors.surface.default,
                 borderRadius: (borderRadius as any)[r],
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-                <span style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{r}</span>
+                <span style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{r}</span>
               </div>
             ))}
           </div>
@@ -230,7 +230,7 @@ export default function RadiusPage() {
 
           <div style={sharedStyles.card}>
             <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.mediumEmphasis }}>
+            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.lowEmphasis.onLight }}>
               <li style={{ marginBottom: '8px' }}>Use semantic tokens for component-specific styling</li>
               <li style={{ marginBottom: '8px' }}>Use larger radius values for prominent elements</li>
               <li style={{ marginBottom: '8px' }}>Use full radius for avatars and pill-shaped elements</li>

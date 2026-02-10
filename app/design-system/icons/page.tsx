@@ -232,8 +232,8 @@ function IconCard({
         alignItems: 'center',
         padding: '16px 8px',
         borderRadius: borderRadius.md,
-        border: `1px solid ${hovered ? colors.brand.primary : colors.border.light}`,
-        background: hovered ? colors.neutral[100] : colors.background.default,
+        border: `1px solid ${hovered ? colors.brand.primary : colors.stroke.light}`,
+        background: hovered ? '#F5F5F5' : colors.surface.default,
         transition: 'all 0.15s ease',
         position: 'relative',
       }}
@@ -246,7 +246,7 @@ function IconCard({
           width: '48px',
           height: '48px',
           marginBottom: '8px',
-          color: hovered ? colors.brand.primary : colors.text.highEmphasis,
+          color: hovered ? colors.brand.primary : colors.text.highEmphasis.onLight,
           transition: 'color 0.15s ease',
         }}
       >
@@ -255,7 +255,7 @@ function IconCard({
       <div
         style={{
           fontSize: '11px',
-          color: colors.text.mediumEmphasis,
+          color: colors.text.lowEmphasis.onLight,
           textAlign: 'center',
           fontFamily: fontFamilies.mono,
           whiteSpace: 'nowrap',
@@ -287,11 +287,11 @@ function IconCard({
               justifyContent: 'center',
               width: '28px',
               height: '28px',
-              border: `1px solid ${colors.border.light}`,
+              border: `1px solid ${colors.stroke.light}`,
               borderRadius: borderRadius.sm,
-              background: colors.background.default,
+              background: colors.surface.default,
               cursor: 'pointer',
-              color: colors.text.mediumEmphasis,
+              color: colors.text.lowEmphasis.onLight,
               transition: 'all 0.15s ease',
             }}
             onMouseOver={(e) => {
@@ -300,9 +300,9 @@ function IconCard({
               e.currentTarget.style.borderColor = colors.brand.primary
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = colors.background.default
-              e.currentTarget.style.color = colors.text.mediumEmphasis
-              e.currentTarget.style.borderColor = colors.border.light
+              e.currentTarget.style.background = colors.surface.default
+              e.currentTarget.style.color = colors.text.lowEmphasis.onLight
+              e.currentTarget.style.borderColor = colors.stroke.light
             }}
           >
             <Icons.IconCopy size="sm" />
@@ -316,11 +316,11 @@ function IconCard({
               justifyContent: 'center',
               width: '28px',
               height: '28px',
-              border: `1px solid ${colors.border.light}`,
+              border: `1px solid ${colors.stroke.light}`,
               borderRadius: borderRadius.sm,
-              background: colors.background.default,
+              background: colors.surface.default,
               cursor: 'pointer',
-              color: colors.text.mediumEmphasis,
+              color: colors.text.lowEmphasis.onLight,
               transition: 'all 0.15s ease',
             }}
             onMouseOver={(e) => {
@@ -329,9 +329,9 @@ function IconCard({
               e.currentTarget.style.borderColor = colors.brand.primary
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = colors.background.default
-              e.currentTarget.style.color = colors.text.mediumEmphasis
-              e.currentTarget.style.borderColor = colors.border.light
+              e.currentTarget.style.background = colors.surface.default
+              e.currentTarget.style.color = colors.text.lowEmphasis.onLight
+              e.currentTarget.style.borderColor = colors.stroke.light
             }}
           >
             <Icons.IconImage size="sm" />
@@ -383,7 +383,7 @@ function SizeDemo() {
         alignItems: 'flex-end',
         gap: '32px',
         padding: '24px',
-        background: colors.neutral[100],
+        background: '#F5F5F5',
         borderRadius: borderRadius.lg,
       }}
     >
@@ -398,10 +398,10 @@ function SizeDemo() {
           }}
         >
           <Icons.IconStar size={key} />
-          <div style={{ fontSize: '12px', fontWeight: 600, color: colors.text.highEmphasis }}>
+          <div style={{ fontSize: '12px', fontWeight: 600, color: colors.text.highEmphasis.onLight }}>
             {key}
           </div>
-          <div style={{ fontSize: '11px', color: colors.text.mediumEmphasis }}>
+          <div style={{ fontSize: '11px', color: colors.text.lowEmphasis.onLight }}>
             {pixels}px
           </div>
         </div>
@@ -424,7 +424,7 @@ function StrokeDemo() {
         alignItems: 'center',
         gap: '32px',
         padding: '24px',
-        background: colors.neutral[100],
+        background: '#F5F5F5',
         borderRadius: borderRadius.lg,
       }}
     >
@@ -439,10 +439,10 @@ function StrokeDemo() {
           }}
         >
           <Icons.IconHeart size="xl" strokeWidth={strokeWidth} />
-          <div style={{ fontSize: '12px', fontWeight: 600, color: colors.text.highEmphasis }}>
+          <div style={{ fontSize: '12px', fontWeight: 600, color: colors.text.highEmphasis.onLight }}>
             {strokeWidth}px
           </div>
-          <div style={{ fontSize: '11px', color: colors.text.mediumEmphasis }}>
+          <div style={{ fontSize: '11px', color: colors.text.lowEmphasis.onLight }}>
             {strokeWidth === 1.5 ? 'Default' : ''}
           </div>
         </div>
@@ -510,13 +510,13 @@ export default function IconsPage() {
                 alignItems: 'center',
                 gap: '12px',
                 padding: '12px 16px',
-                background: colors.background.default,
-                border: `1px solid ${colors.border.light}`,
+                background: colors.surface.default,
+                border: `1px solid ${colors.stroke.light}`,
                 borderRadius: borderRadius.md,
                 marginBottom: '24px',
               }}
             >
-              <Icons.IconSearch size="sm" style={{ color: colors.text.mediumEmphasis }} />
+              <Icons.IconSearch size="sm" style={{ color: colors.text.lowEmphasis.onLight }} />
               <input
                 ref={searchInputRef}
                 type="text"
@@ -530,7 +530,7 @@ export default function IconsPage() {
                   border: 'none',
                   background: 'transparent',
                   fontSize: '14px',
-                  color: colors.text.highEmphasis,
+                  color: colors.text.highEmphasis.onLight,
                 }}
               />
               {searchQuery && (
@@ -542,7 +542,7 @@ export default function IconsPage() {
                     cursor: 'pointer',
                     padding: '4px',
                     display: 'flex',
-                    color: colors.text.mediumEmphasis,
+                    color: colors.text.lowEmphasis.onLight,
                   }}
                 >
                   <Icons.IconX size="sm" />
@@ -578,7 +578,7 @@ export default function IconsPage() {
               style={{
                 textAlign: 'center',
                 padding: '48px',
-                color: colors.text.mediumEmphasis,
+                color: colors.text.lowEmphasis.onLight,
               }}
             >
               <Icons.IconSearch size="xl" style={{ marginBottom: '16px', opacity: 0.5 }} />
@@ -718,7 +718,7 @@ import type { IconProps, IconSize } from '@/components/Icons'`}</CodeBlock>
                     }}
                   >
                     <BannerIcon variant={variant} />
-                    <span style={{ fontSize: '12px', color: colors.text.mediumEmphasis, textTransform: 'capitalize' }}>
+                    <span style={{ fontSize: '12px', color: colors.text.lowEmphasis.onLight, textTransform: 'capitalize' }}>
                       {variant}
                     </span>
                   </div>

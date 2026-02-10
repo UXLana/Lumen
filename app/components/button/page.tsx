@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { Button, ButtonGroup, DropdownIcon, ButtonSize, ButtonEmphasis } from '@/components'
 import { IconPlus, IconSettings } from '@/components/Icons'
 import { colors, typography, button, borderRadius } from '@/styles/design-tokens'
@@ -57,7 +57,11 @@ export default function ButtonPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { Button, ButtonGroup } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -97,7 +101,7 @@ export default function ButtonPage() {
   emphasis="${demoEmphasis}"${demoDestructive ? '\n  destructive' : ''}${demoLoading ? '\n  loading' : ''}${demoDisabled ? '\n  disabled' : ''}${demoOnDark ? '\n  onDark' : ''}${demoFullWidth ? '\n  fullWidth' : ''}${demoIconOnly ? '\n  iconOnly\n  leftIcon={<IconPlus />}\n  aria-label="Add item"' : ''}${demoLeftIcon && !demoIconOnly ? '\n  leftIcon={<IconPlus />}' : ''}${demoRightIcon && !demoIconOnly ? '\n  rightIcon={<DropdownIcon />}' : ''}
 >${demoIconOnly ? '' : '\n  Button\n'}</Button>`}
                     previewPadding="56px 24px"
-                    previewBackground={demoOnDark ? colors.brand.primary : colors.neutral[50]}
+                    previewBackground={demoOnDark ? colors.brand.primary : colors.surface.paper}
                   />
                 </div>
 
@@ -203,39 +207,154 @@ export default function ButtonPage() {
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Typography scale and spacing values used in the button component.
-            </p>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
+                Typography scale and spacing values used in the button component. Click any token to copy it. Pixel values shown in parentheses are for reference only.
+              </p>
 
-            {/* Typography Tokens */}
+              {/* Typography Tokens */}
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Typography Tokens</h3>
               <SpecTable
                 headers={['Size', 'Font Size', 'Font Weight', 'Line Height', 'Letter Spacing']}
                 rows={sizes.map(size => [
                   <code key={size}>{size}</code>,
-                  button.typography[size].fontSize,
-                  button.typography[size].fontWeight.toString(),
-                  button.typography[size].lineHeight,
-                  button.typography[size].letterSpacing,
+                  <TokenValue key={`fs-${size}`} token={`button.typography.${size}.fontSize`} value={button.typography[size].fontSize} />,
+                  <TokenValue key={`fw-${size}`} token={`button.typography.${size}.fontWeight`} value={button.typography[size].fontWeight.toString()} />,
+                  <TokenValue key={`lh-${size}`} token={`button.typography.${size}.lineHeight`} value={button.typography[size].lineHeight} />,
+                  <TokenValue key={`ls-${size}`} token={`button.typography.${size}.letterSpacing`} value={button.typography[size].letterSpacing} />,
                 ])}
               />
             </div>
 
             {/* Spacing Tokens */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Spacing Tokens</h3>
+              <h3 style={sharedStyles.cardTitle}>Spacing & Dimensions</h3>
               <SpecTable
                 headers={['Size', 'Height', 'Min Width', 'Padding X', 'Padding Y', 'Gap']}
                 rows={sizes.map(size => [
                   <code key={size}>{size}</code>,
-                  button.sizes[size].height,
-                  button.sizes[size].minWidth,
-                  button.sizes[size].paddingX,
-                  button.sizes[size].paddingY,
-                  button.sizes[size].gap,
+                  <TokenValue key={`h-${size}`} token={`button.sizes.${size}.height`} value={button.sizes[size].height} />,
+                  <TokenValue key={`mw-${size}`} token={`button.sizes.${size}.minWidth`} value={button.sizes[size].minWidth} />,
+                  <TokenValue key={`px-${size}`} token={`button.sizes.${size}.paddingX`} value={button.sizes[size].paddingX} />,
+                  <TokenValue key={`py-${size}`} token={`button.sizes.${size}.paddingY`} value={button.sizes[size].paddingY} />,
+                  <TokenValue key={`g-${size}`} token={`button.sizes.${size}.gap`} value={button.sizes[size].gap} />,
                 ])}
+              />
+            </div>
+
+            {/* Icon Only Button Tokens */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Icon-Only Button Dimensions</h3>
+              <SpecTable
+                headers={['Size', 'Button Size', 'Icon Size']}
+                rows={sizes.map(size => [
+                  <code key={size}>{size}</code>,
+                  <TokenValue key={`io-${size}`} token={`button.iconOnlySizes.${size}.size`} value={button.iconOnlySizes[size].size} />,
+                  <TokenValue key={`ioi-${size}`} token={`button.iconOnlySizes.${size}.iconSize`} value={button.iconOnlySizes[size].iconSize} />,
+                ])}
+              />
+            </div>
+
+            {/* Colors - High Emphasis */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Colors - High Emphasis (Light Mode)</h3>
+              <SpecTable
+                headers={['State', 'Background', 'Text', 'Border']}
+                rows={[
+                  [
+                    'Enabled',
+                    <TokenValue key="he-bg" token="button.emphasis.high.enabled.background" value={button.emphasis.high.enabled.background} />,
+                    <TokenValue key="he-txt" token="button.emphasis.high.enabled.text" value={button.emphasis.high.enabled.text} />,
+                    <PixelValue key="he-bdr" value={button.emphasis.high.enabled.border} />,
+                  ],
+                  [
+                    'Hover',
+                    <TokenValue key="hh-bg" token="button.emphasis.high.hover.background" value={button.emphasis.high.hover.background} />,
+                    <TokenValue key="hh-txt" token="button.emphasis.high.hover.text" value={button.emphasis.high.hover.text} />,
+                    <PixelValue key="hh-bdr" value={button.emphasis.high.hover.border} />,
+                  ],
+                  [
+                    'Pressed',
+                    <TokenValue key="hp-bg" token="button.emphasis.high.pressed.background" value={button.emphasis.high.pressed.background} />,
+                    <TokenValue key="hp-txt" token="button.emphasis.high.pressed.text" value={button.emphasis.high.pressed.text} />,
+                    <PixelValue key="hp-bdr" value={button.emphasis.high.pressed.border} />,
+                  ],
+                  [
+                    'Disabled',
+                    <TokenValue key="hd-bg" token="button.emphasis.high.disabled.background" value={button.emphasis.high.disabled.background} />,
+                    <TokenValue key="hd-txt" token="button.emphasis.high.disabled.text" value={button.emphasis.high.disabled.text} />,
+                    <PixelValue key="hd-bdr" value={button.emphasis.high.disabled.border} />,
+                  ],
+                ]}
+              />
+            </div>
+
+            {/* Colors - Mid Emphasis */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Colors - Mid Emphasis (Light Mode)</h3>
+              <SpecTable
+                headers={['State', 'Background', 'Text', 'Border']}
+                rows={[
+                  [
+                    'Enabled',
+                    <TokenValue key="me-bg" token="button.emphasis.mid.enabled.background" value={button.emphasis.mid.enabled.background} />,
+                    <TokenValue key="me-txt" token="button.emphasis.mid.enabled.text" value={button.emphasis.mid.enabled.text} />,
+                    <PixelValue key="me-bdr" value={button.emphasis.mid.enabled.border} />,
+                  ],
+                  [
+                    'Hover',
+                    <TokenValue key="mh-bg" token="button.emphasis.mid.hover.background" value={button.emphasis.mid.hover.background} />,
+                    <TokenValue key="mh-txt" token="button.emphasis.mid.hover.text" value={button.emphasis.mid.hover.text} />,
+                    <PixelValue key="mh-bdr" value={button.emphasis.mid.hover.border} />,
+                  ],
+                  [
+                    'Pressed',
+                    <TokenValue key="mp-bg" token="button.emphasis.mid.pressed.background" value={button.emphasis.mid.pressed.background} />,
+                    <TokenValue key="mp-txt" token="button.emphasis.mid.pressed.text" value={button.emphasis.mid.pressed.text} />,
+                    <PixelValue key="mp-bdr" value={button.emphasis.mid.pressed.border} />,
+                  ],
+                  [
+                    'Disabled',
+                    <TokenValue key="md-bg" token="button.emphasis.mid.disabled.background" value={button.emphasis.mid.disabled.background} />,
+                    <TokenValue key="md-txt" token="button.emphasis.mid.disabled.text" value={button.emphasis.mid.disabled.text} />,
+                    <PixelValue key="md-bdr" value={button.emphasis.mid.disabled.border} />,
+                  ],
+                ]}
+              />
+            </div>
+
+            {/* Colors - Low Emphasis */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Colors - Low Emphasis (Light Mode)</h3>
+              <SpecTable
+                headers={['State', 'Background', 'Text', 'Border']}
+                rows={[
+                  [
+                    'Enabled',
+                    <TokenValue key="le-bg" token="button.emphasis.low.enabled.background" value={button.emphasis.low.enabled.background} />,
+                    <TokenValue key="le-txt" token="button.emphasis.low.enabled.text" value={button.emphasis.low.enabled.text} />,
+                    <PixelValue key="le-bdr" value={button.emphasis.low.enabled.border} />,
+                  ],
+                  [
+                    'Hover',
+                    <TokenValue key="lh-bg" token="button.emphasis.low.hover.background" value={button.emphasis.low.hover.background} />,
+                    <TokenValue key="lh-txt" token="button.emphasis.low.hover.text" value={button.emphasis.low.hover.text} />,
+                    <PixelValue key="lh-bdr" value={button.emphasis.low.hover.border} />,
+                  ],
+                  [
+                    'Pressed',
+                    <TokenValue key="lp-bg" token="button.emphasis.low.pressed.background" value={button.emphasis.low.pressed.background} />,
+                    <TokenValue key="lp-txt" token="button.emphasis.low.pressed.text" value={button.emphasis.low.pressed.text} />,
+                    <PixelValue key="lp-bdr" value={button.emphasis.low.pressed.border} />,
+                  ],
+                  [
+                    'Disabled',
+                    <TokenValue key="ld-bg" token="button.emphasis.low.disabled.background" value={button.emphasis.low.disabled.background} />,
+                    <TokenValue key="ld-txt" token="button.emphasis.low.disabled.text" value={button.emphasis.low.disabled.text} />,
+                    <PixelValue key="ld-bdr" value={button.emphasis.low.disabled.border} />,
+                  ],
+                ]}
               />
             </div>
 
@@ -250,11 +369,36 @@ export default function ButtonPage() {
                   borderRadius: button.borderRadius,
                 }} />
                 <div>
-                  <div style={{ ...typography.label.md }}>Pill Shape</div>
-                  <code style={{ ...typography.code.sm }}>{button.borderRadius}</code>
+                  <div style={{ ...typography.label.md, marginBottom: '4px' }}>Pill Shape</div>
+                  <TokenValue token="button.borderRadius" value={button.borderRadius} />
                 </div>
               </div>
             </div>
+
+            {/* Focus Ring */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Focus Ring</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Color', <CopyableToken key="fc" token="button.focus.color" />, <PixelValue key="fcv" value={button.focus.color} />],
+                  ['Width', <CopyableToken key="fw" token="button.focus.width" />, <PixelValue key="fwv" value={button.focus.width} />],
+                  ['Offset', <CopyableToken key="fo" token="button.focus.offset" />, <PixelValue key="fov" value={button.focus.offset} />],
+                ]}
+              />
+            </div>
+
+            {/* Animation */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Animation</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Transition', <CopyableToken key="tr" token="button.transition" />, <PixelValue key="trv" value={button.transition} />],
+                ]}
+              />
+            </div>
+            </CollapsibleSection>
           </section>
         </>
       )}

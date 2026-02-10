@@ -11,7 +11,7 @@ import {
   fontFamilies,
   transitionPresets,
 } from '@/styles/design-tokens'
-import { Avatar, AvatarGroup, Button, Tab, TabBar, Banner, Badge, SegmentedControl, MarketplaceCard, ListItem, List, Stepper } from '@/components'
+import { Avatar, AvatarGroup, Button, Tab, TabBar, Banner, Badge, SegmentedControl, MarketplaceCard, ListItem, List, Stepper, ProductCard, Accordion, AccordionItem, LeftNav, IconHome, IconSettings, IconUsers } from '@/components'
 
 // =============================================================================
 // TYPES
@@ -42,11 +42,11 @@ type ComponentItem = {
 const styles = {
   page: {
     minHeight: '100vh',
-    background: colors.background.paper,
+    background: colors.surface.paper,
   },
 
   hero: {
-    background: `linear-gradient(135deg, ${colors.brand.primary} 0%, ${colors.primary[600]} 50%, ${colors.primary[300]} 100%)`,
+    background: `linear-gradient(135deg, ${colors.brand.primary} 0%, ${colors.brand.primaryDark} 50%, ${'#7AC4AE'} 100%)`,
     padding: spacing[6],
     borderRadius: borderRadius.lg,
     margin: spacing[0],
@@ -55,13 +55,13 @@ const styles = {
   heroTitle: {
     ...typography.heading.h2,
     fontWeight: 700,
-    color: colors.text.highEmphasisOnDark,
+    color: colors.text.highEmphasis.onDark,
     marginBottom: spacing[2],
   },
 
   heroSubtitle: {
     ...typography.body.md,
-    color: colors.text.mediumEmphasisOnDark,
+    color: colors.text.lowEmphasis.onDark,
     maxWidth: '600px',
     margin: spacing[0],
   },
@@ -82,14 +82,14 @@ const styles = {
     display: 'flex',
     gap: spacing[2],
     marginTop: spacing[6],
-    borderBottom: `1px solid ${colors.border.light}`,
+    borderBottom: `1px solid ${colors.stroke.light}`,
     paddingBottom: spacing[0],
   },
 
   tab: {
     ...typography.label.md,
     padding: `${spacing[3]} ${spacing[4]}`,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
     background: 'transparent',
     border: 'none',
     borderBottom: '2px solid transparent',
@@ -99,13 +99,13 @@ const styles = {
   },
 
   tabActive: {
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     borderBottom: `2px solid ${colors.brand.primary}`,
   },
   
   sectionTitle: {
     ...typography.heading.h3,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     marginBottom: spacing[6],
   },
   
@@ -124,11 +124,11 @@ const styles = {
   },
   
   card: {
-    background: colors.background.default,
+    background: colors.surface.default,
     borderRadius: borderRadius.lg,
     padding: spacing[6],
     boxShadow: shadows.sm,
-    border: `1px solid ${colors.border.light}`,
+    border: `1px solid ${colors.stroke.light}`,
     textDecoration: 'none',
     transition: transitionPresets.default,
     display: 'block',
@@ -143,7 +143,7 @@ const styles = {
     width: spacing[12],
     height: spacing[12],
     borderRadius: borderRadius.md,
-    background: colors.primary[50],
+    background: colors.brand.primaryLight,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -153,21 +153,21 @@ const styles = {
   
   cardTitle: {
     ...typography.heading.h5,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     marginBottom: spacing[2],
   },
   
   cardDescription: {
     ...typography.body.sm,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
   },
   
   componentCard: {
-    background: colors.background.default,
+    background: colors.surface.default,
     borderRadius: borderRadius.lg,
     overflow: 'hidden',
     boxShadow: shadows.sm,
-    border: `1px solid ${colors.border.light}`,
+    border: `1px solid ${colors.stroke.light}`,
     textDecoration: 'none',
     display: 'block',
     transition: transitionPresets.default,
@@ -179,7 +179,7 @@ const styles = {
   },
   
   componentPreview: {
-    background: colors.neutral[50],
+    background: colors.surface.paper,
     padding: spacing[8],
     display: 'flex',
     alignItems: 'center',
@@ -193,13 +193,13 @@ const styles = {
   
   componentTitle: {
     ...typography.label.lg,
-    color: colors.text.highEmphasis,
+    color: colors.text.highEmphasis.onLight,
     marginBottom: spacing[1],
   },
   
   componentDescription: {
     ...typography.body.sm,
-    color: colors.text.mediumEmphasis,
+    color: colors.text.lowEmphasis.onLight,
   },
 }
 
@@ -261,6 +261,24 @@ const foundationItems: FoundationItem[] = [
 
 const componentItems: ComponentItem[] = [
   {
+    id: 'accordion',
+    title: 'Accordion',
+    description: 'Expandable panels for organizing content',
+    href: '/components/accordion',
+    preview: (
+      <div style={{ width: '100%', maxWidth: '280px' }}>
+        <Accordion defaultExpandedIds={['1']}>
+          <AccordionItem id="1" title="Section One" showMenu>
+            <p style={{ margin: 0, color: colors.text.lowEmphasis.onLight }}>Content for section one</p>
+          </AccordionItem>
+          <AccordionItem id="2" title="Section Two" showMenu>
+            <p style={{ margin: 0, color: colors.text.lowEmphasis.onLight }}>Content for section two</p>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    ),
+  },
+  {
     id: 'avatar',
     title: 'Avatar',
     description: 'User representation with image or initials',
@@ -317,7 +335,7 @@ const componentItems: ComponentItem[] = [
     description: 'Informational banners for alerts and notifications',
     href: '/components/banner',
     preview: (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', maxWidth: '280px' }}>
         <Banner
           variant="info"
           title="Information"
@@ -357,6 +375,31 @@ const componentItems: ComponentItem[] = [
         onChange={() => {}} // Preview only - no action needed
         size="md"
       />
+    ),
+  },
+  {
+    id: 'left-nav',
+    title: 'Left Nav',
+    description: 'Collapsible sidebar navigation with sections and popovers',
+    href: '/components/left-nav',
+    preview: (
+      <div style={{ width: '100%', maxWidth: '200px', height: '180px', overflow: 'hidden', borderRadius: '8px', border: `1px solid ${colors.stroke.light}`, pointerEvents: 'none' }}>
+        <LeftNav
+          sections={[
+            {
+              id: 'main',
+              items: [
+                { id: 'home', label: 'Dashboard', href: '#', icon: <IconHome size="sm" /> },
+                { id: 'users', label: 'Users', href: '#', icon: <IconUsers size="sm" />, isActive: true },
+                { id: 'settings', label: 'Settings', href: '#', icon: <IconSettings size="sm" /> },
+              ],
+            },
+          ]}
+          activeItemId="users"
+          showCollapseToggle={false}
+          style={{ height: '100%', width: '100%' }}
+        />
+      </div>
     ),
   },
   {
@@ -416,6 +459,22 @@ const componentItems: ComponentItem[] = [
             { id: '3', label: 'Review' },
           ]}
           activeStep={1}
+        />
+      </div>
+    ),
+  },
+  {
+    id: 'product-card',
+    title: 'Product Card',
+    description: 'Display product information with tags and markets',
+    href: '/components/product-card',
+    preview: (
+      <div style={{ transform: 'scale(0.9)', transformOrigin: 'center' }}>
+        <ProductCard
+          brand="Brand"
+          name="Product Name"
+          sku="SKU-123"
+          tags={[{ label: 'Tag' }]}
         />
       </div>
     ),
@@ -567,7 +626,7 @@ export default function StyleGuidePage() {
               <div style={styles.card}>
                 <h3 style={{ ...styles.cardTitle, marginBottom: spacing[4] }}>Quick Start</h3>
                 <pre style={{
-                  background: colors.neutral[100],
+                  background: '#F5F5F5',
                   padding: spacing[5],
                   borderRadius: borderRadius.md,
                   ...typography.code.sm,
@@ -583,7 +642,7 @@ import { Avatar, AvatarGroup } from '@/components'
 function MyComponent() {
   return (
     <div style={{
-      background: colors.background.default,
+      background: colors.surface.default,
       padding: spacing[6],
       borderRadius: borderRadius.lg,
       boxShadow: shadows.sm,

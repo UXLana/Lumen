@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { SegmentedControl, SegmentItem, SegmentedControlSize } from '@/components'
 import { colors, typography, borderRadius } from '@/styles/design-tokens'
 
@@ -72,7 +72,11 @@ export default function SegmentedControlPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { SegmentedControl } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { SegmentedControl } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { SegmentedControl } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -108,7 +112,7 @@ export default function SegmentedControlPage() {
   onChange={setSelected}
   size="${demoSize}"${demoFullWidth ? '\n  fullWidth' : ''}${demoOnDark ? '\n  onDark' : ''}
 />`}
-                    previewBackground={demoOnDark ? colors.brand.primary : colors.neutral[50]}
+                    previewBackground={demoOnDark ? colors.brand.primary : colors.surface.paper}
                     previewPadding="56px 24px"
                     previewMinHeight="100px"
                   />
@@ -157,98 +161,48 @@ export default function SegmentedControlPage() {
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Size specifications and visual properties for each variant.
-            </p>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
+                Size specifications and visual properties for each variant.
+              </p>
 
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Size Tokens</h3>
+              <div style={sharedStyles.card}>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Size Tokens</h3>
               <SpecTable
-                headers={['Size', 'Height', 'Padding', 'Font Size', 'Border Radius']}
+                headers={['Size', 'Height Token', 'Height', 'Padding', 'Font Size', 'Border Radius']}
                 rows={[
-                  ['sm', '32px', '8px 12px', '13px', '6px / 4px'],
-                  ['md', '40px', '8px 16px', '14px', '8px / 6px'],
-                  ['lg', '48px', '12px 20px', '14px', '12px / 8px'],
+                  ['sm', <CopyableToken key="sm-h" token="spacing.8" />, <PixelValue key="sm-hv" value="32px" />, <PixelValue key="sm-p" value="8px 12px" />, <PixelValue key="sm-fs" value="13px" />, <PixelValue key="sm-br" value="6px / 4px" />],
+                  ['md', <CopyableToken key="md-h" token="spacing.10" />, <PixelValue key="md-hv" value="40px" />, <PixelValue key="md-p" value="8px 16px" />, <PixelValue key="md-fs" value="14px" />, <PixelValue key="md-br" value="8px / 6px" />],
+                  ['lg', <CopyableToken key="lg-h" token="spacing.12" />, <PixelValue key="lg-hv" value="48px" />, <PixelValue key="lg-p" value="12px 20px" />, <PixelValue key="lg-fs" value="14px" />, <PixelValue key="lg-br" value="12px / 8px" />],
                 ]}
               />
             </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Color Tokens</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
-                <div>
-                  <h4 style={{ ...typography.label.md, marginBottom: '12px' }}>Container</h4>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '4px',
-                      background: colors.neutral[100],
-                      border: '1px solid rgba(0,0,0,0.1)',
-                    }} />
-                    <div>
-                      <div style={{ ...typography.label.sm }}>Background</div>
-                      <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>
-                        {colors.neutral[100]}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 style={{ ...typography.label.md, marginBottom: '12px' }}>Selected Segment</h4>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '4px',
-                      background: 'white',
-                      border: '1px solid rgba(0,0,0,0.1)',
-                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-                    }} />
-                    <div>
-                      <div style={{ ...typography.label.sm }}>Background</div>
-                      <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>
-                        white + shadow
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 style={{ ...typography.label.md, marginBottom: '12px' }}>Text Colors</h4>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '4px',
-                      background: colors.text.highEmphasis,
-                    }} />
-                    <div>
-                      <div style={{ ...typography.label.sm }}>Selected</div>
-                      <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>
-                        High Emphasis
-                      </div>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '4px',
-                      background: colors.text.mediumEmphasis,
-                    }} />
-                    <div>
-                      <div style={{ ...typography.label.sm }}>Unselected</div>
-                      <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>
-                        Medium Emphasis
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <SpecTable
+                headers={['Element', 'Token', 'Value']}
+                rows={[
+                  ['Container Background', <CopyableToken key="cb" token="#F5F5F5" />, <PixelValue key="cbv" value="#F5F5F5" />],
+                  ['Selected Segment BG', <CopyableToken key="sb" token="colors.surface.default" />, <PixelValue key="sbv" value="#FFFFFF" />],
+                  ['Selected Text', <CopyableToken key="st" token="colors.text.highEmphasis.onLight" />, <PixelValue key="stv" value={colors.text.highEmphasis.onLight} />],
+                  ['Unselected Text', <CopyableToken key="ut" token="colors.text.lowEmphasis.onLight" />, <PixelValue key="utv" value={colors.text.lowEmphasis.onLight} />],
+                  ['Segment Shadow', <CopyableToken key="ss" token="shadows.sm" />, <PixelValue key="ssv" value="0 1px 3px rgba(0,0,0,0.08)" />],
+                ]}
+              />
             </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Typography</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Font Family', <CopyableToken key="ff" token="typography.label.md.fontFamily" />, <PixelValue key="ffv" value="Inter" />],
+                  ['Font Weight', <CopyableToken key="fw" token="typography.label.md.fontWeight" />, <PixelValue key="fwv" value="500" />],
+                ]}
+              />
+            </div>
+            </CollapsibleSection>
           </section>
         </>
       )}
@@ -398,7 +352,7 @@ const segments = [
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>When to Use</h3>
-              <ul style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, margin: 0, paddingLeft: '20px' }}>
+              <ul style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, margin: 0, paddingLeft: '20px' }}>
                 <li style={{ marginBottom: '8px' }}>Switching between related views (List/Grid, Map/Satellite)</li>
                 <li style={{ marginBottom: '8px' }}>Filtering content by time period (Daily/Weekly/Monthly)</li>
                 <li style={{ marginBottom: '8px' }}>Toggling between display modes or categories</li>

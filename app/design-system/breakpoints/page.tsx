@@ -166,7 +166,7 @@ export default function BreakpointsPage() {
                   onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 />
                 <div style={{ ...typography.label.sm }}>{name}</div>
-                <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{value}</div>
+                <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{value}</div>
               </div>
             ))}
           </div>
@@ -307,7 +307,7 @@ export default function BreakpointsPage() {
 
           <div style={sharedStyles.card}>
             <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.mediumEmphasis }}>
+            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.lowEmphasis.onLight }}>
               <li style={{ marginBottom: '8px' }}>Use z-index tokens to maintain consistent layering</li>
               <li style={{ marginBottom: '8px' }}>Use transition presets for consistent animation timing</li>
               <li style={{ marginBottom: '8px' }}>Respect reduced motion preferences with mediaQueries.reducedMotion</li>

@@ -8,6 +8,9 @@ description: Audit and fix accessibility issues in components and tokens against
 ## When to Use
 
 - Auditing components for WCAG 2.2 AA compliance
+- Importing and processing axe DevTools results
+- Auditing external pages behind login walls
+- Running manual testing checklists
 - Checking color contrast ratios in tokens
 - Reviewing keyboard navigation and focus management
 - Validating ARIA patterns
@@ -18,11 +21,15 @@ description: Audit and fix accessibility issues in components and tokens against
 
 | Mode | Command | What It Does |
 |------|---------|--------------|
-| Standard | `/design-accessibility [target]` | WCAG 2.2 AA audit with fixes |
+| Standard | `/design-accessibility [target]` | WCAG 2.2 AA audit of local code |
+| Axe Import | `/design-accessibility --from-axe` | Parse axe DevTools JSON results |
+| External | `/design-accessibility --external` | Audit page behind login wall |
+| Manual | `/design-accessibility --manual` | Interactive testing checklist |
+| Screen Reader | `/design-accessibility --screen-reader` | Generate SR test scripts |
 | Compliance | `/design-accessibility [target] --compliance` | Adds Section 508 + regulatory checks |
 | Report | `/design-accessibility --report` | Generates formal compliance documentation |
 
-## Targets
+## Targets (Standard Mode)
 
 | Target | Example | Scope |
 |--------|---------|-------|
@@ -30,6 +37,18 @@ description: Audit and fix accessibility issues in components and tokens against
 | All components | `/design-accessibility components` | All in /components |
 | Tokens | `/design-accessibility tokens` | design-tokens.ts |
 | Full system | `/design-accessibility all` | Everything |
+
+## Quick Reference
+
+| Situation | Command |
+|-----------|---------|
+| Audit a component in this repo | `/design-accessibility Button` |
+| Have axe results to process | `/design-accessibility --from-axe` |
+| Page behind login wall | `/design-accessibility --external` |
+| Need manual testing guidance | `/design-accessibility --manual` |
+| Generate screen reader test script | `/design-accessibility --screen-reader` |
+| Government/VPAT compliance | `/design-accessibility --compliance` |
+| Generate formal report | `/design-accessibility --report` |
 
 ## What Gets Checked
 
@@ -73,21 +92,35 @@ description: Audit and fix accessibility issues in components and tokens against
 | Moderate | Causes difficulty | Fix next iteration |
 | Minor | Enhancement | Consider fixing |
 
+## Axe vs Manual Testing
+
+**Axe catches (~30% of issues):**
+- Missing labels and ARIA
+- Color contrast failures
+- Semantic markup issues
+- Keyboard traps
+
+**Manual testing catches (~70%):**
+- Logical tab order
+- Focus visibility quality
+- Screen reader experience
+- Complex interactions
+
 ## Output Format
 
 Provides:
 1. Summary of issues by severity
 2. Each issue with:
-   - Location (file:line)
+   - Location (file:line or page area)
    - WCAG criterion
    - Current vs required state
-   - Code fix
+   - Code fix or recommendation
 3. Passed checks list
-4. (Compliance mode) Formal report for audits
+4. (Report mode) Word document matching VPAT template
 
 ## Detailed Specification
 
-See `/Skills/design-accessibility.skill.md` for full audit criteria, fix patterns, and checklists.
+See `/Skills/design-accessibility/SKILL.md` for full audit criteria, fix patterns, and checklists.
 
 ## User Input
 
@@ -96,6 +129,10 @@ $ARGUMENTS
 ---
 
 Specify what to audit:
-- Component name, "components", "tokens", or "all"
+- Component name, "components", "tokens", or "all" (for local code)
+- `--from-axe` to import axe DevTools results
+- `--external` for pages behind login walls
+- `--manual` for interactive testing checklist
+- `--screen-reader` for screen reader test scripts
 - Add `--compliance` for Section 508 + regulatory checks
 - Add `--report` for formal documentation output

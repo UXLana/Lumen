@@ -1,124 +1,432 @@
 /**
  * MTR Design System - Design Tokens
- * Auto-generated from Figma Design System
- * 
- * Renamed from UKG to MTR as per requirements
+ * Source: Trace Design System v2.0 (Figma)
+ * https://www.figma.com/design/gc68toINDS8Ovsan5aVPS2/Trace-Design-System-v2.0--wip-
+ *
+ * Color taxonomy: mtr_sys_color_* (matches Figma variable naming exactly)
+ * Typography: DM Sans
+ *
+ * Last updated: 2026-02-10
+ *
+ * THEMING:
+ * - Colors are themeable per product. See styles/themes/ for the theme system.
+ * - Components should use `useColors()` from styles/themes for color access.
+ * - The `colors` export below is the Trace theme (default) for static/non-React usage.
+ * - Typography, spacing, radius, shadows, breakpoints are shared across all themes.
+ *
+ * Token extraction via /figma-token-extractor from node 2086-41222 (Color & styles)
+ * Taxonomy restructured to match Figma 1:1 — Figma is source of truth for values.
  */
 
 // =============================================================================
-// COLOR TOKENS
+// COLOR TOKENS — mtr_sys_color_* (Trace theme default, matches Figma exactly)
+// For themed access in components, use `useColors()` from styles/themes
 // =============================================================================
 
 export const colors = {
-  // Brand Colors
+  // ==========================================================================
+  // BRAND
+  // ==========================================================================
   brand: {
-    primary: '#13352C',
-    primaryLight: '#1A4A3D',
-    primaryDark: '#0D2920',
+    default: '#005151',             // mtr_sys_color_brand
+    darker: '#003133',              // mtr_sys_color_brand_darker
+    lighter: '#17978E',             // mtr_sys_color_brand_lighter
+    // Backwards compat aliases (deprecated)
+    /** @deprecated Use brand.default */
+    primary: '#005151',
+    /** @deprecated Use brand.lighter */
+    primaryLight: '#17978E',
+    /** @deprecated Use brand.darker */
+    primaryDark: '#003133',
   },
 
-  // Primary Palette (derived from brand)
-  primary: {
-    50: '#E6F0ED',
-    100: '#C2DAD3',
-    200: '#9AC3B7',
-    300: '#72AC9B',
-    400: '#539A85',
-    500: '#13352C', // Base brand color
-    600: '#2F7A65',
-    700: '#276956',
-    800: '#1F5847',
-    900: '#0D2920',
-  },
-
-  // Secondary Palette
-  secondary: {
-    50: '#FFF8E1',
-    100: '#FFECB3',
-    200: '#FFE082',
-    300: '#FFD54F',
-    400: '#FFCA28',
-    500: '#FFC107',
-    600: '#FFB300',
-    700: '#FFA000',
-    800: '#FF8F00',
-    900: '#FF6F00',
-  },
-
-  // Neutral Colors
-  neutral: {
-    0: '#FFFFFF',
-    50: '#FAFAFA',
-    100: '#F5F5F5',
-    200: '#EEEEEE',
-    300: '#E0E0E0',
-    400: '#BDBDBD',
-    500: '#9E9E9E',
-    600: '#757575',
-    700: '#616161',
-    800: '#424242',
-    900: '#212121',
-    1000: '#000000',
-  },
-
-  // Semantic Colors
-  semantic: {
-    success: {
-      light: '#E8F5E9',
-      main: '#4CAF50',
-      dark: '#2E7D32',
-      contrast: '#FFFFFF',
+  // ==========================================================================
+  // SURFACE
+  // ==========================================================================
+  surface: {
+    light: '#FFFFFF',               // mtr_sys_color_surface_light
+    lightDarker: '#F5F5F5',         // mtr_sys_color_surface_lightDarker
+    dark: '#4A4A4A',                // mtr_sys_color_surface_dark
+    darkDarker: '#323232',          // mtr_sys_color_surface_darkDarker
+    disabled: {
+      onLight: 'rgba(0, 0, 0, 0.03)',   // mtr_sys_color_surface_disabled_onLight
+      onDark: 'rgba(255, 255, 255, 0.20)', // mtr_sys_color_surface_disabled_onDark
     },
-    warning: {
-      light: '#FFF3E0',
-      main: '#FF9800',
-      dark: '#E65100',
-      contrast: '#000000',
-    },
-    error: {
-      light: '#FFEBEE',
-      main: '#F44336',
-      dark: '#C62828',
-      contrast: '#FFFFFF',
-    },
-    info: {
-      light: '#E3F2FD',
-      main: '#2196F3',
-      dark: '#1565C0',
-      contrast: '#FFFFFF',
-    },
-  },
-
-  // Text Colors
-  text: {
-    // On Light backgrounds
-    highEmphasis: 'rgba(0, 0, 0, 0.95)',
-    mediumEmphasis: 'rgba(0, 0, 0, 0.70)',
-    lowEmphasis: 'rgba(0, 0, 0, 0.50)',
-    disabled: 'rgba(0, 0, 0, 0.38)',
-    
-    // On Dark backgrounds
-    highEmphasisOnDark: '#FFFFFF',
-    mediumEmphasisOnDark: 'rgba(255, 255, 255, 0.74)',
-    lowEmphasisOnDark: 'rgba(255, 255, 255, 0.60)',
-    disabledOnDark: 'rgba(255, 255, 255, 0.38)',
-  },
-
-  // Background Colors
-  background: {
+    // Status surfaces
+    info: '#F4F6FF',                // mtr_sys_color_surface_info
+    success: '#EDF6F4',             // mtr_sys_color_surface_success
+    warning: '#FCF6ED',             // mtr_sys_color_surface_warning
+    important: '#FDF2F3',           // mtr_sys_color_surface_important
+    // Backwards compat aliases (deprecated)
+    /** @deprecated Use surface.light */
     default: '#FFFFFF',
-    paper: '#FAFAFA',
-    elevated: '#FFFFFF',
-    dark: '#13352C',
-    overlay: 'rgba(0, 0, 0, 0.5)',
+    /** @deprecated Use surface.lightDarker */
+    paper: '#F5F5F5',
+    /** @deprecated Use surface.lightDarker */
+    elevated: '#F5F5F5',
+    /** @deprecated Use surface.darkDarker */
+    darkest: '#323232',
   },
 
-  // Border Colors
+  // ==========================================================================
+  // SURFACE BORDER (status)
+  // ==========================================================================
+  surfaceBorder: {
+    info: '#D1D9FF',                // mtr_sys_color_surfaceBorder_info
+    success: '#C5E2DB',             // mtr_sys_color_surfaceBorder_success
+    warning: '#F2DABA',             // mtr_sys_color_surfaceBorder_warning
+    important: '#F8CFD3',           // mtr_sys_color_surfaceBorder_important
+  },
+
+  // ==========================================================================
+  // TEXT
+  // ==========================================================================
+  text: {
+    highEmphasis: {
+      onLight: 'rgba(0, 0, 0, 0.95)',     // mtr_sys_color_text_highEmphasis_onLight
+      onDark: '#FFFFFF',                    // mtr_sys_color_text_highEmphasis_onDark (100%)
+    },
+    lowEmphasis: {
+      onLight: 'rgba(0, 0, 0, 0.60)',     // mtr_sys_color_text_lowEmphasis_onLight
+      onDark: 'rgba(255, 255, 255, 0.70)', // mtr_sys_color_text_lowEmphasis_onDark
+    },
+    disabled: {
+      onLight: 'rgba(0, 0, 0, 0.30)',     // mtr_sys_color_text_disabled_onLight
+      onDark: 'rgba(255, 255, 255, 0.30)', // mtr_sys_color_text_disabled_onDark
+    },
+    // Action text (link/interactive text)
+    action: {
+      enabled: '#016CA2',           // mtr_sys_color_text_action_enabled
+      hover: '#005680',             // mtr_sys_color_text_action_hover
+      active: '#00476B',            // mtr_sys_color_text_action_active
+    },
+    // Status text
+    success: '#006B50',             // mtr_sys_color_text_success
+    warning: '#A35C00',             // mtr_sys_color_text_warning
+    important: '#C10B1E',           // mtr_sys_color_text_important
+  },
+
+  // ==========================================================================
+  // BORDER
+  // ==========================================================================
   border: {
-    light: 'rgba(0, 0, 0, 0.12)',
-    main: 'rgba(0, 0, 0, 0.23)',
+    lowEmphasis: {
+      onLight: 'rgba(0, 0, 0, 0.10)',     // mtr_sys_color_border_lowEmphasis_onLight
+      onDark: 'rgba(255, 255, 255, 0.10)', // mtr_sys_color_border_lowEmphasis_onDark
+      hover: {
+        onLight: 'rgba(0, 0, 0, 0.27)',   // mtr_sys_color_border_lowEmphasis_hover_onLight
+        onDark: 'rgba(255, 255, 255, 0.27)', // mtr_sys_color_border_lowEmphasis_hover_onDark
+      },
+    },
+    midEmphasis: {
+      onLight: 'rgba(0, 0, 0, 0.15)',     // mtr_sys_color_border_midEmphasis_onLight
+      onDark: 'rgba(255, 255, 255, 0.15)', // mtr_sys_color_border_midEmphasis_onDark
+    },
+    highEmphasis: {
+      onLight: 'rgba(0, 0, 0, 0.42)',     // mtr_sys_color_border_highEmphasis_onLight
+      onDark: 'rgba(255, 255, 255, 0.43)', // mtr_sys_color_border_highEmphasis_onDark
+    },
+  },
+
+  // ==========================================================================
+  // ICON
+  // ==========================================================================
+  icon: {
+    enabled: {
+      onLight: 'rgba(0, 0, 0, 0.55)',     // mtr_sys_color_icon_enabled_onLight
+      onDark: 'rgba(255, 255, 255, 0.94)', // mtr_sys_color_icon_enabled_onDark
+    },
+    hover: {
+      onLight: 'rgba(0, 0, 0, 0.65)',     // mtr_sys_color_icon_hover_onLight
+    },
+    active: {
+      onLight: 'rgba(0, 0, 0, 0.75)',     // mtr_sys_color_icon_active_onLight
+    },
+    selected: {
+      onLight: 'rgba(0, 0, 0, 0.85)',     // mtr_sys_color_icon_selected_onLight
+    },
+    disabled: {
+      onLight: 'rgba(0, 0, 0, 0.20)',     // mtr_sys_color_icon_disabled_onLight
+      onDark: 'rgba(255, 255, 255, 0.20)', // mtr_sys_color_icon_disabled_onDark
+    },
+    lowEmphasis: {
+      enabled: {
+        onLight: 'rgba(0, 0, 0, 0.43)',   // mtr_sys_color_icon_lowEmphasis_enabled_onLight
+        onDark: 'rgba(255, 255, 255, 0.65)', // mtr_sys_color_icon_lowEmphasis_enabled_onDark
+      },
+    },
+  },
+
+  // ==========================================================================
+  // ICON BACKGROUNDS (status)
+  // ==========================================================================
+  iconBg: {
+    info: '#EBEFFF',                       // mtr_sys_color_iconBg_info
+    info_onDark: 'rgba(122, 145, 255, 0.25)', // mtr_sys_color_iconBg_info_onDark
+    success: '#DEEDE9',                    // mtr_sys_color_iconBg_success
+    success_onDark: 'rgba(0, 173, 130, 0.25)', // mtr_sys_color_iconBg_success_onDark
+    warning: '#F9ECDC',                    // mtr_sys_color_iconBg_warning
+    warning_onDark: 'rgba(230, 130, 0, 0.25)', // mtr_sys_color_iconBg_warning_onDark
+    important: '#FBE4E7',                  // mtr_sys_color_iconBg_important
+    important_onDark: 'rgba(248, 104, 118, 0.25)', // mtr_sys_color_iconBg_important_onDark
+  },
+
+  // ==========================================================================
+  // ACTION (interactive/link colors)
+  // ==========================================================================
+  action: {
+    enabled: '#0176B2',             // mtr_sys_color_action_enabled
+    hover: '#005C89',               // mtr_sys_color_action_hover
+    active: '#004E73',              // mtr_sys_color_action_active
+    // Important/destructive actions
+    important: {
+      enabled: '#C10B1E',           // mtr_sys_color_action_important_enabled
+      hover: '#A20919',             // mtr_sys_color_action_important_hover
+      active: '#850715',            // mtr_sys_color_action_important_active
+    },
+    // Monochrome actions (on light)
+    monochrome: {
+      onLight: {
+        enabled: 'rgba(0, 0, 0, 0.55)',   // mtr_sys_color_action_monochrome_enabled_onLight
+        hover: 'rgba(0, 0, 0, 0.65)',      // mtr_sys_color_action_monochrome_hover_onLight
+        active: 'rgba(0, 0, 0, 0.75)',     // mtr_sys_color_action_monochrome_active_onLight
+        selected: 'rgba(0, 0, 0, 0.85)',   // mtr_sys_color_action_monochrome_selected_onLight
+        disabled: 'rgba(0, 0, 0, 0.20)',   // mtr_sys_color_action_monochrome_disabled_onLight
+        bg: 'rgba(0, 0, 0, 0.08)',         // mtr_sys_color_action_monochrome_bg_onLight
+        lowEmphasis: {
+          enabled: 'rgba(0, 0, 0, 0.43)',  // mtr_sys_color_action_monochrome_lowEmphasis_enabled_onLight
+        },
+      },
+      onDark: {
+        enabled: 'rgba(255, 255, 255, 0.94)',  // mtr_sys_color_action_monochrome_enabled_onDark
+        hover: 'rgba(255, 255, 255, 1)',       // mtr_sys_color_action_monochrome_hover_onDark
+        active: 'rgba(255, 255, 255, 1)',      // mtr_sys_color_action_monochrome_active_onDark
+        selected: 'rgba(255, 255, 255, 1)',    // mtr_sys_color_action_monochrome_selected_onDark
+        disabled: 'rgba(255, 255, 255, 0.20)', // mtr_sys_color_action_monochrome_disabled_onDark
+        bg: 'rgba(255, 255, 255, 0.09)',       // mtr_sys_color_action_monochrome_bg_onDark
+        lowEmphasis: {
+          enabled: 'rgba(255, 255, 255, 0.65)', // mtr_sys_color_action_monochrome_lowEmphasis_enabled_onDark
+        },
+      },
+    },
+  },
+
+  // ==========================================================================
+  // STATUS (semantic status colors)
+  // ==========================================================================
+  status: {
+    info: '#617BFF',                // mtr_sys_color_info
+    info_onDark: 'rgba(122, 145, 255, 0.25)', // mtr_sys_color_info_onDark
+    success: '#1B7F66',             // mtr_sys_color_success
+    success_onDark: 'rgba(0, 173, 130, 0.25)', // mtr_sys_color_success_onDark
+    warning: '#CC7300',             // mtr_sys_color_warning
+    warningLight: '#F3DCBD',        // mtr_sys_color_warningLight
+    warning_onDark: 'rgba(230, 130, 0, 0.25)', // mtr_sys_color_warning_onDark
+    important: '#DC0C22',           // mtr_sys_color_important
+    important_onDark: 'rgba(248, 104, 118, 0.25)', // mtr_sys_color_important_onDark
+  },
+
+  // ==========================================================================
+  // BADGE
+  // ==========================================================================
+  badge: {
+    info: '#4766FF',                // mtr_sys_color_badge_info
+    infoLight: '#DBE2FF',           // mtr_sys_color_badge_infoLight
+    success: '#19856B',             // mtr_sys_color_badge_success
+    successLight: '#D9EDE6',        // mtr_sys_color_badge_sucessLight (note: Figma typo "sucess")
+    warning: '#AD6200',             // mtr_sys_color_badge_warning
+    important: '#E80D24',           // mtr_sys_color_badge_important
+    importantLight: '#FFE3E7',      // mtr_sys_color_badge_importantLight
+    aqua: '#167F92',                // mtr_sys_color_badge_aqua
+    aquaLight: '#B4EAF3',           // mtr_sys_color_badge_aquaLight
+    green: '#40851E',               // mtr_sys_color_badge_green
+    greenLight: '#DAF4CD',          // mtr_sys_color_badge_greenLight
+    yellow: '#8F6F00',              // mtr_sys_color_badge_yellow
+    yellowLight: '#FFE68F',         // mtr_sys_color_badge_yellowLight
+    fuschia: '#CF26B8',             // mtr_sys_color_badge_fuschia (note: Figma spelling)
+    fuschiaLight: '#FCCFF6',        // mtr_sys_color_badge_fuschiaLight
+    purple: '#A14CE1',              // mtr_sys_color_badge_purple
+    purpleLight: '#EDDCF9',         // mtr_sys_color_badge_purpleLight
+    charcoal: '#4F4F4F',            // mtr_sys_color_badge_charcoal
+    charcoalLight: '#E3E3E3',       // mtr_sys_color_badge_charcoalLight
+  },
+
+  // ==========================================================================
+  // AVATAR
+  // ==========================================================================
+  avatar: {
+    '01': '#D6EAFF',               // mtr_sys_color_avatar_01
+    '02': '#FFDBFA',               // mtr_sys_color_avatar_02
+    '03': '#EFE0FF',               // mtr_sys_color_avatar_03
+    '04': '#CFEFC2',               // mtr_sys_color_avatar_04
+    '05': '#BEF4ED',               // mtr_sys_color_avatar_05
+    '06': '#FFE68F',               // mtr_sys_color_avatar_06
+    '07': '#FFE3DB',               // mtr_sys_color_avatar_07
+    '08': '#FFE2C2',               // mtr_sys_color_avatar_08
+  },
+
+  // ==========================================================================
+  // DATA VISUALIZATION
+  // ==========================================================================
+  dataViz: {
+    border: '#000000',              // mtr_sys_color_dataViz_border
+    '01': '#001446',                // mtr_sys_color_dataViz_01
+    '02': '#062E69',                // mtr_sys_color_dataViz_02
+    '03': '#094A8D',                // mtr_sys_color_dataViz_03
+    '04': '#0068B2',                // mtr_sys_color_dataViz_04
+    '05': '#0094BE',                // mtr_sys_color_dataViz_05
+    '06': '#37B9B2',                // mtr_sys_color_dataViz_06
+    '07': '#9FD7AB',                // mtr_sys_color_dataViz_07
+    '08': '#F0F2BD',                // mtr_sys_color_dataViz_08
+    '09': '#F1D89A',                // mtr_sys_color_dataViz_09
+    '10': '#EFB777',                // mtr_sys_color_dataViz_10
+    '11': '#ED9461',                // mtr_sys_color_dataViz_11
+    '12': '#E96959',                // mtr_sys_color_dataViz_12
+    '13': '#C74046',                // mtr_sys_color_dataViz_13
+    '14': '#95222C',                // mtr_sys_color_dataViz_14
+    '15': '#660011',                // mtr_sys_color_dataViz_15
+  },
+
+  // ==========================================================================
+  // CVD (Color Vision Deficiency) ACCESSIBLE PALETTE
+  // ==========================================================================
+  cvd: {
+    blue: '#0072B2',                // mtr_sys_color_cvd_blue
+    lightBlue: '#56B4E9',           // mtr_sys_color_cvd_lightBlue
+    yellow: '#F0E442',              // mtr_sys_color_cvd_yellow
+    green: '#009E73',               // mtr_sys_color_cvd_green
+    orange: '#E69F00',              // mtr_sys_color_cvd_orange
+    vermillion: '#D55E00',          // mtr_sys_color_cvd_vermillion
+    pink: '#CC79A7',                // mtr_sys_color_cvd_pink
+    charcoal: '#323232',            // mtr_sys_color_cvd_charcoal
+  },
+
+  // ==========================================================================
+  // INTERACTIVE STATE COLORS
+  // ==========================================================================
+  hover: {
+    onLight: 'rgba(0, 0, 0, 0.05)',       // mtr_sys_color_hover_onLight
+    onDark: 'rgba(255, 255, 255, 0.15)',   // mtr_sys_color_hover_onDark
+  },
+
+  selected: {
+    onLight: 'rgba(0, 0, 0, 0.09)',        // mtr_sys_color_selected_onLight
+  },
+
+  selectedHighlight: '#E7F2EE',             // mtr_sys_color_selectedHighlight
+  selectedHighlight_hover: '#D0E6DE',       // mtr_sys_color_selectedHighlight_hover
+
+  // ==========================================================================
+  // FOCUS
+  // ==========================================================================
+  focusBorder: {
+    onLight: '#3086BF',                    // mtr_sys_color_focusBorder_onLight
+    onDark: 'rgba(255, 255, 255, 0.65)',   // mtr_sys_color_focusBorder_onDark
+  },
+
+  // ==========================================================================
+  // SCRIM (overlay)
+  // ==========================================================================
+  scrim: 'rgba(0, 0, 0, 0.32)',            // mtr_sys_color_scrim
+
+  // ==========================================================================
+  // SCROLLBAR
+  // ==========================================================================
+  scrollbar: {
+    enabled: {
+      onLight: 'rgba(0, 0, 0, 0.42)',     // mtr_sys_color_scrollbar_enabled_onLight
+      onDark: 'rgba(255, 255, 255, 0.43)', // mtr_sys_color_scrollbar_enabled_onDark
+    },
+    hover: {
+      onLight: 'rgba(0, 0, 0, 0.57)',     // mtr_sys_color_scrollbar_hover_onLight
+      onDark: 'rgba(255, 255, 255, 0.58)', // mtr_sys_color_scrollbar_hover_onDark
+    },
+    active: {
+      onLight: 'rgba(0, 0, 0, 0.72)',     // mtr_sys_color_scrollbar_active_onLight
+      onDark: 'rgba(255, 255, 255, 0.73)', // mtr_sys_color_scrollbar_active_onDark
+    },
+  },
+
+  // ==========================================================================
+  // NAVIGATION
+  // ==========================================================================
+  navItemText: {
+    enabled: {
+      onLight: 'rgba(0, 0, 0, 0.72)',     // mtr_sys_color_navItemText_enabled_onLight
+      onDark: 'rgba(255, 255, 255, 0.88)', // mtr_sys_color_navItemText_enabled_onDark
+    },
+  },
+
+  // ==========================================================================
+  // COMPONENT-SPECIFIC
+  // ==========================================================================
+  buttonToggleBg: {
+    onLight: 'rgba(0, 0, 0, 0.08)',       // mtr_sys_color_buttonToggleBg_onLight
+    onDark: 'rgba(255, 255, 255, 0.08)',   // mtr_sys_color_buttonToggleBg_onDark
+  },
+
+  chipBg: {
+    enabled: 'rgba(0, 0, 0, 0.08)',       // mtr_sys_color_chipBg_enabled
+    hover: 'rgba(0, 0, 0, 0.13)',         // mtr_sys_color_chipBg_hover
+  },
+
+  progressIndicatorTrack: 'rgba(0, 0, 0, 0.15)', // mtr_sys_color_progressIndicatorTrack
+
+  // ==========================================================================
+  // TABLE
+  // ==========================================================================
+  tableCellHighlight: {
+    highEmphasis: '#78CFB8',        // mtr_sys_color_tableCellHighlight_highEmphasis
+    midEmphasis: '#E7F2EE',         // mtr_sys_color_tableCellHighlight_midEmphasis
+  },
+
+  // ==========================================================================
+  // GRID (A11Y-006 Compliance — project-specific, not from Figma)
+  // ==========================================================================
+  grid: {
+    finishedRowText: '#595959',
+    packageIconColor: '#595959',
+  },
+
+  // ==========================================================================
+  // BACKWARDS-COMPAT ALIASES (deprecated — migrate to new paths)
+  // These exist so existing pages don't break during migration.
+  // TODO: Remove by v2.0 release — all app/components/ files have been migrated.
+  // ==========================================================================
+  /** @deprecated Use brand.default */
+  kelp: '#005151',
+  /** @deprecated Use scrim */
+  overlay: 'rgba(0, 0, 0, 0.32)',
+  stroke: {
+    /** @deprecated Use border.lowEmphasis.onLight */
+    light: 'rgba(0, 0, 0, 0.10)',
+    /** @deprecated Use border.midEmphasis.onLight */
+    default: 'rgba(0, 0, 0, 0.15)',
+    /** @deprecated Use border.highEmphasis.onLight */
     dark: 'rgba(0, 0, 0, 0.42)',
-    focus: '#13352C',
+  },
+  disabled: {
+    /** @deprecated Use surface.disabled.onLight */
+    surface: 'rgba(0, 0, 0, 0.03)',
+    /** @deprecated Use text.disabled.onLight */
+    text: 'rgba(0, 0, 0, 0.30)',
+    /** @deprecated Use surface.disabled.onDark */
+    surfaceOnDark: 'rgba(255, 255, 255, 0.20)',
+    /** @deprecated Use text.disabled.onDark */
+    textOnDark: 'rgba(255, 255, 255, 0.30)',
+  },
+  interactive: {
+    /** @deprecated Use selectedHighlight + focusBorder */
+    selectedInput: {
+      background: '#E7F2EE',
+      border: '#005151',
+    },
+    selectedOutput: {
+      background: '#005151',
+      text: '#FFFFFF',
+    },
+    /** @deprecated Use focusBorder.onLight */
+    focus: '#3086BF',
   },
 } as const;
 
@@ -424,9 +732,9 @@ export const shadows = {
   '2xl': '0px 25px 50px -12px rgba(0, 0, 0, 0.25)',
   inner: 'inset 0px 2px 4px rgba(0, 0, 0, 0.06)',
   
-  // Colored shadows using brand
-  brand: '0px 4px 14px rgba(19, 53, 44, 0.25)',
-  brandLg: '0px 10px 25px rgba(19, 53, 44, 0.3)',
+  // Colored shadows using brand (18, 122, 86 = #127A56)
+  brand: '0px 4px 14px rgba(18, 122, 86, 0.25)',
+  brandLg: '0px 10px 25px rgba(18, 122, 86, 0.3)',
 } as const;
 
 // Semantic shadow aliases
@@ -438,7 +746,7 @@ export const shadowSemantics = {
   button: shadows.xs,
   buttonHover: shadows.sm,
   input: shadows.none,
-  inputFocus: `0px 0px 0px 3px ${colors.primary[100]}`,
+  inputFocus: `0px 0px 0px 3px #C6E7DA`,
 } as const;
 
 // =============================================================================
@@ -635,16 +943,16 @@ export const avatar = {
     xs: '6px',
   },
 
-  // Background colors for initials (8 colors)
+  // Background colors for initials (8 colors) - Updated from Figma 2026-01-29
   colors: {
-    1: '#E8F5E9',
-    2: '#E3F2FD',
-    3: '#FFF3E0',
-    4: '#FCE4EC',
-    5: '#F3E5F5',
-    6: '#E0F7FA',
-    7: '#FFF8E1',
-    8: '#ECEFF1',
+    1: '#D6EAFF',  // Blue
+    2: '#FFDBFA',  // Pink
+    3: '#EFE0FF',  // Purple
+    4: '#CFEFC2',  // Green
+    5: '#BEF4ED',  // Teal
+    6: '#FFE68F',  // Yellow
+    7: '#FFE3DB',  // Peach
+    8: '#FFE2C2',  // Orange
   },
 
   // Focus ring
@@ -706,38 +1014,38 @@ export const button = {
     },
   },
 
-  // Typography per size (from Figma - DM Sans Regular)
+  // Typography per size (from Figma - DM Sans Semibold)
   typography: {
     lg: {
       fontSize: '16px',
-      fontWeight: 400,
+      fontWeight: 600,
       lineHeight: '18px',
       letterSpacing: '-0.9px',
     },
     md: {
       fontSize: '14px',
-      fontWeight: 400,
+      fontWeight: 600,
       lineHeight: '16px',
       letterSpacing: '-0.9px',
     },
   },
 
-  // Colors per emphasis level - LIGHT MODE (from Figma)
+  // Colors per emphasis level - LIGHT MODE (from Trace Design System v2.0)
   // High emphasis uses brand colors for consistency
   emphasis: {
     high: {
       enabled: {
-        background: '#13352C', // colors.brand.primary
+        background: '#127A56', // colors.brand.default
         text: '#FFFFFF',
         border: 'transparent',
       },
       hover: {
-        background: '#1A4A3D', // colors.brand.primaryLight
+        background: '#1A9A6E', // colors.brand.lighter
         text: '#FFFFFF',
         border: 'transparent',
       },
       pressed: {
-        background: '#0D2920', // colors.brand.primaryDark
+        background: '#0E5F44', // colors.brand.darker
         text: '#FFFFFF',
         border: 'transparent',
       },
@@ -748,24 +1056,24 @@ export const button = {
       },
     },
     mid: {
-      // Mid emphasis is FILLED with mint/teal color (#78CFB8)
+      // Mid emphasis - FILLED with secondary color (#E7F2EE)
       enabled: {
-        background: '#78CFB8',
-        text: '#0B1E19',
+        background: '#E7F2EE',
+        text: '#127A56',
         border: 'transparent',
       },
       hover: {
-        background: '#68BFA8',
-        text: '#0B1E19',
+        background: '#D0E6DE',
+        text: '#127A56',
         border: 'transparent',
       },
       pressed: {
-        background: '#58AF98',
-        text: '#0B1E19',
+        background: '#B8D9CE',
+        text: '#127A56',
         border: 'transparent',
       },
       disabled: {
-        background: 'rgba(120, 207, 184, 0.38)',
+        background: 'rgba(231, 242, 238, 0.38)',
         text: 'rgba(0, 0, 0, 0.38)',
         border: 'transparent',
       },
@@ -774,17 +1082,17 @@ export const button = {
       // Low emphasis is text-only (no background)
       enabled: {
         background: 'transparent',
-        text: '#13352C',
+        text: '#127A56',
         border: 'transparent',
       },
       hover: {
-        background: 'rgba(19, 53, 44, 0.08)',
-        text: '#13352C',
+        background: 'rgba(18, 122, 86, 0.08)',
+        text: '#127A56',
         border: 'transparent',
       },
       pressed: {
-        background: 'rgba(19, 53, 44, 0.16)',
-        text: '#13352C',
+        background: 'rgba(18, 122, 86, 0.16)',
+        text: '#127A56',
         border: 'transparent',
       },
       disabled: {
@@ -800,17 +1108,17 @@ export const button = {
     high: {
       enabled: {
         background: '#FFFFFF',
-        text: '#13352C',
+        text: '#127A56',
         border: 'transparent',
       },
       hover: {
         background: 'rgba(255, 255, 255, 0.9)',
-        text: '#13352C',
+        text: '#127A56',
         border: 'transparent',
       },
       pressed: {
         background: 'rgba(255, 255, 255, 0.8)',
-        text: '#13352C',
+        text: '#127A56',
         border: 'transparent',
       },
       disabled: {
@@ -820,24 +1128,24 @@ export const button = {
       },
     },
     mid: {
-      // Mid emphasis on dark - FILLED mint/teal with white text
+      // Mid emphasis on dark - FILLED with secondary color
       enabled: {
-        background: '#78CFB8',
-        text: '#FFFFFF',
+        background: '#E7F2EE',
+        text: '#127A56',
         border: 'transparent',
       },
       hover: {
-        background: '#68BFA8',
-        text: '#FFFFFF',
+        background: '#D0E6DE',
+        text: '#127A56',
         border: 'transparent',
       },
       pressed: {
-        background: '#58AF98',
-        text: '#FFFFFF',
+        background: '#B8D9CE',
+        text: '#127A56',
         border: 'transparent',
       },
       disabled: {
-        background: 'rgba(120, 207, 184, 0.38)',
+        background: 'rgba(231, 242, 238, 0.38)',
         text: 'rgba(255, 255, 255, 0.38)',
         border: 'transparent',
       },
@@ -922,8 +1230,8 @@ export const button = {
     offset: '5px',
   },
 
-  // Border radius (16px for primary buttons)
-  borderRadius: '16px',
+  // Border radius - pill-like shape for high/mid emphasis buttons
+  borderRadius: '10px',
 
   // Transition
   transition: '200ms ease-out',
@@ -990,7 +1298,7 @@ export const tab = {
       active: {
         text: 'rgba(0, 0, 0, 0.95)',
         background: 'transparent',
-        indicator: '#13352C',
+        indicator: '#127A56',
       },
       inactive: {
         text: 'rgba(0, 0, 0, 0.60)',
@@ -1034,9 +1342,9 @@ export const tab = {
     // Inverted tabs
     inverted: {
       active: {
-        text: '#13352C',
+        text: '#127A56',
         background: '#FFFFFF',
-        indicator: '#13352C',
+        indicator: '#127A56',
       },
       inactive: {
         text: 'rgba(0, 0, 0, 0.60)',
@@ -1363,18 +1671,18 @@ export const banner = {
 } as const;
 
 // =============================================================================
-// SIDEBAR TOKENS
+// SIDEBAR TOKENS (Pixel-perfect from Figma)
 // =============================================================================
 
 export const sidebar = {
-  // Sidebar dimensions
-  width: '200px',
-  collapsedWidth: '64px',
+  // Sidebar dimensions (from Figma)
+  width: '278px',
+  collapsedWidth: '73px',
 
-  // Padding
+  // Padding (from Figma)
   padding: {
-    x: '12px',
-    y: '16px',
+    x: '16px',
+    y: '20px',
   },
 
   // Logo section
@@ -1383,18 +1691,25 @@ export const sidebar = {
     gap: '12px',
   },
 
-  // Navigation item
+  // Navigation item (from Figma)
   navItem: {
-    height: '40px',
-    paddingX: '12px',
-    paddingY: '10px',
+    height: '48px',
+    paddingX: '24px',
+    paddingY: '12px',
     gap: '12px',
-    borderRadius: '8px',
-    iconSize: '20px',
+    borderRadius: '14.4px',
+    iconSize: '24px',
     typography: {
-      fontSize: '14px',
-      fontWeight: 500,
-      lineHeight: '20px',
+      fontSize: '16px',
+      fontWeight: 400,
+      lineHeight: '24px',
+      letterSpacing: '-0.5px',
+    },
+    typographyActive: {
+      fontSize: '16px',
+      fontWeight: 600,
+      lineHeight: '24px',
+      letterSpacing: '-0.9px',
     },
   },
 
@@ -1411,28 +1726,38 @@ export const sidebar = {
     },
   },
 
-  // Colors
+  // Colors (from Figma)
   colors: {
-    background: '#FFFFFF',
-    border: 'rgba(0, 0, 0, 0.08)',
+    background: 'rgba(0, 0, 0, 0.05)',
+    backgroundAlt: '#f3f4f5',
+    border: 'rgba(0, 0, 0, 0.07)',
     item: {
       default: {
         background: 'transparent',
-        text: 'rgba(0, 0, 0, 0.70)',
-        icon: 'rgba(0, 0, 0, 0.50)',
+        text: 'rgba(0, 0, 0, 0.72)',
+        icon: 'rgba(0, 0, 0, 0.72)',
       },
       hover: {
-        background: 'rgba(0, 0, 0, 0.04)',
+        background: 'rgba(0, 0, 0, 0.05)',
         text: 'rgba(0, 0, 0, 0.95)',
-        icon: 'rgba(0, 0, 0, 0.70)',
+        icon: 'rgba(0, 0, 0, 0.95)',
       },
       active: {
-        background: '#13352C',
-        text: '#FFFFFF',
-        icon: '#FFFFFF',
+        background: 'rgba(0, 0, 0, 0.1)',
+        text: 'rgba(0, 0, 0, 0.95)',
+        icon: 'rgba(0, 0, 0, 0.95)',
+        indicator: '#127A56', // Left accent bar for active state
       },
     },
-    sectionLabel: 'rgba(0, 0, 0, 0.50)',
+    // Updated for WCAG 1.4.3 contrast compliance (4.5:1 minimum)
+    // Original: rgba(0, 0, 0, 0.50) = ~3.95:1, Updated: rgba(0, 0, 0, 0.65) = ~5.74:1
+    sectionLabel: 'rgba(0, 0, 0, 0.65)',
+  },
+
+  // Collapsed state icon button (from Figma)
+  collapsedIconButton: {
+    size: '48px',
+    borderRadius: '14.4px',
   },
 
   // Transition
@@ -1471,7 +1796,7 @@ export const header = {
       background: '#F5F5F5',
       backgroundFocus: '#FFFFFF',
       border: 'transparent',
-      borderFocus: '#13352C',
+      borderFocus: '#127A56',
       placeholder: 'rgba(0, 0, 0, 0.50)',
       text: 'rgba(0, 0, 0, 0.95)',
       icon: 'rgba(0, 0, 0, 0.50)',
@@ -1768,15 +2093,15 @@ export const stepper = {
     size: '32px',
     borderRadius: '50%',
 
-    // Colors per state
+    // Colors per state (using brand primary #127A56)
     colors: {
       completed: {
-        background: '#1B7F66',
+        background: '#127A56',
         text: '#FFFFFF',
         border: 'transparent',
       },
       active: {
-        background: '#1B7F66',
+        background: '#127A56',
         text: '#FFFFFF',
         border: 'transparent',
       },
@@ -1806,7 +2131,7 @@ export const stepper = {
     width: '2px',
 
     colors: {
-      completed: '#1B7F66',
+      completed: '#127A56',
       pending: 'rgba(0, 0, 0, 0.15)',
     },
   },
@@ -1859,12 +2184,13 @@ export const stepper = {
 
   // Hover state
   hover: {
-    background: 'rgba(27, 127, 102, 0.08)',
+    background: 'rgba(18, 122, 86, 0.08)',
   },
 
   // Transition
   transition: '200ms ease-out',
 } as const;
+
 
 // =============================================================================
 // THEME EXPORT

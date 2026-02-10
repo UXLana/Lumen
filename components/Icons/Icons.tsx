@@ -619,6 +619,34 @@ export const IconApps: React.FC<IconProps> = (props) => (
 )
 IconApps.displayName = 'IconApps'
 
+export const IconProduct: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+    <line x1="12" y1="22.08" x2="12" y2="12" />
+  </BaseIcon>
+)
+IconProduct.displayName = 'IconProduct'
+
+export const IconBundle: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <polygon points="12 2 2 7 12 12 22 7 12 2" />
+    <polyline points="2 17 12 22 22 17" />
+    <polyline points="2 12 12 17 22 12" />
+  </BaseIcon>
+)
+IconBundle.displayName = 'IconBundle'
+
+export const IconIntegration: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <circle cx="18" cy="18" r="3" />
+    <circle cx="6" cy="6" r="3" />
+    <path d="M13 6h3a2 2 0 0 1 2 2v7" />
+    <path d="M11 18H8a2 2 0 0 1-2-2V9" />
+  </BaseIcon>
+)
+IconIntegration.displayName = 'IconIntegration'
+
 // =============================================================================
 // SOCIAL/ENGAGEMENT ICONS
 // =============================================================================
@@ -844,6 +872,28 @@ export const IconStepper: React.FC<IconProps> = (props) => (
   </BaseIcon>
 )
 IconStepper.displayName = 'IconStepper'
+
+/**
+ * IconLeftNav - Left navigation sidebar icon
+ * Shows a frame with navigation panel on the left containing menu items
+ * Used for the LeftNav component in the design system
+ */
+export const IconLeftNav: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    {/* Outer frame */}
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    {/* Vertical divider separating nav from content */}
+    <line x1="9" y1="3" x2="9" y2="21" />
+    {/* Navigation menu items in left panel */}
+    <line x1="5" y1="7" x2="7" y2="7" />
+    <line x1="5" y1="11" x2="7" y2="11" />
+    <line x1="5" y1="15" x2="7" y2="15" />
+    {/* Content area placeholder lines */}
+    <line x1="12" y1="8" x2="18" y2="8" opacity="0.4" />
+    <line x1="12" y1="12" x2="18" y2="12" opacity="0.4" />
+  </BaseIcon>
+)
+IconLeftNav.displayName = 'IconLeftNav'
 
 // =============================================================================
 // STATUS/STATE ICONS (for Stepper, Progress, Workflows)

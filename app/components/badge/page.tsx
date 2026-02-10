@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { Badge, BadgeVariant, BadgeColor, BadgeSize } from '@/components'
 import { IconCheck, IconAlertCircle, IconInfo } from '@/components/Icons'
-import { colors, typography } from '@/styles/design-tokens'
+import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
 
 // =============================================================================
 // PAGE COMPONENT
@@ -58,7 +58,11 @@ export default function BadgePage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Badge } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { Badge } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Badge } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -97,7 +101,7 @@ export default function BadgePage() {
   Label
 </Badge>`}
                     previewPadding="56px 24px"
-                    previewBackground={colors.neutral[50]}
+                    previewBackground={colors.surface.paper}
                   />
                 </div>
 
@@ -173,15 +177,50 @@ export default function BadgePage() {
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <div style={sharedStyles.card}>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Size Specifications</h3>
+              <SpecTable
+                headers={['Size', 'Token', 'Padding Y', 'Padding X', 'Font Size', 'Icon Size']}
+                rows={[
+                  [
+                    'sm',
+                    <CopyableToken key="sm-py" token="spacing.1" />,
+                    <PixelValue key="sm-pyv" value="2px" />,
+                    <PixelValue key="sm-pxv" value="8px" />,
+                    <PixelValue key="sm-fs" value="12px" />,
+                    <PixelValue key="sm-is" value="12px" />,
+                  ],
+                  [
+                    'md',
+                    <CopyableToken key="md-py" token="spacing.2" />,
+                    <PixelValue key="md-pyv" value="4px" />,
+                    <PixelValue key="md-pxv" value="10px" />,
+                    <PixelValue key="md-fs" value="14px" />,
+                    <PixelValue key="md-is" value="14px" />,
+                  ],
+                ]}
+              />
+            </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Size Specifications</h3>
+              <h3 style={sharedStyles.cardTitle}>Typography</h3>
               <SpecTable
-                headers={['Size', 'Padding', 'Font Size', 'Icon Size']}
+                headers={['Property', 'Token', 'Value']}
                 rows={[
-                  ['sm', '2px 8px', '12px', '12px'],
-                  ['md', '4px 10px', '14px', '14px'],
+                  ['Font Family', <CopyableToken key="ff" token="typography.label.sm.fontFamily" />, <PixelValue key="ffv" value="Inter" />],
+                  ['Font Weight', <CopyableToken key="fw" token="typography.label.sm.fontWeight" />, <PixelValue key="fwv" value="500" />],
+                  ['Line Height', <CopyableToken key="lh" token="typography.label.sm.lineHeight" />, <PixelValue key="lhv" value="1.4" />],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Border Radius</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Badge Radius', <CopyableToken key="br" token="borderRadius.full" />, <PixelValue key="brv" value="9999px" />],
                 ]}
               />
             </div>
@@ -192,11 +231,27 @@ export default function BadgePage() {
                 headers={['Variant', 'Background', 'Border', 'Use Case']}
                 rows={[
                   ['filled', 'Solid color', 'Same as background', 'High emphasis, primary status'],
-                  ['outlined', 'Transparent', 'Color border', 'Medium emphasis, categories'],
-                  ['subtle', 'Tinted color', 'None', 'Low emphasis, tags & filters'],
+                  ['outlined', 'Transparent', '1px solid color', 'Medium emphasis, categories'],
+                  ['subtle', 'Tinted (10% opacity)', 'None', 'Low emphasis, tags & filters'],
                 ]}
               />
             </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Color Tokens</h3>
+              <SpecTable
+                headers={['Color', 'Filled BG Token', 'Subtle BG Token', 'Text on Filled']}
+                rows={[
+                  ['neutral', <CopyableToken key="n-bg" token="#757575" />, <CopyableToken key="n-sbg" token="#F5F5F5" />, <PixelValue key="n-txt" value="#FFFFFF" />],
+                  ['success', <CopyableToken key="s-bg" token="colors.semantic.success.main" />, <CopyableToken key="s-sbg" token="colors.semantic.success.light" />, <PixelValue key="s-txt" value="#FFFFFF" />],
+                  ['warning', <CopyableToken key="w-bg" token="colors.semantic.warning.main" />, <CopyableToken key="w-sbg" token="colors.semantic.warning.light" />, <PixelValue key="w-txt" value="#000000" />],
+                  ['error', <CopyableToken key="e-bg" token="colors.semantic.error.main" />, <CopyableToken key="e-sbg" token="colors.semantic.error.light" />, <PixelValue key="e-txt" value="#FFFFFF" />],
+                  ['info', <CopyableToken key="i-bg" token="colors.semantic.info.main" />, <CopyableToken key="i-sbg" token="colors.semantic.info.light" />, <PixelValue key="i-txt" value="#FFFFFF" />],
+                  ['brand', <CopyableToken key="b-bg" token="colors.brand.primary" />, <CopyableToken key="b-sbg" token="colors.primary[50]" />, <PixelValue key="b-txt" value="#FFFFFF" />],
+                ]}
+              />
+            </div>
+            </CollapsibleSection>
           </section>
 
           {/* ========== USE CASES ========== */}

@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { ListItem, List, ListItemLeftType, ListItemRightType, ListItemStatus, Avatar } from '@/components'
-import { colors, typography, spacing } from '@/styles/design-tokens'
+import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
 
 // =============================================================================
 // TYPES
@@ -87,7 +87,11 @@ export default function ListItemPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { ListItem, List } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { ListItem, List } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { ListItem, List } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -135,7 +139,7 @@ export default function ListItemPage() {
   />
 </List>`}
                     previewPadding="24px"
-                    previewBackground={colors.neutral[50]}
+                    previewBackground={colors.surface.paper}
                     previewMinHeight="120px"
                   />
                 </div>
@@ -263,7 +267,7 @@ export default function ListItemPage() {
                 {/* Checkbox List */}
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Multiple Selection (Checkbox)</h3>
-                  <div style={{ background: colors.neutral[50], borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ background: colors.surface.paper, borderRadius: '12px', padding: '16px' }}>
                     <div style={{ background: 'white', borderRadius: '8px' }}>
                       <List selectionMode="multiple" roundedCorners aria-label="Notification settings">
                         <ListItem
@@ -298,7 +302,7 @@ export default function ListItemPage() {
                 {/* Radio List */}
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Single Selection (Radio)</h3>
-                  <div style={{ background: colors.neutral[50], borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ background: colors.surface.paper, borderRadius: '12px', padding: '16px' }}>
                     <div style={{ background: 'white', borderRadius: '8px' }}>
                       <List selectionMode="single" roundedCorners aria-label="Theme selection">
                         <ListItem
@@ -338,18 +342,17 @@ export default function ListItemPage() {
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Spacing</h3>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <div style={sharedStyles.card}>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Spacing</h3>
               <SpecTable
-                headers={['Element', 'Value', 'Description']}
+                headers={['Element', 'Token', 'Value', 'Description']}
                 rows={[
-                  ['Padding X', '16px', 'Horizontal padding'],
-                  ['Padding Y', '12px', 'Vertical padding'],
-                  ['Content Gap', '12px', 'Gap between left content and text'],
-                  ['Text Gap', '2px', 'Gap between primary, secondary, tertiary'],
-                  ['Rounded Corner Radius', '8px', 'Border radius for rounded items'],
+                  ['Padding X', <CopyableToken key="px" token="spacing.4" />, <PixelValue key="pxv" value="16px" />, 'Horizontal padding'],
+                  ['Padding Y', <CopyableToken key="py" token="spacing.3" />, <PixelValue key="pyv" value="12px" />, 'Vertical padding'],
+                  ['Content Gap', <CopyableToken key="cg" token="spacing.3" />, <PixelValue key="cgv" value="12px" />, 'Gap between left content and text'],
+                  ['Text Gap', <CopyableToken key="tg" token="spacing.0-5" />, <PixelValue key="tgv" value="2px" />, 'Gap between primary, secondary, tertiary'],
+                  ['Rounded Corner Radius', <CopyableToken key="rcr" token="borderRadius.md" />, <PixelValue key="rcrv" value="8px" />, 'Border radius for rounded items'],
                 ]}
               />
             </div>
@@ -357,14 +360,28 @@ export default function ListItemPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Typography</h3>
               <SpecTable
-                headers={['Text Level', 'Font Size', 'Font Weight', 'Color']}
+                headers={['Text Level', 'Token', 'Font Size', 'Font Weight', 'Color Token']}
                 rows={[
-                  ['Primary', '16px', '500', 'High emphasis'],
-                  ['Secondary', '14px', '400', 'Medium emphasis'],
-                  ['Tertiary', '14px', '400', 'Low emphasis'],
+                  ['Primary', <CopyableToken key="pt" token="typography.body.md" />, <PixelValue key="pfs" value="16px" />, <PixelValue key="pfw" value="500" />, <CopyableToken key="pc" token="colors.text.highEmphasis.onLight" />],
+                  ['Secondary', <CopyableToken key="st" token="typography.body.sm" />, <PixelValue key="sfs" value="14px" />, <PixelValue key="sfw" value="400" />, <CopyableToken key="sc" token="colors.text.lowEmphasis.onLight" />],
+                  ['Tertiary', <CopyableToken key="tt" token="typography.body.sm" />, <PixelValue key="tfs" value="14px" />, <PixelValue key="tfw" value="400" />, <CopyableToken key="tc" token="colors.text.lowEmphasis.onLight" />],
                 ]}
               />
             </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>State Colors</h3>
+              <SpecTable
+                headers={['State', 'Background Token', 'Value']}
+                rows={[
+                  ['Default', '-', <PixelValue key="dv" value="transparent" />],
+                  ['Hover', <CopyableToken key="hb" token="colors.surface.paper" />, <PixelValue key="hbv" value="#FAFAFA" />],
+                  ['Pressed', <CopyableToken key="pb" token="#F5F5F5" />, <PixelValue key="pbv" value="#F5F5F5" />],
+                  ['Selected', <CopyableToken key="sb" token="colors.brand.primaryLight" />, <PixelValue key="sbv" value="#E6F0ED" />],
+                ]}
+              />
+            </div>
+            </CollapsibleSection>
           </section>
         </>
       )}
@@ -559,7 +576,7 @@ import type { ListItemLeftType, ListItemRightType, ListItemStatus } from '@/comp
             <div style={{ maxWidth: '800px' }}>
               <ul style={{
                 ...typography.body.md,
-                color: colors.text.mediumEmphasis,
+                color: colors.text.lowEmphasis.onLight,
                 paddingLeft: '24px',
                 display: 'flex',
                 flexDirection: 'column',

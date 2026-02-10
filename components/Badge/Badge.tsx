@@ -46,7 +46,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 // =============================================================================
-// COLOR CONFIGURATIONS
+// COLOR CONFIGURATIONS (hardcoded values since statusColors removed)
 // =============================================================================
 
 const colorConfig: Record<BadgeColor, {
@@ -56,103 +56,103 @@ const colorConfig: Record<BadgeColor, {
 }> = {
   neutral: {
     filled: {
-      background: colors.neutral[700],
+      background: '#666666',
       text: '#FFFFFF',
-      border: colors.neutral[700],
+      border: '#666666',
     },
     outlined: {
       background: 'transparent',
-      text: colors.neutral[700],
-      border: colors.neutral[400],
+      text: '#666666',
+      border: '#BDBDBD',
     },
     subtle: {
-      background: colors.neutral[100],
-      text: colors.neutral[700],
+      background: '#F0F0F0',
+      text: '#666666',
       border: 'transparent',
     },
   },
   success: {
     filled: {
-      background: colors.semantic.success.main,
+      background: '#1B7F66',
       text: '#FFFFFF',
-      border: colors.semantic.success.main,
+      border: '#1B7F66',
     },
     outlined: {
       background: 'transparent',
-      text: colors.semantic.success.main,
-      border: colors.semantic.success.main,
+      text: '#1B7F66',
+      border: '#1B7F66',
     },
     subtle: {
-      background: colors.semantic.success.light,
-      text: colors.semantic.success.dark,
+      background: '#DEEDE9',
+      text: '#155E4C',
       border: 'transparent',
     },
   },
   warning: {
     filled: {
-      background: colors.semantic.warning.main,
+      background: '#D17600',
       text: '#FFFFFF',
-      border: colors.semantic.warning.main,
+      border: '#D17600',
     },
     outlined: {
       background: 'transparent',
-      text: colors.semantic.warning.dark,
-      border: colors.semantic.warning.main,
+      text: '#9A5700',
+      border: '#D17600',
     },
     subtle: {
-      background: colors.semantic.warning.light,
-      text: colors.semantic.warning.dark,
+      background: '#F9ECDC',
+      text: '#9A5700',
       border: 'transparent',
     },
   },
   error: {
     filled: {
-      background: colors.semantic.error.main,
+      background: '#DC0C22',
       text: '#FFFFFF',
-      border: colors.semantic.error.main,
+      border: '#DC0C22',
     },
     outlined: {
       background: 'transparent',
-      text: colors.semantic.error.main,
-      border: colors.semantic.error.main,
+      text: '#DC0C22',
+      border: '#DC0C22',
     },
     subtle: {
-      background: colors.semantic.error.light,
-      text: colors.semantic.error.dark,
+      background: '#FBE4E7',
+      text: '#9A0818',
       border: 'transparent',
     },
   },
   info: {
     filled: {
-      background: colors.semantic.info.main,
+      background: '#6E61FF',
       text: '#FFFFFF',
-      border: colors.semantic.info.main,
+      border: '#6E61FF',
     },
     outlined: {
       background: 'transparent',
-      text: colors.semantic.info.main,
-      border: colors.semantic.info.main,
+      text: '#6E61FF',
+      border: '#6E61FF',
     },
     subtle: {
-      background: colors.semantic.info.light,
-      text: colors.semantic.info.dark,
+      background: '#EBEFFF',
+      text: '#4338CA',
       border: 'transparent',
     },
   },
   brand: {
     filled: {
-      background: colors.brand.primary,
+      background: colors.brand.default,
       text: '#FFFFFF',
-      border: colors.brand.primary,
+      border: colors.brand.default,
     },
     outlined: {
       background: 'transparent',
-      text: colors.brand.primary,
-      border: colors.brand.primary,
+      text: colors.brand.default,
+      border: colors.brand.default,
     },
     subtle: {
-      background: colors.brand.primaryLight,
-      text: '#FFFFFF',
+      background: '#E7F2EE',
+      text: colors.brand.default,
       border: 'transparent',
     },
   },

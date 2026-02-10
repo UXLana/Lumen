@@ -2,6 +2,10 @@
 // METRC DESIGN SYSTEM - COMPONENT EXPORTS
 // =============================================================================
 
+// Accordion
+export { Accordion, AccordionItem } from './Accordion'
+export type { AccordionProps, AccordionItemProps } from './Accordion'
+
 // Avatar
 export { Avatar, AvatarGroup } from './Avatar'
 export type { AvatarProps, AvatarGroupProps, AvatarSize, AvatarColor } from './Avatar'
@@ -40,25 +44,9 @@ export type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from './Badge'
 export { MarketplaceCard } from './MarketplaceCard'
 export type { MarketplaceCardProps, MarketplaceAppStatus, MarketplaceCardVariant } from './MarketplaceCard'
 
-// Sidebar
-export { Sidebar } from './Sidebar'
-export type { SidebarProps, NavItem, NavSection } from './Sidebar'
-
-// Header
-export { Header, SearchInput, IconButton, OrgDropdown } from './Header'
-export type { HeaderProps } from './Header'
-
-// StatsCard
-export { StatsCard, StatsCardGroup } from './StatsCard'
-export type { StatsCardProps, StatsCardGroupProps } from './StatsCard'
-
 // ProductCard
 export { ProductCard } from './ProductCard'
 export type { ProductCardProps, MarketBadge, ProductTag } from './ProductCard'
-
-// Pagination
-export { Pagination } from './Pagination'
-export type { PaginationProps } from './Pagination'
 
 // ListItem
 export { ListItem, List } from './ListItem'
@@ -67,3 +55,15 @@ export type { ListItemProps, ListProps, ListItemLeftType, ListItemRightType, Lis
 // Stepper
 export { Stepper, StepperStep, LinearStepper, NonLinearStepper, DefaultStepIndicator } from './Stepper'
 export type { StepperProps, StepperStepProps, StepItem, StepStatus, StepperVariant, LinearStepperProps, NonLinearStepperProps, StepIndicatorProps } from './Stepper'
+
+// LeftNav
+export { LeftNav } from './LeftNav'
+export type { LeftNavProps, LeftNavItem, LeftNavSection, LeftNavVariant } from './LeftNav'
+
+// Sidebar (legacy - use LeftNav for new implementations)
+export { Sidebar } from './Sidebar'
+export type { SidebarProps, NavItem, NavSection } from './Sidebar'
+
+// Header
+export { Header, SearchInput, IconButton, OrgDropdown, CanopyLogo } from './Header'
+export type { HeaderProps, CanopyLogoProps } from './Header'

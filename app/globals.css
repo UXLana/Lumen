@@ -1,3 +1,21 @@
+/* =============================================================================
+   MTR Design System - Global Styles
+   Uses CSS custom properties mapped to design tokens
+   ============================================================================= */
+
+:root {
+  /* Color tokens - mapped from design-tokens.ts */
+  --color-brand-primary: #13352C;
+  --color-neutral-0: #FFFFFF;
+  --color-neutral-50: #FAFAFA;
+  --color-neutral-100: #F5F5F5;
+  --color-neutral-200: #EEEEEE;
+  --color-neutral-300: #E0E0E0;
+  --color-neutral-400: #BDBDBD;
+  --color-neutral-500: #9E9E9E;
+  --color-text-high-emphasis: rgba(0, 0, 0, 0.95);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,8 +31,8 @@ body {
 }
 
 body {
-  background-color: #FAFAFA;
-  color: rgba(0, 0, 0, 0.95);
+  background-color: var(--color-neutral-50);
+  color: var(--color-text-high-emphasis);
   line-height: 1.5;
 }
 
@@ -22,29 +40,29 @@ body {
   background-color: rgba(19, 53, 44, 0.2);
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - uses neutral color scale */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--color-neutral-100);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: var(--color-neutral-400);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: var(--color-neutral-500);
 }
 
-/* Focus outline for accessibility */
+/* Focus outline for accessibility - uses brand primary */
 :focus-visible {
-  outline: 2px solid #13352C;
+  outline: 2px solid var(--color-brand-primary);
   outline-offset: 2px;
 }
 

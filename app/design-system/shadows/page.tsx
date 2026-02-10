@@ -36,12 +36,12 @@ export default function ShadowsPage() {
                 <div style={{
                   width: '100px',
                   height: '100px',
-                  background: colors.background.default,
+                  background: colors.surface.default,
                   borderRadius: borderRadius.lg,
                   boxShadow: value,
                   margin: '16px auto',
                 }} />
-                <div style={{ ...typography.label.sm, color: colors.text.highEmphasis }}>{name}</div>
+                <div style={{ ...typography.label.sm, color: colors.text.highEmphasis.onLight }}>{name}</div>
               </div>
             ))}
           </div>
@@ -72,13 +72,13 @@ export default function ShadowsPage() {
               <div style={{
                 width: '120px',
                 height: '80px',
-                background: colors.background.default,
+                background: colors.surface.default,
                 borderRadius: borderRadius.md,
                 boxShadow: shadows.inner,
                 margin: '16px auto',
               }} />
-              <div style={{ ...typography.label.sm, color: colors.text.highEmphasis }}>inner</div>
-              <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis, marginTop: '4px' }}>
+              <div style={{ ...typography.label.sm, color: colors.text.highEmphasis.onLight }}>inner</div>
+              <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight, marginTop: '4px' }}>
                 Inset shadow
               </div>
             </div>
@@ -92,8 +92,8 @@ export default function ShadowsPage() {
                 boxShadow: shadows.brand,
                 margin: '16px auto',
               }} />
-              <div style={{ ...typography.label.sm, color: colors.text.highEmphasis }}>brand</div>
-              <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis, marginTop: '4px' }}>
+              <div style={{ ...typography.label.sm, color: colors.text.highEmphasis.onLight }}>brand</div>
+              <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight, marginTop: '4px' }}>
                 Brand colored
               </div>
             </div>
@@ -107,8 +107,8 @@ export default function ShadowsPage() {
                 boxShadow: shadows.brandLg,
                 margin: '16px auto',
               }} />
-              <div style={{ ...typography.label.sm, color: colors.text.highEmphasis }}>brandLg</div>
-              <div style={{ ...typography.code.sm, color: colors.text.mediumEmphasis, marginTop: '4px' }}>
+              <div style={{ ...typography.label.sm, color: colors.text.highEmphasis.onLight }}>brandLg</div>
+              <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight, marginTop: '4px' }}>
                 Large brand
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function ShadowsPage() {
                 <div style={{
                   width: '100%',
                   height: '70px',
-                  background: colors.background.default,
+                  background: colors.surface.default,
                   borderRadius: borderRadius.md,
                   boxShadow: value,
                   display: 'flex',
@@ -138,7 +138,7 @@ export default function ShadowsPage() {
                   justifyContent: 'center',
                   marginBottom: '8px',
                 }}>
-                  <span style={{ ...typography.label.sm, color: colors.text.mediumEmphasis }}>{name}</span>
+                  <span style={{ ...typography.label.sm, color: colors.text.lowEmphasis.onLight }}>{name}</span>
                 </div>
               </div>
             ))}
@@ -168,7 +168,7 @@ export default function ShadowsPage() {
 
         <div style={sharedStyles.card}>
           <h3 style={sharedStyles.cardTitle}>Card Hover Effect</h3>
-          <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
+          <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: '16px' }}>
             Hover over the cards to see the shadow transition.
           </p>
           <div style={{ display: 'flex', gap: '24px' }}>
@@ -177,7 +177,7 @@ export default function ShadowsPage() {
                 key={i}
                 style={{
                   padding: '24px',
-                  background: colors.background.default,
+                  background: colors.surface.default,
                   borderRadius: borderRadius.lg,
                   boxShadow: shadows.sm,
                   transition: 'box-shadow 0.2s ease, transform 0.2s ease',
@@ -193,7 +193,7 @@ export default function ShadowsPage() {
                 }}
               >
                 <div style={{ ...typography.label.md, marginBottom: '8px' }}>Card {i}</div>
-                <div style={{ ...typography.body.sm, color: colors.text.mediumEmphasis }}>
+                <div style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
                   Hover to elevate
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function ShadowsPage() {
 
           <div style={sharedStyles.card}>
             <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.mediumEmphasis }}>
+            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.lowEmphasis.onLight }}>
               <li style={{ marginBottom: '8px' }}>Use progressive elevation to indicate hierarchy</li>
               <li style={{ marginBottom: '8px' }}>Increase shadow on hover for interactive elements</li>
               <li style={{ marginBottom: '8px' }}>Use semantic tokens for consistent component styling</li>

@@ -18,10 +18,10 @@ function TypographySample({
   sampleText?: string
 }) {
   return (
-    <div style={{ marginBottom: '24px', paddingBottom: '24px', borderBottom: `1px solid ${colors.border.light}` }}>
+    <div style={{ marginBottom: '24px', paddingBottom: '24px', borderBottom: `1px solid ${colors.stroke.light}` }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-        <span style={{ ...typography.label.sm, color: colors.text.mediumEmphasis }}>{name}</span>
-        <span style={{ ...typography.code.sm, color: colors.text.lowEmphasis }}>
+        <span style={{ ...typography.label.sm, color: colors.text.lowEmphasis.onLight }}>{name}</span>
+        <span style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>
           {style.fontSize} / {style.lineHeight}
         </span>
       </div>
@@ -111,10 +111,10 @@ export default function TypographyPage() {
                 <p style={{ fontFamily: fontFamilies.display, fontSize: '24px', fontWeight: value, marginBottom: '8px' }}>
                   Ag
                 </p>
-                <p style={{ ...typography.label.sm, color: colors.text.highEmphasis, textTransform: 'capitalize' }}>
+                <p style={{ ...typography.label.sm, color: colors.text.highEmphasis.onLight, textTransform: 'capitalize' }}>
                   {name}
                 </p>
-                <p style={{ ...typography.code.sm, color: colors.text.mediumEmphasis }}>{value}</p>
+                <p style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{value}</p>
               </div>
             ))}
           </div>
@@ -346,7 +346,7 @@ export default function TypographyPage() {
 
           <div style={sharedStyles.card}>
             <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.mediumEmphasis }}>
+            <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.lowEmphasis.onLight }}>
               <li style={{ marginBottom: '8px' }}>Use display styles for hero sections and page titles</li>
               <li style={{ marginBottom: '8px' }}>Use heading styles for section headers</li>
               <li style={{ marginBottom: '8px' }}>Use body styles for paragraph content</li>

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { MarketplaceCard, MarketplaceAppStatus, MarketplaceCardVariant } from '@/components'
 import { colors, typography } from '@/styles/design-tokens'
 
@@ -80,7 +80,11 @@ export default function MarketplaceCardPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { MarketplaceCard } from '@/components'`}</CodeBlock>
+              <CodeBlock>{`// Package import
+import { MarketplaceCard } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { MarketplaceCard } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -125,7 +129,7 @@ export default function MarketplaceCardPage() {
   onClick={() => handleClick()}
 />`}
                     previewPadding="56px 24px"
-                    previewBackground={colors.neutral[100]}
+                    previewBackground={'#F5F5F5'}
                   />
                 </div>
 
@@ -190,16 +194,41 @@ export default function MarketplaceCardPage() {
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <div style={sharedStyles.card}>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Card Dimensions</h3>
+              <SpecTable
+                headers={['Variant', 'Width Token', 'Width', 'Min Height']}
+                rows={[
+                  ['default', <CopyableToken key="dw" token="spacing.80" />, <PixelValue key="dwv" value="320px" />, <PixelValue key="dmh" value="auto" />],
+                  ['compact', <CopyableToken key="cw" token="spacing.64" />, <PixelValue key="cwv" value="256px" />, <PixelValue key="cmh" value="auto" />],
+                  ['horizontal', '-', <PixelValue key="hwv" value="100%" />, <PixelValue key="hmh" value="80px" />],
+                ]}
+              />
+            </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Variant Specifications</h3>
+              <h3 style={sharedStyles.cardTitle}>Spacing</h3>
               <SpecTable
-                headers={['Variant', 'Use Case', 'Features']}
+                headers={['Element', 'Token', 'Value']}
                 rows={[
-                  ['default', 'Grid layouts, featured apps', 'Hero image, full details, large footprint'],
-                  ['compact', 'Sidebars, smaller containers', 'No hero image, denser information'],
-                  ['horizontal', 'Lists, search results', 'Row layout, minimal height'],
+                  ['Card Padding', <CopyableToken key="cp" token="spacing.4" />, <PixelValue key="cpv" value="16px" />],
+                  ['Content Gap', <CopyableToken key="cg" token="spacing.3" />, <PixelValue key="cgv" value="12px" />],
+                  ['Icon Size (Avatar)', <CopyableToken key="is" token="spacing.10" />, <PixelValue key="isv" value="40px" />],
+                  ['Hero Image Height', <CopyableToken key="hh" token="spacing.32" />, <PixelValue key="hhv" value="128px" />],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Border & Shadow</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Border Radius', <CopyableToken key="br" token="borderRadius.lg" />, <PixelValue key="brv" value="12px" />],
+                  ['Border Color', <CopyableToken key="bc" token="colors.stroke.light" />, <PixelValue key="bcv" value={colors.stroke.light} />],
+                  ['Shadow (hover)', <CopyableToken key="sh" token="shadows.md" />, <PixelValue key="shv" value="0 4px 6px rgba(0,0,0,0.1)" />],
+                  ['Selected Border', <CopyableToken key="sb" token="colors.brand.primary" />, <PixelValue key="sbv" value={colors.brand.primary} />],
                 ]}
               />
             </div>
@@ -207,14 +236,28 @@ export default function MarketplaceCardPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Status Badges</h3>
               <SpecTable
-                headers={['Status', 'Badge Style', 'Color']}
+                headers={['Status', 'Badge Color Token', 'Badge Variant']}
                 rows={[
-                  ['installed', 'Subtle Success', 'Green tint'],
-                  ['uninstalled', 'Outlined Neutral', 'Gray border'],
-                  ['update-available', 'Subtle Info', 'Blue tint'],
+                  ['installed', <CopyableToken key="ib" token="colors.semantic.success" />, <PixelValue key="ibv" value="subtle" />],
+                  ['uninstalled', <CopyableToken key="ub" token="colors.neutral[600]" />, <PixelValue key="ubv" value="outlined" />],
+                  ['update-available', <CopyableToken key="uab" token="colors.semantic.info" />, <PixelValue key="uabv" value="subtle" />],
                 ]}
               />
             </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Typography</h3>
+              <SpecTable
+                headers={['Element', 'Token', 'Font Size', 'Weight']}
+                rows={[
+                  ['App Name', <CopyableToken key="an" token="typography.heading.sm" />, <PixelValue key="anfs" value="18px" />, <PixelValue key="anfw" value="600" />],
+                  ['Description', <CopyableToken key="desc" token="typography.body.sm" />, <PixelValue key="descfs" value="14px" />, <PixelValue key="descfw" value="400" />],
+                  ['Publisher', <CopyableToken key="pub" token="typography.label.sm" />, <PixelValue key="pubfs" value="12px" />, <PixelValue key="pubfw" value="500" />],
+                  ['Rating', <CopyableToken key="rat" token="typography.label.sm" />, <PixelValue key="ratfs" value="12px" />, <PixelValue key="ratfw" value="500" />],
+                ]}
+              />
+            </div>
+            </CollapsibleSection>
           </section>
         </>
       )}
@@ -322,7 +365,7 @@ import type {
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Composition</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.mediumEmphasis, marginBottom: '16px' }}>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: '16px' }}>
                 MarketplaceCard is composed from these atomic components:
               </p>
               <SpecTable

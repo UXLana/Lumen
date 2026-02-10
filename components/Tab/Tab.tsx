@@ -559,7 +559,7 @@ export function TabBar({
     borderRadius: '50%',
     background: 'transparent',
     border: 'none',
-    color: onDark ? colors.text.highEmphasisOnDark : colors.text.highEmphasis,
+    color: onDark ? colors.text.highEmphasis.onDark : colors.text.highEmphasis.onLight,
     flexShrink: 0,
   }
 
