@@ -137,9 +137,4 @@ function MyComponent() {
 - **Display & Body**: DM Sans (Google Fonts)
 - **Code**: JetBrains Mono (Google Fonts)
 
-## Notes
 
-- Colors derived from Figma Design System brand color (#13352C)
-- Typography scales follow Figma specifications
-- All components are fully typed with TypeScript
-- Components use inline styles with design tokens for consistency
