@@ -139,7 +139,6 @@ function MyComponent() {
 
 ## Notes
 
-- Component tokens renamed from "ukg" to "mtr" as per requirements
 - Colors derived from Figma Design System brand color (#13352C)
 - Typography scales follow Figma specifications
 - All components are fully typed with TypeScript

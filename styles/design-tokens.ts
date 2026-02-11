@@ -838,7 +838,7 @@ export const transitionPresets = {
 } as const;
 
 // =============================================================================
-// COMPONENT TOKENS (MTR System Tokens - renamed from UKG)
+// COMPONENT TOKENS (MTR System Tokens)
 // =============================================================================
 
 export const mtrComponents = {
