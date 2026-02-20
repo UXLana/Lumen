@@ -91,3 +91,11 @@ export type { SidebarProps, NavItem, NavSection } from './Sidebar'
 // Header
 export { Header, SearchInput, IconButton, OrgDropdown, CanopyLogo } from './Header'
 export type { HeaderProps, CanopyLogoProps } from './Header'
+
+// Toast
+export { Toast, useToast } from './Toast'
+export type { ToastProps, ToastVariant, ToastPosition, ToastItem, UseToastReturn } from './Toast'
+
+// ConfirmDialog
+export { ConfirmDialog } from './ConfirmDialog'
+export type { ConfirmDialogProps, ConfirmDialogVariant } from './ConfirmDialog'
