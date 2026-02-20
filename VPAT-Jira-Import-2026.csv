@@ -1,0 +1,359 @@
+Summary,Issue Type,Description,Priority,Labels,Epic Name,Epic Link
+"Accessibility Remediation 2026 (VPAT Compliance)",Epic,"h2. VPAT Accessibility Remediation — Metrc v1.17.19225
+
+*Source:* VPAT dated 1/13/2026 | axe scan of testing-il.metrc.com
+*Applies to:* All Metrc state deployments
+*Total Issues:* 288 (157 critical, 131 serious)
+*Estimated Dev Time:* 4-5 hours
+
+h3. VPAT Non-Conformance Summary
+||WCAG Criterion||Status||Tickets||
+|1.3.1 Info and Relationships (A)|Partially Supports|A11Y-001, A11Y-002, A11Y-003|
+|4.1.2 Name, Role, Value (A)|Partially Supports|A11Y-004|
+|1.4.3 Contrast Minimum (AA)|Partially Supports|A11Y-005|
+|2.5.2 Pointer Cancellation (A)|Partially Supports|A11Y-006|
+|2.4.5 Multiple Ways (AA)|Partially Supports|A11Y-007 (out of scope)|
+
+h3. Root Cause Analysis
+87% of all issues (252 of 288) stem from 2 root causes in shared UI components:
+* *Navigation bar ARIA hierarchy* — <li> elements break the menubar > menuitem relationship (all 7 pages)
+* *Kendo tabstrip ARIA structure* — role=""tablist"" on <div> instead of <ul>
+
+h3. States
+||State||Abbr||VPAT Report Status||
+|Alaska|AK|Pending|
+|California|CA|Pending|
+|Colorado|CO|Pending|
+|District of Columbia|DC|Pending|
+|Illinois|IL|Report generated|
+|Kentucky|KY|Tree grid analysis (meeting) + VPAT|
+|Louisiana|LA|Pending|
+|Maine|ME|Pending|
+|Maryland|MD|Pending|
+|Massachusetts|MA|Pending|
+|Michigan|MI|Report generated|
+|Minnesota|MN|Pending|
+|Mississippi|MS|Pending|
+|Missouri|MO|Pending|
+|Montana|MT|Pending|
+|Nevada|NV|Pending|
+|New Jersey|NJ|Pending|
+|Ohio|OH|Pending|
+|Oklahoma|OK|Pending|
+|Oregon|OR|Pending|
+|Rhode Island|RI|Pending|
+|South Dakota|SD|Pending|
+|West Virginia|WV|Pending|
+
+h3. Issue Distribution by Page
+||Page||Critical||Serious||Total||
+|Plants|39|15|54|
+|Packages|27|27|54|
+|Transfers|26|15|41|
+|Financials|20|15|35|
+|Reports|19|14|33|
+|Admin|23|15|38|
+|User Profile|19|14|33|",High,"a11y,vpat-2026,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),
+"A11Y-001: Fix Nav Bar ARIA Parent-Child Hierarchy",Task,"h2. A11Y-001: Fix Main Navigation Bar ARIA Parent-Child Hierarchy
+
+*Priority:* P0 — CRITICAL | *Issues Fixed:* 157 | *Est. Time:* 1-2 hours
+*WCAG:* 1.3.1 Info and Relationships (Level A)
+*Component:* Main Navigation Bar ({{ul.nav.d-flex[role=""menubar""]}})
+*States:* All Metrc states (AK, CA, CO, DC, IL, KY, LA, ME, MD, MA, MI, MN, MS, MO, MT, NV, NJ, OH, OK, OR, RI, SD, WV)
+
+h3. VPAT Finding
+{quote}The main navigation bar and grids that have tabs include ARIA roles that do not have the appropriate required parent/children relationships{quote}
+
+h3. Problem
+All {{<a>}} elements with {{role=""menuitem""}} are not contained within a proper {{role=""menu""}} or {{role=""menubar""}} parent. The {{<li>}} elements break the expected ARIA parent-child relationship.
+
+Axe reports:
+* *aria-required-parent:* 18 menuitem links per page lack valid menubar/menu parent (126 total)
+* *aria-required-children:* 1 per page where menubar has invalid <li> children (7 total)
+* *listitem:* 14 orphaned <li> per page (98 total, auto-resolved — see A11Y-003)
+
+h3. Affected Elements (per page)
+* {{.dropdown:nth-child(1)}} — Notifications dropdown
+* {{.facilities-dropdown}} — Facilities selector
+* {{.navigation-first-link}} — First nav item
+* {{.split-dropdown.dropdown}} (x5) — Main nav items
+* {{.separator}} — Flex spacer
+* {{.search-menu}}, {{.import-menu}}, {{.support-menu}}, {{.sessionstate-menu}}, {{.user-menu}}
+
+h3. Fix
+Add {{role=""none""}} to all {{<li>}} elements that are direct children of {{ul[role=""menubar""]}}.
+
+{code}
+<!-- Before -->
+<li class=""dropdown split-dropdown"">
+  <a role=""menuitem"" ...>Plants</a>
+</li>
+
+<!-- After -->
+<li class=""dropdown split-dropdown"" role=""none"">
+  <a role=""menuitem"" ...>Plants</a>
+</li>
+{code}
+
+*Additional Fix — Data Import link:*
+Change {{aria-label=""null""}} to {{aria-label=""Data Import""}}
+
+h3. Verification
+* [ ] axe scan: 0 aria-required-parent errors on menuitem elements
+* [ ] axe scan: 0 aria-required-children errors on menubar
+* [ ] Keyboard: Tab navigates through all menu items
+* [ ] Screen reader: Items announced as ""menuitem"" within ""menubar""
+* [ ] Run axe on all 7 pages",Highest,"a11y,vpat-2026,wcag-1.3.1,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)
+"A11Y-002: Fix Tabstrip ARIA Role Placement",Task,"h2. A11Y-002: Fix Kendo Tabstrip ARIA Role Placement
+
+*Priority:* P0 — CRITICAL | *Issues Fixed:* 11 | *Est. Time:* 30 minutes
+*WCAG:* 1.3.1 Info and Relationships (Level A)
+*Component:* Kendo UI Tabstrip ({{k-tabstrip}} widgets)
+*States:* All Metrc states (AK, CA, CO, DC, IL, KY, LA, ME, MD, MA, MI, MN, MS, MO, MT, NV, NJ, OH, OK, OR, RI, SD, WV)
+
+h3. VPAT Finding
+{quote}The main navigation bar and grids that have tabs include ARIA roles that do not have the appropriate required parent/children relationships{quote}
+
+h3. Problem
+Kendo tabstrip components render with {{role=""tablist""}} on the outer {{<div>}}, but the actual tab {{<li role=""tab"">}} elements are inside a {{<ul>}} child. This creates:
+* {{<div role=""tablist"">}} has invalid child {{<ul>}} (should contain tab elements directly)
+* {{<li role=""tab"">}} elements don't have a direct tablist parent
+
+h3. Affected Components
+* {{#plants_tabstrip}} — Plants page (19 tabs)
+* {{#packages_tabstrip}} — Packages page
+* {{#transfers_tabstrip}} — Transfers page
+* {{#tagorders_tabstrip}} — Admin page
+
+h3. Fix
+Move {{role=""tablist""}} from the outer {{<div>}} to the {{<ul.k-tabstrip-items>}} element:
+
+{code}
+// Apply after Kendo renders tabstrips
+$('.k-tabstrip').removeAttr('role');
+$('.k-tabstrip-items').attr('role', 'tablist');
+{code}
+
+h3. Verification
+* [ ] axe scan: 0 aria-required-children errors on tabstrip containers
+* [ ] axe scan: 0 aria-required-parent errors on tab elements
+* [ ] Keyboard: Left/Right arrow keys navigate between tabs
+* [ ] Screen reader: Tabs announced as ""tab 1 of N""",Highest,"a11y,vpat-2026,a11y-tree-grid-26,wcag-1.3.1,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)
+"A11Y-003: List Structure Auto-Fix (Resolved by 001+002)",Task,"h2. A11Y-003: Resolve Orphaned List Item Structure (Auto-Fix)
+
+*Priority:* P1 — SERIOUS | *Issues Fixed:* 102 | *Est. Time:* 0 (auto-resolved)
+*WCAG:* 1.3.1 Info and Relationships (Level A)
+*Blocked by:* A11Y-001, A11Y-002
+*States:* All Metrc states
+
+h3. Description
+These issues are *automatically resolved* by A11Y-001 and A11Y-002. No additional code changes required.
+
+* Navigation {{<li>}} elements (98 issues) — resolved when {{role=""none""}} applied (A11Y-001)
+* Tabstrip {{<li>}} elements (4 issues) — resolved when {{role=""tablist""}} moves to {{<ul>}} (A11Y-002)
+
+h3. Verification
+* [ ] axe scan: 0 listitem errors across all pages
+* [ ] axe scan: 0 list errors across all pages",High,"a11y,vpat-2026,wcag-1.3.1,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)
+"A11Y-004: Fix Grid ARIA Attribute Values",Task,"h2. A11Y-004: Fix Invalid ARIA Attribute Values on Grid Rows
+
+*Priority:* P0/P1 | *Issues Fixed:* 6 | *Est. Time:* 30 minutes
+*WCAG:* 4.1.2 Name, Role, Value (Level A)
+*Component:* Kendo Grid {{<tr>}} elements
+*States:* All Metrc states
+
+h3. VPAT Finding
+{quote}Some ARIA attributes do not conform to valid values{quote}
+
+h3. Problem A — Invalid aria-posinset=""0""
+{{aria-posinset}} must be >= 1. Found on:
+* Packages: {{<tr role=""row"" aria-posinset=""0"" aria-setsize=""20"">}}
+* Transfers: {{<tr role=""row"" aria-posinset=""0"" aria-setsize=""1"">}}
+* Financials: {{<tr role=""row"" aria-posinset=""0"" aria-setsize=""0"">}}
+* Admin: {{<tr role=""row"" aria-posinset=""0"" aria-setsize=""20"">}}
+
+h3. Problem B — Invalid aria-activedescendant
+Packages tabstrip references {{aria-activedescendant=""packages_tabstrip_ts_active""}} but this ID doesn't exist in DOM.
+
+h3. Problem C — Treegrid attributes on non-treegrid
+Financials grid uses {{aria-posinset}}, {{aria-setsize}}, {{aria-level}} on {{<tr>}} within {{role=""grid""}} (only valid for treegrid).
+
+h3. Fix
+{code}
+// Fix aria-posinset=""0"" — set to 1-based index
+$('tr[aria-posinset=""0""]').each(function(i) {
+  $(this).attr('aria-posinset', i + 1);
+});
+
+// Remove treegrid-only attributes from non-treegrid rows
+$('[role=""grid""] tr[aria-level]').removeAttr('aria-level');
+
+// Fix invalid aria-activedescendant
+$('#packages_tabstrip').removeAttr('aria-activedescendant');
+{code}
+
+h3. Verification
+* [ ] axe scan: 0 aria-valid-attr-value errors
+* [ ] axe scan: 0 aria-conditional-attr errors
+* [ ] Grid keyboard navigation still functional
+* [ ] Screen reader correctly announces row position",Highest,"a11y,vpat-2026,a11y-tree-grid-26,wcag-4.1.2,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)
+"A11Y-005: Fix Color Contrast on Finished Grid Rows",Task,"h2. A11Y-005: Fix Color Contrast on Finished Grid Rows
+
+*Priority:* P1 — SERIOUS | *Issues Fixed:* 12+ | *Est. Time:* 30 minutes
+*WCAG:* 1.4.3 Contrast Minimum (Level AA)
+*Component:* {{.grid-finished-row}} in Packages grid
+*States:* All Metrc states
+
+h3. VPAT Finding
+{quote}Pages with grids containing icons indicating their 'type' (Trade Sample icon, Product Package icon, Lab Sample Package, etc.) the icons are not meeting the color contrast ratio threshold{quote}
+
+h3. Problem A — Text Contrast
+Text in {{.grid-finished-row}} has contrast of 2.67:1 (foreground #999999, background #f9f8f3). Required: 4.5:1 for 12px text.
+
+Affected columns: Label, Source Harvest Names, Source Package Labels, Location Name, Item Name, Product Category, Strain, Quantity, Source Production Batch, Lab Testing State, Packaged Date.
+
+h3. Problem B — Icon Contrast
+Grid type indicator icons (Trade Sample, Product Package, Lab Sample) fail 3:1 non-text contrast.
+
+h3. Fix A — Text Contrast
+{code}
+/* Before */
+.grid-finished-row { color: #999999; }  /* 2.67:1 — FAIL */
+
+/* After — Option 1: darker gray */
+.grid-finished-row { color: #595959; }  /* 7.01:1 — PASS */
+
+/* After — Option 2: medium gray */
+.grid-finished-row { color: #757575; }  /* 4.68:1 — PASS */
+{code}
+
+h3. Fix B — Icon Contrast
+Ensure icon fill/stroke colors meet 3:1 against #f9f8f3 background, or add visible text labels alongside icons.
+
+h3. Verification
+* [ ] axe scan: 0 color-contrast errors on Packages page
+* [ ] Manual: Finished rows visually distinct from active rows
+* [ ] Manual: All grid type icons meet 3:1 contrast
+* [ ] Design approval on new color values",High,"a11y,vpat-2026,a11y-tree-grid-26,wcag-1.4.3,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)
+"A11Y-006: Fix Pointer Cancellation on Modal Buttons",Task,"h2. A11Y-006: Fix Pointer Cancellation on Modal Buttons
+
+*Priority:* P1 — SERIOUS | *Issues Fixed:* TBD | *Est. Time:* 1 hour
+*WCAG:* 2.5.2 Pointer Cancellation (Level A)
+*Component:* Modal-triggering buttons (application-wide)
+*States:* All Metrc states
+
+(!) *Note:* This issue was identified in VPAT but NOT flagged by axe scan. Requires manual investigation.
+
+h3. VPAT Finding
+{quote}If a user down-clicks on a button and navigates away to up-click, the action does not perform to open the modal.{quote}
+
+h3. Problem
+mousedown/pointerdown events trigger actions instead of click events, preventing users from aborting actions by moving pointer away before release.
+
+h3. Investigation Steps
+# Identify all buttons that open modals (look for mousedown/pointerdown handlers)
+# Test each: mouse-down on button, drag cursor off, release — action should NOT fire
+# Check custom button/modal components for event binding patterns
+# Review Kendo UI and Bootstrap modal event handlers
+
+h3. Fix
+{code}
+// BAD — fires on mouse-down, no cancellation possible
+button.addEventListener('mousedown', openModal);
+
+// GOOD — fires on click (down+up on same element)
+button.addEventListener('click', openModal);
+{code}
+
+h3. Verification
+* [ ] Manual: mousedown + drag away + mouseup — modal does NOT open
+* [ ] Code audit: No mousedown/pointerdown handlers on action buttons
+* [ ] Test on touch devices: touchstart + drag away should not trigger",High,"a11y,vpat-2026,wcag-2.5.2,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)
+"A11Y-007: External Training Content Accessibility (Out of Scope)",Task,"h2. A11Y-007: External Training Content Accessibility
+
+*Priority:* P2 — LOW | *WCAG:* 2.4.5 Multiple Ways (Level AA)
+*Component:* External training videos/content
+*States:* All Metrc states
+
+h3. Description
+The VPAT notes training videos are hosted externally. This is a content/UX issue, not a code fix. Not a same-day fix; requires product/content strategy.
+
+h3. Recommendations
+* Add in-app search that includes training content results
+* Provide sitemap or help index linking to training resources
+* Consider embedding training videos with proper captions",Low,"a11y,vpat-2026,wcag-2.4.5,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)
+"Post-Fix Verification & axe Scan Validation",Task,"h2. Post-Fix Verification & axe Scan
+
+*Priority:* P0 | *Est. Time:* 2 hours
+*Depends on:* A11Y-001 through A11Y-006
+*States:* All Metrc states
+
+h3. Pre-Deploy Verification
+* [ ] All 6 fix tickets completed (A11Y-001 through A11Y-006)
+* [ ] Code reviewed
+* [ ] Local axe scan shows 0 critical/serious issues
+
+h3. Post-Deploy Verification
+Run axe DevTools scan on all 7 pages:
+* [ ] Plants
+* [ ] Packages
+* [ ] Transfers
+* [ ] Financials
+* [ ] Reports
+* [ ] Admin
+* [ ] User Profile
+
+h3. Manual Testing
+* [ ] Keyboard navigation: Tab through main nav, arrow keys in tabs
+* [ ] Pointer cancellation: mousedown + drag away on modal buttons
+* [ ] Screen reader spot check (NVDA/JAWS or VoiceOver)
+* [ ] Confirm 0 critical issues, 0 serious issues across all pages",Highest,"a11y,vpat-2026,qa,verification,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)
+"Update VPAT Conformance Reports (All States)",Task,"h2. Update VPAT Conformance Reports
+
+*Priority:* P1 | *Est. Time:* 1 hour
+*Depends on:* Post-Fix Verification task
+*States:* All Metrc states
+
+h3. Description
+After all fixes are verified, update the VPAT conformance report for all state submissions.
+
+h3. Status Updates
+||WCAG Criterion||Current Status||New Status||
+|1.3.1 Info and Relationships|Partially Supports|*Supports*|
+|4.1.2 Name, Role, Value|Partially Supports|*Supports*|
+|1.4.3 Contrast (Minimum)|Partially Supports|*Supports*|
+|2.5.2 Pointer Cancellation|Partially Supports|*Supports*|
+|2.4.5 Multiple Ways|Partially Supports|Partially Supports (external content)|
+
+h3. State Reports to Update
+Reports generated:
+* [ ] Illinois (IL)
+* [ ] Kentucky (KY)
+* [ ] Michigan (MI)
+
+Reports pending generation:
+* [ ] Alaska (AK)
+* [ ] California (CA)
+* [ ] Colorado (CO)
+* [ ] District of Columbia (DC)
+* [ ] Louisiana (LA)
+* [ ] Maine (ME)
+* [ ] Maryland (MD)
+* [ ] Massachusetts (MA)
+* [ ] Minnesota (MN)
+* [ ] Mississippi (MS)
+* [ ] Missouri (MO)
+* [ ] Montana (MT)
+* [ ] Nevada (NV)
+* [ ] New Jersey (NJ)
+* [ ] Ohio (OH)
+* [ ] Oklahoma (OK)
+* [ ] Oregon (OR)
+* [ ] Rhode Island (RI)
+* [ ] South Dakota (SD)
+* [ ] West Virginia (WV)
+
+h3. Deliverables
+* Updated VPAT conformance report (all ""Partially Supports"" → ""Supports"")
+* Updated remediation report showing all tickets resolved
+* axe scan evidence (screenshots or exports) for each page",High,"a11y,vpat-2026,documentation,a11y-vpat-ak,a11y-vpat-ca,a11y-vpat-co,a11y-vpat-dc,a11y-vpat-il,a11y-vpat-ky,a11y-vpat-la,a11y-vpat-me,a11y-vpat-md,a11y-vpat-ma,a11y-vpat-mi,a11y-vpat-mn,a11y-vpat-ms,a11y-vpat-mo,a11y-vpat-mt,a11y-vpat-nv,a11y-vpat-nj,a11y-vpat-oh,a11y-vpat-ok,a11y-vpat-or,a11y-vpat-ri,a11y-vpat-sd,a11y-vpat-wv",Accessibility Remediation 2026 (VPAT Compliance),Accessibility Remediation 2026 (VPAT Compliance)

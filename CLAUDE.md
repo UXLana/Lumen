@@ -20,6 +20,8 @@ This is the MTR Design System - a React/Next.js component library with design to
 - `/figma-token-extractor` - Extract tokens from Figma files
 - `/design-accessibility` - Accessibility audits
 - `/frontend-design` - UX consultation
+- `/confluence-to-prototype` - Compile Confluence specs into prototype-ready markdown
+- `/ux-brief-generator` - Research-first UX brief compiler with gap analysis and completeness scoring
 
 ## Conventions
 - Use design tokens from `styles/design-tokens.ts`

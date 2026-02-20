@@ -20,6 +20,7 @@ import {
   IconSidebarOpen,
   IconSidebarClose,
 } from '@/components/Icons'
+import { useTheme, useThemeSwitcher, availableThemes } from '@/styles/themes'
 
 // =============================================================================
 // CONSTANTS
@@ -46,9 +47,18 @@ const IconChevron = ({ expanded }: { expanded: boolean }) => (
 
 // Icon mapping - first-level section icons only
 // Using size 20 (md) for crisp rendering at all states
+// Shield/checkmark icon for Tools section
+const IconTools = ({ size = 'md' }: { size?: string }) => (
+  <svg width={size === 'sm' ? 16 : 20} height={size === 'sm' ? 16 : 20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 1L3 5v4.5c0 4.42 2.98 8.56 7 9.5 4.02-.94 7-5.08 7-9.5V5l-7-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M7.5 10l2 2 3.5-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
 const iconMap: Record<string, React.FC> = {
   foundations: () => <IconFoundations size="md" />,
   components: () => <IconComponents size="md" />,
+  tools: () => <IconTools size="md" />,
 }
 
 // =============================================================================
@@ -78,6 +88,13 @@ export const navSections = [
       { id: 'badge', label: 'Badge', href: '/components/badge' },
       { id: 'banner', label: 'Banner', href: '/components/banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
+      { id: 'checkbox', label: 'Checkbox', href: '/components/checkbox' },
+      { id: 'divider', label: 'Divider', href: '/components/divider' },
+      { id: 'input', label: 'Input', href: '/components/input' },
+      { id: 'link', label: 'Link', href: '/components/link' },
+      { id: 'radio', label: 'Radio', href: '/components/radio' },
+      { id: 'switch', label: 'Switch', href: '/components/switch' },
+      { id: 'header', label: 'Header', href: '/components/header' },
       { id: 'left-nav', label: 'Left Nav', href: '/components/left-nav' },
       { id: 'list-item', label: 'List Item', href: '/components/list-item' },
       { id: 'marketplace-card', label: 'Marketplace Card', href: '/components/marketplace-card' },
@@ -85,6 +102,13 @@ export const navSections = [
       { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'stepper', label: 'Stepper', href: '/components/stepper' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
+    ],
+  },
+  {
+    id: 'tools',
+    title: 'Tools',
+    items: [
+      { id: 'compliance', label: 'Compliance Dashboard', href: '/design-system/compliance' },
     ],
   },
 ]
@@ -728,6 +752,7 @@ export function StyleguideLayout({
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     foundations: true,
     components: true,
+    tools: true,
   })
 
   // Sidebar collapsed state - persisted to localStorage
@@ -735,6 +760,10 @@ export function StyleguideLayout({
   const [isMobile, setIsMobile] = useState(false)
   const [toggleHovered, setToggleHovered] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
+
+  // Theme selection — managed by SwitchableThemeProvider, controlled here
+  const { themeName, setThemeName } = useThemeSwitcher()
+  const activeTheme = useTheme()
 
   // Restore sidebar state from localStorage on mount
   useEffect(() => {
@@ -824,36 +853,88 @@ export function StyleguideLayout({
         <div style={{
           ...sharedStyles.sidebarHeader,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: sidebarCollapsed ? 'center' : 'space-between',
+          flexDirection: 'column' as const,
+          gap: sidebarCollapsed ? '0' : '12px',
           padding: sidebarCollapsed ? '0 12px 20px' : '0 20px 20px',
         }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: sidebarCollapsed ? 'center' : 'space-between',
+          }}>
+            {!sidebarCollapsed && (
+              <div>
+                <Link href="/design-system" style={sharedStyles.sidebarTitle}>
+                  Metrc Design System
+                </Link>
+                <p style={sharedStyles.sidebarSubtitle}>v1.0.0</p>
+              </div>
+            )}
+            <button
+              style={{
+                ...sharedStyles.sidebarToggle,
+                ...(toggleHovered ? sharedStyles.sidebarToggleHover : {}),
+                marginLeft: sidebarCollapsed ? 0 : 'auto',
+              }}
+              onClick={toggleSidebar}
+              onMouseEnter={() => setToggleHovered(true)}
+              onMouseLeave={() => setToggleHovered(false)}
+              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-expanded={!sidebarCollapsed}
+            >
+              {sidebarCollapsed ? (
+                <IconSidebarOpen size="sm" />
+              ) : (
+                <IconSidebarClose size="sm" />
+              )}
+            </button>
+          </div>
+
+          {/* Theme switcher */}
           {!sidebarCollapsed && (
-            <div>
-              <Link href="/design-system" style={sharedStyles.sidebarTitle}>
-                Metrc Design System
-              </Link>
-              <p style={sharedStyles.sidebarSubtitle}>v1.0.0</p>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}>
+              <label
+                htmlFor="ds-theme-select"
+                style={{
+                  color: activeTheme.colors.text.lowEmphasis.onLight,
+                  fontWeight: 500,
+                  whiteSpace: 'nowrap' as const,
+                  fontSize: '12px',
+                  fontFamily: fontFamilies.body,
+                }}
+              >
+                Theme
+              </label>
+              <select
+                id="ds-theme-select"
+                value={themeName}
+                onChange={(e) => setThemeName(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: '5px 8px',
+                  borderRadius: borderRadius.sm,
+                  border: `1px solid ${activeTheme.colors.border.lowEmphasis.onLight}`,
+                  background: activeTheme.colors.hover.onLight,
+                  color: activeTheme.colors.text.highEmphasis.onLight,
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  fontFamily: fontFamilies.body,
+                  cursor: 'pointer',
+                  appearance: 'auto' as const,
+                }}
+              >
+                {availableThemes.map((t) => (
+                  <option key={t.name} value={t.name}>
+                    {t.name.charAt(0).toUpperCase() + t.name.slice(1)}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
-          <button
-            style={{
-              ...sharedStyles.sidebarToggle,
-              ...(toggleHovered ? sharedStyles.sidebarToggleHover : {}),
-              marginLeft: sidebarCollapsed ? 0 : 'auto',
-            }}
-            onClick={toggleSidebar}
-            onMouseEnter={() => setToggleHovered(true)}
-            onMouseLeave={() => setToggleHovered(false)}
-            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            aria-expanded={!sidebarCollapsed}
-          >
-            {sidebarCollapsed ? (
-              <IconSidebarOpen size="sm" />
-            ) : (
-              <IconSidebarClose size="sm" />
-            )}
-          </button>
         </div>
 
         {/* Full nav when expanded */}
@@ -890,9 +971,12 @@ export function StyleguideLayout({
         }}
         data-content
       >
-        {/* Header Banner */}
+        {/* Header Banner — gradient uses active theme brand colors */}
         <div style={sharedStyles.headerWrapper}>
-          <header style={sharedStyles.header}>
+          <header style={{
+            ...sharedStyles.header,
+            background: `linear-gradient(135deg, ${activeTheme.colors.brand.darker} 0%, ${activeTheme.colors.brand.default} 50%, ${activeTheme.colors.brand.lighter} 100%)`,
+          }}>
             <h1 style={sharedStyles.headerTitle}>{title}</h1>
             <p style={sharedStyles.headerDescription}>{description}</p>
           </header>
@@ -986,7 +1070,7 @@ export function CodeBlock({ children }: { children: string }) {
 }
 
 // Preview/Code Toggle Component for Interactive Playgrounds
-type PlaygroundTab = 'preview' | 'code'
+type PlaygroundTab = 'preview' | 'code' | 'source'
 
 interface PlaygroundProps {
   preview: React.ReactNode
@@ -994,6 +1078,12 @@ interface PlaygroundProps {
   previewBackground?: string
   previewPadding?: string
   previewMinHeight?: string
+  /** Optional: component source code for editable Source tab */
+  sourceCode?: string
+  /** Optional: path to component file (for saving) */
+  componentPath?: string
+  /** Optional: callback when source is saved */
+  onSourceSaved?: () => void
 }
 
 export function Playground({
@@ -1002,12 +1092,56 @@ export function Playground({
   previewBackground = colors.surface.lightDarker,
   previewPadding = '48px',
   previewMinHeight = '120px',
+  sourceCode,
+  componentPath,
+  onSourceSaved,
 }: PlaygroundProps) {
   const [activeTab, setActiveTab] = useState<PlaygroundTab>('preview')
+  const [editedSource, setEditedSource] = useState(sourceCode || '')
+  const [sourceSaving, setSourceSaving] = useState(false)
+  const [sourceSaveStatus, setSourceSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle')
+  const [sourceError, setSourceError] = useState('')
 
-  const playgroundSegments = [
+  // Keep edited source in sync if sourceCode prop changes
+  useEffect(() => {
+    if (sourceCode) setEditedSource(sourceCode)
+  }, [sourceCode])
+
+  const hasSourceChanges = sourceCode ? editedSource !== sourceCode : false
+
+  const handleSourceSave = async () => {
+    if (!componentPath) return
+    setSourceSaving(true)
+    setSourceSaveStatus('idle')
+    setSourceError('')
+
+    try {
+      const res = await fetch('/api/tweak/source', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ componentPath, source: editedSource }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Save failed')
+      }
+
+      setSourceSaveStatus('saved')
+      onSourceSaved?.()
+      setTimeout(() => setSourceSaveStatus('idle'), 3000)
+    } catch (err: unknown) {
+      setSourceSaveStatus('error')
+      setSourceError(err instanceof Error ? err.message : 'Save failed')
+    } finally {
+      setSourceSaving(false)
+    }
+  }
+
+  const segments = [
     { id: 'preview', label: 'Preview' },
     { id: 'code', label: 'Code' },
+    ...(sourceCode ? [{ id: 'source', label: 'Source' }] : []),
   ]
 
   return (
@@ -1015,7 +1149,7 @@ export function Playground({
       {/* Toggle using SegmentedControl component */}
       <div style={{ marginBottom: '16px' }}>
         <SegmentedControl
-          segments={playgroundSegments}
+          segments={segments}
           value={activeTab}
           onChange={(id) => setActiveTab(id as PlaygroundTab)}
           size="sm"
@@ -1024,7 +1158,7 @@ export function Playground({
 
       {/* Content with rounded grey background */}
       <div style={{
-        background: previewBackground,
+        background: activeTab === 'source' ? '#1e1e1e' : previewBackground,
         borderRadius: borderRadius.lg,
         overflow: 'hidden',
         // Add border when background is white for visual separation
@@ -1042,9 +1176,86 @@ export function Playground({
           }}>
             {preview}
           </div>
-        ) : (
+        ) : activeTab === 'code' ? (
           <div style={{ padding: '0' }}>
             <CodeBlock>{code}</CodeBlock>
+          </div>
+        ) : (
+          <div style={{ position: 'relative' }}>
+            {/* Save bar */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '8px 12px',
+              background: '#2d2d2d',
+              borderBottom: '1px solid #404040',
+            }}>
+              <span style={{
+                fontSize: '12px',
+                fontFamily: fontFamilies.mono,
+                color: '#888',
+              }}>
+                {componentPath}
+              </span>
+              <button
+                onClick={handleSourceSave}
+                disabled={sourceSaving || !hasSourceChanges}
+                style={{
+                  padding: '4px 12px',
+                  borderRadius: borderRadius.sm,
+                  border: 'none',
+                  cursor: hasSourceChanges ? 'pointer' : 'default',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  fontFamily: fontFamilies.body,
+                  background: sourceSaveStatus === 'saved'
+                    ? colors.status.success
+                    : hasSourceChanges
+                    ? colors.brand.default
+                    : '#404040',
+                  color: (sourceSaveStatus === 'saved' || hasSourceChanges)
+                    ? '#FFFFFF'
+                    : '#666',
+                  opacity: sourceSaving ? 0.7 : 1,
+                }}
+              >
+                {sourceSaving ? 'Saving...' :
+                 sourceSaveStatus === 'saved' ? 'Saved!' :
+                 sourceSaveStatus === 'error' ? 'Error' :
+                 'Save'}
+              </button>
+            </div>
+            {sourceError && (
+              <div style={{
+                padding: '6px 12px',
+                background: '#3a1a1a',
+                color: '#ff6b6b',
+                fontSize: '12px',
+                fontFamily: fontFamilies.mono,
+              }}>
+                {sourceError}
+              </div>
+            )}
+            <textarea
+              value={editedSource}
+              onChange={(e) => setEditedSource(e.target.value)}
+              spellCheck={false}
+              style={{
+                width: '100%',
+                minHeight: '400px',
+                padding: '16px',
+                background: '#1e1e1e',
+                color: '#d4d4d4',
+                border: 'none',
+                outline: 'none',
+                resize: 'vertical',
+                fontFamily: fontFamilies.mono,
+                fontSize: '13px',
+                lineHeight: '1.6',
+                tabSize: 2,
+              }}
+            />
           </div>
         )}
       </div>
@@ -1386,6 +1597,247 @@ export function SpecTable({
           ))}
         </tbody>
       </table>
+    </div>
+  )
+}
+
+// =============================================================================
+// TWEAK PANEL — Inline style editor for component playgrounds
+// =============================================================================
+
+export interface TweakField {
+  /** Display label */
+  label: string
+  /** Current value (string) */
+  value: string
+  /** Type of input */
+  type: 'text' | 'number' | 'color' | 'select'
+  /** Options for select type */
+  options?: string[]
+  /** Unit suffix to display (e.g. "px") */
+  unit?: string
+  /** Group label for visual separation */
+  group?: string
+}
+
+interface TweakPanelProps {
+  /** The tweakable fields */
+  fields: TweakField[]
+  /** Called when values change (for live preview) */
+  onChange: (fieldIndex: number, newValue: string) => void
+  /** Called when save is clicked — parent owns save logic */
+  onSave: () => Promise<{ success: boolean; error?: string }>
+}
+
+export function TweakPanel({ fields, onChange, onSave }: TweakPanelProps) {
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [hasChanges, setHasChanges] = useState(false)
+
+  const handleChange = (index: number, newValue: string) => {
+    onChange(index, newValue)
+    setHasChanges(true)
+    setSaveStatus('idle')
+  }
+
+  const handleSave = async () => {
+    setIsSaving(true)
+    setSaveStatus('idle')
+    setErrorMessage('')
+
+    try {
+      const result = await onSave()
+      if (result.success) {
+        setSaveStatus('saved')
+        setHasChanges(false)
+        setTimeout(() => setSaveStatus('idle'), 3000)
+      } else {
+        setSaveStatus('error')
+        setErrorMessage(result.error || 'Save failed')
+      }
+    } catch (err: unknown) {
+      setSaveStatus('error')
+      setErrorMessage(err instanceof Error ? err.message : 'Save failed')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  // Group fields for visual separation
+  let currentGroup = ''
+
+  const inputStyle: React.CSSProperties = {
+    flex: 1,
+    padding: '6px 10px',
+    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+    borderRadius: borderRadius.sm,
+    fontFamily: fontFamilies.mono,
+    fontSize: '13px',
+    color: colors.text.highEmphasis.onLight,
+    background: colors.surface.light,
+    outline: 'none',
+  }
+
+  return (
+    <div style={{
+      border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+      borderRadius: borderRadius.lg,
+      overflow: 'hidden',
+    }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '10px 16px',
+        background: colors.surface.lightDarker,
+        borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
+      }}>
+        <span style={{ ...typography.label.sm, color: colors.text.highEmphasis.onLight }}>
+          Style Tweaks
+        </span>
+        <button
+          onClick={handleSave}
+          disabled={isSaving || !hasChanges}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 14px',
+            borderRadius: borderRadius.md,
+            border: 'none',
+            cursor: hasChanges ? 'pointer' : 'default',
+            fontSize: '13px',
+            fontWeight: 600,
+            fontFamily: fontFamilies.body,
+            transition: transitionPresets.default,
+            background: saveStatus === 'saved'
+              ? colors.status.success
+              : saveStatus === 'error'
+              ? colors.status.important
+              : hasChanges
+              ? colors.brand.default
+              : colors.surface.lightDarker,
+            color: (saveStatus === 'saved' || saveStatus === 'error' || hasChanges)
+              ? '#FFFFFF'
+              : colors.text.lowEmphasis.onLight,
+            opacity: isSaving ? 0.7 : 1,
+          }}
+        >
+          {isSaving ? 'Saving...' :
+           saveStatus === 'saved' ? 'Saved!' :
+           saveStatus === 'error' ? 'Error' :
+           'Save to Component'}
+        </button>
+      </div>
+
+      {/* Error message */}
+      {saveStatus === 'error' && errorMessage && (
+        <div style={{
+          padding: '8px 16px',
+          background: '#FBE4E7',
+          color: '#9A0818',
+          fontSize: '12px',
+          fontFamily: fontFamilies.body,
+        }}>
+          {errorMessage}
+        </div>
+      )}
+
+      {/* Fields */}
+      <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {fields.map((field, i) => {
+          const showGroupHeader = field.group && field.group !== currentGroup
+          if (field.group) currentGroup = field.group
+
+          return (
+            <React.Fragment key={i}>
+              {showGroupHeader && (
+                <div style={{
+                  ...typography.label.sm,
+                  color: colors.text.lowEmphasis.onLight,
+                  fontSize: '11px',
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '0.05em',
+                  paddingTop: i > 0 ? '8px' : '0',
+                  borderTop: i > 0 ? `1px solid ${colors.border.lowEmphasis.onLight}` : 'none',
+                  marginTop: i > 0 ? '4px' : '0',
+                }}>
+                  {field.group}
+                </div>
+              )}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+              }}>
+                <label style={{
+                  ...typography.label.sm,
+                  color: colors.text.highEmphasis.onLight,
+                  minWidth: '100px',
+                  flexShrink: 0,
+                  fontSize: '12px',
+                }}>
+                  {field.label}
+                </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1 }}>
+                  {field.type === 'color' ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
+                      <input
+                        type="color"
+                        value={field.value}
+                        onChange={(e) => handleChange(i, e.target.value)}
+                        style={{
+                          width: '28px',
+                          height: '28px',
+                          border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                          borderRadius: borderRadius.sm,
+                          cursor: 'pointer',
+                          padding: 0,
+                        }}
+                      />
+                      <input
+                        type="text"
+                        value={field.value}
+                        onChange={(e) => handleChange(i, e.target.value)}
+                        style={inputStyle}
+                      />
+                    </div>
+                  ) : field.type === 'select' ? (
+                    <select
+                      value={field.value}
+                      onChange={(e) => handleChange(i, e.target.value)}
+                      style={inputStyle}
+                    >
+                      {field.options?.map(opt => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type}
+                      value={field.value}
+                      onChange={(e) => handleChange(i, e.target.value)}
+                      style={inputStyle}
+                    />
+                  )}
+                  {field.unit && (
+                    <span style={{
+                      ...typography.code.sm,
+                      color: colors.text.lowEmphasis.onLight,
+                      flexShrink: 0,
+                      fontSize: '12px',
+                    }}>
+                      {field.unit}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </React.Fragment>
+          )
+        })}
+      </div>
     </div>
   )
 }

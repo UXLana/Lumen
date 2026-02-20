@@ -1,0 +1,11 @@
+{
+  "boards": [
+    {
+      "project_key": "UX",
+      "board_url": "https://metrc-tech.atlassian.net/jira/software/projects/UX",
+      "project_name": "User Experience",
+      "added_date": "2026-02-12"
+    }
+  ],
+  "default_board": "UX"
+}

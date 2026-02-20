@@ -1,0 +1,636 @@
+<ac:structured-macro ac:name="toc">
+  <ac:parameter ac:name="printable">true</ac:parameter>
+  <ac:parameter ac:name="style">disc</ac:parameter>
+  <ac:parameter ac:name="maxLevel">2</ac:parameter>
+  <ac:parameter ac:name="minLevel">1</ac:parameter>
+  <ac:parameter ac:name="type">list</ac:parameter>
+</ac:structured-macro>
+
+<ac:structured-macro ac:name="info">
+  <ac:rich-text-body>
+    <p><strong>Standards:</strong> WCAG 2.2 AA &middot; WAI-ARIA 1.2 Treegrid Pattern &middot; Section 508</p>
+    <p><strong>Widget:</strong> Kendo UI Grid v2019.3.917 (Telerik)</p>
+    <p><strong>Pages Audited:</strong> Plants &middot; Packages &middot; Licensed Transfers</p>
+    <p><strong>Date:</strong> February 2026</p>
+  </ac:rich-text-body>
+</ac:structured-macro>
+
+<h1>1. What This Is</h1>
+<p>This document is an accessibility audit of the data tables used across Metrc. Every data table in Metrc uses a component called &quot;Kendo UI Grid&quot; (made by Telerik) configured with the ARIA &quot;treegrid&quot; pattern. This pattern allows expandable rows &mdash; for example, clicking a plant row to see its history.</p>
+<p>The treegrid pattern has strict accessibility requirements defined by the WAI-ARIA 1.2 specification. When implemented incorrectly, screen reader users cannot navigate or understand the table structure, and keyboard-only users cannot expand/collapse rows.</p>
+<p>We audited 3 pages (Plants, Packages, Licensed Transfers) and found that all tables share the same 15 ARIA violations because they all use the same underlying widget. This means a single centralized fix can potentially remediate every table site-wide.</p>
+
+<h1>2. Background</h1>
+<p>The State of Illinois requires WCAG 2.1 AA compliance for Metrc under the Rehabilitation Act (Section 508). A state-contracted accessibility tester has identified treegrid violations as a critical blocker. The state tester has indicated that the treegrid pattern is &quot;all or nothing&quot; &mdash; partial implementation does not satisfy compliance.</p>
+<p><strong>Key deadlines:</strong></p>
+<ul>
+  <li>March 31, 2026 &mdash; Remediation demonstrated in test environment</li>
+  <li>June 30, 2026 &mdash; Final sign-off</li>
+</ul>
+
+<h1>3. Executive Summary</h1>
+<p>We identified 15 ARIA violations in Metrc's treegrid implementation and confirmed they are identical across all 3 audited pages. Every page uses the same Kendo UI Grid widget (v2019.3.917) with the same configuration, producing the same accessibility failures.</p>
+
+<p><strong>Severity breakdown:</strong></p>
+<ul>
+  <li>6 Critical (P0) &mdash; Complete barriers for assistive technology users</li>
+  <li>5 Serious (P1) &mdash; Major navigation or comprehension failures</li>
+  <li>4 Moderate (P2) &mdash; Degraded experience, incomplete information</li>
+</ul>
+
+<p><strong>Pages confirmed:</strong></p>
+<ul>
+  <li><strong>Plants</strong> &mdash; 15 treegrids, all 15 violations</li>
+  <li><strong>Packages</strong> &mdash; 4 treegrids + 1 plain grid, all 15 violations</li>
+  <li><strong>Licensed Transfers</strong> &mdash; 5 treegrids + nested grids in detail rows, all 15 violations</li>
+</ul>
+
+<h1>4. How We Tested</h1>
+<p>Testing was performed on the QA environment (qa.metrc.com) using the Grower 01 license (4a-X0001). We inspected the DOM structure using browser developer tools to verify ARIA attributes, roles, and keyboard accessibility against the WAI-ARIA 1.2 Treegrid Pattern specification.</p>
+<p>For each page, we checked:</p>
+<ul>
+  <li>Kendo UI version and configuration (navigatable, selectable, detailTemplate)</li>
+  <li>ARIA roles on table, rows, cells, and headers</li>
+  <li>Required treegrid attributes (aria-level, aria-expanded, aria-rowindex, etc.)</li>
+  <li>Keyboard operability of expand/collapse controls</li>
+  <li>Tab and tablist implementation</li>
+  <li>Pagination control labeling</li>
+</ul>
+
+<h1>5. Detailed Findings</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Severity</th>
+      <th>WCAG</th>
+      <th>Issue &amp; Impact</th>
+      <th>Current (Broken)</th>
+      <th>Required (Fixed)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TG-01</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Red</ac:parameter><ac:parameter ac:name="title">P0 Critical</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>Treegrid Missing aria-label</strong><br/>Screen readers announce the table as just &quot;treegrid&quot; with no context about what data it contains (e.g., &quot;Mother Plants&quot; vs &quot;Harvests&quot;).</td>
+      <td><code>role="treegrid"</code><br/>(no aria-label)</td>
+      <td><code>role="treegrid"</code><br/><code>aria-label="Mother Plants"</code></td>
+    </tr>
+    <tr>
+      <td>TG-02</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Red</ac:parameter><ac:parameter ac:name="title">P0 Critical</ac:parameter></ac:structured-macro></td>
+      <td>1.3.1</td>
+      <td><strong>Rows Missing aria-level, aria-setsize, aria-posinset</strong><br/>Screen readers cannot convey the hierarchical relationship between parent and child rows, which is the entire purpose of the treegrid pattern.</td>
+      <td><code>role="row"</code><br/>(no aria-level)<br/>(no aria-setsize)<br/>(no aria-posinset)</td>
+      <td><code>role="row"</code><br/><code>aria-level="1"</code><br/><code>aria-setsize="13"</code><br/><code>aria-posinset="1"</code></td>
+    </tr>
+    <tr>
+      <td>TG-03</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Red</ac:parameter><ac:parameter ac:name="title">P0 Critical</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>aria-expanded on Wrong Element</strong><br/>aria-expanded is placed on a &lt;td&gt; cell instead of the &lt;tr&gt; row. Screen readers cannot associate the expanded state with the row.</td>
+      <td><code>&lt;td aria-expanded="false"&gt;</code><br/>(on cell, not row)</td>
+      <td><code>&lt;tr aria-expanded="false"&gt;</code><br/>(moved to row element)</td>
+    </tr>
+    <tr>
+      <td>TG-04</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Yellow</ac:parameter><ac:parameter ac:name="title">P1 Serious</ac:parameter></ac:structured-macro></td>
+      <td>1.3.1</td>
+      <td><strong>Detail Rows Missing role="row"</strong><br/>Expanded detail rows have no ARIA role, making them invisible to the accessibility tree.</td>
+      <td><code>&lt;tr class="k-detail-row"&gt;</code><br/>(no role)</td>
+      <td><code>&lt;tr class="k-detail-row"</code><br/><code>role="row"</code><br/><code>aria-level="2"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-05</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Red</ac:parameter><ac:parameter ac:name="title">P0 Critical</ac:parameter></ac:structured-macro></td>
+      <td>2.1.1</td>
+      <td><strong>Expand/Collapse Not Keyboard Accessible</strong><br/>Expand/collapse controls have tabindex="-1" and no role="button", making them unreachable and inoperable via keyboard.</td>
+      <td><code>&lt;a class="k-i-expand"</code><br/><code>tabindex="-1"&gt;</code><br/>(no role)</td>
+      <td><code>&lt;a class="k-i-expand"</code><br/><code>tabindex="0"</code><br/><code>role="button"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-06</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Red</ac:parameter><ac:parameter ac:name="title">P0 Critical</ac:parameter></ac:structured-macro></td>
+      <td>2.1.1</td>
+      <td><strong>Treegrid Not Keyboard Focusable</strong><br/>The treegrid element has no tabindex, so keyboard users cannot focus on the grid to begin navigation.</td>
+      <td><code>&lt;table role="treegrid"&gt;</code><br/>(no tabindex)</td>
+      <td><code>&lt;table role="treegrid"</code><br/><code>tabindex="0"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-07</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Yellow</ac:parameter><ac:parameter ac:name="title">P1 Serious</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>Tablist Missing aria-label</strong><br/>The tab bar that switches between categories (e.g., Mother Plants, Flowering) has no label, so screen readers just announce &quot;tablist&quot; with no context.</td>
+      <td><code>&lt;ul role="tablist"&gt;</code><br/>(no aria-label)</td>
+      <td><code>&lt;ul role="tablist"</code><br/><code>aria-label="Plant categories"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-08</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Yellow</ac:parameter><ac:parameter ac:name="title">P1 Serious</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>Tabs Missing aria-selected and tabindex</strong><br/>Tabs do not indicate which is currently selected and none have proper tabindex for roving tabindex keyboard pattern.</td>
+      <td><code>&lt;li role="tab"&gt;</code><br/>(no aria-selected)<br/>(no tabindex)</td>
+      <td><code>&lt;li role="tab"</code><br/><code>aria-selected="true"</code><br/><code>tabindex="0"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-09</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Green</ac:parameter><ac:parameter ac:name="title">P2 Moderate</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>Pipe Separators Exposed as Tabs</strong><br/>Visual &quot;|&quot; separator characters between tab groups are marked as role=&quot;tab&quot;, inflating the announced tab count and confusing screen reader users.</td>
+      <td><code>&lt;li role="tab"&gt;|&lt;/li&gt;</code></td>
+      <td><code>&lt;li role="separator"</code><br/><code>aria-hidden="true"&gt;|&lt;/li&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-10</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Green</ac:parameter><ac:parameter ac:name="title">P2 Moderate</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>Export Buttons Have Empty aria-label</strong><br/>Toolbar buttons (export, filter, etc.) have aria-label=&quot;&quot; which overrides the visible text, making them unnamed to screen readers.</td>
+      <td><code>&lt;button aria-label=""</code><br/><code>title="Export"&gt;</code></td>
+      <td><code>&lt;button aria-label="Export"</code><br/><code>title="Export"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-11</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Yellow</ac:parameter><ac:parameter ac:name="title">P1 Serious</ac:parameter></ac:structured-macro></td>
+      <td>1.3.1</td>
+      <td><strong>Nested Grids Missing aria-label</strong><br/>When a row is expanded, nested grids inside detail rows have no label. Screen readers cannot tell which parent row's data they contain.</td>
+      <td><code>&lt;table role="grid"&gt;</code><br/>(no aria-label)</td>
+      <td><code>&lt;table role="grid"</code><br/><code>aria-label="History for</code><br/><code>plant ABCD-1234"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-12</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Green</ac:parameter><ac:parameter ac:name="title">P2 Moderate</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>Missing aria-rowcount and aria-colcount</strong><br/>Screen readers cannot announce total grid dimensions, leaving users unable to gauge the size of the dataset.</td>
+      <td><code>role="treegrid"</code><br/>(no aria-rowcount)<br/>(no aria-colcount)</td>
+      <td><code>role="treegrid"</code><br/><code>aria-rowcount="21"</code><br/><code>aria-colcount="8"</code></td>
+    </tr>
+    <tr>
+      <td>TG-13</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Yellow</ac:parameter><ac:parameter ac:name="title">P1 Serious</ac:parameter></ac:structured-macro></td>
+      <td>1.3.1</td>
+      <td><strong>Missing aria-rowindex on Data Rows</strong><br/>With server-side pagination, screen readers cannot announce the true position of a row in the full dataset.</td>
+      <td><code>role="row"</code><br/>(no aria-rowindex)</td>
+      <td><code>role="row"</code><br/><code>aria-rowindex="1"</code></td>
+    </tr>
+    <tr>
+      <td>TG-14</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Green</ac:parameter><ac:parameter ac:name="title">P2 Moderate</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>Column Headers Missing aria-sort</strong><br/>Sortable columns do not expose current sort state, so screen readers cannot announce sort direction.</td>
+      <td><code>&lt;th role="columnheader"&gt;</code><br/>(no aria-sort)</td>
+      <td><code>&lt;th role="columnheader"</code><br/><code>aria-sort="ascending"&gt;</code></td>
+    </tr>
+    <tr>
+      <td>TG-15</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Red</ac:parameter><ac:parameter ac:name="title">P0 Critical</ac:parameter></ac:structured-macro></td>
+      <td>4.1.2</td>
+      <td><strong>Pagination Controls Unlabeled</strong><br/>The page number input and rows-per-page dropdown have no aria-label. Screen readers announce them as generic &quot;textbox&quot; and &quot;combobox&quot;.</td>
+      <td><code>&lt;input type="text"&gt;</code><br/>(no aria-label)<br/><code>&lt;select&gt;</code><br/>(no aria-label)</td>
+      <td><code>&lt;input aria-label=</code><br/><code>"Current page number"&gt;</code><br/><code>&lt;select aria-label=</code><br/><code>"Rows per page"&gt;</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h1>6. What Is the POC</h1>
+<p>The Proof of Concept (POC) is a self-contained JavaScript file that fixes all 15 ARIA violations at runtime. When a developer pastes it into the browser console on a QA page, it modifies the DOM to add the missing ARIA attributes, fix keyboard accessibility, and correct the treegrid structure.</p>
+<p>The POC is for validation only &mdash; it proves the fixes work and gives screen reader users a correct experience. It does not persist after a page refresh. The purpose is to let engineering confirm the approach before building a production implementation.</p>
+
+<h1>7. Complete POC Script</h1>
+<p>The following script addresses all 15 findings. A developer should paste it into the browser console on any Metrc QA page with data tables to validate the fixes.</p>
+
+<ac:structured-macro ac:name="code">
+  <ac:parameter ac:name="language">javascript</ac:parameter>
+  <ac:parameter ac:name="title">metrc-a11y-treegrid-fix.js</ac:parameter>
+  <ac:parameter ac:name="collapse">true</ac:parameter>
+  <ac:plain-text-body><![CDATA[/**
+ * Metrc Accessibility POC Fix — Plants Page Treegrid
+ * ===================================================
+ * Addresses 15 ARIA violations in Kendo UI Grid treegrid pattern.
+ * Run in browser console or include as a <script> tag.
+ *
+ * Standards: WCAG 2.2 AA, WAI-ARIA 1.2 Treegrid Pattern
+ * Version: 1.0
+ * Page: /industry/{license}/plants
+ */
+(function metrcA11yTreegridFix() {
+  'use strict';
+
+  // ═══════════════════════════════════════════════════════════
+  // TG-01: Add aria-label to each treegrid
+  // ═══════════════════════════════════════════════════════════
+  const gridLabels = {
+    'motherplants-grid': 'Mother Plants',
+    'motherplantsonhold-grid': 'Mother Plants On Hold',
+    'motherplantsinactive-grid': 'Mother Plants Inactive',
+    'plantbatches-grid': 'Immature Plant Batches',
+    'plantbatchesonhold-grid': 'Immature Plant Batches On Hold',
+    'plantbatchesinactive-grid': 'Immature Plant Batches Inactive',
+    'plantsvegetative-grid': 'Vegetative Plants',
+    'plantsflowering-grid': 'Flowering Plants',
+    'plantsonhold-grid': 'Plants On Hold',
+    'plantsinactive-grid': 'Plants Inactive',
+    'harvested-grid': 'Harvested Plants',
+    'harvestsonhold-grid': 'Harvests On Hold',
+    'harvestsinactive-grid': 'Harvests Inactive',
+    'additives-grid': 'Additives',
+    'waste-grid': 'Waste'
+  };
+
+  Object.entries(gridLabels).forEach(([id, label]) => {
+    const grid = document.querySelector(`#${id} [role="treegrid"]`);
+    if (grid) grid.setAttribute('aria-label', label);
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // TG-07: Label the tablist
+  // ═══════════════════════════════════════════════════════════
+  const tablist = document.querySelector('[role="tablist"]');
+  if (tablist) {
+    tablist.setAttribute('aria-label', 'Plant categories');
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // TG-08: Fix tab aria-selected and tabindex
+  // ═══════════════════════════════════════════════════════════
+  document.querySelectorAll('[role="tab"]').forEach((tab, i) => {
+    // TG-09: Fix separator pipes
+    if (tab.textContent.trim() === '|') {
+      tab.setAttribute('role', 'separator');
+      tab.setAttribute('aria-hidden', 'true');
+      tab.removeAttribute('aria-controls');
+      tab.removeAttribute('aria-selected');
+      return;
+    }
+
+    const isActive = tab.getAttribute('aria-selected') === 'true';
+    tab.setAttribute('tabindex', isActive ? '0' : '-1');
+    if (!isActive) {
+      tab.setAttribute('aria-selected', 'false');
+    }
+    if (!tab.id || tab.id === '') {
+      tab.id = `plants-tab-${i}`;
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // TG-10: Fix empty aria-label on export buttons
+  // ═══════════════════════════════════════════════════════════
+  document.querySelectorAll('button[aria-label=""]').forEach(btn => {
+    const title = btn.getAttribute('title');
+    if (title) btn.setAttribute('aria-label', title);
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // Core grid fix function (applied to each treegrid)
+  // ═══════════════════════════════════════════════════════════
+  function fixTreegrid(gridContainer) {
+    const treegrid = gridContainer.querySelector('[role="treegrid"]');
+    if (!treegrid) return;
+
+    const kGrid = $(gridContainer).data('kendoGrid');
+
+    // TG-06: Enable keyboard navigation
+    if (treegrid.getAttribute('tabindex') === null) {
+      treegrid.setAttribute('tabindex', '0');
+    }
+
+    // TG-12: Add row/col counts
+    if (kGrid) {
+      const total = kGrid.dataSource.total();
+      const cols = kGrid.columns.length;
+      treegrid.setAttribute('aria-rowcount', total || '0');
+      treegrid.setAttribute('aria-colcount', cols || '0');
+    }
+
+    // TG-14: Add aria-sort to column headers
+    treegrid.querySelectorAll('[role="columnheader"]').forEach(th => {
+      if (!th.getAttribute('aria-sort')) {
+        th.setAttribute('aria-sort', 'none');
+      }
+    });
+    if (kGrid) {
+      const sort = kGrid.dataSource.sort();
+      if (sort && sort.length) {
+        sort.forEach(s => {
+          const col = kGrid.columns.find(c => c.field === s.field);
+          if (col) {
+            const idx = kGrid.columns.indexOf(col);
+            const th = treegrid.querySelectorAll('[role="columnheader"]')[idx];
+            if (th) {
+              th.setAttribute('aria-sort',
+                s.dir === 'asc' ? 'ascending' : 'descending');
+            }
+          }
+        });
+      }
+    }
+
+    // TG-02, TG-03, TG-04, TG-05, TG-13: Fix data rows
+    fixDataRows(treegrid, kGrid);
+
+    // TG-15: Fix pagination controls
+    const pager = gridContainer.querySelector('.k-pager-wrap');
+    if (pager) {
+      const pageInput = pager.querySelector('input[type="text"]');
+      if (pageInput && !pageInput.getAttribute('aria-label')) {
+        pageInput.setAttribute('aria-label', 'Current page number');
+      }
+      const pageSelect = pager.querySelector('select');
+      if (pageSelect && !pageSelect.getAttribute('aria-label')) {
+        pageSelect.setAttribute('aria-label', 'Rows per page');
+      }
+    }
+  }
+
+  function fixDataRows(treegrid, kGrid) {
+    const masterRows = treegrid.querySelectorAll('tbody tr.k-master-row');
+    const page = kGrid ? (kGrid.dataSource.page() || 1) : 1;
+    const size = kGrid ? (kGrid.dataSource.pageSize() || 20) : 20;
+    const offset = (page - 1) * size;
+    const totalRows = masterRows.length;
+
+    masterRows.forEach((row, i) => {
+      // TG-02: aria-level, aria-setsize, aria-posinset
+      row.setAttribute('aria-level', '1');
+      row.setAttribute('aria-setsize', totalRows.toString());
+      row.setAttribute('aria-posinset', (i + 1).toString());
+
+      // TG-13: aria-rowindex
+      row.setAttribute('aria-rowindex', (offset + i + 1).toString());
+
+      // TG-03: Move aria-expanded from cell to row
+      const expandCell = row.querySelector('td[aria-expanded]');
+      if (expandCell) {
+        row.setAttribute('aria-expanded', expandCell.getAttribute('aria-expanded'));
+        expandCell.removeAttribute('aria-expanded');
+      }
+
+      // TG-05: Make expand/collapse keyboard accessible
+      const expandLink = row.querySelector('.k-i-expand, .k-i-collapse');
+      if (expandLink) {
+        expandLink.setAttribute('tabindex', '0');
+        expandLink.setAttribute('role', 'button');
+        if (!expandLink.dataset.a11yFixed) {
+          expandLink.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              this.click();
+            }
+          });
+          expandLink.dataset.a11yFixed = 'true';
+        }
+      }
+    });
+
+    // TG-04: Fix detail rows
+    treegrid.querySelectorAll('tr.k-detail-row').forEach(row => {
+      row.setAttribute('role', 'row');
+      row.setAttribute('aria-level', '2');
+      const detailCell = row.querySelector('.k-detail-cell');
+      if (detailCell) {
+        detailCell.setAttribute('role', 'gridcell');
+      }
+
+      // TG-11: Label nested grids with parent row context
+      const masterRow = row.previousElementSibling;
+      const tag = masterRow?.querySelector('[role="gridcell"]')?.textContent?.trim();
+      const nestedGrid = row.querySelector('[role="grid"]');
+      if (nestedGrid && tag) {
+        nestedGrid.setAttribute('aria-label', `History for plant ${tag}`);
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // Apply fixes to all grids on initial load
+  // ═══════════════════════════════════════════════════════════
+  document.querySelectorAll('.k-grid').forEach(fixTreegrid);
+
+  // ═══════════════════════════════════════════════════════════
+  // Re-apply after expand/collapse and data changes
+  // ═══════════════════════════════════════════════════════════
+  $(document).on('click', '.k-i-expand, .k-i-collapse', function() {
+    const grid = $(this).closest('.k-grid');
+    setTimeout(() => fixTreegrid(grid[0]), 500);
+  });
+
+  // Re-apply on tab switch
+  $('[role="tab"]').on('click', function() {
+    setTimeout(() => {
+      document.querySelectorAll('.k-grid').forEach(fixTreegrid);
+    }, 1000);
+  });
+
+  // Re-apply on pagination
+  $(document).on('click', '.k-pager-wrap a, .k-pager-wrap .k-state-selected', function() {
+    const grid = $(this).closest('.k-grid');
+    setTimeout(() => fixTreegrid(grid[0]), 500);
+  });
+
+  console.log('[Metrc A11y] Treegrid accessibility fixes applied to',
+    document.querySelectorAll('.k-grid').length, 'grids');
+})();]]></ac:plain-text-body>
+</ac:structured-macro>
+
+<h1>8. Step-by-Step Testing Guide</h1>
+
+<h2>Part A: Open the Browser Console</h2>
+<ol>
+  <li>Navigate to a Metrc QA page with data tables (e.g., /industry/{license}/plants)</li>
+  <li>Open browser developer tools:
+    <ul>
+      <li><strong>Mac:</strong> Right-click anywhere on the page &rarr; Inspect, then click the Console tab. Or press <strong>Cmd + Option + J</strong> to open the console directly.</li>
+      <li><strong>Windows:</strong> Press <strong>F12</strong>, then click the Console tab.</li>
+    </ul>
+  </li>
+  <li>Click in the console input area at the bottom</li>
+</ol>
+
+<h2>Part B: Run the POC Script</h2>
+<ol>
+  <li>Copy the entire script from Section 7</li>
+  <li>Paste it into the console</li>
+  <li>Press Enter</li>
+  <li>You should see a confirmation message: <code>[Metrc A11y] Treegrid accessibility fixes applied to X grids</code></li>
+</ol>
+
+<h2>Part C: Verify with Screen Reader (VoiceOver on Mac)</h2>
+<ol>
+  <li>Press <strong>Cmd + F5</strong> to enable VoiceOver</li>
+  <li>Navigate to the data table using VO + arrow keys</li>
+  <li>Verify VoiceOver announces:
+    <ul>
+      <li>The table label (e.g., &quot;Mother Plants, treegrid&quot;)</li>
+      <li>Row count and column count</li>
+      <li>Row hierarchy (e.g., &quot;level 1, row 1 of 13&quot;)</li>
+      <li>Expanded/collapsed state when toggling rows</li>
+    </ul>
+  </li>
+  <li>Navigate to the tabs and verify:
+    <ul>
+      <li>Tab names and selected state are announced</li>
+      <li>Pipe separators are not announced as tabs</li>
+    </ul>
+  </li>
+</ol>
+
+<h2>Part D: Verify Keyboard Accessibility</h2>
+<ol>
+  <li>Click on the first data row in a table</li>
+  <li>Press <strong>Tab</strong> to move to the expand/collapse arrow</li>
+  <li>Press <strong>Enter</strong> or <strong>Space</strong> &mdash; the row should expand</li>
+  <li>Press <strong>Enter</strong> or <strong>Space</strong> again &mdash; it should collapse</li>
+  <li>Navigate to the tab bar and use <strong>Left/Right arrow keys</strong> between tabs</li>
+  <li>Verify the page number input and rows-per-page dropdown are labeled (screen reader should announce &quot;Current page number&quot; and &quot;Rows per page&quot;)</li>
+</ol>
+
+<h2>Part E: Inspect DOM Attributes</h2>
+<ol>
+  <li>Right-click a data table &rarr; Inspect</li>
+  <li>Find the <code>&lt;table role="treegrid"&gt;</code> element and verify it has:
+    <ul>
+      <li><code>aria-label</code> (e.g., &quot;Mother Plants&quot;)</li>
+      <li><code>tabindex="0"</code></li>
+      <li><code>aria-rowcount</code> and <code>aria-colcount</code></li>
+    </ul>
+  </li>
+  <li>Find a <code>&lt;tr role="row"&gt;</code> data row and verify it has:
+    <ul>
+      <li><code>aria-level="1"</code></li>
+      <li><code>aria-setsize</code> and <code>aria-posinset</code></li>
+      <li><code>aria-rowindex</code></li>
+      <li><code>aria-expanded</code> on the row (not on a cell)</li>
+    </ul>
+  </li>
+  <li>Expand a row and check the detail row has:
+    <ul>
+      <li><code>role="row"</code> and <code>aria-level="2"</code></li>
+      <li>Any nested grid has an <code>aria-label</code></li>
+    </ul>
+  </li>
+</ol>
+
+<h1>9. Testing Checklist</h1>
+
+<ac:structured-macro ac:name="section">
+  <ac:rich-text-body>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Verification</th>
+          <th>Pass</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>TG-01</td><td>Each treegrid has a descriptive aria-label</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-02</td><td>Data rows have aria-level, aria-setsize, aria-posinset</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-03</td><td>aria-expanded is on the &lt;tr&gt; row, not a &lt;td&gt; cell</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-04</td><td>Detail rows have role="row" and aria-level="2"</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-05</td><td>Expand/collapse buttons are keyboard accessible (Tab + Enter)</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-06</td><td>Treegrid has tabindex="0" (keyboard focusable)</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-07</td><td>Tablist has aria-label</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-08</td><td>Active tab has aria-selected="true" and tabindex="0"</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-09</td><td>Pipe separators are aria-hidden, not announced as tabs</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-10</td><td>Export/toolbar buttons have non-empty aria-label</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-11</td><td>Nested grids in detail rows have aria-label with parent context</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-12</td><td>Treegrid has aria-rowcount and aria-colcount</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-13</td><td>Data rows have aria-rowindex</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-14</td><td>Sorted column headers have aria-sort</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+        <tr><td>TG-15</td><td>Page input and page-size dropdown have aria-label</td><td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">TODO</ac:parameter></ac:structured-macro></td></tr>
+      </tbody>
+    </table>
+  </ac:rich-text-body>
+</ac:structured-macro>
+
+<h1>10. Production Recommendations</h1>
+<p>The POC validates the approach. For production, we recommend:</p>
+<ol>
+  <li>Create a centralized Kendo Grid accessibility module that hooks into Kendo's dataBound, detailInit, and sort events.</li>
+  <li>Apply the module globally so it covers all existing and future grids automatically.</li>
+  <li>Enable <code>navigatable: true</code> in the Kendo Grid configuration for keyboard navigation support.</li>
+  <li>Add the module to the build pipeline and include it on every page that uses Kendo Grid.</li>
+  <li>Regression test with VoiceOver (Mac), NVDA (Windows), and keyboard-only navigation.</li>
+</ol>
+
+<h1>11. Pages Audited &amp; Remaining</h1>
+<p>The following table shows which pages have been audited and confirmed to have the same 15 ARIA violations, along with remaining pages that should be verified after the centralized fix is applied.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Page</th>
+      <th>URL Pattern</th>
+      <th>Grids Found</th>
+      <th>Findings</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Plants</td>
+      <td>/industry/{license}/plants</td>
+      <td>15 treegrids</td>
+      <td>All 15 findings confirmed</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Green</ac:parameter><ac:parameter ac:name="title">AUDITED</ac:parameter></ac:structured-macro></td>
+    </tr>
+    <tr>
+      <td>Packages</td>
+      <td>/industry/{license}/packages</td>
+      <td>4 treegrids + 1 grid</td>
+      <td>All 15 findings confirmed</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Green</ac:parameter><ac:parameter ac:name="title">AUDITED</ac:parameter></ac:structured-macro></td>
+    </tr>
+    <tr>
+      <td>Licensed Transfers</td>
+      <td>/industry/{license}/transfers/licensed</td>
+      <td>5 treegrids + nested grids</td>
+      <td>All 15 findings confirmed</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Green</ac:parameter><ac:parameter ac:name="title">AUDITED</ac:parameter></ac:structured-macro></td>
+    </tr>
+    <tr>
+      <td>Transfer Templates</td>
+      <td>/industry/{license}/transfers/templates</td>
+      <td>Expected: treegrid</td>
+      <td>Not yet audited</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">REMAINING</ac:parameter></ac:structured-macro></td>
+    </tr>
+    <tr>
+      <td>External Transfers</td>
+      <td>/industry/{license}/transfers/external</td>
+      <td>Expected: treegrid</td>
+      <td>Not yet audited</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">REMAINING</ac:parameter></ac:structured-macro></td>
+    </tr>
+    <tr>
+      <td>Transfer Hub</td>
+      <td>/industry/{license}/transfers/hub</td>
+      <td>Expected: treegrid</td>
+      <td>Not yet audited</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">REMAINING</ac:parameter></ac:structured-macro></td>
+    </tr>
+    <tr>
+      <td>Tag Orders (Admin)</td>
+      <td>/industry/{license}/admin/tagorders</td>
+      <td>Confirmed: treegrid</td>
+      <td>Not yet audited</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">REMAINING</ac:parameter></ac:structured-macro></td>
+    </tr>
+    <tr>
+      <td>Reports</td>
+      <td>/industry/{license}/reports/*</td>
+      <td>Expected: grid/treegrid</td>
+      <td>Not yet audited</td>
+      <td><ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">Grey</ac:parameter><ac:parameter ac:name="title">REMAINING</ac:parameter></ac:structured-macro></td>
+    </tr>
+  </tbody>
+</table>
+
+<ac:structured-macro ac:name="note">
+  <ac:rich-text-body>
+    <p><strong>Key observation:</strong> All 3 audited pages use the identical Kendo UI Grid v2019.3.917 with the same configuration and the same 15 violations. The Licensed Transfers page adds additional complexity &mdash; each expanded row contains a nested tablist with 4 sub-tabs (Destinations, Transporter Details, Notes, History), each with its own nested grid. These nested structures exhibit the same violations and would be addressed by the same centralized fix.</p>
+  </ac:rich-text-body>
+</ac:structured-macro>

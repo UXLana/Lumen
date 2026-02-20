@@ -170,14 +170,14 @@ const sizeConfig: Record<BadgeSize, {
   gap: string
 }> = {
   sm: {
-    padding: `2px ${spacing[2]}`,
+    padding: `2px 8px`,
     fontSize: typography.body.xs.fontSize,
     lineHeight: typography.body.xs.lineHeight,
     iconSize: '12px',
     gap: spacing[1],
   },
   md: {
-    padding: `${spacing[1]} 10px`,
+    padding: `4px 10px`,
     fontSize: typography.body.sm.fontSize,
     lineHeight: typography.body.sm.lineHeight,
     iconSize: '14px',
@@ -227,7 +227,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       backgroundColor: colorScheme.background,
       color: colorScheme.text,
       border: `1px solid ${colorScheme.border}`,
-      borderRadius: borderRadius.full,
+      borderRadius: '8px',
       whiteSpace: 'nowrap',
       ...style,
     }

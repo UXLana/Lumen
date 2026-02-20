@@ -1,10 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import React, { useState, useEffect, useCallback } from 'react'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, TweakPanel, TweakField } from '../../design-system/shared'
 import { Badge, BadgeVariant, BadgeColor, BadgeSize } from '@/components'
 import { IconCheck, IconAlertCircle, IconInfo } from '@/components/Icons'
 import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
+
+const BADGE_COMPONENT_PATH = 'components/Badge/Badge.tsx'
 
 // =============================================================================
 // PAGE COMPONENT
@@ -25,6 +27,214 @@ export default function BadgePage() {
   const [demoColor, setDemoColor] = useState<BadgeColor>('neutral')
   const [demoSize, setDemoSize] = useState<BadgeSize>('sm')
   const [demoShowIcon, setDemoShowIcon] = useState(false)
+
+  // Tweak mode state
+  const [tweakMode, setTweakMode] = useState(false)
+  const [componentSource, setComponentSource] = useState<string>('')
+  const [sourceVersion, setSourceVersion] = useState(0)
+
+  // Live tweak overrides (applied to preview without saving)
+  const [tweakOverrides, setTweakOverrides] = useState({
+    borderRadius: '9999px',
+    smPaddingY: '2',
+    smPaddingX: '8',
+    mdPaddingY: '4',
+    mdPaddingX: '10',
+    fontWeight: '500',
+    borderWidth: '1',
+  })
+
+  // Fetch component source and parse current values from it
+  const fetchSource = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/tweak/read?path=${BADGE_COMPONENT_PATH}`)
+      if (res.ok) {
+        const data = await res.json()
+        setComponentSource(data.source)
+
+        // Parse current values from the source
+        const src = data.source as string
+
+        // Border radius — match borderRadius: borderRadius.full or borderRadius: '...'
+        const brMatch = src.match(/borderRadius:\s*(?:borderRadius\.full|'([^']*)')/)
+        if (brMatch) {
+          setTweakOverrides(prev => ({
+            ...prev,
+            borderRadius: brMatch[1] || '9999px',
+          }))
+        }
+
+        // SM padding — match first padding in sizeConfig sm block
+        const smSection = src.match(new RegExp("sm:\\s*\\{[^}]*padding:\\s*[`']([^`']*)[`']", "s"))
+        if (smSection) {
+          const padMatch = smSection[1].match(/(\d+)px\s+(?:\$\{spacing\[2\]\}|(\d+)px)/)
+          if (padMatch) {
+            setTweakOverrides(prev => ({
+              ...prev,
+              smPaddingY: padMatch[1],
+              ...(padMatch[2] ? { smPaddingX: padMatch[2] } : {}),
+            }))
+          }
+        }
+
+        // MD padding
+        const mdSection = src.match(new RegExp("md:\\s*\\{[^}]*padding:\\s*[`']([^`']*)[`']", "s"))
+        if (mdSection) {
+          const padMatch = mdSection[1].match(/(?:\$\{spacing\[1\]\}|(\d+)px)\s+(\d+)px/)
+          if (padMatch) {
+            setTweakOverrides(prev => ({
+              ...prev,
+              ...(padMatch[1] ? { mdPaddingY: padMatch[1] } : {}),
+              mdPaddingX: padMatch[2],
+            }))
+          }
+        }
+
+        // Border width
+        const bwMatch = src.match(/border:\s*`(\d+)px solid/)
+        if (bwMatch) {
+          setTweakOverrides(prev => ({ ...prev, borderWidth: bwMatch[1] }))
+        }
+      }
+    } catch {
+      // silently handle
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchSource()
+  }, [fetchSource, sourceVersion])
+
+  // Build tweak fields for the TweakPanel
+  const tweakFields: TweakField[] = [
+    {
+      label: 'Border Radius',
+      value: tweakOverrides.borderRadius,
+      type: 'text',
+      group: 'Shape',
+    },
+    {
+      label: 'Border Width',
+      value: tweakOverrides.borderWidth,
+      type: 'number',
+      unit: 'px',
+      group: 'Shape',
+    },
+    {
+      label: 'Padding Y',
+      value: tweakOverrides.smPaddingY,
+      type: 'number',
+      unit: 'px',
+      group: 'Size: SM',
+    },
+    {
+      label: 'Padding X',
+      value: tweakOverrides.smPaddingX,
+      type: 'number',
+      unit: 'px',
+      group: 'Size: SM',
+    },
+    {
+      label: 'Padding Y',
+      value: tweakOverrides.mdPaddingY,
+      type: 'number',
+      unit: 'px',
+      group: 'Size: MD',
+    },
+    {
+      label: 'Padding X',
+      value: tweakOverrides.mdPaddingX,
+      type: 'number',
+      unit: 'px',
+      group: 'Size: MD',
+    },
+    {
+      label: 'Font Weight',
+      value: tweakOverrides.fontWeight,
+      type: 'select',
+      options: ['400', '500', '600', '700'],
+      group: 'Typography',
+    },
+  ]
+
+  const handleTweakChange = (index: number, value: string) => {
+    const keys = ['borderRadius', 'borderWidth', 'smPaddingY', 'smPaddingX', 'mdPaddingY', 'mdPaddingX', 'fontWeight'] as const
+    setTweakOverrides(prev => ({ ...prev, [keys[index]]: value }))
+  }
+
+  // Save tweaks by writing full modified source
+  const handleTweakSave = async (): Promise<{ success: boolean; error?: string }> => {
+    try {
+      // Fetch fresh source
+      const readRes = await fetch(`/api/tweak/read?path=${BADGE_COMPONENT_PATH}`)
+      if (!readRes.ok) return { success: false, error: 'Could not read component' }
+      const { source } = await readRes.json()
+
+      let modified = source as string
+
+      // Replace borderRadius in baseStyles
+      modified = modified.replace(
+        /borderRadius:\s*(?:borderRadius\.\w+|'[^']*')/,
+        `borderRadius: '${tweakOverrides.borderRadius}'`
+      )
+
+      // Replace border width
+      modified = modified.replace(
+        /border:\s*`\d+px solid/g,
+        `border: \`${tweakOverrides.borderWidth}px solid`
+      )
+
+      // Replace SM padding — find the sm block in sizeConfig
+      modified = modified.replace(
+        new RegExp("(sm:\\s*\\{[^}]*padding:\\s*)[`'][^`']*[`']", "s"),
+        `$1\`${tweakOverrides.smPaddingY}px ${tweakOverrides.smPaddingX}px\``
+      )
+
+      // Replace MD padding — find the md block in sizeConfig
+      modified = modified.replace(
+        new RegExp("(md:\\s*\\{[^}]*padding:\\s*)[`'][^`']*[`']", "s"),
+        `$1\`${tweakOverrides.mdPaddingY}px ${tweakOverrides.mdPaddingX}px\``
+      )
+
+      // Replace font weight
+      const weightMap: Record<string, string> = {
+        '400': 'fontWeights.regular',
+        '500': 'fontWeights.medium',
+        '600': 'fontWeights.semibold',
+        '700': 'fontWeights.bold',
+      }
+      modified = modified.replace(
+        /fontWeight:\s*fontWeights\.\w+/,
+        `fontWeight: ${weightMap[tweakOverrides.fontWeight] || tweakOverrides.fontWeight}`
+      )
+
+      // Write back
+      const writeRes = await fetch('/api/tweak/source', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ componentPath: BADGE_COMPONENT_PATH, source: modified }),
+      })
+
+      if (!writeRes.ok) {
+        const data = await writeRes.json()
+        return { success: false, error: data.error }
+      }
+
+      setSourceVersion(v => v + 1)
+      return { success: true }
+    } catch (err: unknown) {
+      return { success: false, error: err instanceof Error ? err.message : 'Save failed' }
+    }
+  }
+
+  // Build live preview style overrides
+  const previewStyleOverrides: React.CSSProperties = tweakMode ? {
+    borderRadius: tweakOverrides.borderRadius,
+    ...(demoSize === 'sm'
+      ? { padding: `${tweakOverrides.smPaddingY}px ${tweakOverrides.smPaddingX}px` }
+      : { padding: `${tweakOverrides.mdPaddingY}px ${tweakOverrides.mdPaddingX}px` }),
+    fontWeight: Number(tweakOverrides.fontWeight),
+  } : {}
 
   // Custom tabs for component pages
   const componentTabs = [
@@ -68,9 +278,42 @@ import { Badge } from '@/components'`}</CodeBlock>
 
           {/* ========== INTERACTIVE PLAYGROUND ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <h2 style={{ ...sharedStyles.sectionTitle, marginBottom: 0 }}>Interactive Playground</h2>
+              <button
+                onClick={() => {
+                  setTweakMode(!tweakMode)
+                  if (!tweakMode && !componentSource) fetchSource()
+                }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 14px',
+                  borderRadius: borderRadius.full,
+                  border: tweakMode
+                    ? `2px solid ${colors.brand.default}`
+                    : `1px solid ${colors.border.lowEmphasis.onLight}`,
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  fontFamily: typography.label.sm.fontFamily,
+                  background: tweakMode ? colors.brand.default : 'transparent',
+                  color: tweakMode ? '#FFFFFF' : colors.text.lowEmphasis.onLight,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg>
+                {tweakMode ? 'Tweaking' : 'Tweak'}
+              </button>
+            </div>
             <p style={sharedStyles.sectionDescription}>
-              Experiment with badge properties to see how they affect the component.
+              {tweakMode
+                ? 'Adjust values below for a live preview, then save changes directly to the component file.'
+                : 'Experiment with badge properties to see how they affect the component.'}
             </p>
 
             <div style={sharedStyles.card}>
@@ -84,6 +327,7 @@ import { Badge } from '@/components'`}</CodeBlock>
                         color={demoColor}
                         size={demoSize}
                         icon={demoShowIcon ? getIconForColor(demoColor) : undefined}
+                        style={previewStyleOverrides}
                       >
                         {demoColor === 'success' ? 'Verified' :
                          demoColor === 'error' ? 'Error' :
@@ -102,6 +346,9 @@ import { Badge } from '@/components'`}</CodeBlock>
 </Badge>`}
                     previewPadding="56px 24px"
                     previewBackground={colors.surface.paper}
+                    sourceCode={componentSource || undefined}
+                    componentPath={BADGE_COMPONENT_PATH}
+                    onSourceSaved={() => setSourceVersion(v => v + 1)}
                   />
                 </div>
 
@@ -170,6 +417,17 @@ import { Badge } from '@/components'`}</CodeBlock>
                       label="Show Icon"
                     />
                   </div>
+
+                  {/* Tweak Panel — shown when tweak mode is on */}
+                  {tweakMode && (
+                    <div style={{ marginTop: '32px' }}>
+                      <TweakPanel
+                        fields={tweakFields}
+                        onChange={handleTweakChange}
+                        onSave={handleTweakSave}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

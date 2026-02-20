@@ -1,8 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import {
   colors,
+  spacing,
+  borderRadius,
   fontFamilies,
   productCard,
   transitionPresets,
@@ -46,6 +48,30 @@ export interface ProductCardProps {
 }
 
 // =============================================================================
+// FOCUS STYLE (injected once for keyboard focus visibility)
+// =============================================================================
+
+const focusClassName = 'product-card-interactive'
+const focusStyleId = 'product-card-focus-style'
+
+function ensureFocusStyle() {
+  if (typeof document === 'undefined') return
+  if (document.getElementById(focusStyleId)) return
+  const style = document.createElement('style')
+  style.id = focusStyleId
+  style.textContent = `
+    .${focusClassName}:focus-visible {
+      outline: 2px solid ${colors.brand.default};
+      outline-offset: 2px;
+    }
+    .${focusClassName}:focus:not(:focus-visible) {
+      outline: none;
+    }
+  `
+  document.head.appendChild(style)
+}
+
+// =============================================================================
 // PRODUCT CARD
 // =============================================================================
 
@@ -62,20 +88,34 @@ export function ProductCard({
   style,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+
+  // Inject focus style on first render
+  React.useEffect(() => {
+    if (onClick) ensureFocusStyle()
+  }, [onClick])
+
+  const handleMouseEnter = useCallback(() => setIsHovered(true), [])
+  const handleMouseLeave = useCallback(() => setIsHovered(false), [])
+  const handleFocus = useCallback(() => setIsFocused(true), [])
+  const handleBlur = useCallback(() => setIsFocused(false), [])
+
+  const isElevated = isHovered || isFocused
 
   const containerStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     width: productCard.width,
     minWidth: productCard.minWidth,
-    border: `${productCard.border.width} solid ${isHovered ? productCard.hover.borderColor : productCard.border.color}`,
+    border: `${productCard.border.width} solid ${isElevated ? productCard.hover.borderColor : productCard.border.color}`,
     borderRadius: productCard.border.radius,
     backgroundColor: colors.surface.light,
     cursor: onClick ? 'pointer' : 'default',
     transition: `all ${transitionPresets.default}`,
-    boxShadow: isHovered ? productCard.hover.shadow : 'none',
+    boxShadow: isElevated ? productCard.hover.shadow : 'none',
     overflow: 'hidden',
     padding: 0,
+    textAlign: 'left',
     ...style,
   }
 
@@ -104,26 +144,19 @@ export function ProductCard({
     padding: productCard.content.padding,
   }
 
-  const headerStyle: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: '4px',
-  }
-
   const brandStyle: React.CSSProperties = {
     fontFamily: fontFamilies.body,
     fontSize: productCard.typography.brand.fontSize,
     fontWeight: productCard.typography.brand.fontWeight,
     lineHeight: productCard.typography.brand.lineHeight,
     color: productCard.typography.brand.color,
-    marginBottom: '4px',
+    marginBottom: spacing[1],
   }
 
   const nameContainerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
+    gap: spacing[2],
   }
 
   const nameStyle: React.CSSProperties = {
@@ -167,14 +200,14 @@ export function ProductCard({
   const tagStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
-    height: '28px',
-    padding: '0 12px',
-    borderRadius: '6px',
+    height: spacing[7],
+    padding: `0 ${spacing[3]}`,
+    borderRadius: borderRadius.sm,
     backgroundColor: colors.surface.lightDarker,
     fontFamily: fontFamilies.body,
-    fontSize: '12px',
+    fontSize: productCard.typography.sku.fontSize,
     fontWeight: 500,
-    lineHeight: '16px',
+    lineHeight: productCard.typography.sku.lineHeight,
     color: colors.text.lowEmphasis.onLight,
   }
 
@@ -201,7 +234,7 @@ export function ProductCard({
 
   const marketBadgesStyle: React.CSSProperties = {
     display: 'flex',
-    gap: '4px',
+    gap: spacing[1],
   }
 
   const getMarketBadgeStyle = (highlighted: boolean): React.CSSProperties => ({
@@ -240,12 +273,14 @@ export function ProductCard({
     </svg>
   )
 
+  const highlightedCount = markets.filter(m => m.highlighted).length
+
   const content = (
     <>
       {/* Image Area */}
-      <div style={imageContainerStyle}>
+      <div style={imageContainerStyle} aria-hidden="true">
         {imageUrl ? (
-          <img src={imageUrl} alt={`${brand} ${name}`} style={imageStyle} />
+          <img src={imageUrl} alt="" style={imageStyle} />
         ) : (
           placeholderIcon
         )}
@@ -260,7 +295,9 @@ export function ProductCard({
         <div style={nameContainerStyle}>
           <span style={nameStyle}>{name}</span>
           {gapCount !== undefined && gapCount > 0 && (
-            <span style={gapBadgeStyle}>{gapCount} Gap</span>
+            <span style={gapBadgeStyle} role="status">
+              {gapCount} {gapCount === 1 ? 'Gap' : 'Gaps'}
+            </span>
           )}
         </div>
 
@@ -269,10 +306,11 @@ export function ProductCard({
 
         {/* Tags */}
         {tags.length > 0 && (
-          <div style={tagsContainerStyle}>
+          <div style={tagsContainerStyle} role="list" aria-label="Product tags">
             {tags.map((tag, index) => (
               <span
                 key={index}
+                role="listitem"
                 style={tag.variant === 'outlined' ? outlinedTagStyle : tagStyle}
               >
                 {tag.label}
@@ -283,21 +321,23 @@ export function ProductCard({
 
         {/* Markets */}
         {markets.length > 0 && (
-          <div style={marketsContainerStyle}>
-            <span style={marketLabelStyle}>Markets</span>
-            <div style={marketBadgesStyle}>
+          <div style={marketsContainerStyle} role="group" aria-label="Market availability">
+            <span style={marketLabelStyle} id="markets-label">Markets</span>
+            <div style={marketBadgesStyle} role="list" aria-labelledby="markets-label">
               {markets.map((market, index) => (
                 <span
                   key={index}
+                  role="listitem"
                   style={getMarketBadgeStyle(market.highlighted || false)}
+                  aria-label={`${market.code}${market.highlighted ? ' (active)' : ''}`}
                 >
                   {market.code}
                 </span>
               ))}
             </div>
-            {totalMarkets && (
+            {totalMarkets !== undefined && totalMarkets > 0 && (
               <span style={marketCountStyle}>
-                {markets.filter(m => m.highlighted).length}/{totalMarkets} Markets
+                {highlightedCount}/{totalMarkets} Markets
               </span>
             )}
           </div>
@@ -308,27 +348,37 @@ export function ProductCard({
 
   if (onClick) {
     return (
-      <button
-        type="button"
+      <article
+        role="button"
+        tabIndex={0}
+        className={focusClassName}
         style={containerStyle}
         onClick={onClick}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        aria-label={`View ${brand} ${name}`}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onClick()
+          }
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        aria-label={`${brand} ${name}${sku ? `, SKU ${sku}` : ''}`}
       >
         {content}
-      </button>
+      </article>
     )
   }
 
   return (
-    <div
+    <article
       style={containerStyle}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {content}
-    </div>
+    </article>
   )
 }
 

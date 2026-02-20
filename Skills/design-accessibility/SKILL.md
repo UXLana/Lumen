@@ -268,6 +268,117 @@ node templates/generate-report.js --from-axe results.json --title "VPAT Remediat
 
 ---
 
+## Mode: VPAT Report (Full Remediation with Jira Stories)
+
+**Usage:** `/design-accessibility --vpat`
+
+Generates a complete VPAT Remediation Report as a styled Word document (.docx) with Jira-ready stories. This is the primary deliverable for state VPAT compliance reviews.
+
+### Required Inputs
+
+**IMPORTANT:** State and date are MANDATORY. If the user does not provide a state name, always ask before generating.
+
+| Input | Required | Description |
+|-------|----------|-------------|
+| **State** | YES | U.S. state the VPAT is prepared for (e.g., Michigan, Kentucky) |
+| **Date** | YES (auto-defaults to today) | Report generation date |
+| **VPAT Document** | YES | Formal VPAT conformance report (.docx) |
+| **ADA Scan Results** | YES | axe DevTools export (.xlsx or .json) |
+
+### Output
+
+**Filename:** `VPAT-Remediation-Report-{State}-{Year}.docx`
+
+**Location:** Project root (`/Users/lanaholston/Desktop/Code/`)
+
+### Report Structure
+
+Every VPAT report MUST contain these sections in order:
+
+1. **Title Page** — Report name, date, state, product version
+2. **VPAT Conformance Summary** — Table mapping "Partially Supports" criteria to ticket IDs
+3. **Executive Summary** — All tickets with component, issues, severity, time, WCAG
+4. **Issue Distribution by Page** — Critical/serious/total counts per scanned page
+5. **Root Cause Analysis** — Shared root causes and % of total issues they resolve
+6. **Remediation Tickets** — Jira-ready stories (see format below)
+7. **Deployment Checklist** — Pre-deploy, post-deploy, VPAT update checklists
+
+### Jira Ticket Format (Mandatory)
+
+Each remediation ticket MUST follow this structure:
+
+```
+HEADER BLOCK:
+├── Ticket ID: A11Y-{NNN}
+├── Title: Descriptive action title
+├── Priority: P0-CRITICAL | P1-SERIOUS | P2-LOW
+├── Issues Fixed: {count}
+├── WCAG: {criterion} ({level})
+├── Component: {component name and selector}
+└── Est. Time: {hours/minutes}
+
+BODY:
+├── VPAT Finding: (direct quote from VPAT, italic)
+├── Problem: (technical root cause explanation)
+│   ├── Axe rule IDs triggered
+│   └── Count breakdown across pages
+├── Affected Elements: (CSS selectors, per page)
+├── Fix:
+│   ├── Before: (code snippet)
+│   └── After: (code snippet)
+├── Additional Fixes: (if applicable)
+└── Verification:
+    ├── ☐ axe scan verification
+    ├── ☐ Keyboard navigation test
+    ├── ☐ Screen reader test
+    └── ☐ VPAT status update
+```
+
+### Word Document Styling
+
+| Element | Style |
+|---------|-------|
+| Title | 24pt Calibri Bold, #1B3A5C |
+| Subtitle | 16pt Calibri, #2C5F8A |
+| Section Headings | 14pt Calibri Bold, #1B3A5C |
+| Table Headers | 9pt White on #1B3A5C |
+| Metadata Headers | 8pt White on #2C5F8A |
+| Code Blocks | 8.5pt Consolas, #2D2D2D, indented 1cm |
+| Critical text | #C0392B Bold |
+| Serious text | #D46B08 Bold |
+| Pass/success text | #27AE60 Bold |
+| Alternating rows | #F5F5F5 |
+| Checkboxes | ☐ (U+2610) |
+
+### Python Report Generator
+
+Use `scripts/generate-vpat-report.py` as the generator. Key functions:
+- `set_cell_shading(cell, color_hex)` — Table cell backgrounds
+- `add_styled_table(doc, headers, rows)` — Styled table with header row
+- `add_ticket_header(doc, ...)` — Formatted ticket metadata block
+- `add_code_block(doc, code_text)` — Monospace code blocks
+- `add_checklist(doc, items)` — Verification checkbox lists
+
+### States Analyzed (Update This List)
+
+| State | Report File | Date | Type | Notes |
+|-------|-------------|------|------|-------|
+| Illinois | `!!! Metrc/VPAT-Remediation-Tickets.docx` | Jan 28, 2026 | VPAT Remediation | Formal VPAT report, source VPAT dated 1/13/2026 |
+| Kentucky | `VPAT-Remediation-Tickets-Kentaki.docx` | Jan 28, 2026 | Meeting Analysis | Aria tree grid analysis from meeting — NOT a VPAT report |
+| Michigan | `VPAT-Remediation-Report-Michigan-2026.docx` | Feb 12, 2026 | VPAT Remediation | Canonical formatted report, source VPAT dated 1/13/2026 |
+
+### Workflow
+
+1. Read VPAT document → extract "Partially Supports" criteria
+2. Read ADA scan (.xlsx/.json) → aggregate by rule ID, page, severity
+3. Cross-reference VPAT findings with axe results
+4. Identify root causes and calculate resolution coverage
+5. Generate tickets grouped by root cause (not individual axe violations)
+6. Run `scripts/generate-vpat-report.py` to produce .docx
+7. Save to project root with `VPAT-Remediation-Report-{State}-{Year}.docx`
+
+---
+
 ## Audit Categories
 
 ### 1. Color & Contrast
