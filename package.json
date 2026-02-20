@@ -1,12 +1,22 @@
 {
   "name": "mtr-design-system",
-  "version": "1.0.0",
-  "private": true,
+  "version": "1.1.0",
+  "description": "MTR Design System — React components, design tokens, and theme provider",
+  "exports": {
+    "./components": "./components/index.ts",
+    "./styles/themes": "./styles/themes/index.ts",
+    "./styles/themes/*": "./styles/themes/*",
+    "./styles/design-tokens": "./styles/design-tokens.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
     "mammoth": "^1.11.0",
