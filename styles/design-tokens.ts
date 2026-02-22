@@ -1018,15 +1018,15 @@ export const button = {
   typography: {
     lg: {
       fontSize: '16px',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: '18px',
-      letterSpacing: '0px',
+      letterSpacing: '-0.9px',
     },
     md: {
       fontSize: '14px',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: '16px',
-      letterSpacing: '0px',
+      letterSpacing: '-0.9px',
     },
   },
 
