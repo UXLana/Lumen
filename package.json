@@ -2,6 +2,12 @@
   "name": "mtr-design-system",
   "version": "1.1.0",
   "description": "MTR Design System — React components, design tokens, and theme provider",
+  "files": [
+    "components/",
+    "styles/",
+    "app/",
+    "public/"
+  ],
   "exports": {
     "./components": "./components/index.ts",
     "./styles/themes": "./styles/themes/index.ts",

@@ -17,6 +17,12 @@ export interface ThemeColors {
     lighter: string;
   };
 
+  accent: {
+    default: string;
+    darker: string;
+    lighter: string;
+  };
+
   surface: {
     light: string;
     lightDarker: string;

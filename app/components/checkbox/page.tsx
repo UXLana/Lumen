@@ -55,18 +55,11 @@ export default function CheckboxPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Checkbox, CheckboxGroup } from '@/components'
+              <CodeBlock>{`// Package import
+import { Checkbox, CheckboxGroup } from '@metrc/design-system'
 
-<Checkbox
-  label="Option"
-  checked={isChecked}
-  onChange={(checked) => setIsChecked(checked)}
-/>
-
-<CheckboxGroup label="Label" error={hasError} errorMessage="Required field">
-  <Checkbox label="Option 1" checked={values.opt1} onChange={...} />
-  <Checkbox label="Option 2" checked={values.opt2} onChange={...} />
-</CheckboxGroup>`}</CodeBlock>
+// Or with path alias (requires tsconfig setup)
+import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -76,49 +69,65 @@ export default function CheckboxPage() {
             <p style={sharedStyles.sectionDescription}>
               Manipulate checkbox properties in real-time to see how they affect the component.
             </p>
-            <Playground
-              preview={
-                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[4], width: demoFullWidth ? '100%' : 'auto' }}>
-                  <Checkbox
-                    label="Option label"
-                    metadata={demoShowMetadata ? 'Helpful metadata text' : undefined}
-                    checked={demoChecked}
-                    indeterminate={demoIndeterminate}
-                    disabled={demoDisabled}
-                    error={demoError}
-                    isChild={demoIsChild}
-                    fullWidth={demoFullWidth}
-                    onChange={(checked) => {
-                      setDemoChecked(checked)
-                      if (demoIndeterminate) setDemoIndeterminate(false)
-                    }}
-                  />
-                </div>
-              }
-              code={`<Checkbox
+
+            <div style={sharedStyles.card}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
+                {/* Preview/Code */}
+                <div>
+                  <Playground
+                    preview={
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[4], width: demoFullWidth ? '100%' : 'auto' }}>
+                        <Checkbox
+                          label="Option label"
+                          metadata={demoShowMetadata ? 'Helpful metadata text' : undefined}
+                          checked={demoChecked}
+                          indeterminate={demoIndeterminate}
+                          disabled={demoDisabled}
+                          error={demoError}
+                          isChild={demoIsChild}
+                          fullWidth={demoFullWidth}
+                          onChange={(checked) => {
+                            setDemoChecked(checked)
+                            if (demoIndeterminate) setDemoIndeterminate(false)
+                          }}
+                        />
+                      </div>
+                    }
+                    code={`<Checkbox
   label="Option label"${demoShowMetadata ? '\n  metadata="Helpful metadata text"' : ''}
   checked={${demoChecked}}${demoIndeterminate ? '\n  indeterminate' : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error' : ''}${demoIsChild ? '\n  isChild' : ''}${demoFullWidth ? '\n  fullWidth' : ''}
   onChange={(checked) => setChecked(checked)}
 />`}
-              previewPadding={spacing[6]}
-            />
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing[4], marginTop: spacing[4] }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[1] }}>
-                <span style={{ fontFamily: 'var(--font-body, sans-serif)', fontSize: '12px', fontWeight: 500, color: colors.text.lowEmphasis.onLight }}>State</span>
-                <div style={{ display: 'flex', gap: spacing[1] }}>
-                  <PillButton isActive={demoChecked && !demoIndeterminate} onClick={() => { setDemoChecked(true); setDemoIndeterminate(false) }}>Checked</PillButton>
-                  <PillButton isActive={!demoChecked && !demoIndeterminate} onClick={() => { setDemoChecked(false); setDemoIndeterminate(false) }}>Unchecked</PillButton>
-                  <PillButton isActive={demoIndeterminate} onClick={() => { setDemoIndeterminate(true); setDemoChecked(false) }}>Indeterminate</PillButton>
+                    previewPadding={spacing[6]}
+                    previewBackground={colors.surface.paper}
+                  />
                 </div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[1] }}>
-                <span style={{ fontFamily: 'var(--font-body, sans-serif)', fontSize: '12px', fontWeight: 500, color: colors.text.lowEmphasis.onLight }}>Options</span>
-                <div style={{ display: 'flex', gap: spacing[2] }}>
-                  <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
-                  <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
-                  <StyledCheckboxControl checked={demoShowMetadata} onChange={() => setDemoShowMetadata(!demoShowMetadata)} label="Metadata" />
-                  <StyledCheckboxControl checked={demoIsChild} onChange={() => setDemoIsChild(!demoIsChild)} label="Child" />
-                  <StyledCheckboxControl checked={demoFullWidth} onChange={() => setDemoFullWidth(!demoFullWidth)} label="Full Width" />
+
+                {/* Controls */}
+                <div>
+                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                    {/* State */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        State
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        <PillButton isActive={demoChecked && !demoIndeterminate} onClick={() => { setDemoChecked(true); setDemoIndeterminate(false) }}>Checked</PillButton>
+                        <PillButton isActive={!demoChecked && !demoIndeterminate} onClick={() => { setDemoChecked(false); setDemoIndeterminate(false) }}>Unchecked</PillButton>
+                        <PillButton isActive={demoIndeterminate} onClick={() => { setDemoIndeterminate(true); setDemoChecked(false) }}>Indeterminate</PillButton>
+                      </div>
+                    </div>
+
+                    {/* Options */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                      <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
+                      <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
+                      <StyledCheckboxControl checked={demoShowMetadata} onChange={() => setDemoShowMetadata(!demoShowMetadata)} label="Metadata" />
+                      <StyledCheckboxControl checked={demoIsChild} onChange={() => setDemoIsChild(!demoIsChild)} label="Child" />
+                      <StyledCheckboxControl checked={demoFullWidth} onChange={() => setDemoFullWidth(!demoFullWidth)} label="Full Width" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -325,6 +334,26 @@ export default function CheckboxPage() {
               </div>
             </CollapsibleSection>
           </section>
+
+          {/* ========== ACCESSIBILITY ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
+            <div style={sharedStyles.card}>
+              <SpecTable
+                headers={['Feature', 'Implementation']}
+                rows={[
+                  ['Native Element', <span key="ne">Uses <code>&lt;input type=&quot;checkbox&quot;&gt;</code> for full keyboard and screen reader support</span>],
+                  ['Custom Indicator', 'Visually hidden input with styled SVG indicator — maintains native semantics'],
+                  ['Focus Ring', <span key="fr">Focus-visible ring using <code>colors.focusBorder.onLight</code> for keyboard navigation</span>],
+                  ['Error State', <span key="es"><code>aria-invalid</code> set on error state for assistive technology</span>],
+                  ['Error Messages', <span key="em"><code>aria-describedby</code> links error messages to checkbox groups; errors use <code>role=&quot;alert&quot;</code></span>],
+                  ['Group Semantics', <span key="gs"><code>role=&quot;group&quot;</code> with <code>aria-labelledby</code> for checkbox groups</span>],
+                  ['Indeterminate', <span key="in">Communicated via native <code>input.indeterminate</code> property</span>],
+                  ['Accessible Name', <span key="an">When <code>label</code> is omitted, provide <code>aria-label</code> for an accessible name</span>],
+                ]}
+              />
+            </div>
+          </section>
         </>
       )}
 
@@ -459,20 +488,6 @@ import type { CheckboxProps, CheckboxGroupProps } from '@/components'`}</CodeBlo
               />
             </div>
 
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Accessibility</h3>
-              <ul style={{ paddingLeft: '20px', listStyleType: 'disc', color: colors.text.highEmphasis.onLight, lineHeight: '1.8', marginBottom: 0 }}>
-                <li>Native <code>&lt;input type=&quot;checkbox&quot;&gt;</code> for full keyboard and screen reader support</li>
-                <li>Visually hidden input with custom styled indicator</li>
-                <li>Focus-visible ring for keyboard navigation (<code>colors.focusBorder.onLight</code>)</li>
-                <li><code>aria-invalid</code> set on error state</li>
-                <li><code>aria-describedby</code> links error messages to checkbox groups</li>
-                <li><code>role=&quot;group&quot;</code> with <code>aria-labelledby</code> for checkbox groups</li>
-                <li>Error messages use <code>role=&quot;alert&quot;</code> for live announcements</li>
-                <li>Indeterminate state communicated via <code>input.indeterminate</code> property</li>
-                <li>When <code>label</code> is omitted, provide <code>aria-label</code> for an accessible name</li>
-              </ul>
-            </div>
           </section>
         </>
       )}

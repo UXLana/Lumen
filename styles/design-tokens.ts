@@ -9,426 +9,87 @@
  * Last updated: 2026-02-10
  *
  * THEMING:
- * - Colors are themeable per product. See styles/themes/ for the theme system.
- * - Components should use `useColors()` from styles/themes for color access.
- * - The `colors` export below is the Trace theme (default) for static/non-React usage.
+ * - Colors use CSS custom properties (--mtr-*) so they respond to theme changes
+ *   automatically — no component code changes needed.
+ * - The SwitchableThemeProvider sets --mtr-* vars on :root at runtime.
+ * - Default (Trace) values live in globals.css for flash-free first paint.
  * - Typography, spacing, radius, shadows, breakpoints are shared across all themes.
  *
  * Token extraction via /figma-token-extractor from node 2086-41222 (Color & styles)
  * Taxonomy restructured to match Figma 1:1 — Figma is source of truth for values.
  */
 
+import { traceTheme } from './themes/trace';
+import { themeColorsToVarRefs } from './themes/css-vars';
+import type { ThemeColors } from './themes/theme-interface';
+
 // =============================================================================
-// COLOR TOKENS — mtr_sys_color_* (Trace theme default, matches Figma exactly)
-// For themed access in components, use `useColors()` from styles/themes
+// COLOR TOKENS — CSS-variable-backed, auto-themed via SwitchableThemeProvider
 // =============================================================================
+
+const _themed = themeColorsToVarRefs(traceTheme.colors as Record<string, any>) as unknown as ThemeColors;
 
 export const colors = {
-  // ==========================================================================
-  // BRAND
-  // ==========================================================================
+  ..._themed,
+
   brand: {
-    default: '#005151',             // mtr_sys_color_brand
-    darker: '#003133',              // mtr_sys_color_brand_darker
-    lighter: '#17978E',             // mtr_sys_color_brand_lighter
-    // Backwards compat aliases (deprecated)
+    ..._themed.brand,
     /** @deprecated Use brand.default */
-    primary: '#005151',
+    primary: _themed.brand.default,
     /** @deprecated Use brand.lighter */
-    primaryLight: '#17978E',
+    primaryLight: _themed.brand.lighter,
     /** @deprecated Use brand.darker */
-    primaryDark: '#003133',
+    primaryDark: _themed.brand.darker,
   },
 
-  // ==========================================================================
-  // SURFACE
-  // ==========================================================================
   surface: {
-    light: '#FFFFFF',               // mtr_sys_color_surface_light
-    lightDarker: '#F5F5F5',         // mtr_sys_color_surface_lightDarker
-    dark: '#4A4A4A',                // mtr_sys_color_surface_dark
-    darkDarker: '#323232',          // mtr_sys_color_surface_darkDarker
-    disabled: {
-      onLight: 'rgba(0, 0, 0, 0.03)',   // mtr_sys_color_surface_disabled_onLight
-      onDark: 'rgba(255, 255, 255, 0.20)', // mtr_sys_color_surface_disabled_onDark
-    },
-    // Status surfaces
-    info: '#F4F6FF',                // mtr_sys_color_surface_info
-    success: '#EDF6F4',             // mtr_sys_color_surface_success
-    warning: '#FCF6ED',             // mtr_sys_color_surface_warning
-    important: '#FDF2F3',           // mtr_sys_color_surface_important
-    // Backwards compat aliases (deprecated)
+    ..._themed.surface,
     /** @deprecated Use surface.light */
-    default: '#FFFFFF',
+    default: _themed.surface.light,
     /** @deprecated Use surface.lightDarker */
-    paper: '#F5F5F5',
+    paper: _themed.surface.lightDarker,
     /** @deprecated Use surface.lightDarker */
-    elevated: '#F5F5F5',
+    elevated: _themed.surface.lightDarker,
     /** @deprecated Use surface.darkDarker */
-    darkest: '#323232',
+    darkest: _themed.surface.darkDarker,
   },
 
-  // ==========================================================================
-  // SURFACE BORDER (status)
-  // ==========================================================================
-  surfaceBorder: {
-    info: '#D1D9FF',                // mtr_sys_color_surfaceBorder_info
-    success: '#C5E2DB',             // mtr_sys_color_surfaceBorder_success
-    warning: '#F2DABA',             // mtr_sys_color_surfaceBorder_warning
-    important: '#F8CFD3',           // mtr_sys_color_surfaceBorder_important
-  },
-
-  // ==========================================================================
-  // TEXT
-  // ==========================================================================
-  text: {
-    highEmphasis: {
-      onLight: 'rgba(0, 0, 0, 0.95)',     // mtr_sys_color_text_highEmphasis_onLight
-      onDark: '#FFFFFF',                    // mtr_sys_color_text_highEmphasis_onDark (100%)
-    },
-    lowEmphasis: {
-      onLight: 'rgba(0, 0, 0, 0.60)',     // mtr_sys_color_text_lowEmphasis_onLight
-      onDark: 'rgba(255, 255, 255, 0.70)', // mtr_sys_color_text_lowEmphasis_onDark
-    },
-    disabled: {
-      onLight: 'rgba(0, 0, 0, 0.30)',     // mtr_sys_color_text_disabled_onLight
-      onDark: 'rgba(255, 255, 255, 0.30)', // mtr_sys_color_text_disabled_onDark
-    },
-    // Action text (link/interactive text)
-    action: {
-      enabled: '#016CA2',           // mtr_sys_color_text_action_enabled
-      hover: '#005680',             // mtr_sys_color_text_action_hover
-      active: '#00476B',            // mtr_sys_color_text_action_active
-    },
-    // Status text
-    success: '#006B50',             // mtr_sys_color_text_success
-    warning: '#A35C00',             // mtr_sys_color_text_warning
-    important: '#C10B1E',           // mtr_sys_color_text_important
-  },
-
-  // ==========================================================================
-  // BORDER
-  // ==========================================================================
-  border: {
-    lowEmphasis: {
-      onLight: 'rgba(0, 0, 0, 0.10)',     // mtr_sys_color_border_lowEmphasis_onLight
-      onDark: 'rgba(255, 255, 255, 0.10)', // mtr_sys_color_border_lowEmphasis_onDark
-      hover: {
-        onLight: 'rgba(0, 0, 0, 0.27)',   // mtr_sys_color_border_lowEmphasis_hover_onLight
-        onDark: 'rgba(255, 255, 255, 0.27)', // mtr_sys_color_border_lowEmphasis_hover_onDark
-      },
-    },
-    midEmphasis: {
-      onLight: 'rgba(0, 0, 0, 0.15)',     // mtr_sys_color_border_midEmphasis_onLight
-      onDark: 'rgba(255, 255, 255, 0.15)', // mtr_sys_color_border_midEmphasis_onDark
-    },
-    highEmphasis: {
-      onLight: 'rgba(0, 0, 0, 0.42)',     // mtr_sys_color_border_highEmphasis_onLight
-      onDark: 'rgba(255, 255, 255, 0.43)', // mtr_sys_color_border_highEmphasis_onDark
-    },
-  },
-
-  // ==========================================================================
-  // ICON
-  // ==========================================================================
-  icon: {
-    enabled: {
-      onLight: 'rgba(0, 0, 0, 0.55)',     // mtr_sys_color_icon_enabled_onLight
-      onDark: 'rgba(255, 255, 255, 0.94)', // mtr_sys_color_icon_enabled_onDark
-    },
-    hover: {
-      onLight: 'rgba(0, 0, 0, 0.65)',     // mtr_sys_color_icon_hover_onLight
-    },
-    active: {
-      onLight: 'rgba(0, 0, 0, 0.75)',     // mtr_sys_color_icon_active_onLight
-    },
-    selected: {
-      onLight: 'rgba(0, 0, 0, 0.85)',     // mtr_sys_color_icon_selected_onLight
-    },
-    disabled: {
-      onLight: 'rgba(0, 0, 0, 0.20)',     // mtr_sys_color_icon_disabled_onLight
-      onDark: 'rgba(255, 255, 255, 0.20)', // mtr_sys_color_icon_disabled_onDark
-    },
-    lowEmphasis: {
-      enabled: {
-        onLight: 'rgba(0, 0, 0, 0.43)',   // mtr_sys_color_icon_lowEmphasis_enabled_onLight
-        onDark: 'rgba(255, 255, 255, 0.65)', // mtr_sys_color_icon_lowEmphasis_enabled_onDark
-      },
-    },
-  },
-
-  // ==========================================================================
-  // ICON BACKGROUNDS (status)
-  // ==========================================================================
-  iconBg: {
-    info: '#EBEFFF',                       // mtr_sys_color_iconBg_info
-    info_onDark: 'rgba(122, 145, 255, 0.25)', // mtr_sys_color_iconBg_info_onDark
-    success: '#DEEDE9',                    // mtr_sys_color_iconBg_success
-    success_onDark: 'rgba(0, 173, 130, 0.25)', // mtr_sys_color_iconBg_success_onDark
-    warning: '#F9ECDC',                    // mtr_sys_color_iconBg_warning
-    warning_onDark: 'rgba(230, 130, 0, 0.25)', // mtr_sys_color_iconBg_warning_onDark
-    important: '#FBE4E7',                  // mtr_sys_color_iconBg_important
-    important_onDark: 'rgba(248, 104, 118, 0.25)', // mtr_sys_color_iconBg_important_onDark
-  },
-
-  // ==========================================================================
-  // ACTION (interactive/link colors)
-  // ==========================================================================
-  action: {
-    enabled: '#0176B2',             // mtr_sys_color_action_enabled
-    hover: '#005C89',               // mtr_sys_color_action_hover
-    active: '#004E73',              // mtr_sys_color_action_active
-    // Important/destructive actions
-    important: {
-      enabled: '#C10B1E',           // mtr_sys_color_action_important_enabled
-      hover: '#A20919',             // mtr_sys_color_action_important_hover
-      active: '#850715',            // mtr_sys_color_action_important_active
-    },
-    // Monochrome actions (on light)
-    monochrome: {
-      onLight: {
-        enabled: 'rgba(0, 0, 0, 0.55)',   // mtr_sys_color_action_monochrome_enabled_onLight
-        hover: 'rgba(0, 0, 0, 0.65)',      // mtr_sys_color_action_monochrome_hover_onLight
-        active: 'rgba(0, 0, 0, 0.75)',     // mtr_sys_color_action_monochrome_active_onLight
-        selected: 'rgba(0, 0, 0, 0.85)',   // mtr_sys_color_action_monochrome_selected_onLight
-        disabled: 'rgba(0, 0, 0, 0.20)',   // mtr_sys_color_action_monochrome_disabled_onLight
-        bg: 'rgba(0, 0, 0, 0.08)',         // mtr_sys_color_action_monochrome_bg_onLight
-        lowEmphasis: {
-          enabled: 'rgba(0, 0, 0, 0.43)',  // mtr_sys_color_action_monochrome_lowEmphasis_enabled_onLight
-        },
-      },
-      onDark: {
-        enabled: 'rgba(255, 255, 255, 0.94)',  // mtr_sys_color_action_monochrome_enabled_onDark
-        hover: 'rgba(255, 255, 255, 1)',       // mtr_sys_color_action_monochrome_hover_onDark
-        active: 'rgba(255, 255, 255, 1)',      // mtr_sys_color_action_monochrome_active_onDark
-        selected: 'rgba(255, 255, 255, 1)',    // mtr_sys_color_action_monochrome_selected_onDark
-        disabled: 'rgba(255, 255, 255, 0.20)', // mtr_sys_color_action_monochrome_disabled_onDark
-        bg: 'rgba(255, 255, 255, 0.09)',       // mtr_sys_color_action_monochrome_bg_onDark
-        lowEmphasis: {
-          enabled: 'rgba(255, 255, 255, 0.65)', // mtr_sys_color_action_monochrome_lowEmphasis_enabled_onDark
-        },
-      },
-    },
-  },
-
-  // ==========================================================================
-  // STATUS (semantic status colors)
-  // ==========================================================================
-  status: {
-    info: '#617BFF',                // mtr_sys_color_info
-    info_onDark: 'rgba(122, 145, 255, 0.25)', // mtr_sys_color_info_onDark
-    success: '#1B7F66',             // mtr_sys_color_success
-    success_onDark: 'rgba(0, 173, 130, 0.25)', // mtr_sys_color_success_onDark
-    warning: '#CC7300',             // mtr_sys_color_warning
-    warningLight: '#F3DCBD',        // mtr_sys_color_warningLight
-    warning_onDark: 'rgba(230, 130, 0, 0.25)', // mtr_sys_color_warning_onDark
-    important: '#DC0C22',           // mtr_sys_color_important
-    important_onDark: 'rgba(248, 104, 118, 0.25)', // mtr_sys_color_important_onDark
-  },
-
-  // ==========================================================================
-  // BADGE
-  // ==========================================================================
-  badge: {
-    info: '#4766FF',                // mtr_sys_color_badge_info
-    infoLight: '#DBE2FF',           // mtr_sys_color_badge_infoLight
-    success: '#19856B',             // mtr_sys_color_badge_success
-    successLight: '#D9EDE6',        // mtr_sys_color_badge_sucessLight (note: Figma typo "sucess")
-    warning: '#AD6200',             // mtr_sys_color_badge_warning
-    important: '#E80D24',           // mtr_sys_color_badge_important
-    importantLight: '#FFE3E7',      // mtr_sys_color_badge_importantLight
-    aqua: '#167F92',                // mtr_sys_color_badge_aqua
-    aquaLight: '#B4EAF3',           // mtr_sys_color_badge_aquaLight
-    green: '#40851E',               // mtr_sys_color_badge_green
-    greenLight: '#DAF4CD',          // mtr_sys_color_badge_greenLight
-    yellow: '#8F6F00',              // mtr_sys_color_badge_yellow
-    yellowLight: '#FFE68F',         // mtr_sys_color_badge_yellowLight
-    fuschia: '#CF26B8',             // mtr_sys_color_badge_fuschia (note: Figma spelling)
-    fuschiaLight: '#FCCFF6',        // mtr_sys_color_badge_fuschiaLight
-    purple: '#A14CE1',              // mtr_sys_color_badge_purple
-    purpleLight: '#EDDCF9',         // mtr_sys_color_badge_purpleLight
-    charcoal: '#4F4F4F',            // mtr_sys_color_badge_charcoal
-    charcoalLight: '#E3E3E3',       // mtr_sys_color_badge_charcoalLight
-  },
-
-  // ==========================================================================
-  // AVATAR
-  // ==========================================================================
-  avatar: {
-    '01': '#D6EAFF',               // mtr_sys_color_avatar_01
-    '02': '#FFDBFA',               // mtr_sys_color_avatar_02
-    '03': '#EFE0FF',               // mtr_sys_color_avatar_03
-    '04': '#CFEFC2',               // mtr_sys_color_avatar_04
-    '05': '#BEF4ED',               // mtr_sys_color_avatar_05
-    '06': '#FFE68F',               // mtr_sys_color_avatar_06
-    '07': '#FFE3DB',               // mtr_sys_color_avatar_07
-    '08': '#FFE2C2',               // mtr_sys_color_avatar_08
-  },
-
-  // ==========================================================================
-  // DATA VISUALIZATION
-  // ==========================================================================
-  dataViz: {
-    border: '#000000',              // mtr_sys_color_dataViz_border
-    '01': '#001446',                // mtr_sys_color_dataViz_01
-    '02': '#062E69',                // mtr_sys_color_dataViz_02
-    '03': '#094A8D',                // mtr_sys_color_dataViz_03
-    '04': '#0068B2',                // mtr_sys_color_dataViz_04
-    '05': '#0094BE',                // mtr_sys_color_dataViz_05
-    '06': '#37B9B2',                // mtr_sys_color_dataViz_06
-    '07': '#9FD7AB',                // mtr_sys_color_dataViz_07
-    '08': '#F0F2BD',                // mtr_sys_color_dataViz_08
-    '09': '#F1D89A',                // mtr_sys_color_dataViz_09
-    '10': '#EFB777',                // mtr_sys_color_dataViz_10
-    '11': '#ED9461',                // mtr_sys_color_dataViz_11
-    '12': '#E96959',                // mtr_sys_color_dataViz_12
-    '13': '#C74046',                // mtr_sys_color_dataViz_13
-    '14': '#95222C',                // mtr_sys_color_dataViz_14
-    '15': '#660011',                // mtr_sys_color_dataViz_15
-  },
-
-  // ==========================================================================
-  // CVD (Color Vision Deficiency) ACCESSIBLE PALETTE
-  // ==========================================================================
-  cvd: {
-    blue: '#0072B2',                // mtr_sys_color_cvd_blue
-    lightBlue: '#56B4E9',           // mtr_sys_color_cvd_lightBlue
-    yellow: '#F0E442',              // mtr_sys_color_cvd_yellow
-    green: '#009E73',               // mtr_sys_color_cvd_green
-    orange: '#E69F00',              // mtr_sys_color_cvd_orange
-    vermillion: '#D55E00',          // mtr_sys_color_cvd_vermillion
-    pink: '#CC79A7',                // mtr_sys_color_cvd_pink
-    charcoal: '#323232',            // mtr_sys_color_cvd_charcoal
-  },
-
-  // ==========================================================================
-  // INTERACTIVE STATE COLORS
-  // ==========================================================================
-  hover: {
-    onLight: 'rgba(0, 0, 0, 0.05)',       // mtr_sys_color_hover_onLight
-    onDark: 'rgba(255, 255, 255, 0.15)',   // mtr_sys_color_hover_onDark
-  },
-
-  selected: {
-    onLight: 'rgba(0, 0, 0, 0.09)',        // mtr_sys_color_selected_onLight
-  },
-
-  selectedHighlight: '#E7F2EE',             // mtr_sys_color_selectedHighlight
-  selectedHighlight_hover: '#D0E6DE',       // mtr_sys_color_selectedHighlight_hover
-
-  // ==========================================================================
-  // FOCUS
-  // ==========================================================================
-  focusBorder: {
-    onLight: '#3086BF',                    // mtr_sys_color_focusBorder_onLight
-    onDark: 'rgba(255, 255, 255, 0.65)',   // mtr_sys_color_focusBorder_onDark
-  },
-
-  // ==========================================================================
-  // SCRIM (overlay)
-  // ==========================================================================
-  scrim: 'rgba(0, 0, 0, 0.32)',            // mtr_sys_color_scrim
-
-  // ==========================================================================
-  // SCROLLBAR
-  // ==========================================================================
-  scrollbar: {
-    enabled: {
-      onLight: 'rgba(0, 0, 0, 0.42)',     // mtr_sys_color_scrollbar_enabled_onLight
-      onDark: 'rgba(255, 255, 255, 0.43)', // mtr_sys_color_scrollbar_enabled_onDark
-    },
-    hover: {
-      onLight: 'rgba(0, 0, 0, 0.57)',     // mtr_sys_color_scrollbar_hover_onLight
-      onDark: 'rgba(255, 255, 255, 0.58)', // mtr_sys_color_scrollbar_hover_onDark
-    },
-    active: {
-      onLight: 'rgba(0, 0, 0, 0.72)',     // mtr_sys_color_scrollbar_active_onLight
-      onDark: 'rgba(255, 255, 255, 0.73)', // mtr_sys_color_scrollbar_active_onDark
-    },
-  },
-
-  // ==========================================================================
-  // NAVIGATION
-  // ==========================================================================
-  navItemText: {
-    enabled: {
-      onLight: 'rgba(0, 0, 0, 0.72)',     // mtr_sys_color_navItemText_enabled_onLight
-      onDark: 'rgba(255, 255, 255, 0.88)', // mtr_sys_color_navItemText_enabled_onDark
-    },
-  },
-
-  // ==========================================================================
-  // COMPONENT-SPECIFIC
-  // ==========================================================================
-  buttonToggleBg: {
-    onLight: 'rgba(0, 0, 0, 0.08)',       // mtr_sys_color_buttonToggleBg_onLight
-    onDark: 'rgba(255, 255, 255, 0.08)',   // mtr_sys_color_buttonToggleBg_onDark
-  },
-
-  chipBg: {
-    enabled: 'rgba(0, 0, 0, 0.08)',       // mtr_sys_color_chipBg_enabled
-    hover: 'rgba(0, 0, 0, 0.13)',         // mtr_sys_color_chipBg_hover
-  },
-
-  progressIndicatorTrack: 'rgba(0, 0, 0, 0.15)', // mtr_sys_color_progressIndicatorTrack
-
-  // ==========================================================================
-  // TABLE
-  // ==========================================================================
-  tableCellHighlight: {
-    highEmphasis: '#78CFB8',        // mtr_sys_color_tableCellHighlight_highEmphasis
-    midEmphasis: '#E7F2EE',         // mtr_sys_color_tableCellHighlight_midEmphasis
-  },
-
-  // ==========================================================================
-  // GRID (A11Y-006 Compliance — project-specific, not from Figma)
-  // ==========================================================================
-  grid: {
-    finishedRowText: '#595959',
-    packageIconColor: '#595959',
-  },
-
-  // ==========================================================================
-  // BACKWARDS-COMPAT ALIASES (deprecated — migrate to new paths)
-  // These exist so existing pages don't break during migration.
-  // TODO: Remove by v2.0 release — all app/components/ files have been migrated.
-  // ==========================================================================
   /** @deprecated Use brand.default */
-  kelp: '#005151',
+  kelp: _themed.brand.default,
   /** @deprecated Use scrim */
-  overlay: 'rgba(0, 0, 0, 0.32)',
+  overlay: _themed.scrim,
   stroke: {
     /** @deprecated Use border.lowEmphasis.onLight */
-    light: 'rgba(0, 0, 0, 0.10)',
+    light: _themed.border.lowEmphasis.onLight,
     /** @deprecated Use border.midEmphasis.onLight */
-    default: 'rgba(0, 0, 0, 0.15)',
+    default: _themed.border.midEmphasis.onLight,
     /** @deprecated Use border.highEmphasis.onLight */
-    dark: 'rgba(0, 0, 0, 0.42)',
+    dark: _themed.border.highEmphasis.onLight,
   },
   disabled: {
     /** @deprecated Use surface.disabled.onLight */
-    surface: 'rgba(0, 0, 0, 0.03)',
+    surface: _themed.surface.disabled.onLight,
     /** @deprecated Use text.disabled.onLight */
-    text: 'rgba(0, 0, 0, 0.30)',
+    text: _themed.text.disabled.onLight,
     /** @deprecated Use surface.disabled.onDark */
-    surfaceOnDark: 'rgba(255, 255, 255, 0.20)',
+    surfaceOnDark: _themed.surface.disabled.onDark,
     /** @deprecated Use text.disabled.onDark */
-    textOnDark: 'rgba(255, 255, 255, 0.30)',
+    textOnDark: _themed.text.disabled.onDark,
   },
   interactive: {
     /** @deprecated Use selectedHighlight + focusBorder */
     selectedInput: {
-      background: '#E7F2EE',
-      border: '#005151',
+      background: _themed.selectedHighlight,
+      border: _themed.brand.default,
     },
     selectedOutput: {
-      background: '#005151',
-      text: '#FFFFFF',
+      background: _themed.brand.default,
+      text: _themed.text.highEmphasis.onDark,
     },
     /** @deprecated Use focusBorder.onLight */
-    focus: '#3086BF',
+    focus: _themed.focusBorder.onLight,
   },
-} as const;
+};
 
 // =============================================================================
 // TYPOGRAPHY TOKENS
@@ -1035,46 +696,46 @@ export const button = {
   emphasis: {
     high: {
       enabled: {
-        background: '#127A56', // colors.brand.default
-        text: '#FFFFFF',
+        background: colors.brand.default,
+        text: colors.text.highEmphasis.onDark,
         border: 'transparent',
       },
       hover: {
-        background: '#1A9A6E', // colors.brand.lighter
-        text: '#FFFFFF',
+        background: colors.brand.lighter,
+        text: colors.text.highEmphasis.onDark,
         border: 'transparent',
       },
       pressed: {
-        background: '#0E5F44', // colors.brand.darker
-        text: '#FFFFFF',
+        background: colors.brand.darker,
+        text: colors.text.highEmphasis.onDark,
         border: 'transparent',
       },
       disabled: {
-        background: '#E0E0E0',
-        text: 'rgba(0, 0, 0, 0.38)',
+        background: colors.surface.disabled.onLight,
+        text: colors.text.disabled.onLight,
         border: 'transparent',
       },
     },
     mid: {
-      // Mid emphasis - FILLED with secondary color (#E7F2EE)
+      // Mid emphasis - FILLED with secondary color
       enabled: {
-        background: '#E7F2EE',
-        text: '#127A56',
+        background: colors.selectedHighlight,
+        text: colors.brand.default,
         border: 'transparent',
       },
       hover: {
-        background: '#D0E6DE',
-        text: '#127A56',
+        background: colors.selectedHighlight_hover,
+        text: colors.brand.default,
         border: 'transparent',
       },
       pressed: {
-        background: '#B8D9CE',
-        text: '#127A56',
+        background: colors.selectedHighlight, // No specific pressed token for highlight, reusing or could calculate
+        text: colors.brand.darker,
         border: 'transparent',
       },
       disabled: {
-        background: 'rgba(231, 242, 238, 0.38)',
-        text: 'rgba(0, 0, 0, 0.38)',
+        background: colors.surface.disabled.onLight,
+        text: colors.text.disabled.onLight,
         border: 'transparent',
       },
     },
@@ -1082,22 +743,22 @@ export const button = {
       // Low emphasis is text-only (no background)
       enabled: {
         background: 'transparent',
-        text: '#127A56',
+        text: colors.brand.default,
         border: 'transparent',
       },
       hover: {
-        background: 'rgba(18, 122, 86, 0.08)',
-        text: '#127A56',
+        background: colors.hover.onLight,
+        text: colors.brand.default,
         border: 'transparent',
       },
       pressed: {
-        background: 'rgba(18, 122, 86, 0.16)',
-        text: '#127A56',
+        background: colors.selected.onLight,
+        text: colors.brand.darker,
         border: 'transparent',
       },
       disabled: {
         background: 'transparent',
-        text: 'rgba(0, 0, 0, 0.38)',
+        text: colors.text.disabled.onLight,
         border: 'transparent',
       },
     },
@@ -1107,46 +768,46 @@ export const button = {
   emphasisOnDark: {
     high: {
       enabled: {
-        background: '#FFFFFF',
-        text: '#127A56',
+        background: colors.text.highEmphasis.onDark,
+        text: colors.brand.default,
         border: 'transparent',
       },
       hover: {
-        background: 'rgba(255, 255, 255, 0.9)',
-        text: '#127A56',
+        background: 'rgba(255, 255, 255, 0.9)', // Keep as is or find token?
+        text: colors.brand.default,
         border: 'transparent',
       },
       pressed: {
         background: 'rgba(255, 255, 255, 0.8)',
-        text: '#127A56',
+        text: colors.brand.default,
         border: 'transparent',
       },
       disabled: {
-        background: 'rgba(255, 255, 255, 0.38)',
-        text: 'rgba(255, 255, 255, 0.38)',
+        background: colors.surface.disabled.onDark,
+        text: colors.text.disabled.onDark,
         border: 'transparent',
       },
     },
     mid: {
       // Mid emphasis on dark - FILLED with secondary color
       enabled: {
-        background: '#E7F2EE',
-        text: '#127A56',
+        background: colors.selectedHighlight, // Might need onDark variant if different
+        text: colors.brand.default,
         border: 'transparent',
       },
       hover: {
-        background: '#D0E6DE',
-        text: '#127A56',
+        background: colors.selectedHighlight_hover,
+        text: colors.brand.default,
         border: 'transparent',
       },
       pressed: {
-        background: '#B8D9CE',
-        text: '#127A56',
+        background: colors.selectedHighlight,
+        text: colors.brand.default,
         border: 'transparent',
       },
       disabled: {
-        background: 'rgba(231, 242, 238, 0.38)',
-        text: 'rgba(255, 255, 255, 0.38)',
+        background: colors.surface.disabled.onDark,
+        text: colors.text.disabled.onDark,
         border: 'transparent',
       },
     },
@@ -1154,22 +815,22 @@ export const button = {
       // Low emphasis on dark - text-only with white text
       enabled: {
         background: 'transparent',
-        text: '#FFFFFF',
+        text: colors.text.highEmphasis.onDark,
         border: 'transparent',
       },
       hover: {
-        background: 'rgba(255, 255, 255, 0.16)',
-        text: '#FFFFFF',
+        background: colors.hover.onDark,
+        text: colors.text.highEmphasis.onDark,
         border: 'transparent',
       },
       pressed: {
-        background: 'rgba(255, 255, 255, 0.24)',
-        text: '#FFFFFF',
+        background: 'rgba(255, 255, 255, 0.24)', // No token?
+        text: colors.text.highEmphasis.onDark,
         border: 'transparent',
       },
       disabled: {
         background: 'transparent',
-        text: 'rgba(255, 255, 255, 0.38)',
+        text: colors.text.disabled.onDark,
         border: 'transparent',
       },
     },
@@ -2193,6 +1854,67 @@ export const stepper = {
 
 
 // =============================================================================
+// ASSISTIVE MESSAGE TOKENS (from Figma node 2068-39659)
+// =============================================================================
+
+export const assistiveMessage = {
+  typography: {
+    fontFamily: fontFamilies.body,
+    fontSize: '14px',
+    fontWeight: 400,
+    lineHeight: '18px',
+    letterSpacing: '-0.3px',
+  },
+
+  iconSize: '16px',
+
+  types: {
+    assistive: {
+      textColor: 'rgba(0, 0, 0, 0.60)',
+      counterColor: 'rgba(0, 0, 0, 0.60)',
+      iconColor: null as string | null,
+      gap: '4px',
+    },
+    disabled: {
+      textColor: 'rgba(0, 0, 0, 0.30)',
+      counterColor: 'rgba(0, 0, 0, 0.30)',
+      iconColor: null as string | null,
+      gap: '4px',
+    },
+    error: {
+      textColor: '#C10B1E',
+      counterColor: 'rgba(0, 0, 0, 0.60)',
+      iconColor: '#DC0C22',
+      gap: '2px',
+    },
+    errorOverflow: {
+      textColor: '#C10B1E',
+      counterColor: '#C10B1E',
+      iconColor: '#DC0C22',
+      gap: '4px',
+    },
+    warning: {
+      textColor: '#A35C00',
+      counterColor: 'rgba(0, 0, 0, 0.60)',
+      iconColor: '#D17600',
+      gap: '4px',
+    },
+    success: {
+      textColor: '#006B50',
+      counterColor: 'rgba(0, 0, 0, 0.60)',
+      iconColor: '#1B7F66',
+      gap: '4px',
+    },
+    info: {
+      textColor: 'rgba(0, 0, 0, 0.95)',
+      counterColor: 'rgba(0, 0, 0, 0.60)',
+      iconColor: '#6E61FF',
+      gap: '4px',
+    },
+  },
+} as const;
+
+// =============================================================================
 // THEME EXPORT
 // =============================================================================
 
@@ -2224,6 +1946,7 @@ export const theme = {
   productCard,
   pagination,
   stepper,
+  assistiveMessage,
 } as const;
 
 export type Theme = typeof theme;

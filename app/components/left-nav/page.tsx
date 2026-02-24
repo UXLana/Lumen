@@ -359,7 +359,7 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <CollapsibleSection title="Design Tokens">
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
               <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
                 Spacing, colors, and typography values. Click any token to copy.
               </p>
@@ -398,6 +398,61 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
       {/* ========== IMPLEMENTATION TAB ========== */}
       {activePageTab === 'implementation' && (
         <>
+          {/* ========== USAGE ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Usage</h2>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Import</h3>
+              <CodeBlock>
+{`import { LeftNav } from '@/components'
+import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`}
+              </CodeBlock>
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
+              <CodeBlock>
+{`const sections: LeftNavSection[] = [
+  {
+    id: 'main',
+    items: [
+      { id: 'home', label: 'Home', href: '/', icon: <IconHome /> },
+      { id: 'products', label: 'Products', href: '/products', icon: <IconProduct /> },
+    ],
+  },
+]
+
+<LeftNav
+  sections={sections}
+  activeItemId="home"
+  onItemClick={(item) => navigate(item.href)}
+/>`}
+              </CodeBlock>
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>With Collapsible Sections</h3>
+              <CodeBlock>
+{`<LeftNav
+  variant="grouped"
+  sections={[
+    {
+      id: 'main',
+      title: 'Main',
+      icon: <IconGrid />,
+      items: [
+        { id: 'home', label: 'Home', href: '/' },
+        { id: 'products', label: 'Products', href: '/products' },
+      ],
+    },
+  ]}
+  activeItemId="home"
+/>`}
+              </CodeBlock>
+            </div>
+          </section>
+
           {/* ========== PROPS ========== */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Props</h2>
@@ -449,18 +504,37 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
             </div>
           </section>
 
-          {/* ========== ACCESSIBILITY ========== */}
+          {/* ========== DESIGN GUIDANCE ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
+            <h2 style={sharedStyles.sectionTitle}>Design Guidance</h2>
+
             <div style={sharedStyles.card}>
-              <ul style={{ ...typography.body.md, color: colors.text.lowEmphasis.onLight, paddingLeft: '20px', margin: 0 }}>
-                <li>Uses semantic <code>&lt;nav&gt;</code> with <code>aria-label</code></li>
-                <li>Active items use <code>aria-current=&quot;page&quot;</code></li>
-                <li>Keyboard navigation: Tab, Enter/Space, Escape</li>
-                <li>Focus-visible rings (keyboard only, not mouse)</li>
-                <li>Mobile nav traps focus and prevents body scroll</li>
-                <li>Respects <code>prefers-reduced-motion</code></li>
-              </ul>
+              <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
+              <SpecTable
+                headers={['Do', "Don't"]}
+                rows={[
+                  ['Use icons for top-level items', 'Mix icon and non-icon items at the same level'],
+                  ['Keep labels short and descriptive', 'Use long multi-line labels'],
+                  ['Limit nesting to 2 levels max', 'Create deeply nested navigation trees'],
+                  ['Use grouped variant for many sections', 'Show more than 7 top-level items without grouping'],
+                  ['Provide mobile drawer on small screens', 'Hide navigation entirely on mobile'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Accessibility</h3>
+              <SpecTable
+                headers={['Feature', 'Implementation']}
+                rows={[
+                  ['Semantics', 'Uses semantic <nav> with aria-label'],
+                  ['Active State', 'Active items use aria-current="page"'],
+                  ['Keyboard', 'Tab, Enter/Space, Escape navigation'],
+                  ['Focus', 'Focus-visible rings (keyboard only, not mouse)'],
+                  ['Mobile', 'Mobile nav traps focus and prevents body scroll'],
+                  ['Motion', 'Respects prefers-reduced-motion'],
+                ]}
+              />
             </div>
           </section>
         </>

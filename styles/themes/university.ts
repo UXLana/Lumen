@@ -19,6 +19,12 @@ export const universityTheme: ProductTheme = {
       lighter: '#3C5D57',
     },
 
+    accent: {
+      default: '#DCC26D',
+      darker: '#B89E42',
+      lighter: '#E8D48A',
+    },
+
     surface: {
       light: '#F9F8F3',
       lightDarker: '#F0EFEA',

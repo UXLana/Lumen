@@ -196,6 +196,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const [isHovered, setIsHovered] = React.useState(false)
     const [isPressed, setIsPressed] = React.useState(false)
+    const [isFocused, setIsFocused] = React.useState(false)
 
     const isDisabled = disabled || loading
 
@@ -308,6 +309,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onMouseUp?.(e)
     }
 
+    const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+      if (!isDisabled) setIsFocused(true)
+      props.onFocus?.(e)
+    }
+
+    const handleBlur = (e: React.FocusEvent<HTMLButtonElement>) => {
+      setIsFocused(false)
+      props.onBlur?.(e)
+    }
+
     return (
       <button
         ref={ref}
@@ -318,6 +329,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         onMouseLeave={handleMouseLeave}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         {...props}
       >
         {/* Loading spinner replaces left icon */}
@@ -362,7 +375,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
 
         {/* Focus ring */}
-        {focused && <span style={focusRingStyles} />}
+        {(focused || isFocused) && <span style={focusRingStyles} />}
       </button>
     )
   }

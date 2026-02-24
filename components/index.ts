@@ -99,3 +99,25 @@ export type { ToastProps, ToastVariant, ToastPosition, ToastItem, UseToastReturn
 // ConfirmDialog
 export { ConfirmDialog } from './ConfirmDialog'
 export type { ConfirmDialogProps, ConfirmDialogVariant } from './ConfirmDialog'
+
+// AssistiveMessage
+export { AssistiveMessage } from './AssistiveMessage'
+export type { AssistiveMessageProps, AssistiveMessageType } from './AssistiveMessage'
+
+// DataTable
+export { DataTable } from './DataTable'
+export type {
+  DataTableProps,
+  DataTableColumn,
+  DataTableDisplay,
+  DataTableDensity,
+  ColumnAlign,
+  SortDirection,
+  SortState,
+  CardRenderOptions,
+  IconButtonProps,
+  ViewToggleProps,
+  FilterButtonProps,
+  SortButtonProps,
+  SelectionInfoProps,
+} from './DataTable'

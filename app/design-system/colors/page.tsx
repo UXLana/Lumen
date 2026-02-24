@@ -279,6 +279,15 @@ export default function ColorsPage() {
             />
           </ColorGroup>
 
+          {/* ACCENT */}
+          <ColorGroup title="Accent" description="Secondary palette for highlights, active indicators, and complementary brand moments.">
+            <SwatchGrid
+              entries={Object.entries(themeColors.accent) as [string, string][]}
+              prefix="colors.accent"
+              columns={3}
+            />
+          </ColorGroup>
+
           {/* SURFACE */}
           <ColorGroup title="Surface" description="Background colors for different UI contexts, elevation levels, and status states.">
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>

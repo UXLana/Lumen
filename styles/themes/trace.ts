@@ -18,6 +18,12 @@ export const traceTheme: ProductTheme = {
       lighter: '#17978E',
     },
 
+    accent: {
+      default: '#0176B2',
+      darker: '#005C89',
+      lighter: '#3A9DD4',
+    },
+
     surface: {
       light: '#FFFFFF',
       lightDarker: '#F5F5F5',

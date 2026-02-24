@@ -568,28 +568,21 @@ import type { ListItemLeftType, ListItemRightType, ListItemStatus } from '@/comp
                 ]}
               />
             </div>
-          </section>
 
-          {/* ========== ACCESSIBILITY ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
-            <div style={{ maxWidth: '800px' }}>
-              <ul style={{
-                ...typography.body.md,
-                color: colors.text.lowEmphasis.onLight,
-                paddingLeft: '24px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-              }}>
-                <li>Uses <code>role="checkbox"</code> or <code>role="radio"</code> for selectable items</li>
-                <li>Includes <code>aria-checked</code> attribute for selection state</li>
-                <li>Supports <code>aria-disabled</code> for non-interactive states</li>
-                <li>Full keyboard navigation with Enter/Space to select</li>
-                <li>Hidden native inputs maintain form compatibility</li>
-                <li>List component uses appropriate <code>role="group"</code> or <code>role="radiogroup"</code></li>
-                <li>Focus states visible with dashed border ring</li>
-              </ul>
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Accessibility</h3>
+              <SpecTable
+                headers={['Feature', 'Implementation']}
+                rows={[
+                  ['Selection roles', <span key="sr">Uses <code>role="checkbox"</code> or <code>role="radio"</code> for selectable items</span>],
+                  ['State attributes', <span key="sa">Includes <code>aria-checked</code> for selection state</span>],
+                  ['Disabled state', <span key="ds">Supports <code>aria-disabled</code> for non-interactive states</span>],
+                  ['Keyboard navigation', 'Full Enter/Space to select'],
+                  ['Form compatibility', 'Hidden native inputs maintain form compatibility'],
+                  ['List semantics', <span key="ls">Uses appropriate <code>role="group"</code> or <code>role="radiogroup"</code></span>],
+                  ['Focus indicators', 'Visible dashed border ring on focus'],
+                ]}
+              />
             </div>
           </section>
         </>

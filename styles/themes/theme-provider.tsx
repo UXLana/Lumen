@@ -1,15 +1,17 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useMemo, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useLayoutEffect, useMemo, useCallback, type ReactNode } from 'react';
 import type { ProductTheme, ThemeColors } from './theme-interface';
 import { traceTheme } from './trace';
 import { universityTheme } from './university';
+import { earthTheme } from './earth';
+import { applyThemeVars } from './css-vars';
 
 // ---------------------------------------------------------------------------
 // Theme registry
 // ---------------------------------------------------------------------------
 
-const availableThemes: ProductTheme[] = [traceTheme, universityTheme];
+const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme];
 const themeMap: Record<string, ProductTheme> = Object.fromEntries(
   availableThemes.map((t) => [t.name, t]),
 );
@@ -85,6 +87,10 @@ export function SwitchableThemeProvider({ children }: SwitchableThemeProviderPro
   }, []);
 
   const activeTheme = useMemo(() => themeMap[themeName] ?? traceTheme, [themeName]);
+
+  useLayoutEffect(() => {
+    applyThemeVars(activeTheme.colors as Record<string, any>, document.documentElement);
+  }, [activeTheme]);
 
   const switcherValue = useMemo(() => ({ themeName, setThemeName }), [themeName, setThemeName]);
 

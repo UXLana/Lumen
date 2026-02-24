@@ -517,6 +517,9 @@ import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`}
                   [<code>loading</code>, <code>boolean</code>, <code>false</code>, 'Show loading spinner'],
                   [<code>fullWidth</code>, <code>boolean</code>, <code>false</code>, 'Full width button'],
                   [<code>disabled</code>, <code>boolean</code>, <code>false</code>, 'Disabled state'],
+                  [<code>focused</code>, <code>boolean</code>, <code>false</code>, 'Force focus state (for demos)'],
+                  [<code>className</code>, <code>string</code>, '-', 'Additional CSS class'],
+                  [<code>style</code>, <code>CSSProperties</code>, '-', 'Additional inline styles'],
                 ]}
               />
             </div>
@@ -528,6 +531,8 @@ import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`}
                 rows={[
                   [<code>spacing</code>, <code>'default' | 'form' | 'formMobile' | 'inline'</code>, <code>'default'</code>, 'Spacing preset'],
                   [<code>align</code>, <code>'start' | 'center' | 'end' | 'stretch'</code>, <code>'start'</code>, 'Alignment of buttons'],
+                  [<code>className</code>, <code>string</code>, '-', 'Additional CSS class'],
+                  [<code>style</code>, <code>CSSProperties</code>, '-', 'Additional inline styles'],
                 ]}
               />
             </div>

@@ -9,6 +9,7 @@ import {
   shadows,
   borderRadius,
 } from '@/styles/design-tokens';
+import { useThemeSwitcher, availableThemes } from '@/styles/themes/theme-provider';
 
 // =============================================================================
 // SAMPLE DATA
@@ -1194,12 +1195,56 @@ const tdStyle: React.CSSProperties = {
 // =============================================================================
 
 export default function MSOHomepage() {
+  const { themeName, setThemeName } = useThemeSwitcher();
+
   return (
     <div style={{
       minHeight: '100vh',
       backgroundColor: colors.surface.lightDarker,
       fontFamily: fontFamilies.body,
     }}>
+      {/* Floating theme switcher — bottom-left */}
+      <div style={{
+        position: 'fixed',
+        bottom: 16,
+        left: 16,
+        zIndex: 9999,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 4,
+      }}>
+        <label style={{
+          fontFamily: fontFamilies.body,
+          fontSize: '11px',
+          fontWeight: 500,
+          color: colors.text.lowEmphasis.onLight,
+        }}>Prototype Theme</label>
+        <select
+          value={themeName}
+          onChange={e => setThemeName(e.target.value)}
+          style={{
+            padding: '6px 28px 6px 10px',
+            fontFamily: fontFamilies.body,
+            fontSize: '13px',
+            border: `1px solid ${colors.border.midEmphasis.onLight}`,
+            borderRadius: borderRadius.sm,
+            backgroundColor: colors.surface.light,
+            color: colors.text.highEmphasis.onLight,
+            cursor: 'pointer',
+            appearance: 'none' as const,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right 6px center',
+            boxShadow: shadows.sm,
+          }}
+        >
+          {availableThemes.map(t => (
+            <option key={t.name} value={t.name}>
+              {t.name.charAt(0).toUpperCase() + t.name.slice(1)}
+            </option>
+          ))}
+        </select>
+      </div>
       {/* Top header bar — matches Figma Nav Header-canopy pattern */}
       <header style={{
         backgroundColor: colors.surface.light,

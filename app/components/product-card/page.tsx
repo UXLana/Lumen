@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
 import { ProductCard } from '@/components'
 import { colors, typography, productCard } from '@/styles/design-tokens'
 
@@ -140,51 +140,27 @@ import { ProductCard } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
-          {/* ========== VARIANTS ========== */}
+          {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Examples</h2>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
+                Dimension and spacing values used in the Product Card component. Click any token to copy it.
+              </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-              {/* With Image */}
-              <div>
-                <h3 style={{ marginBottom: '12px', fontWeight: 600 }}>With Image</h3>
-                <ProductCard
-                  imageUrl="https://images.unsplash.com/photo-1616690710400-a16d146927c5?w=300&h=200&fit=crop"
-                  brand="Premium Brand"
-                  name="Indica Blend"
-                  sku="SKU-001"
-                  gapCount={1}
-                  tags={[{ label: 'Indica' }]}
-                />
-              </div>
-
-              {/* Without Image */}
-              <div>
-                <h3 style={{ marginBottom: '12px', fontWeight: 600 }}>Placeholder Image</h3>
-                <ProductCard
-                  brand="Generic Brand"
-                  name="Hybrid Strain"
-                  sku="SKU-002"
-                  tags={[{ label: 'Hybrid' }, { label: 'CBD 10%', variant: 'outlined' }]}
-                />
-              </div>
-
-              {/* With Markets */}
-              <div>
-                <h3 style={{ marginBottom: '12px', fontWeight: 600 }}>With Market Badges</h3>
-                <ProductCard
-                  brand="National Brand"
-                  name="Multi-State Product"
-                  sku="SKU-003"
-                  markets={[
-                    { code: 'CA', highlighted: true },
-                    { code: 'CO', highlighted: true },
-                    { code: 'NV', highlighted: false },
+              <div style={sharedStyles.card}>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Dimensions & Spacing</h3>
+                <SpecTable
+                  headers={['Token', 'Value', 'Description']}
+                  rows={[
+                    [<CopyableToken key="mw" token="productCard.minWidth" />, <PixelValue key="mwv" value={productCard.minWidth} />, 'Minimum card width'],
+                    [<CopyableToken key="ih" token="productCard.image.height" />, <PixelValue key="ihv" value={productCard.image.height} />, 'Image area height'],
+                    [<CopyableToken key="cp" token="productCard.content.padding" />, <PixelValue key="cpv" value={productCard.content.padding} />, 'Content area padding'],
+                    [<CopyableToken key="br" token="productCard.border.radius" />, <PixelValue key="brv" value={productCard.border.radius} />, 'Card border radius'],
+                    [<CopyableToken key="hs" token="productCard.hover.shadow" />, <PixelValue key="hsv" value={productCard.hover.shadow} />, 'Hover state shadow'],
                   ]}
-                  totalMarkets={12}
                 />
               </div>
-            </div>
+            </CollapsibleSection>
           </section>
         </>
       )}
@@ -192,30 +168,84 @@ import { ProductCard } from '@/components'`}</CodeBlock>
       {/* ========== IMPLEMENTATION TAB ========== */}
       {activePageTab === 'implementation' && (
         <>
+          {/* ========== USAGE ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Usage</h2>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Import</h3>
+              <CodeBlock>
+{`import { ProductCard } from '@/components'
+import type { ProductCardProps, ProductTag, MarketBadge } from '@/components'`}
+              </CodeBlock>
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
+              <CodeBlock>
+{`// Simple product card
+<ProductCard
+  brand="Cannabis Co."
+  name="Premium Flower"
+  sku="SKU-12345"
+  onClick={() => console.log('clicked')}
+/>
+
+// With image and tags
+<ProductCard
+  imageUrl="/products/flower.jpg"
+  brand="Premium Brand"
+  name="Indica Blend"
+  sku="SKU-001"
+  gapCount={1}
+  tags={[
+    { label: 'Flower' },
+    { label: 'THC 22%', variant: 'outlined' },
+  ]}
+/>
+
+// With market badges
+<ProductCard
+  brand="National Brand"
+  name="Multi-State Product"
+  sku="SKU-003"
+  markets={[
+    { code: 'CA', highlighted: true },
+    { code: 'NV', highlighted: true },
+    { code: 'CO' },
+  ]}
+  totalMarkets={12}
+/>`}
+              </CodeBlock>
+            </div>
+          </section>
+
           {/* ========== PROPS ========== */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Props</h2>
-            <SpecTable
-              headers={['Prop', 'Type', 'Default', 'Description']}
-              rows={[
-                ['imageUrl', 'string', '—', 'Product image URL (shows placeholder if not provided)'],
-                ['brand', 'string', '—', 'Brand name (required)'],
-                ['name', 'string', '—', 'Product name (required)'],
-                ['sku', 'string', '—', 'SKU number'],
-                ['gapCount', 'number', '—', 'Gap count badge (e.g., "2 Gap")'],
-                ['tags', 'ProductTag[]', '[]', 'Product tags with optional variant'],
-                ['markets', 'MarketBadge[]', '[]', 'Market badges with code and highlight state'],
-                ['totalMarkets', 'number', '—', 'Total markets count for display'],
-                ['onClick', '() => void', '—', 'Click handler (makes card interactive)'],
-                ['style', 'CSSProperties', '—', 'Custom styles'],
-              ]}
-            />
-          </section>
 
-          {/* ========== TYPES ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Type Definitions</h2>
-            <CodeBlock>{`interface ProductTag {
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>ProductCard Props</h3>
+              <SpecTable
+                headers={['Prop', 'Type', 'Default', 'Description']}
+                rows={[
+                  [<code key="iu">imageUrl</code>, <code key="iut">string</code>, '—', 'Product image URL (shows placeholder if not provided)'],
+                  [<code key="b">brand</code>, <code key="bt">string</code>, '—', 'Brand name (required)'],
+                  [<code key="n">name</code>, <code key="nt">string</code>, '—', 'Product name (required)'],
+                  [<code key="s">sku</code>, <code key="st">string</code>, '—', 'SKU number'],
+                  [<code key="gc">gapCount</code>, <code key="gct">number</code>, '—', 'Gap count badge (e.g., "2 Gap")'],
+                  [<code key="t">tags</code>, <code key="tt">ProductTag[]</code>, <code key="td">[]</code>, 'Product tags with optional variant'],
+                  [<code key="m">markets</code>, <code key="mt">MarketBadge[]</code>, <code key="md">[]</code>, 'Market badges with code and highlight state'],
+                  [<code key="tm">totalMarkets</code>, <code key="tmt">number</code>, '—', 'Total markets count for display'],
+                  [<code key="oc">onClick</code>, <code key="oct">{'() => void'}</code>, '—', 'Click handler (makes card interactive)'],
+                  [<code key="st2">style</code>, <code key="st2t">CSSProperties</code>, '—', 'Custom styles'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Type Definitions</h3>
+              <CodeBlock>{`interface ProductTag {
   label: string
   variant?: 'default' | 'outlined'
 }
@@ -224,21 +254,50 @@ interface MarketBadge {
   code: string
   highlighted?: boolean
 }`}</CodeBlock>
+            </div>
           </section>
 
-          {/* ========== DESIGN TOKENS ========== */}
+          {/* ========== DESIGN GUIDANCE ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
-            <SpecTable
-              headers={['Token', 'Value', 'Description']}
-              rows={[
-                ['productCard.minWidth', productCard.minWidth, 'Minimum card width'],
-                ['productCard.image.height', productCard.image.height, 'Image area height'],
-                ['productCard.content.padding', productCard.content.padding, 'Content area padding'],
-                ['productCard.border.radius', productCard.border.radius, 'Card border radius'],
-                ['productCard.hover.shadow', productCard.hover.shadow, 'Hover state shadow'],
-              ]}
-            />
+            <h2 style={sharedStyles.sectionTitle}>Design Guidance</h2>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>When to Use</h3>
+              <SpecTable
+                headers={['Scenario', 'Recommendation']}
+                rows={[
+                  ['Product listing grids', 'Use ProductCard in responsive CSS grid layouts'],
+                  ['Search results', 'Display matching products with tags and market info'],
+                  ['Inventory dashboards', 'Show product details with gap counts and compliance tags'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
+              <SpecTable
+                headers={['Do', "Don't"]}
+                rows={[
+                  ['Use consistent image aspect ratios', 'Mix cards with and without images in the same grid'],
+                  ['Keep brand and name text concise', 'Truncate SKU numbers or critical identifiers'],
+                  ['Limit tags to 2-3 per card', 'Overload cards with too many tags'],
+                  ['Show relevant market badges only', 'Display all markets when only a few are highlighted'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Accessibility</h3>
+              <SpecTable
+                headers={['Feature', 'Implementation']}
+                rows={[
+                  ['Interactive card', 'onClick adds cursor: pointer and hover/focus states'],
+                  ['Image alt text', 'Product name used as alt text for the image'],
+                  ['Color contrast', 'Tag text meets WCAG AA contrast standards'],
+                  ['Keyboard navigation', 'Cards are focusable when onClick is provided'],
+                ]}
+              />
+            </div>
           </section>
         </>
       )}

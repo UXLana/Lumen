@@ -1040,3 +1040,28 @@ export const BannerIcon: React.FC<BannerIconProps> = ({
   )
 }
 BannerIcon.displayName = 'BannerIcon'
+
+// =============================================================================
+// DATA TABLE ICON
+// =============================================================================
+
+/**
+ * IconDataTable - Data table icon
+ * Shows a table grid with header row and data rows, representing
+ * the DataTable component in the design system
+ */
+export const IconDataTable: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    {/* Table outline */}
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    {/* Header divider */}
+    <line x1="3" y1="8" x2="21" y2="8" />
+    {/* Row dividers */}
+    <line x1="3" y1="13" x2="21" y2="13" />
+    <line x1="3" y1="18" x2="21" y2="18" />
+    {/* Column dividers */}
+    <line x1="9" y1="3" x2="9" y2="21" />
+    <line x1="15" y1="3" x2="15" y2="21" />
+  </BaseIcon>
+)
+IconDataTable.displayName = 'IconDataTable'

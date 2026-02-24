@@ -9,7 +9,7 @@ import { colors, typography, stepper as stepperTokens, borderRadius } from '@/st
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'variants' | 'implementation'
+type PageTab = 'overview' | 'implementation'
 
 // =============================================================================
 // CUSTOM INDICATOR EXAMPLES
@@ -75,9 +75,6 @@ export default function StepperPage() {
   const [demoClickable, setDemoClickable] = useState(false)
   const [demoVariant, setDemoVariant] = useState<'linear' | 'nonLinear'>('linear')
 
-  // Non-linear demo state
-  const [nonLinearActiveStep, setNonLinearActiveStep] = useState(1)
-
   // Demo steps
   const demoSteps: StepItem[] = [
     { id: '1', label: 'Account Setup' },
@@ -88,7 +85,6 @@ export default function StepperPage() {
   // Custom tabs for component pages
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
-    { id: 'variants', label: 'Variants' },
     { id: 'implementation', label: 'Implementation' },
   ]
 
@@ -397,176 +393,6 @@ import { Stepper, LinearStepper, NonLinearStepper } from '@/components'`}</CodeB
               />
             </div>
             </CollapsibleSection>
-          </section>
-        </>
-      )}
-
-      {/* ========== VARIANTS TAB ========== */}
-      {activePageTab === 'variants' && (
-        <>
-          {/* ========== LINEAR STEPPER ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Linear Stepper</h2>
-            <p style={sharedStyles.sectionDescription}>
-              The LinearStepper displays numbered steps that users must complete in sequence.
-              This is the default stepper behavior - users progress through steps one at a time.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <Playground
-                preview={
-                  <div style={{ width: '100%', maxWidth: '350px' }}>
-                    <LinearStepper
-                      steps={[
-                        { id: '1', label: 'Account Setup', metadata: 'Required' },
-                        { id: '2', label: 'Personal Information' },
-                        { id: '3', label: 'Review & Submit' },
-                      ]}
-                      activeStep={1}
-                    />
-                  </div>
-                }
-                code={`import { LinearStepper } from '@/components'
-
-<LinearStepper
-  steps={[
-    { id: '1', label: 'Account Setup', metadata: 'Required' },
-    { id: '2', label: 'Personal Information' },
-    { id: '3', label: 'Review & Submit' },
-  ]}
-  activeStep={1}
-  onStepChange={setActiveStep}
-/>`}
-                previewPadding="32px 24px"
-                previewMinHeight="300px"
-              />
-            </div>
-          </section>
-
-          {/* ========== NON-LINEAR STEPPER ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Non-Linear Stepper</h2>
-            <p style={sharedStyles.sectionDescription}>
-              The NonLinearStepper uses circle indicators instead of numbers and allows users to
-              navigate to any step in any order. By default, steps are clickable.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Default Non-Linear</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: '16px' }}>
-                Uses status icons (completed, in-progress, not-started) inside a 32px circle with 2px border.
-                Border color matches connector line: green for completed/active, grey for pending/disabled.
-              </p>
-              <Playground
-                preview={
-                  <div style={{ width: '100%', maxWidth: '350px' }}>
-                    <NonLinearStepper
-                      steps={[
-                        { id: '1', label: 'Select Category' },
-                        { id: '2', label: 'Add Details' },
-                        { id: '3', label: 'Upload Files' },
-                        { id: '4', label: 'Confirm' },
-                      ]}
-                      activeStep={nonLinearActiveStep}
-                      onStepChange={setNonLinearActiveStep}
-                    />
-                  </div>
-                }
-                code={`import { NonLinearStepper } from '@/components'
-
-<NonLinearStepper
-  steps={[
-    { id: '1', label: 'Select Category' },
-    { id: '2', label: 'Add Details' },
-    { id: '3', label: 'Upload Files' },
-    { id: '4', label: 'Confirm' },
-  ]}
-  activeStep={activeStep}
-  onStepChange={setActiveStep}
-  clickable // true by default for NonLinearStepper
-/>`}
-                previewPadding="32px 24px"
-                previewMinHeight="350px"
-              />
-            </div>
-
-            {/* Custom Indicator */}
-            <div style={{ ...sharedStyles.card, marginTop: '32px' }}>
-              <h3 style={sharedStyles.cardTitle}>Custom Indicator Component</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: '16px' }}>
-                Replace the default circle with a custom indicator component. The component receives
-                status, isHovered, isFocused, and size props.
-              </p>
-              <Playground
-                preview={
-                  <div style={{ width: '100%', maxWidth: '350px' }}>
-                    <NonLinearStepper
-                      steps={[
-                        { id: '1', label: 'Upload Document' },
-                        { id: '2', label: 'Review Content' },
-                        { id: '3', label: 'Approve' },
-                      ]}
-                      activeStep={1}
-                      indicatorComponent={IconStepIndicator}
-                    />
-                  </div>
-                }
-                code={`import { NonLinearStepper, StepIndicatorProps } from '@/components'
-
-// Custom indicator with checkmark for completed
-function IconStepIndicator({ status, size = 12 }: StepIndicatorProps) {
-  if (status === 'completed') {
-    return (
-      <svg width={size} height={size} viewBox="0 0 12 12">
-        <path d="M2 6L5 9L10 3" stroke="rgba(255,255,255,0.9)" strokeWidth="2" />
-      </svg>
-    )
-  }
-
-  const isActive = status === 'active'
-  return (
-    <div style={{
-      width: size,
-      height: size,
-      borderRadius: '50%',
-      backgroundColor: isActive ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.1)',
-    }} />
-  )
-}
-
-<NonLinearStepper
-  steps={steps}
-  activeStep={activeStep}
-  indicatorComponent={IconStepIndicator}
-/>`}
-                previewPadding="32px 24px"
-                previewMinHeight="280px"
-              />
-            </div>
-
-          </section>
-
-          {/* ========== COMPARISON ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>When to Use Each Variant</h2>
-
-            <div style={sharedStyles.card}>
-              <SpecTable
-                headers={['Variant', 'Use Case', 'Behavior']}
-                rows={[
-                  [
-                    <strong key="linear">LinearStepper</strong>,
-                    'Sequential processes where order matters (registration, checkout)',
-                    'Shows step numbers; typically completes steps in order',
-                  ],
-                  [
-                    <strong key="nonLinear">NonLinearStepper</strong>,
-                    'Flexible workflows where users can jump between sections (settings, forms)',
-                    'Shows circles/icons; allows clicking any step; clickable by default',
-                  ],
-                ]}
-              />
-            </div>
           </section>
         </>
       )}

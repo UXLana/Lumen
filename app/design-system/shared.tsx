@@ -20,7 +20,7 @@ import {
   IconSidebarOpen,
   IconSidebarClose,
 } from '@/components/Icons'
-import { useTheme, useThemeSwitcher, availableThemes } from '@/styles/themes'
+import { useThemeSwitcher, availableThemes } from '@/styles/themes'
 
 // =============================================================================
 // CONSTANTS
@@ -84,11 +84,13 @@ export const navSections = [
     title: 'Components',
     items: [
       { id: 'accordion', label: 'Accordion', href: '/components/accordion' },
+      { id: 'assistive-message', label: 'Assistive Message', href: '/components/assistive-message' },
       { id: 'avatar', label: 'Avatar', href: '/components/avatar' },
       { id: 'badge', label: 'Badge', href: '/components/badge' },
       { id: 'banner', label: 'Banner', href: '/components/banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
       { id: 'checkbox', label: 'Checkbox', href: '/components/checkbox' },
+      { id: 'data-table', label: 'Data Table', href: '/components/data-table' },
       { id: 'divider', label: 'Divider', href: '/components/divider' },
       { id: 'input', label: 'Input', href: '/components/input' },
       { id: 'link', label: 'Link', href: '/components/link' },
@@ -582,7 +584,7 @@ function NavSection({
       <nav
         style={{
           ...sharedStyles.nav,
-          maxHeight: expanded ? '500px' : '0px',
+          maxHeight: expanded ? '2000px' : '0px',
           opacity: expanded ? 1 : 0,
           padding: expanded ? '4px 12px 8px' : '0 12px',
         }}
@@ -763,7 +765,6 @@ export function StyleguideLayout({
 
   // Theme selection — managed by SwitchableThemeProvider, controlled here
   const { themeName, setThemeName } = useThemeSwitcher()
-  const activeTheme = useTheme()
 
   // Restore sidebar state from localStorage on mount
   useEffect(() => {
@@ -900,7 +901,7 @@ export function StyleguideLayout({
               <label
                 htmlFor="ds-theme-select"
                 style={{
-                  color: activeTheme.colors.text.lowEmphasis.onLight,
+                  color: colors.text.lowEmphasis.onLight,
                   fontWeight: 500,
                   whiteSpace: 'nowrap' as const,
                   fontSize: '12px',
@@ -917,9 +918,9 @@ export function StyleguideLayout({
                   flex: 1,
                   padding: '5px 8px',
                   borderRadius: borderRadius.sm,
-                  border: `1px solid ${activeTheme.colors.border.lowEmphasis.onLight}`,
-                  background: activeTheme.colors.hover.onLight,
-                  color: activeTheme.colors.text.highEmphasis.onLight,
+                  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                  background: colors.hover.onLight,
+                  color: colors.text.highEmphasis.onLight,
                   fontSize: '12px',
                   fontWeight: 500,
                   fontFamily: fontFamilies.body,
@@ -971,11 +972,11 @@ export function StyleguideLayout({
         }}
         data-content
       >
-        {/* Header Banner — gradient uses active theme brand colors */}
+        {/* Header Banner — gradient uses CSS-variable-backed brand tokens */}
         <div style={sharedStyles.headerWrapper}>
           <header style={{
             ...sharedStyles.header,
-            background: `linear-gradient(135deg, ${activeTheme.colors.brand.darker} 0%, ${activeTheme.colors.brand.default} 50%, ${activeTheme.colors.brand.lighter} 100%)`,
+            background: `linear-gradient(135deg, ${colors.brand.darker} 0%, ${colors.brand.default} 50%, ${colors.brand.lighter} 100%)`,
           }}>
             <h1 style={sharedStyles.headerTitle}>{title}</h1>
             <p style={sharedStyles.headerDescription}>{description}</p>
@@ -1078,6 +1079,8 @@ interface PlaygroundProps {
   previewBackground?: string
   previewPadding?: string
   previewMinHeight?: string
+  /** Stretch preview content to fill width instead of centering */
+  previewStretch?: boolean
   /** Optional: component source code for editable Source tab */
   sourceCode?: string
   /** Optional: path to component file (for saving) */
@@ -1092,6 +1095,7 @@ export function Playground({
   previewBackground = colors.surface.lightDarker,
   previewPadding = '48px',
   previewMinHeight = '120px',
+  previewStretch = false,
   sourceCode,
   componentPath,
   onSourceSaved,
@@ -1170,8 +1174,8 @@ export function Playground({
           <div style={{
             padding: previewPadding,
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            alignItems: previewStretch ? 'stretch' : 'center',
+            justifyContent: previewStretch ? 'stretch' : 'center',
             minHeight: previewMinHeight,
           }}>
             {preview}

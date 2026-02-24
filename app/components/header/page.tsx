@@ -385,41 +385,38 @@ import type { HeaderProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
-          {/* ========== THEME INTEGRATION ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Theme Integration</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Theme-Aware Colors</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing[4] }}>
-                The Header is fully theme-aware. All colors come from <code style={{ fontFamily: 'monospace' }}>useColors()</code> and will adapt when the active theme changes.
-              </p>
-              <CodeBlock>{`// Theme-aware usage
-import { useColors } from '@/styles/themes'
-
-// Inside the Header component, colors are resolved from the active theme:
-const colors = useColors()
-
-// Background: colors.surface.light
-// Border: colors.border.lowEmphasis.onLight
-// Icons: colors.icon.enabled.onLight
-// Text: colors.text.highEmphasis.onLight
-// Brand badge: colors.brand.default
-// Focus: colors.focusBorder.onLight`}</CodeBlock>
-            </div>
-          </section>
-
           {/* ========== DESIGN GUIDANCE ========== */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Design Guidance</h2>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>When to Use</h3>
-              <ul style={{ paddingLeft: '20px', listStyleType: 'disc', color: colors.text.highEmphasis.onLight, lineHeight: '1.8', marginBottom: 0 }}>
-                <li>As the primary top-level navigation for any application</li>
-                <li>When you need search, org switching, and notification actions</li>
-                <li>For responsive layouts that need mobile menu support</li>
-              </ul>
+              <SpecTable
+                headers={['Scenario', 'Recommendation']}
+                rows={[
+                  ['Primary app navigation', 'Use as the top-level header for any application'],
+                  ['Search + org switching', 'Enable showSearch and provide orgName/orgLabel'],
+                  ['Responsive layouts', 'Use sticky for mobile menu support across breakpoints'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Theme Integration</h3>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing[4] }}>
+                The Header is fully theme-aware. All colors resolve from <code style={{ fontFamily: 'monospace' }}>useColors()</code> and adapt when the active theme changes.
+              </p>
+              <SpecTable
+                headers={['Element', 'Token']}
+                rows={[
+                  ['Background', <code key="bg">colors.surface.light</code>],
+                  ['Border', <code key="br">colors.border.lowEmphasis.onLight</code>],
+                  ['Icons', <code key="ic">colors.icon.enabled.onLight</code>],
+                  ['Text', <code key="tx">colors.text.highEmphasis.onLight</code>],
+                  ['Brand badge', <code key="bd">colors.brand.default</code>],
+                  ['Focus ring', <code key="fc">colors.focusBorder.onLight</code>],
+                ]}
+              />
             </div>
 
             <div style={sharedStyles.card}>

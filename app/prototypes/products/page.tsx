@@ -7,6 +7,7 @@ import {
   typography,
   spacing,
 } from '@/styles/design-tokens'
+import { useThemeSwitcher, availableThemes } from '@/styles/themes/theme-provider'
 
 // =============================================================================
 // ICONS
@@ -166,6 +167,7 @@ const ChevronUpIcon = () => (
 export default function ProductsPage() {
   const [activeTab, setActiveTab] = useState('all')
   const [adminExpanded, setAdminExpanded] = useState(true)
+  const { themeName, setThemeName } = useThemeSwitcher()
 
   // Sample product data - matching the original exactly
   const products = Array(6).fill(null).map((_, i) => ({
@@ -311,6 +313,48 @@ export default function ProductsPage() {
             <span style={{ display: 'flex', color: 'rgba(0,0,0,0.5)' }}><LogoutIcon /></span>
             Logout
           </div>
+        </div>
+
+        {/* Theme Switcher */}
+        <div style={{
+          borderTop: '1px solid rgba(0,0,0,0.08)',
+          paddingTop: '12px',
+          marginTop: '12px',
+        }}>
+          <div style={{
+            fontFamily: fontFamilies.body,
+            fontSize: '11px',
+            fontWeight: 500,
+            color: 'rgba(0,0,0,0.45)',
+            padding: '0 12px',
+            marginBottom: '6px',
+          }}>Prototype Theme</div>
+          <select
+            value={themeName}
+            onChange={e => setThemeName(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              fontFamily: fontFamilies.body,
+              fontSize: '13px',
+              border: '1px solid rgba(0,0,0,0.12)',
+              borderRadius: '6px',
+              backgroundColor: '#FFFFFF',
+              color: 'rgba(0,0,0,0.85)',
+              cursor: 'pointer',
+              appearance: 'none' as const,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 8px center',
+              paddingRight: '28px',
+            }}
+          >
+            {availableThemes.map(t => (
+              <option key={t.name} value={t.name}>
+                {t.name.charAt(0).toUpperCase() + t.name.slice(1)}
+              </option>
+            ))}
+          </select>
         </div>
       </aside>
 

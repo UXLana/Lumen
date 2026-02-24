@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CollapsibleSection } from '../../design-system/shared'
 import { Accordion, AccordionItem } from '@/components'
 import { colors, spacing, typography, borderRadius } from '@/styles/design-tokens'
 
@@ -222,7 +222,10 @@ import { Accordion, AccordionItem } from '@/components'`}</CodeBlock>
 
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
+            <CollapsibleSection title="Design Tokens (for custom implementations)">
+              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
+                Spacing, typography, color, and animation tokens used in the accordion component.
+              </p>
 
             <div style={sharedStyles.card}>
               <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Spacing & Dimensions</h3>
@@ -278,6 +281,7 @@ import { Accordion, AccordionItem } from '@/components'`}</CodeBlock>
                 ]}
               />
             </div>
+            </CollapsibleSection>
           </section>
         </>
       )}
