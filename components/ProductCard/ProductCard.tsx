@@ -150,13 +150,13 @@ export function ProductCard({
     fontWeight: productCard.typography.brand.fontWeight,
     lineHeight: productCard.typography.brand.lineHeight,
     color: productCard.typography.brand.color,
-    marginBottom: spacing[1],
+    marginBottom: spacing['2xs'],
   }
 
   const nameContainerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: spacing[2],
+    gap: spacing.xs,
   }
 
   const nameStyle: React.CSSProperties = {
@@ -200,8 +200,8 @@ export function ProductCard({
   const tagStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
-    height: spacing[7],
-    padding: `0 ${spacing[3]}`,
+    height: '28px',
+    padding: `0 ${spacing.sm}`,
     borderRadius: borderRadius.sm,
     backgroundColor: colors.surface.lightDarker,
     fontFamily: fontFamilies.body,
@@ -234,7 +234,7 @@ export function ProductCard({
 
   const marketBadgesStyle: React.CSSProperties = {
     display: 'flex',
-    gap: spacing[1],
+    gap: spacing['2xs'],
   }
 
   const getMarketBadgeStyle = (highlighted: boolean): React.CSSProperties => ({

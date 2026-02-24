@@ -53,7 +53,7 @@ export default function UploadZone({ onFileAccepted, disabled, isUploading }: Up
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       style={{
-        padding: `${spacing[8]} ${spacing[6]}`,
+        padding: `${spacing['2xl']} ${spacing.xl}`,
         border: `1px dashed ${dragOver ? colors.brand.default : 'rgba(0, 0, 0, 0.15)'}`,
         borderRadius: borderRadius.lg,
         backgroundColor: dragOver ? 'rgba(0, 81, 81, 0.03)' : 'transparent',
@@ -78,16 +78,16 @@ export default function UploadZone({ onFileAccepted, disabled, isUploading }: Up
         </p>
       ) : (
         <>
-          <div style={{ color: colors.text.disabled.onLight, marginBottom: spacing[2], display: 'flex', justifyContent: 'center' }}>
+          <div style={{ color: colors.text.disabled.onLight, marginBottom: spacing.xs, display: 'flex', justifyContent: 'center' }}>
             <IconUpload size="lg" />
           </div>
           <p style={{ ...typography.body.sm, color: colors.text.highEmphasis.onLight, margin: 0 }}>
             Drop a VPAT report here
           </p>
-          <p style={{ ...typography.body.xs, color: colors.text.action.enabled, margin: 0, marginTop: spacing[1] }}>
+          <p style={{ ...typography.body.xs, color: colors.text.action.enabled, margin: 0, marginTop: spacing['2xs'] }}>
             or click to browse
           </p>
-          <p style={{ ...typography.body.xs, color: colors.text.disabled.onLight, margin: 0, marginTop: spacing[2] }}>
+          <p style={{ ...typography.body.xs, color: colors.text.disabled.onLight, margin: 0, marginTop: spacing.xs }}>
             .md, .docx, .xlsx, .html
           </p>
         </>

@@ -270,7 +270,7 @@ import type { DataTableColumn, SortState } from '@/components'`}</CodeBlock>
                     previewPadding="16px"
                     previewStretch
                     preview={
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[3], width: '100%' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, width: '100%' }}>
                         {demoToolbar && (
                           <DataTable.Toolbar>
                             <DataTable.Toolbar.Left>
@@ -323,7 +323,7 @@ import type { DataTableColumn, SortState } from '@/components'`}</CodeBlock>
                                 backgroundColor: selected ? colors.selectedHighlight : colors.surface.light,
                                 border: `1px solid ${selected ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
                                 borderRadius: borderRadius.lg,
-                                padding: spacing[4],
+                                padding: spacing.md,
                                 cursor: 'pointer',
                                 transition: 'border-color 150ms ease',
                               }}
@@ -331,7 +331,7 @@ import type { DataTableColumn, SortState } from '@/components'`}</CodeBlock>
                               <div style={{
                                 width: '100%', height: 80, borderRadius: borderRadius.md,
                                 backgroundColor: colors.surface.lightDarker,
-                                marginBottom: spacing[3],
+                                marginBottom: spacing.sm,
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 ...typography.body.sm, color: colors.text.disabled.onLight,
                               }}>
@@ -391,7 +391,7 @@ import type { DataTableColumn, SortState } from '@/components'`}</CodeBlock>
                     </div>
 
                     {/* Options — contextual to current display mode */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                       {demoDisplay !== 'cards' && (
                         <StyledCheckbox
                           label="Striped Rows"

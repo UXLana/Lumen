@@ -24,9 +24,9 @@ export interface DividerProps extends React.HTMLAttributes<HTMLHRElement> {
 
 const spacingMap = {
   none: '0px',
-  sm: spacing[2],
-  md: spacing[4],
-  lg: spacing[6],
+  sm: spacing.xs,
+  md: spacing.md,
+  lg: spacing.xl,
 } as const
 
 const weightMap = {

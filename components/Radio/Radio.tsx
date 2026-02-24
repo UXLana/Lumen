@@ -115,8 +115,8 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
     const containerStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: spacing[2],
-      padding: `${spacing[2]} ${spacing[3]}`,
+      gap: spacing.xs,
+      padding: `${spacing.xs} ${spacing.sm}`,
       cursor: disabled ? 'not-allowed' : 'pointer',
       opacity: disabled ? 0.6 : 1,
       width: fullWidth ? '100%' : 'auto',
@@ -253,7 +253,7 @@ export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
       display: 'flex',
       flexDirection: 'column',
       width: fullWidth ? '100%' : 'auto',
-      marginBottom: spacing[4],
+      marginBottom: spacing.md,
       ...style,
     }
 
@@ -263,26 +263,26 @@ export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
       fontWeight: fontWeights.medium,
       lineHeight: typography.body.sm.lineHeight,
       color: colors.text.highEmphasis.onLight,
-      marginBottom: spacing[1],
+      marginBottom: spacing['2xs'],
     }
 
     const itemsStyles: React.CSSProperties = {
       display: 'flex',
       flexDirection: direction === 'horizontal' ? 'row' : 'column',
-      gap: direction === 'horizontal' ? spacing[4] : undefined,
+      gap: direction === 'horizontal' ? spacing.md : undefined,
       flexWrap: direction === 'horizontal' ? 'wrap' : undefined,
     }
 
     const errorStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'center',
-      gap: spacing[1],
+      gap: spacing['2xs'],
       fontFamily: fontFamilies.body,
       fontSize: typography.body.xs.fontSize,
       fontWeight: fontWeights.regular,
       lineHeight: typography.body.xs.lineHeight,
       color: colors.status.important,
-      marginTop: spacing[1],
+      marginTop: spacing['2xs'],
     }
 
     // Clone children to inject name, value, onChange, error props

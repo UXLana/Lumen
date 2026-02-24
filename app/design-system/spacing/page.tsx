@@ -2,18 +2,14 @@
 
 import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../shared'
-import { colors, typography, spacing, spacingSemantics, borderRadius } from '@/styles/design-tokens'
-
-// =============================================================================
-// SPACING VISUAL COMPONENT
-// =============================================================================
+import { colors, typography, spacing, spacingTokens, borderRadius } from '@/styles/design-tokens'
 
 function SpacingBar({ name, value }: { name: string; value: string }) {
   const numValue = parseInt(value)
   
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
-      <div style={{ width: '60px', ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>
+      <div style={{ width: '80px', ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>
         {name}
       </div>
       <div 
@@ -32,154 +28,119 @@ function SpacingBar({ name, value }: { name: string; value: string }) {
   )
 }
 
-// =============================================================================
-// MAIN PAGE
-// =============================================================================
-
 export default function SpacingPage() {
   const [activeTab, setActiveTab] = useState('overview')
 
   return (
     <StyleguideLayout
       title="Spacing"
-      description="A consistent spacing system based on a 4px grid. Use these tokens for margins, padding, and gaps to maintain visual rhythm."
+      description="A consistent spacing system based on a 4px grid. Use semantic names for clear, readable code."
       activeId="spacing"
       activeTab={activeTab}
       onTabChange={setActiveTab}
     >
-      {/* Overview Tab */}
       {activeTab === 'overview' && (
         <>
-          {/* Base Scale */}
-      <section style={sharedStyles.section}>
-        <h2 style={sharedStyles.sectionTitle}>Base Scale</h2>
-        <p style={sharedStyles.sectionDescription}>
-          Core spacing values based on a 4px unit. Use these for precise control over spacing.
-        </p>
-        
-        <div style={sharedStyles.card}>
-          {Object.entries(spacing).slice(0, 15).map(([key, value]) => (
-            <SpacingBar key={key} name={key} value={value} />
-          ))}
-        </div>
-        
-        <div style={sharedStyles.card}>
-          <h3 style={sharedStyles.cardTitle}>Extended Scale</h3>
-          {Object.entries(spacing).slice(15).map(([key, value]) => (
-            <SpacingBar key={key} name={key} value={value} />
-          ))}
-        </div>
-        
-        <div style={sharedStyles.card}>
-          <h3 style={sharedStyles.cardTitle}>Specifications</h3>
-          <SpecTable
-            headers={['Token', 'Value', 'Pixels']}
-            rows={Object.entries(spacing).map(([key, value]) => [
-              <code>spacing[{key}]</code>,
-              value,
-              `${parseInt(value)}px`,
-            ])}
-          />
-        </div>
-      </section>
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Spacing Scale</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Semantic size names on a 4px grid. Every value has a meaningful name — no numeric indices.
+            </p>
+            
+            <div style={sharedStyles.card}>
+              {Object.entries(spacing).map(([key, value]) => (
+                <SpacingBar key={key} name={key} value={value} />
+              ))}
+            </div>
+            
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Token Reference</h3>
+              <SpecTable
+                headers={['Token', 'Value', 'Common Use']}
+                rows={[
+                  [<code key="n">spacing.none</code>, spacing.none, 'Reset / no spacing'],
+                  [<code key="2xs">spacing[&apos;2xs&apos;]</code>, spacing['2xs'], 'Tight gaps between related items'],
+                  [<code key="xs">spacing.xs</code>, spacing.xs, 'Small internal padding, list gaps'],
+                  [<code key="sm">spacing.sm</code>, spacing.sm, 'Cell padding, compact sections'],
+                  [<code key="md">spacing.md</code>, spacing.md, 'Standard padding and gaps'],
+                  [<code key="lg">spacing.lg</code>, spacing.lg, 'Comfortable padding'],
+                  [<code key="xl">spacing.xl</code>, spacing.xl, 'Section spacing'],
+                  [<code key="2xl">spacing[&apos;2xl&apos;]</code>, spacing['2xl'], 'Large section gaps, indents'],
+                  [<code key="3xl">spacing[&apos;3xl&apos;]</code>, spacing['3xl'], 'Page-level spacing'],
+                  [<code key="4xl">spacing[&apos;4xl&apos;]</code>, spacing['4xl'], 'Section dividers'],
+                  [<code key="5xl">spacing[&apos;5xl&apos;]</code>, spacing['5xl'], 'Major page sections'],
+                  [<code key="6xl">spacing[&apos;6xl&apos;]</code>, spacing['6xl'], 'Hero-level spacing'],
+                ]}
+              />
+            </div>
+          </section>
 
-      {/* Semantic Scale */}
-      <section style={sharedStyles.section}>
-        <h2 style={sharedStyles.sectionTitle}>Semantic Aliases</h2>
-        <p style={sharedStyles.sectionDescription}>
-          Named spacing values for common use cases. These provide clearer intent in code.
-        </p>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-          <div style={sharedStyles.card}>
-            <h3 style={sharedStyles.cardTitle}>Size Scale</h3>
-            {['none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'].map((key) => (
-              <SpacingBar key={key} name={key} value={(spacingSemantics as any)[key]} />
-            ))}
-          </div>
-          
-          <div style={sharedStyles.card}>
-            <h3 style={sharedStyles.cardTitle}>Component Specific</h3>
-            {['inputPadding', 'buttonPadding', 'cardPadding', 'sectionPadding', 'pagePadding', 'gutter', 'containerPadding'].map((key) => (
-              <SpacingBar key={key} name={key} value={(spacingSemantics as any)[key]} />
-            ))}
-          </div>
-        </div>
-        
-        <div style={sharedStyles.card}>
-          <h3 style={sharedStyles.cardTitle}>Specifications</h3>
-          <SpecTable
-            headers={['Token', 'Value', 'Use Case']}
-            rows={[
-              [<code>spacingSemantics.none</code>, spacingSemantics.none, 'No spacing'],
-              [<code>spacingSemantics.xs</code>, spacingSemantics.xs, 'Tight spacing between related items'],
-              [<code>spacingSemantics.sm</code>, spacingSemantics.sm, 'Default gap between elements'],
-              [<code>spacingSemantics.md</code>, spacingSemantics.md, 'Standard component padding'],
-              [<code>spacingSemantics.lg</code>, spacingSemantics.lg, 'Section spacing'],
-              [<code>spacingSemantics.xl</code>, spacingSemantics.xl, 'Large section gaps'],
-              [<code>spacingSemantics.inputPadding</code>, spacingSemantics.inputPadding, 'Input field padding'],
-              [<code>spacingSemantics.buttonPadding</code>, spacingSemantics.buttonPadding, 'Button padding'],
-              [<code>spacingSemantics.cardPadding</code>, spacingSemantics.cardPadding, 'Card internal padding'],
-            ]}
-          />
-        </div>
-      </section>
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Component Tokens</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Themed spacing tokens for specific component contexts. These are backed by CSS custom properties and adapt to the active theme.
+            </p>
+            
+            <div style={sharedStyles.card}>
+              {['inputPadding', 'buttonPadding', 'cardPadding', 'sectionPadding', 'pagePadding', 'gutter', 'containerPadding', 'sectionGap', 'componentGap'].map((key) => (
+                <SpacingBar key={key} name={key} value={(spacingTokens as any)[key]} />
+              ))}
+            </div>
+          </section>
 
-      {/* Visual Examples */}
-      <section style={sharedStyles.section}>
-        <h2 style={sharedStyles.sectionTitle}>Visual Examples</h2>
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Visual Examples</h2>
 
-        <div style={sharedStyles.card}>
-          <h3 style={sharedStyles.cardTitle}>Padding Comparison</h3>
-          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-            {[4, 8, 12, 16, 24, 32].map((size) => (
-              <div key={size} style={{ textAlign: 'center' }}>
-                <div style={{
-                  background: '#C6E7DA',
-                  padding: `${size}px`,
-                  borderRadius: borderRadius.md,
-                  marginBottom: '8px',
-                }}>
-                  <div style={{
-                    background: colors.brand.primary,
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: borderRadius.sm,
-                  }} />
-                </div>
-                <span style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{size}px</span>
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Padding Comparison</h3>
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                {(['2xs', 'xs', 'sm', 'md', 'xl', '2xl'] as const).map((name) => (
+                  <div key={name} style={{ textAlign: 'center' }}>
+                    <div style={{
+                      background: '#C6E7DA',
+                      padding: spacing[name],
+                      borderRadius: borderRadius.md,
+                      marginBottom: '8px',
+                    }}>
+                      <div style={{
+                        background: colors.brand.primary,
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: borderRadius.sm,
+                      }} />
+                    </div>
+                    <span style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>{name}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        <div style={sharedStyles.card}>
-          <h3 style={sharedStyles.cardTitle}>Gap Comparison</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {[4, 8, 16, 24].map((gap) => (
-              <div key={gap}>
-                <span style={{ ...typography.label.sm, color: colors.text.lowEmphasis.onLight, display: 'block', marginBottom: '8px' }}>
-                  gap: {gap}px
-                </span>
-                <div style={{ display: 'flex', gap: `${gap}px` }}>
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} style={{
-                      width: '48px',
-                      height: '32px',
-                      background: colors.brand.primary,
-                      borderRadius: borderRadius.sm,
-                    }} />
-                  ))}
-                </div>
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Gap Comparison</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                {(['2xs', 'xs', 'md', 'xl'] as const).map((name) => (
+                  <div key={name}>
+                    <span style={{ ...typography.label.sm, color: colors.text.lowEmphasis.onLight, display: 'block', marginBottom: '8px' }}>
+                      gap: {name} ({spacing[name]})
+                    </span>
+                    <div style={{ display: 'flex', gap: spacing[name] }}>
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} style={{
+                          width: '48px',
+                          height: '32px',
+                          background: colors.brand.primary,
+                          borderRadius: borderRadius.sm,
+                        }} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+          </section>
         </>
       )}
 
-      {/* Specifications Tab */}
       {activeTab === 'specs' && (
         <section style={sharedStyles.section}>
           <h2 style={sharedStyles.sectionTitle}>Spacing Specifications</h2>
@@ -188,38 +149,34 @@ export default function SpacingPage() {
           </p>
 
           <div style={sharedStyles.card}>
-            <h3 style={sharedStyles.cardTitle}>Base Scale</h3>
+            <h3 style={sharedStyles.cardTitle}>Scale Tokens</h3>
             <SpecTable
-              headers={['Token', 'Value', 'Pixels']}
+              headers={['Token', 'Value']}
               rows={Object.entries(spacing).map(([key, value]) => [
-                <code key={key}>spacing[{key}]</code>,
+                <code key={key}>spacing.{key.match(/^\d/) ? `['${key}']` : key}</code>,
                 value,
-                `${parseInt(value)}px`,
               ])}
             />
           </div>
 
           <div style={sharedStyles.card}>
-            <h3 style={sharedStyles.cardTitle}>Semantic Aliases</h3>
+            <h3 style={sharedStyles.cardTitle}>Component Tokens</h3>
             <SpecTable
               headers={['Token', 'Value', 'Use Case']}
               rows={[
-                [<code key="none">spacingSemantics.none</code>, spacingSemantics.none, 'No spacing'],
-                [<code key="xs">spacingSemantics.xs</code>, spacingSemantics.xs, 'Tight spacing between related items'],
-                [<code key="sm">spacingSemantics.sm</code>, spacingSemantics.sm, 'Default gap between elements'],
-                [<code key="md">spacingSemantics.md</code>, spacingSemantics.md, 'Standard component padding'],
-                [<code key="lg">spacingSemantics.lg</code>, spacingSemantics.lg, 'Section spacing'],
-                [<code key="xl">spacingSemantics.xl</code>, spacingSemantics.xl, 'Large section gaps'],
-                [<code key="ip">spacingSemantics.inputPadding</code>, spacingSemantics.inputPadding, 'Input field padding'],
-                [<code key="bp">spacingSemantics.buttonPadding</code>, spacingSemantics.buttonPadding, 'Button padding'],
-                [<code key="cp">spacingSemantics.cardPadding</code>, spacingSemantics.cardPadding, 'Card internal padding'],
+                [<code key="ip">spacingTokens.inputPadding</code>, spacingTokens.inputPadding, 'Input field padding'],
+                [<code key="bp">spacingTokens.buttonPadding</code>, spacingTokens.buttonPadding, 'Button padding'],
+                [<code key="cp">spacingTokens.cardPadding</code>, spacingTokens.cardPadding, 'Card internal padding'],
+                [<code key="sp">spacingTokens.sectionPadding</code>, spacingTokens.sectionPadding, 'Section padding'],
+                [<code key="pp">spacingTokens.pagePadding</code>, spacingTokens.pagePadding, 'Page padding'],
+                [<code key="sg">spacingTokens.sectionGap</code>, spacingTokens.sectionGap, 'Gap between sections'],
+                [<code key="cg">spacingTokens.componentGap</code>, spacingTokens.componentGap, 'Gap between components'],
               ]}
             />
           </div>
         </section>
       )}
 
-      {/* Usage Tab */}
       {activeTab === 'usage' && (
         <section style={sharedStyles.section}>
           <h2 style={sharedStyles.sectionTitle}>Usage</h2>
@@ -229,23 +186,23 @@ export default function SpacingPage() {
 
           <div style={sharedStyles.card}>
             <h3 style={sharedStyles.cardTitle}>Import</h3>
-            <CodeBlock>{`import { spacing, spacingSemantics } from '@/styles/design-tokens'`}</CodeBlock>
+            <CodeBlock>{`import { spacing, spacingTokens } from '@/styles/design-tokens'`}</CodeBlock>
           </div>
 
           <div style={sharedStyles.card}>
             <h3 style={sharedStyles.cardTitle}>Example</h3>
-            <CodeBlock>{`// Using numeric scale
-<div style={{ padding: spacing[4] }}>  {/* 16px */}
-  <p style={{ marginBottom: spacing[2] }}>Text</p>  {/* 8px */}
+            <CodeBlock>{`// Semantic scale
+<div style={{ padding: spacing.md }}>       {/* 16px */}
+  <p style={{ marginBottom: spacing.xs }}>Text</p>  {/* 8px */}
 </div>
 
-// Using semantic aliases
-<div style={{ padding: spacingSemantics.cardPadding }}>
-  <input style={{ padding: spacingSemantics.inputPadding }} />
+// Component tokens
+<div style={{ padding: spacingTokens.cardPadding }}>
+  <input style={{ padding: spacingTokens.inputPadding }} />
 </div>
 
-// CSS-in-JS with gap
-<div style={{ display: 'flex', gap: spacing[3] }}>  {/* 12px gap */}
+// Flex/grid gaps
+<div style={{ display: 'flex', gap: spacing.sm }}>  {/* 12px */}
   <Item />
   <Item />
 </div>`}</CodeBlock>
@@ -254,8 +211,8 @@ export default function SpacingPage() {
           <div style={sharedStyles.card}>
             <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
             <ul style={{ margin: 0, paddingLeft: '20px', color: colors.text.lowEmphasis.onLight }}>
-              <li style={{ marginBottom: '8px' }}>Use the numeric scale for precise control</li>
-              <li style={{ marginBottom: '8px' }}>Use semantic aliases for consistent component spacing</li>
+              <li style={{ marginBottom: '8px' }}>Use semantic names (spacing.md) — never raw pixel values</li>
+              <li style={{ marginBottom: '8px' }}>Use spacingTokens for component-specific values that may be themed</li>
               <li style={{ marginBottom: '8px' }}>Maintain visual rhythm by sticking to the 4px grid</li>
               <li style={{ marginBottom: '8px' }}>Use gap property for flex and grid layouts</li>
             </ul>

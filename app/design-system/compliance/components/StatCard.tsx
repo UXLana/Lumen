@@ -16,7 +16,7 @@ const variantColors: Record<string, string> = {
 
 export default function StatCard({ value, label, variant = 'default' }: StatCardProps) {
   return (
-    <div style={{ padding: `${spacing[4]} 0`, textAlign: 'center' }}>
+    <div style={{ padding: `${spacing.md} 0`, textAlign: 'center' }}>
       <div
         style={{
           fontSize: '28px',
@@ -34,7 +34,7 @@ export default function StatCard({ value, label, variant = 'default' }: StatCard
           color: colors.text.lowEmphasis.onLight,
           textTransform: 'uppercase' as const,
           letterSpacing: '0.5px',
-          marginTop: spacing[1],
+          marginTop: spacing['2xs'],
         }}
       >
         {label}

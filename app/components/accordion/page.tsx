@@ -496,14 +496,14 @@ import type { AccordionProps, AccordionItemProps } from '@/components'`}
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing[4] }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.md }}>
                 <div style={{
                   background: '#DEEDE9',
-                  padding: spacing[4],
+                  padding: spacing.md,
                   borderRadius: borderRadius.md
                 }}>
-                  <p style={{ ...typography.label.md, color: '#155E4C', margin: 0, marginBottom: spacing[2] }}>Do</p>
-                  <ul style={{ margin: 0, paddingLeft: spacing[4], ...typography.body.sm }}>
+                  <p style={{ ...typography.label.md, color: '#155E4C', margin: 0, marginBottom: spacing.xs }}>Do</p>
+                  <ul style={{ margin: 0, paddingLeft: spacing.md, ...typography.body.sm }}>
                     <li>Use clear, descriptive titles</li>
                     <li>Keep content scannable</li>
                     <li>Consider default expanded states</li>
@@ -513,11 +513,11 @@ import type { AccordionProps, AccordionItemProps } from '@/components'`}
                 </div>
                 <div style={{
                   background: '#FBE4E7',
-                  padding: spacing[4],
+                  padding: spacing.md,
                   borderRadius: borderRadius.md
                 }}>
-                  <p style={{ ...typography.label.md, color: '#9A0818', margin: 0, marginBottom: spacing[2] }}>Don&apos;t</p>
-                  <ul style={{ margin: 0, paddingLeft: spacing[4], ...typography.body.sm }}>
+                  <p style={{ ...typography.label.md, color: '#9A0818', margin: 0, marginBottom: spacing.xs }}>Don&apos;t</p>
+                  <ul style={{ margin: 0, paddingLeft: spacing.md, ...typography.body.sm }}>
                     <li>Nest accordions within accordions</li>
                     <li>Hide critical information in collapsed panels</li>
                     <li>Use for primary navigation</li>

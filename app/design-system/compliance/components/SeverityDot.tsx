@@ -20,7 +20,7 @@ export default function SeverityDot({ severity, showLabel = true, size = 'sm' }:
   const dotSize = size === 'sm' ? 6 : 8
 
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: spacing[1] }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: spacing['2xs'] }}>
       <span
         style={{
           width: dotSize,

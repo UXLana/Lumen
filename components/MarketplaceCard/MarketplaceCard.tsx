@@ -99,7 +99,7 @@ const Rating: React.FC<{ value: number; count?: number }> = ({ value, count }) =
     style={{
       display: 'inline-flex',
       alignItems: 'center',
-      gap: spacing[1],
+      gap: spacing['2xs'],
       fontSize: typography.body.sm.fontSize,
       color: colors.text.lowEmphasis.onLight,
     }}
@@ -125,7 +125,7 @@ const VerifiedBadge: React.FC = () => (
     style={{
       display: 'inline-flex',
       alignItems: 'center',
-      gap: spacing[1],
+      gap: spacing['2xs'],
       fontSize: typography.body.xs.fontSize,
       color: colors.status.success,
     }}
@@ -189,16 +189,16 @@ const DefaultCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
     }
 
     const contentStyles: React.CSSProperties = {
-      padding: spacing[4],
+      padding: spacing.md,
       display: 'flex',
       flexDirection: 'column',
-      gap: spacing[3],
+      gap: spacing.sm,
     }
 
     const headerStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: spacing[3],
+      gap: spacing.sm,
     }
 
     const appInfoStyles: React.CSSProperties = {
@@ -210,14 +210,14 @@ const DefaultCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: spacing[2],
-      marginBottom: spacing[1],
+      gap: spacing.xs,
+      marginBottom: spacing['2xs'],
     }
 
     const metaStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'center',
-      gap: spacing[2],
+      gap: spacing.xs,
       flexWrap: 'wrap',
       fontSize: typography.body.sm.fontSize,
       color: colors.text.lowEmphasis.onLight,
@@ -299,7 +299,7 @@ const DefaultCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
 
               {/* Verified badge */}
               {isVerified && (
-                <div style={{ marginTop: spacing[1] }}>
+                <div style={{ marginTop: spacing['2xs'] }}>
                   <VerifiedBadge />
                 </div>
               )}
@@ -347,8 +347,8 @@ const CompactCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
     const cardStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: spacing[3],
-      padding: spacing[4],
+      gap: spacing.sm,
+      padding: spacing.md,
       backgroundColor: colors.surface.light,
       borderRadius: borderRadius.lg,
       border: `1px solid ${selected ? colors.brand.default : isHovered ? colors.border.midEmphasis.onLight : colors.border.lowEmphasis.onLight}`,
@@ -383,8 +383,8 @@ const CompactCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: spacing[2],
-              marginBottom: spacing[1],
+              gap: spacing.xs,
+              marginBottom: spacing['2xs'],
             }}
           >
             <span
@@ -406,10 +406,10 @@ const CompactCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: spacing[2],
+              gap: spacing.xs,
               fontSize: typography.body.sm.fontSize,
               color: colors.text.lowEmphasis.onLight,
-              marginBottom: spacing[1],
+              marginBottom: spacing['2xs'],
             }}
           >
             <Rating value={rating} />
@@ -421,7 +421,7 @@ const CompactCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
 
           <p
             style={{
-              marginTop: spacing[2],
+              marginTop: spacing.xs,
               fontSize: typography.body.sm.fontSize,
               color: colors.text.lowEmphasis.onLight,
               display: '-webkit-box',
@@ -471,8 +471,8 @@ const HorizontalCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
     const cardStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'center',
-      gap: spacing[3],
-      padding: `${spacing[3]} ${spacing[4]}`,
+      gap: spacing.sm,
+      padding: `${spacing.sm} ${spacing.md}`,
       backgroundColor: selected ? colors.surface.lightDarker : isHovered ? colors.surface.lightDarker : colors.surface.light,
       borderRadius: borderRadius.md,
       border: `1px solid ${selected ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
@@ -501,7 +501,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
         <Avatar name={name} src={iconUrl} size="md" color={1} />
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing[2] }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
             <span
               style={{
                 fontFamily: fontFamilies.body,
@@ -520,7 +520,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: spacing[2],
+              gap: spacing.xs,
               fontSize: typography.body.sm.fontSize,
               color: colors.text.lowEmphasis.onLight,
             }}
@@ -531,7 +531,7 @@ const HorizontalCard = forwardRef<HTMLDivElement, MarketplaceCardProps>(
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
           <Rating value={rating} />
           <Badge variant={statusInfo.variant} color={statusInfo.color} size="sm">
             {statusInfo.label}

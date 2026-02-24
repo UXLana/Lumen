@@ -503,7 +503,7 @@ export const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
       minWidth: 0,
       display: 'flex',
       flexDirection: labelValuePair ? 'row' : 'column',
-      gap: labelValuePair ? spacing[2] : 0,
+      gap: labelValuePair ? spacing.xs : 0,
       alignItems: labelValuePair ? 'baseline' : 'stretch',
       fontFamily: fontFamilies.body,
     }

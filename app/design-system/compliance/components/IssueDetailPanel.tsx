@@ -23,15 +23,15 @@ export default function IssueDetailPanel({ issue }: IssueDetailPanelProps) {
       style={{
         backgroundColor: colors.surface.lightDarker,
         borderLeft: `3px solid ${colors.brand.lighter}`,
-        padding: spacing[6],
+        padding: spacing.xl,
         display: 'flex',
         flexDirection: 'column',
-        gap: spacing[5],
+        gap: spacing.lg,
       }}
     >
       {/* Metadata Tags */}
       {analysis && (
-        <div style={{ display: 'flex', gap: spacing[2], flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
           <MetadataTag label={analysis.category} />
           <MetadataTag label={`Level ${analysis.wcagLevel}`} />
           <MetadataTag label={`${analysis.estimatedEffort} effort`} />
@@ -67,7 +67,7 @@ export default function IssueDetailPanel({ issue }: IssueDetailPanelProps) {
           style={{
             display: 'grid',
             gridTemplateColumns: problemCode && fixCode ? '1fr 1fr' : '1fr',
-            gap: spacing[3],
+            gap: spacing.sm,
           }}
         >
           {/* Problem Code Box */}
@@ -97,10 +97,10 @@ export default function IssueDetailPanel({ issue }: IssueDetailPanelProps) {
           <ol
             style={{
               margin: 0,
-              paddingLeft: spacing[5],
+              paddingLeft: spacing.lg,
               display: 'flex',
               flexDirection: 'column',
-              gap: spacing[1],
+              gap: spacing['2xs'],
             }}
           >
             {analysis.testingSteps.map((step, i) => (
@@ -122,7 +122,7 @@ export default function IssueDetailPanel({ issue }: IssueDetailPanelProps) {
       {analysis?.documentationUrls && analysis.documentationUrls.length > 0 && (
         <div>
           <SectionLabel>Official Documentation</SectionLabel>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[1] }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['2xs'] }}>
             {analysis.documentationUrls.map((doc, i) => (
               <a
                 key={i}
@@ -135,7 +135,7 @@ export default function IssueDetailPanel({ issue }: IssueDetailPanelProps) {
                   textDecoration: 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: spacing[1],
+                  gap: spacing['2xs'],
                 }}
               >
                 <span style={{ fontSize: 12, opacity: 0.6 }}>↗</span>
@@ -150,7 +150,7 @@ export default function IssueDetailPanel({ issue }: IssueDetailPanelProps) {
       {analysis?.relatedCriteria && analysis.relatedCriteria.length > 0 && (
         <div>
           <SectionLabel>Related Criteria</SectionLabel>
-          <div style={{ display: 'flex', gap: spacing[1], flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap' }}>
             {analysis.relatedCriteria.map(c => (
               <MetadataTag key={c} label={c} subtle />
             ))}
@@ -192,7 +192,7 @@ function CodeBox({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: `${spacing[2]} ${spacing[3]}`,
+          padding: `${spacing.xs} ${spacing.sm}`,
           backgroundColor: variant === 'problem'
             ? 'rgba(178, 56, 45, 0.08)'
             : 'rgba(32, 128, 80, 0.08)',
@@ -200,7 +200,7 @@ function CodeBox({
           borderBottom: `2px solid ${indicatorColor}`,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[2] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
           <span
             style={{
               width: 8,
@@ -227,7 +227,7 @@ function CodeBox({
             background: 'none',
             border: 'none',
             cursor: 'pointer',
-            padding: `2px ${spacing[2]}`,
+            padding: `2px ${spacing.xs}`,
             borderRadius: borderRadius.sm,
             transition: 'color 150ms ease-out',
           }}
@@ -241,7 +241,7 @@ function CodeBox({
         style={{
           backgroundColor: colors.surface.darkDarker,
           color: colors.text.highEmphasis.onDark,
-          padding: spacing[4],
+          padding: spacing.md,
           borderRadius: `0 0 ${borderRadius.md} ${borderRadius.md}`,
           overflow: 'auto',
           margin: 0,
@@ -268,7 +268,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
         color: colors.text.lowEmphasis.onLight,
         textTransform: 'uppercase' as const,
         letterSpacing: '0.5px',
-        marginBottom: spacing[2],
+        marginBottom: spacing.xs,
       }}
     >
       {children}
@@ -281,7 +281,7 @@ function MetadataTag({ label, subtle }: { label: string; subtle?: boolean }) {
     <span
       style={{
         ...typography.label.sm,
-        padding: `2px ${spacing[2]}`,
+        padding: `2px ${spacing.xs}`,
         borderRadius: borderRadius.sm,
         backgroundColor: subtle ? 'transparent' : colors.surface.light,
         border: `1px solid ${colors.border.lowEmphasis.onLight}`,

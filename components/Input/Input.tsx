@@ -46,19 +46,19 @@ export interface InputProps
 const sizeConfig = {
   sm: {
     height: '32px',
-    padding: `0 ${spacing[2]}`,
+    padding: `0 ${spacing.xs}`,
     fontSize: typography.body.xs.fontSize,
     lineHeight: typography.body.xs.lineHeight,
   },
   md: {
     height: '40px',
-    padding: `0 ${spacing[3]}`,
+    padding: `0 ${spacing.sm}`,
     fontSize: typography.body.sm.fontSize,
     lineHeight: typography.body.sm.lineHeight,
   },
   lg: {
     height: '48px',
-    padding: `0 ${spacing[3]}`,
+    padding: `0 ${spacing.sm}`,
     fontSize: typography.body.md.fontSize,
     lineHeight: typography.body.md.lineHeight,
   },
@@ -120,7 +120,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       display: 'flex',
       flexDirection: 'column',
       width: fullWidth ? '100%' : '280px',
-      marginBottom: spacing[4],
+      marginBottom: spacing.md,
       ...style,
     }
 
@@ -130,7 +130,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       fontWeight: fontWeights.medium,
       lineHeight: typography.body.sm.lineHeight,
       color: disabled ? colors.text.disabled.onLight : colors.text.highEmphasis.onLight,
-      marginBottom: spacing[1],
+      marginBottom: spacing['2xs'],
     }
 
     const inputWrapperStyles: React.CSSProperties = {
@@ -150,8 +150,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       flex: 1,
       height: '100%',
       padding: config.padding,
-      paddingLeft: startAdornment ? spacing[1] : undefined,
-      paddingRight: endAdornment ? spacing[1] : undefined,
+      paddingLeft: startAdornment ? spacing['2xs'] : undefined,
+      paddingRight: endAdornment ? spacing['2xs'] : undefined,
       border: 'none',
       outline: 'none',
       background: 'transparent',
@@ -178,7 +178,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       fontWeight: fontWeights.regular,
       lineHeight: typography.body.xs.lineHeight,
       color: hasError ? colors.status.important : colors.text.lowEmphasis.onLight,
-      marginTop: spacing[1],
+      marginTop: spacing['2xs'],
     }
 
     return (
@@ -195,7 +195,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           onMouseLeave={() => setIsHovered(false)}
         >
           {startAdornment && (
-            <span style={{ ...adornmentStyles, paddingLeft: spacing[2] }}>
+            <span style={{ ...adornmentStyles, paddingLeft: spacing.xs }}>
               {startAdornment}
             </span>
           )}
@@ -217,7 +217,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {endAdornment && (
-            <span style={{ ...adornmentStyles, paddingRight: spacing[2] }}>
+            <span style={{ ...adornmentStyles, paddingRight: spacing.xs }}>
               {endAdornment}
             </span>
           )}

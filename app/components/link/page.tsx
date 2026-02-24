@@ -102,7 +102,7 @@ export default function LinkPage() {
                 <div>
                   <Playground
                     preview={
-                      <div style={{ padding: spacing[4] }}>
+                      <div style={{ padding: spacing.md }}>
                         <Link
                           href="#"
                           size={demoSize}
@@ -120,7 +120,7 @@ export default function LinkPage() {
 >
   Example link text
 </Link>`}
-                    previewPadding={spacing[2]}
+                    previewPadding={spacing.xs}
                     previewBackground={previewBg}
                   />
                 </div>
@@ -170,7 +170,7 @@ export default function LinkPage() {
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
                         Options
                       </label>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                         <StyledCheckboxControl checked={demoExternal} onChange={() => setDemoExternal(!demoExternal)} label="External" />
                         <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
                       </div>

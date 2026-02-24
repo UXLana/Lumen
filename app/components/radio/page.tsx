@@ -128,7 +128,7 @@ export default function RadioPage() {
                 <div>
                   <Playground
                     preview={
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[4], width: demoFullWidth ? '100%' : 'auto' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, width: demoFullWidth ? '100%' : 'auto' }}>
                         <RadioGroup
                           label="Select an option"
                           value={demoValue}
@@ -168,7 +168,7 @@ export default function RadioPage() {
   <Radio label="Option 2"${demoShowMetadata ? ' metadata="Description for option 2"' : ''} value="option2"${demoDisabled ? ' disabled' : ''} />
   <Radio label="Option 3"${demoShowMetadata ? ' metadata="Description for option 3"' : ''} value="option3"${demoDisabled ? ' disabled' : ''} />
 </RadioGroup>`}
-                    previewPadding={spacing[4]}
+                    previewPadding={spacing.md}
                   />
                 </div>
 
@@ -199,7 +199,7 @@ export default function RadioPage() {
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
                         Options
                       </label>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                         <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
                         <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
                         <StyledCheckboxControl checked={demoShowMetadata} onChange={() => setDemoShowMetadata(!demoShowMetadata)} label="Show Metadata" />
@@ -228,10 +228,10 @@ export default function RadioPage() {
                     ['Radio size', <PixelValue key="rs" value="18px" />, 'Width and height of the radio circle'],
                     ['Inner dot size', <PixelValue key="ds" value="8px" />, 'Diameter of the selected indicator dot'],
                     ['Border width', <PixelValue key="bw" value="1.5px" />, 'Radio circle border thickness'],
-                    ['Container padding', <TokenValue key="cp" token="spacing[2] spacing[3]" value={`${spacing[2]} ${spacing[3]}`} />, 'Padding around each radio item'],
-                    ['Label gap', <TokenValue key="lg" token="spacing[2]" value={spacing[2]} />, 'Space between radio circle and label'],
+                    ['Container padding', <TokenValue key="cp" token="spacing.xs spacing.sm" value={`${spacing.xs} ${spacing.sm}`} />, 'Padding around each radio item'],
+                    ['Label gap', <TokenValue key="lg" token="spacing.xs" value={spacing.xs} />, 'Space between radio circle and label'],
                     ['Metadata top margin', <PixelValue key="mm" value="2px" />, 'Space between label and metadata text'],
-                    ['Group bottom margin', <TokenValue key="gm" token="spacing[4]" value={spacing[4]} />, 'Bottom margin for radio group'],
+                    ['Group bottom margin', <TokenValue key="gm" token="spacing.md" value={spacing.md} />, 'Bottom margin for radio group'],
                     ['Error icon size', <PixelValue key="ei" value="14px" />, 'Size of the error icon in group'],
                   ]}
                 />

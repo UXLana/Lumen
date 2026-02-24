@@ -31,7 +31,7 @@ export default function ComplianceScoreHero({
         : colors.status.success
 
   return (
-    <div style={{ textAlign: 'center', padding: `${spacing[10]} 0 ${spacing[6]}` }}>
+    <div style={{ textAlign: 'center', padding: `${spacing['3xl']} 0 ${spacing.xl}` }}>
       {/* Score Ring */}
       <svg
         width={size}
@@ -101,8 +101,8 @@ export default function ComplianceScoreHero({
         style={{
           display: 'flex',
           justifyContent: 'center',
-          gap: spacing[10],
-          marginTop: spacing[6],
+          gap: spacing['3xl'],
+          marginTop: spacing.xl,
         }}
       >
         <StatCard value={totalIssues} label="Open Issues" />

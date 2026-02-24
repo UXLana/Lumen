@@ -83,7 +83,7 @@ const listItemDocData: ComponentDocData = {
     { token: 'colors.hover.onLight', value: 'Light gray', usage: 'Hover background' },
     { token: 'typography.body.md', value: '16px/24px', usage: 'Primary text' },
     { token: 'typography.body.sm', value: '14px/20px', usage: 'Secondary/tertiary text' },
-    { token: 'spacing[3]', value: '12px', usage: 'Internal padding' },
+    { token: 'spacing.sm', value: '12px', usage: 'Internal padding' },
   ],
   relatedComponents: [
     { name: 'Avatar', href: '/components/avatar' },

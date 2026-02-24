@@ -41,13 +41,13 @@ export default function JiraStoryCard({ markdown, issueId, title, severity }: Ji
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: `${spacing[3]} ${spacing[4]}`,
+          padding: `${spacing.sm} ${spacing.md}`,
           cursor: 'pointer',
           backgroundColor: expanded ? colors.surface.lightDarker : 'transparent',
           transition: `background-color ${transitionPresets.fast}`,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[2], overflow: 'hidden' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, overflow: 'hidden' }}>
           <span
             style={{
               fontFamily: fontFamilies.mono,
@@ -76,7 +76,7 @@ export default function JiraStoryCard({ markdown, issueId, title, severity }: Ji
             ...typography.label.sm,
             color: colors.text.action.enabled,
             flexShrink: 0,
-            marginLeft: spacing[3],
+            marginLeft: spacing.sm,
           }}
         >
           {expanded ? 'Collapse' : 'View'}
@@ -91,7 +91,7 @@ export default function JiraStoryCard({ markdown, issueId, title, severity }: Ji
             style={{
               display: 'flex',
               justifyContent: 'flex-end',
-              padding: `${spacing[2]} ${spacing[4]}`,
+              padding: `${spacing.xs} ${spacing.md}`,
               borderBottom: `1px solid rgba(0, 0, 0, 0.06)`,
             }}
           >
@@ -113,7 +113,7 @@ export default function JiraStoryCard({ markdown, issueId, title, severity }: Ji
           {/* Markdown Content */}
           <div
             style={{
-              padding: `${spacing[4]} ${spacing[5]}`,
+              padding: `${spacing.md} ${spacing.lg}`,
               fontFamily: fontFamilies.body,
               fontSize: typography.body.sm.fontSize,
               lineHeight: 1.6,

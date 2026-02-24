@@ -108,7 +108,7 @@ export default function SwitchPage() {
                 <div>
                   <Playground
                     preview={
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[4], width: demoFullWidth ? '100%' : 'auto', padding: spacing[4] }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, width: demoFullWidth ? '100%' : 'auto', padding: spacing.md }}>
                         <Switch
                           label="Toggle option"
                           metadata={demoShowMetadata ? 'Additional description text' : undefined}
@@ -126,7 +126,7 @@ export default function SwitchPage() {
   checked={${demoChecked}}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error' : ''}${demoFullWidth ? '\n  fullWidth' : ''}${demoLabelPlacement === 'start' ? '\n  labelPlacement="start"' : ''}
   onChange={(checked) => setChecked(checked)}
 />`}
-                    previewPadding={spacing[2]}
+                    previewPadding={spacing.xs}
                   />
                 </div>
 
@@ -157,7 +157,7 @@ export default function SwitchPage() {
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
                         Options
                       </label>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                         <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
                         <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
                         <StyledCheckboxControl checked={demoShowMetadata} onChange={() => setDemoShowMetadata(!demoShowMetadata)} label="Show Metadata" />
@@ -187,8 +187,8 @@ export default function SwitchPage() {
                     ['Track height', <PixelValue key="th" value="24px" />, 'Height of the switch track'],
                     ['Thumb size', <PixelValue key="ts" value="18px" />, 'Diameter of the thumb circle'],
                     ['Thumb offset', <PixelValue key="to" value="3px" />, 'Inset of thumb from track edge'],
-                    ['Container padding', <TokenValue key="cp" token="spacing[2] spacing[3]" value={`${spacing[2]} ${spacing[3]}`} />, 'Padding around switch item'],
-                    ['Label gap', <TokenValue key="lg" token="spacing[2]" value={spacing[2]} />, 'Gap between switch and label'],
+                    ['Container padding', <TokenValue key="cp" token="spacing.xs spacing.sm" value={`${spacing.xs} ${spacing.sm}`} />, 'Padding around switch item'],
+                    ['Label gap', <TokenValue key="lg" token="spacing.xs" value={spacing.xs} />, 'Gap between switch and label'],
                     ['Metadata top margin', <PixelValue key="mm" value="2px" />, 'Space between label and metadata'],
                   ]}
                 />

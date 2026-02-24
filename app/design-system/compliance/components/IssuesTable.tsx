@@ -27,7 +27,7 @@ const thStyle: React.CSSProperties = {
   color: colors.text.lowEmphasis.onLight,
   textTransform: 'uppercase' as const,
   letterSpacing: '0.5px',
-  padding: `${spacing[3]} ${spacing[4]}`,
+  padding: `${spacing.sm} ${spacing.md}`,
   textAlign: 'left',
   backgroundColor: colors.surface.lightDarker,
   borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
@@ -36,13 +36,13 @@ const thStyle: React.CSSProperties = {
 }
 
 const tdStyle: React.CSSProperties = {
-  padding: `${spacing[3]} ${spacing[4]}`,
+  padding: `${spacing.sm} ${spacing.md}`,
   borderBottom: `1px solid rgba(0, 0, 0, 0.06)`,
   verticalAlign: 'middle',
 }
 
 const selectStyles: React.CSSProperties = {
-  padding: `${spacing[1]} ${spacing[2]}`,
+  padding: `${spacing['2xs']} ${spacing.xs}`,
   borderRadius: borderRadius.sm,
   border: `1px solid ${colors.border.lowEmphasis.onLight}`,
   fontFamily: fontFamilies.body,
@@ -97,7 +97,7 @@ export default function IssuesTable({ issues, onStatusChange }: IssuesTableProps
     return (
       <div
         style={{
-          padding: spacing[8],
+          padding: spacing['2xl'],
           textAlign: 'center',
           color: colors.text.lowEmphasis.onLight,
           ...typography.body.md,
@@ -265,7 +265,7 @@ function TableRow({
           <span
             style={{
               ...typography.label.sm,
-              padding: `2px ${spacing[2]}`,
+              padding: `2px ${spacing.xs}`,
               borderRadius: borderRadius.sm,
               backgroundColor: effortStyle.bg,
               color: effortStyle.text,

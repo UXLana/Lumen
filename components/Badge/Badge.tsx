@@ -174,7 +174,7 @@ const sizeConfig: Record<BadgeSize, {
     fontSize: typography.body.xs.fontSize,
     lineHeight: typography.body.xs.lineHeight,
     iconSize: '12px',
-    gap: spacing[1],
+    gap: spacing['2xs'],
   },
   md: {
     padding: `4px 10px`,

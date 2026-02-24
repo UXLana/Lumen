@@ -161,9 +161,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const containerStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: spacing[2],
-      padding: `${spacing[2]} ${spacing[3]}`,
-      paddingLeft: isChild ? spacing[8] : spacing[3],
+      gap: spacing.xs,
+      padding: `${spacing.xs} ${spacing.sm}`,
+      paddingLeft: isChild ? spacing['2xl'] : spacing.sm,
       cursor: disabled ? 'not-allowed' : 'pointer',
       width: fullWidth ? '100%' : 'auto',
       borderRadius: noRoundedCorners ? 0 : borderRadius.sm,
@@ -284,7 +284,7 @@ export const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       display: 'flex',
       flexDirection: 'column',
       width: fullWidth ? '100%' : 'auto',
-      marginBottom: spacing[4],
+      marginBottom: spacing.md,
       ...style,
     }
 
@@ -294,19 +294,19 @@ export const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       fontWeight: fontWeights.medium,
       lineHeight: typography.body.sm.lineHeight,
       color: colors.text.highEmphasis.onLight,
-      marginBottom: spacing[1],
+      marginBottom: spacing['2xs'],
     }
 
     const errorStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'center',
-      gap: spacing[1],
+      gap: spacing['2xs'],
       fontFamily: fontFamilies.body,
       fontSize: typography.body.xs.fontSize,
       fontWeight: fontWeights.regular,
       lineHeight: typography.body.xs.lineHeight,
       color: colors.status.important,
-      marginTop: spacing[1],
+      marginTop: spacing['2xs'],
     }
 
     return (

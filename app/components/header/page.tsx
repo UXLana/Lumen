@@ -72,7 +72,7 @@ const headerDocData: ComponentDocData = {
   tokens: [
     { token: 'colors.surface.dark', value: 'Dark bg', usage: 'Header background' },
     { token: 'colors.text.highEmphasis.onDark', value: 'White', usage: 'Header text color' },
-    { token: 'spacing[4]', value: '16px', usage: 'Internal padding' },
+    { token: 'spacing.md', value: '16px', usage: 'Internal padding' },
   ],
   relatedComponents: [
     { name: 'Left Nav', href: '/components/left-nav' },
@@ -154,7 +154,7 @@ export default function HeaderPage() {
             </p>
 
             <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: spacing[12] }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: spacing['4xl'] }}>
                 {/* Preview/Code with Tabs */}
                 <div>
                   <Playground
@@ -182,13 +182,13 @@ export default function HeaderPage() {
                 {/* Controls */}
                 <div style={{ position: 'relative', zIndex: 1 }}>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[6] }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
                     {/* Visibility */}
                     <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing[2] }}>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing.xs }}>
                         Visibility
                       </label>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                         <StyledCheckbox checked={demoShowLogo} onChange={setDemoShowLogo} label="Show logo" />
                         <StyledCheckbox checked={demoShowSearch} onChange={setDemoShowSearch} label="Show search" />
                         <StyledCheckbox checked={demoShowApps} onChange={setDemoShowApps} label="Show apps button" />
@@ -197,10 +197,10 @@ export default function HeaderPage() {
 
                     {/* Behavior */}
                     <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing[2] }}>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing.xs }}>
                         Behavior
                       </label>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                         <StyledCheckbox checked={demoSticky} onChange={setDemoSticky} label="Sticky" />
                       </div>
                     </div>
@@ -220,7 +220,7 @@ export default function HeaderPage() {
             {/* Desktop Preview */}
             <div style={sharedStyles.card}>
               <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Desktop (1024px+)</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing[4] }}>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing.md }}>
                 Full search bar, all action icons, organization name and label visible.
               </p>
               <div style={{
@@ -244,7 +244,7 @@ export default function HeaderPage() {
             {/* Tablet Preview */}
             <div style={sharedStyles.card}>
               <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Tablet (768-1023px)</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing[4] }}>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing.md }}>
                 Search collapses to an icon, all action buttons remain, org info stays visible.
               </p>
               <div style={{
@@ -267,7 +267,7 @@ export default function HeaderPage() {
             {/* Mobile Preview */}
             <div style={sharedStyles.card}>
               <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Mobile (&lt;768px)</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing[4] }}>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing.md }}>
                 Hamburger menu replaces navigation. Search and actions move to a slide-out panel. Only org badge remains.
               </p>
               <div style={{
@@ -463,7 +463,7 @@ import type { HeaderProps } from '@/components'`}</CodeBlock>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Theme Integration</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing[4] }}>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing.md }}>
                 The Header is fully theme-aware. All colors resolve from <code style={{ fontFamily: 'monospace' }}>useColors()</code> and adapt when the active theme changes.
               </p>
               <SpecTable

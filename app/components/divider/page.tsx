@@ -98,13 +98,13 @@ export default function DividerPage() {
                   <Playground
                     preview={
                       demoOrientation === 'horizontal' ? (
-                        <div style={{ width: '100%', padding: spacing[4] }}>
-                          <div style={{ color: demoOnDark ? '#FFFFFF' : colors.text.highEmphasis.onLight, fontSize: typography.body.sm.fontSize, marginBottom: spacing[2] }}>Content above</div>
+                        <div style={{ width: '100%', padding: spacing.md }}>
+                          <div style={{ color: demoOnDark ? '#FFFFFF' : colors.text.highEmphasis.onLight, fontSize: typography.body.sm.fontSize, marginBottom: spacing.xs }}>Content above</div>
                           <Divider variant={demoVariant} spacing={demoSpacing} orientation={demoOrientation} onDark={demoOnDark} />
-                          <div style={{ color: demoOnDark ? '#FFFFFF' : colors.text.highEmphasis.onLight, fontSize: typography.body.sm.fontSize, marginTop: spacing[2] }}>Content below</div>
+                          <div style={{ color: demoOnDark ? '#FFFFFF' : colors.text.highEmphasis.onLight, fontSize: typography.body.sm.fontSize, marginTop: spacing.xs }}>Content below</div>
                         </div>
                       ) : (
-                        <div style={{ display: 'flex', alignItems: 'center', height: '60px', padding: spacing[4] }}>
+                        <div style={{ display: 'flex', alignItems: 'center', height: '60px', padding: spacing.md }}>
                           <span style={{ color: demoOnDark ? '#FFFFFF' : colors.text.highEmphasis.onLight, fontSize: typography.body.sm.fontSize }}>Left</span>
                           <Divider variant={demoVariant} spacing={demoSpacing} orientation={demoOrientation} onDark={demoOnDark} />
                           <span style={{ color: demoOnDark ? '#FFFFFF' : colors.text.highEmphasis.onLight, fontSize: typography.body.sm.fontSize }}>Right</span>
@@ -112,7 +112,7 @@ export default function DividerPage() {
                       )
                     }
                     code={`<Divider${demoVariant !== 'light' ? ` variant="${demoVariant}"` : ''}${demoSpacing !== 'md' ? ` spacing="${demoSpacing}"` : ''}${demoOrientation !== 'horizontal' ? ` orientation="${demoOrientation}"` : ''}${demoOnDark ? ' onDark' : ''} />`}
-                    previewPadding={spacing[2]}
+                    previewPadding={spacing.xs}
                     previewBackground={demoOnDark ? colors.surface.dark : undefined}
                   />
                 </div>
@@ -229,9 +229,9 @@ export default function DividerPage() {
                   headers={['Size', 'Token', 'Value']}
                   rows={[
                     ['none', <CopyableToken key="sn" token="0" />, <PixelValue key="snv" value="0px" />],
-                    ['sm', <CopyableToken key="ss" token="spacing[2]" />, <PixelValue key="ssv" value={spacing[2]} />],
-                    ['md', <CopyableToken key="sm" token="spacing[4]" />, <PixelValue key="smv" value={spacing[4]} />],
-                    ['lg', <CopyableToken key="sl" token="spacing[6]" />, <PixelValue key="slv" value={spacing[6]} />],
+                    ['sm', <CopyableToken key="ss" token="spacing.xs" />, <PixelValue key="ssv" value={spacing.xs} />],
+                    ['md', <CopyableToken key="sm" token="spacing.md" />, <PixelValue key="smv" value={spacing.md} />],
+                    ['lg', <CopyableToken key="sl" token="spacing.xl" />, <PixelValue key="slv" value={spacing.xl} />],
                   ]}
                 />
               </div>

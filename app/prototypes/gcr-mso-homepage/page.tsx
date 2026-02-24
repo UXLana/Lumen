@@ -130,7 +130,7 @@ function SectionHeader({ title, subtitle, action }: { title: string; subtitle?: 
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'flex-start',
-      marginBottom: spacing[4],
+      marginBottom: spacing.md,
     }}>
       <div>
         <h2 style={{
@@ -178,9 +178,9 @@ function MetricCard({ label, value, subtitle, trend, icon }: {
       backgroundColor: colors.surface.light,
       border: `1px solid ${colors.border.lowEmphasis.onLight}`,
       borderRadius: borderRadius.lg,
-      padding: `${spacing[4]} ${spacing[5]}`,
+      padding: `${spacing.md} ${spacing.lg}`,
       display: 'flex',
-      gap: spacing[3],
+      gap: spacing.sm,
       alignItems: 'center',
       flex: 1,
       minWidth: 180,
@@ -352,8 +352,8 @@ function CatalogOverview() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: spacing[4],
-        marginBottom: spacing[6],
+        gap: spacing.md,
+        marginBottom: spacing.xl,
       }}>
         <MetricCard icon={'\uD83D\uDCE6'} label="Total Products" value={totalProducts}
           subtitle={`${activeProducts} active \u00B7 ${archivedProducts} archived`}
@@ -382,7 +382,7 @@ function CatalogOverview() {
               onClick={() => setBreakdownTab(tab)}
               style={{
                 ...typography.label.md,
-                padding: `${spacing[3]} ${spacing[5]}`,
+                padding: `${spacing.sm} ${spacing.lg}`,
                 border: 'none',
                 background: breakdownTab === tab ? colors.surface.light : 'transparent',
                 color: breakdownTab === tab ? colors.brand.default : colors.text.lowEmphasis.onLight,
@@ -398,7 +398,7 @@ function CatalogOverview() {
         </div>
 
         {/* Tab content */}
-        <div style={{ padding: spacing[5] }}>
+        <div style={{ padding: spacing.lg }}>
           {breakdownTab === 'brand' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {BRANDS.map((b, i) => (
@@ -460,17 +460,17 @@ function DataQualitySection() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 2fr',
-        gap: spacing[4],
+        gap: spacing.md,
       }}>
         {/* Left: Donut charts */}
         <div style={{
           backgroundColor: colors.surface.light,
           border: `1px solid ${colors.border.lowEmphasis.onLight}`,
           borderRadius: borderRadius.lg,
-          padding: spacing[5],
+          padding: spacing.lg,
           display: 'flex',
           justifyContent: 'center',
-          gap: spacing[8],
+          gap: spacing['2xl'],
           alignItems: 'center',
         }}>
           <DonutChart value={overallGlobal} label="Global Fields" />
@@ -478,13 +478,13 @@ function DataQualitySection() {
         </div>
 
         {/* Right: Alert cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[3] }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
           {/* Missing data indicators */}
           <div style={{
             backgroundColor: colors.surface.important,
             border: `1px solid ${colors.surfaceBorder.important}`,
             borderRadius: borderRadius.md,
-            padding: `${spacing[3]} ${spacing[4]}`,
+            padding: `${spacing.sm} ${spacing.md}`,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -508,7 +508,7 @@ function DataQualitySection() {
             backgroundColor: colors.surface.warning,
             border: `1px solid ${colors.surfaceBorder.warning}`,
             borderRadius: borderRadius.md,
-            padding: `${spacing[3]} ${spacing[4]}`,
+            padding: `${spacing.sm} ${spacing.md}`,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -532,7 +532,7 @@ function DataQualitySection() {
             backgroundColor: colors.surface.info,
             border: `1px solid ${colors.surfaceBorder.info}`,
             borderRadius: borderRadius.md,
-            padding: `${spacing[3]} ${spacing[4]}`,
+            padding: `${spacing.sm} ${spacing.md}`,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -552,13 +552,13 @@ function DataQualitySection() {
             <span style={{ ...typography.label.sm, color: colors.text.action.enabled }}>Fix &rarr;</span>
           </div>
 
-          <div style={{ display: 'flex', gap: spacing[3] }}>
+          <div style={{ display: 'flex', gap: spacing.sm }}>
             <div style={{
               flex: 1,
               backgroundColor: colors.surface.light,
               border: `1px solid ${colors.border.lowEmphasis.onLight}`,
               borderRadius: borderRadius.md,
-              padding: `${spacing[3]} ${spacing[4]}`,
+              padding: `${spacing.sm} ${spacing.md}`,
               cursor: 'pointer',
             }}>
               <div style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight }}>Suspected Duplicates</div>
@@ -572,7 +572,7 @@ function DataQualitySection() {
               backgroundColor: colors.surface.light,
               border: `1px solid ${colors.border.lowEmphasis.onLight}`,
               borderRadius: borderRadius.md,
-              padding: `${spacing[3]} ${spacing[4]}`,
+              padding: `${spacing.sm} ${spacing.md}`,
               cursor: 'pointer',
             }}>
               <div style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight }}>SKU Conflicts</div>
@@ -587,7 +587,7 @@ function DataQualitySection() {
 
       {/* Per-brand completeness */}
       <div style={{
-        marginTop: spacing[4],
+        marginTop: spacing.md,
         backgroundColor: colors.surface.light,
         border: `1px solid ${colors.border.lowEmphasis.onLight}`,
         borderRadius: borderRadius.lg,
@@ -641,20 +641,20 @@ function MigrationSection() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: spacing[4],
+        gap: spacing.md,
       }}>
         {/* Metrc Compliance migration */}
         <div style={{
           backgroundColor: colors.surface.light,
           border: `1px solid ${colors.border.lowEmphasis.onLight}`,
           borderRadius: borderRadius.lg,
-          padding: spacing[5],
+          padding: spacing.lg,
         }}>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: spacing[3],
+            marginBottom: spacing.sm,
           }}>
             <span style={{ ...typography.label.md, color: colors.text.highEmphasis.onLight }}>
               From Metrc Compliance
@@ -667,8 +667,8 @@ function MigrationSection() {
           <ProgressBar value={82} color={colors.dataViz['04']} />
           <div style={{
             display: 'flex',
-            gap: spacing[4],
-            marginTop: spacing[3],
+            gap: spacing.md,
+            marginTop: spacing.sm,
           }}>
             <div>
               <div style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight }}>Migrated</div>
@@ -690,13 +690,13 @@ function MigrationSection() {
           backgroundColor: colors.surface.light,
           border: `1px solid ${colors.border.lowEmphasis.onLight}`,
           borderRadius: borderRadius.lg,
-          padding: spacing[5],
+          padding: spacing.lg,
         }}>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: spacing[3],
+            marginBottom: spacing.sm,
           }}>
             <span style={{ ...typography.label.md, color: colors.text.highEmphasis.onLight }}>
               From Retail ID
@@ -709,8 +709,8 @@ function MigrationSection() {
           <ProgressBar value={65} color={colors.dataViz['06']} />
           <div style={{
             display: 'flex',
-            gap: spacing[4],
-            marginTop: spacing[3],
+            gap: spacing.md,
+            marginTop: spacing.sm,
           }}>
             <div>
               <div style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight }}>Migrated</div>
@@ -730,19 +730,19 @@ function MigrationSection() {
 
       {/* Lineage summary */}
       <div style={{
-        marginTop: spacing[4],
+        marginTop: spacing.md,
         display: 'flex',
-        gap: spacing[4],
+        gap: spacing.md,
       }}>
         <div style={{
           flex: 1,
           backgroundColor: colors.surface.success,
           border: `1px solid ${colors.surfaceBorder.success}`,
           borderRadius: borderRadius.md,
-          padding: `${spacing[3]} ${spacing[4]}`,
+          padding: `${spacing.sm} ${spacing.md}`,
           display: 'flex',
           alignItems: 'center',
-          gap: spacing[3],
+          gap: spacing.sm,
         }}>
           <span style={{ fontSize: 20 }}>{'\u2705'}</span>
           <div>
@@ -759,10 +759,10 @@ function MigrationSection() {
           backgroundColor: colors.surface.warning,
           border: `1px solid ${colors.surfaceBorder.warning}`,
           borderRadius: borderRadius.md,
-          padding: `${spacing[3]} ${spacing[4]}`,
+          padding: `${spacing.sm} ${spacing.md}`,
           display: 'flex',
           alignItems: 'center',
-          gap: spacing[3],
+          gap: spacing.sm,
         }}>
           <span style={{ fontSize: 20 }}>{'\uD83D\uDD17'}</span>
           <div>
@@ -804,7 +804,7 @@ function WorkQueueSection() {
         action={{ label: 'View all tasks', onClick: () => {} }}
       />
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: spacing[4] }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: spacing.md }}>
         {/* Task list */}
         <div style={{
           backgroundColor: colors.surface.light,
@@ -816,8 +816,8 @@ function WorkQueueSection() {
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: spacing[2],
-            padding: `${spacing[3]} ${spacing[4]}`,
+            gap: spacing.xs,
+            padding: `${spacing.sm} ${spacing.md}`,
             borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
           }}>
             <span style={{ ...typography.label.sm, color: colors.text.lowEmphasis.onLight }}>Group by:</span>
@@ -846,11 +846,11 @@ function WorkQueueSection() {
             <div
               key={task.id}
               style={{
-                padding: `${spacing[3]} ${spacing[4]}`,
+                padding: `${spacing.sm} ${spacing.md}`,
                 borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
                 display: 'flex',
                 alignItems: 'center',
-                gap: spacing[3],
+                gap: spacing.sm,
                 cursor: 'pointer',
               }}
             >
@@ -869,20 +869,20 @@ function WorkQueueSection() {
         </div>
 
         {/* Quick actions + backlog */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[4] }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
           {/* Quick actions */}
           <div style={{
             backgroundColor: colors.surface.light,
             border: `1px solid ${colors.border.lowEmphasis.onLight}`,
             borderRadius: borderRadius.lg,
-            padding: spacing[4],
+            padding: spacing.md,
           }}>
             <div style={{
               ...typography.label.md,
               color: colors.text.highEmphasis.onLight,
-              marginBottom: spacing[3],
+              marginBottom: spacing.sm,
             }}>Quick Actions</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
               {quickActions.map(a => (
                 <button
                   key={a.label}
@@ -891,7 +891,7 @@ function WorkQueueSection() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 8,
-                    padding: `${spacing[2]} ${spacing[3]}`,
+                    padding: `${spacing.xs} ${spacing.sm}`,
                     borderRadius: borderRadius.md,
                     border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                     backgroundColor: colors.surface.light,
@@ -913,14 +913,14 @@ function WorkQueueSection() {
             backgroundColor: colors.surface.light,
             border: `1px solid ${colors.border.lowEmphasis.onLight}`,
             borderRadius: borderRadius.lg,
-            padding: spacing[4],
+            padding: spacing.md,
           }}>
             <div style={{
               ...typography.label.md,
               color: colors.text.lowEmphasis.onLight,
-              marginBottom: spacing[3],
+              marginBottom: spacing.sm,
             }}>Backlog</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', ...typography.body.sm }}>
                 <span style={{ color: colors.text.lowEmphasis.onLight }}>Missing images</span>
                 <span style={{ color: colors.text.highEmphasis.onLight, fontWeight: 500 }}>41</span>
@@ -957,13 +957,13 @@ function RecentActivitySection() {
       />
 
       {/* Summary counts */}
-      <div style={{ display: 'flex', gap: spacing[4], marginBottom: spacing[4] }}>
+      <div style={{ display: 'flex', gap: spacing.md, marginBottom: spacing.md }}>
         <div style={{
           flex: 1,
           backgroundColor: colors.surface.light,
           border: `1px solid ${colors.border.lowEmphasis.onLight}`,
           borderRadius: borderRadius.md,
-          padding: `${spacing[3]} ${spacing[4]}`,
+          padding: `${spacing.sm} ${spacing.md}`,
           textAlign: 'center',
         }}>
           <div style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight }}>Created</div>
@@ -977,7 +977,7 @@ function RecentActivitySection() {
           backgroundColor: colors.surface.light,
           border: `1px solid ${colors.border.lowEmphasis.onLight}`,
           borderRadius: borderRadius.md,
-          padding: `${spacing[3]} ${spacing[4]}`,
+          padding: `${spacing.sm} ${spacing.md}`,
           textAlign: 'center',
         }}>
           <div style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight }}>Updated</div>
@@ -991,7 +991,7 @@ function RecentActivitySection() {
           backgroundColor: colors.surface.light,
           border: `1px solid ${colors.border.lowEmphasis.onLight}`,
           borderRadius: borderRadius.md,
-          padding: `${spacing[3]} ${spacing[4]}`,
+          padding: `${spacing.sm} ${spacing.md}`,
           textAlign: 'center',
         }}>
           <div style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight }}>Archived</div>
@@ -1005,7 +1005,7 @@ function RecentActivitySection() {
           backgroundColor: colors.surface.warning,
           border: `1px solid ${colors.surfaceBorder.warning}`,
           borderRadius: borderRadius.md,
-          padding: `${spacing[3]} ${spacing[4]}`,
+          padding: `${spacing.sm} ${spacing.md}`,
           textAlign: 'center',
           cursor: 'pointer',
         }}>
@@ -1093,11 +1093,11 @@ function ComplianceRiskSection() {
         backgroundColor: colors.surface.important,
         border: `1px solid ${colors.surfaceBorder.important}`,
         borderRadius: borderRadius.md,
-        padding: `${spacing[3]} ${spacing[4]}`,
-        marginBottom: spacing[4],
+        padding: `${spacing.sm} ${spacing.md}`,
+        marginBottom: spacing.md,
         display: 'flex',
         alignItems: 'center',
-        gap: spacing[3],
+        gap: spacing.sm,
       }}>
         <span style={{ fontSize: 18 }}>{'\uD83D\uDEA8'}</span>
         <div style={{ flex: 1 }}>
@@ -1179,14 +1179,14 @@ function ComplianceRiskSection() {
 const thStyle: React.CSSProperties = {
   ...typography.label.sm,
   color: colors.text.lowEmphasis.onLight,
-  padding: `${spacing[2]} ${spacing[4]}`,
+  padding: `${spacing.xs} ${spacing.md}`,
   fontWeight: 500,
   whiteSpace: 'nowrap',
 };
 
 const tdStyle: React.CSSProperties = {
   ...typography.body.sm,
-  padding: `${spacing[2]} ${spacing[4]}`,
+  padding: `${spacing.xs} ${spacing.md}`,
   color: colors.text.highEmphasis.onLight,
 };
 
@@ -1249,7 +1249,7 @@ export default function MSOHomepage() {
       <header style={{
         backgroundColor: colors.surface.light,
         borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
-        padding: `0 ${spacing[5]}`,
+        padding: `0 ${spacing.lg}`,
         height: 64,
         display: 'flex',
         alignItems: 'center',
@@ -1259,7 +1259,7 @@ export default function MSOHomepage() {
         zIndex: 100,
       }}>
         {/* Left: App switcher + GCR logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
           {/* App grid icon */}
           <button style={{
             width: 36, height: 36, border: 'none', background: 'none',
@@ -1332,7 +1332,7 @@ export default function MSOHomepage() {
         </div>
 
         {/* Right: Icons + org */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[2] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
           {/* Bell icon */}
           <button style={{
             width: 36, height: 36, border: 'none', background: 'none',
@@ -1389,10 +1389,10 @@ export default function MSOHomepage() {
       <main style={{
         maxWidth: 1280,
         margin: '0 auto',
-        padding: `${spacing[6]} ${spacing[6]} ${spacing[12]}`,
+        padding: `${spacing.xl} ${spacing.xl} ${spacing['4xl']}`,
       }}>
         {/* Page title — matches Figma Hero section pattern */}
-        <div style={{ marginBottom: spacing[5], paddingTop: spacing[2] }}>
+        <div style={{ marginBottom: spacing.lg, paddingTop: spacing.xs }}>
           <h1 style={{
             fontFamily: fontFamilies.display,
             fontSize: '32px',
@@ -1414,7 +1414,7 @@ export default function MSOHomepage() {
         </div>
 
         {/* Dashboard sections */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[8] }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['2xl'] }}>
           <CatalogOverview />
           <DataQualitySection />
           <MigrationSection />

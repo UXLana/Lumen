@@ -147,22 +147,22 @@ const styles = {
   itemFilled: {
     background: colors.surface.paper,
     borderRadius: borderRadius.md,
-    marginBottom: spacing[2],
+    marginBottom: spacing.xs,
   },
 
   // Inverted variant: white background panels on gray surface
   itemInverted: {
     background: colors.surface.default,
     borderRadius: borderRadius.md,
-    marginBottom: spacing[2],
+    marginBottom: spacing.xs,
   },
 
 
   header: {
     display: 'flex',
     alignItems: 'center',
-    gap: spacing[2],
-    padding: `${spacing[2]} 0`,
+    gap: spacing.xs,
+    padding: `${spacing.xs} 0`,
     cursor: 'pointer',
     userSelect: 'none' as const,
     transition: transitionPresets.default,
@@ -170,12 +170,12 @@ const styles = {
 
   // Full width: add horizontal padding so icon doesn't touch edge
   headerFullWidth: {
-    paddingLeft: spacing[4],
-    paddingRight: spacing[4],
+    paddingLeft: spacing.md,
+    paddingRight: spacing.md,
   },
 
   headerFilled: {
-    padding: `${spacing[3]} ${spacing[4]}`,
+    padding: `${spacing.sm} ${spacing.md}`,
     borderRadius: borderRadius.md,
   },
 
@@ -197,7 +197,7 @@ const styles = {
     alignItems: 'center',
     flex: 1,
     minWidth: 0,
-    gap: spacing[2],
+    gap: spacing.xs,
   },
 
   iconWrapper: {
@@ -274,17 +274,17 @@ const styles = {
 
   // Default variant: content indented under icon
   contentPaddingDefault: {
-    padding: `${spacing[1]} 0 ${spacing[4]} ${spacing[8]}`,
+    padding: `${spacing['2xs']} 0 ${spacing.md} ${spacing['2xl']}`,
   },
 
   // Default variant with full width: add right padding too
   contentPaddingDefaultFullWidth: {
-    padding: `${spacing[1]} ${spacing[4]} ${spacing[4]} calc(${spacing[4]} + ${spacing[8]})`, // left padding + icon indent
+    padding: `${spacing['2xs']} ${spacing.md} ${spacing.md} calc(${spacing.md} + ${spacing['2xl']})`, // left padding + icon indent
   },
 
   // Filled/Inverted variants: content aligned under title text, not icon
   contentPaddingFilled: {
-    padding: `${spacing[1]} ${spacing[4]} ${spacing[4]} 36px`, // 20px icon + 8px gap + 8px extra = 36px to align under title
+    padding: `${spacing['2xs']} ${spacing.md} ${spacing.md} 36px`, // 20px icon + 8px gap + 8px extra = 36px to align under title
   },
 
   divider: {

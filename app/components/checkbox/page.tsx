@@ -139,7 +139,7 @@ import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
                 <div>
                   <Playground
                     preview={
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[4], width: demoFullWidth ? '100%' : 'auto' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, width: demoFullWidth ? '100%' : 'auto' }}>
                         <Checkbox
                           label="Option label"
                           metadata={demoShowMetadata ? 'Helpful metadata text' : undefined}
@@ -161,7 +161,7 @@ import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
   checked={${demoChecked}}${demoIndeterminate ? '\n  indeterminate' : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error' : ''}${demoIsChild ? '\n  isChild' : ''}${demoFullWidth ? '\n  fullWidth' : ''}
   onChange={(checked) => setChecked(checked)}
 />`}
-                    previewPadding={spacing[6]}
+                    previewPadding={spacing.xl}
                     previewBackground={colors.surface.paper}
                   />
                 </div>
@@ -183,7 +183,7 @@ import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
                     </div>
 
                     {/* Options */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                       <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
                       <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
                       <StyledCheckboxControl checked={demoShowMetadata} onChange={() => setDemoShowMetadata(!demoShowMetadata)} label="Metadata" />
@@ -215,7 +215,7 @@ import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
   <Checkbox label="Option 2" checked={values.opt2} onChange={...} />
   <Checkbox label="Option 3" checked={values.opt3} onChange={...} />
 </CheckboxGroup>`}
-              previewPadding={spacing[6]}
+              previewPadding={spacing.xl}
             />
           </section>
 
@@ -256,7 +256,7 @@ import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
 />
 <Checkbox label="Child 1" isChild checked={child1} onChange={...} />
 <Checkbox label="Child 2" isChild checked={child2} onChange={...} />`}
-              previewPadding={spacing[6]}
+              previewPadding={spacing.xl}
             />
           </section>
 
@@ -276,11 +276,11 @@ import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
                     ['Checkbox size', <CopyableToken key="cs" token="18px (fixed)" />, <PixelValue key="csv" value="18px" />],
                     ['Border radius', <CopyableToken key="br" token="borderRadius.xs" />, <PixelValue key="brv" value={borderRadius.xs} />],
                     ['Border width', <CopyableToken key="bw" token="1.5px (fixed)" />, <PixelValue key="bwv" value="1.5px" />],
-                    ['Container padding', <CopyableToken key="cp" token={`spacing[2] spacing[3]`} />, <PixelValue key="cpv" value={`${spacing[2]} ${spacing[3]}`} />],
-                    ['Child indent', <CopyableToken key="ci" token="spacing[8]" />, <PixelValue key="civ" value={spacing[8]} />],
-                    ['Label gap', <CopyableToken key="lg" token="spacing[2]" />, <PixelValue key="lgv" value={spacing[2]} />],
+                    ['Container padding', <CopyableToken key="cp" token={`spacing.xs spacing.sm`} />, <PixelValue key="cpv" value={`${spacing.xs} ${spacing.sm}`} />],
+                    ['Child indent', <CopyableToken key="ci" token="spacing['2xl']" />, <PixelValue key="civ" value={spacing['2xl']} />],
+                    ['Label gap', <CopyableToken key="lg" token="spacing.xs" />, <PixelValue key="lgv" value={spacing.xs} />],
                     ['Metadata margin', <CopyableToken key="mm" token="2px (fixed)" />, <PixelValue key="mmv" value="2px" />],
-                    ['Group bottom margin', <CopyableToken key="gm" token="spacing[4]" />, <PixelValue key="gmv" value={spacing[4]} />],
+                    ['Group bottom margin', <CopyableToken key="gm" token="spacing.md" />, <PixelValue key="gmv" value={spacing.md} />],
                     ['Error icon size', <CopyableToken key="ei" token="14px (fixed)" />, <PixelValue key="eiv" value="14px" />],
                   ]}
                 />

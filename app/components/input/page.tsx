@@ -132,7 +132,7 @@ export default function InputPage() {
                 <div>
                   <Playground
                     preview={
-                      <div style={{ padding: spacing[4], width: demoFullWidth ? '100%' : 'auto' }}>
+                      <div style={{ padding: spacing.md, width: demoFullWidth ? '100%' : 'auto' }}>
                         <Input
                           label="Label"
                           placeholder="Enter text..."
@@ -154,7 +154,7 @@ export default function InputPage() {
   value={value}
   onChange={setValue}${demoSize !== 'md' ? `\n  size="${demoSize}"` : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error\n  errorMessage="This field has an error"' : ''}${demoRequired ? '\n  required' : ''}${demoFullWidth ? '\n  fullWidth' : ''}${demoShowHelper ? '\n  helperText="This is helpful text"' : ''}
 />`}
-                    previewPadding={spacing[2]}
+                    previewPadding={spacing.xs}
                   />
                 </div>
 
@@ -185,7 +185,7 @@ export default function InputPage() {
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
                         Options
                       </label>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                         <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
                         <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
                         <StyledCheckboxControl checked={demoRequired} onChange={() => setDemoRequired(!demoRequired)} label="Required" />
@@ -207,7 +207,7 @@ export default function InputPage() {
             </p>
             <Playground
               preview={
-                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2], padding: spacing[4] }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs, padding: spacing.md }}>
                   <Input
                     label="Search"
                     placeholder="Search..."
@@ -233,7 +233,7 @@ export default function InputPage() {
   startAdornment={<span>$</span>}
   endAdornment={<span>USD</span>}
 />`}
-              previewPadding={spacing[2]}
+              previewPadding={spacing.xs}
             />
           </section>
 
@@ -254,19 +254,19 @@ export default function InputPage() {
                       'sm',
                       <PixelValue key="smh" value="32px" />,
                       <TokenValue key="smfs" token="typography.body.xs.fontSize" value={typography.body.xs.fontSize} />,
-                      <CopyableToken key="smp" token={`0 ${spacing[2]}`} />,
+                      <CopyableToken key="smp" token={`0 ${spacing.xs}`} />,
                     ],
                     [
                       'md',
                       <PixelValue key="mdh" value="40px" />,
                       <TokenValue key="mdfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />,
-                      <CopyableToken key="mdp" token={`0 ${spacing[3]}`} />,
+                      <CopyableToken key="mdp" token={`0 ${spacing.sm}`} />,
                     ],
                     [
                       'lg',
                       <PixelValue key="lgh" value="48px" />,
                       <TokenValue key="lgfs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />,
-                      <CopyableToken key="lgp" token={`0 ${spacing[3]}`} />,
+                      <CopyableToken key="lgp" token={`0 ${spacing.sm}`} />,
                     ],
                   ]}
                 />
@@ -343,7 +343,7 @@ export default function InputPage() {
                   rows={[
                     ['Border width', <CopyableToken key="bw" token="1.5px (fixed)" />, <PixelValue key="bwv" value="1.5px" />],
                     ['Border radius', <CopyableToken key="br" token="borderRadiusSemantics.input" />, <PixelValue key="brv" value={borderRadiusSemantics.input} />],
-                    ['Bottom margin', <CopyableToken key="bm" token="spacing[4]" />, <PixelValue key="bmv" value={spacing[4]} />],
+                    ['Bottom margin', <CopyableToken key="bm" token="spacing.md" />, <PixelValue key="bmv" value={spacing.md} />],
                     ['Focus ring', <CopyableToken key="fr" token="box-shadow: 0 0 0 1px brand.default" />, <PixelValue key="frv" value={`0 0 0 1px ${colors.brand.default}`} />],
                   ]}
                 />

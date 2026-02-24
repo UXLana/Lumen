@@ -96,10 +96,10 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     const containerStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: spacing[2],
+      gap: spacing.xs,
       flexDirection: labelPlacement === 'start' ? 'row-reverse' : 'row',
       justifyContent: fullWidth ? 'space-between' : undefined,
-      padding: `${spacing[2]} ${spacing[3]}`,
+      padding: `${spacing.xs} ${spacing.sm}`,
       cursor: disabled ? 'not-allowed' : 'pointer',
       opacity: disabled ? 0.6 : 1,
       width: fullWidth ? '100%' : 'auto',

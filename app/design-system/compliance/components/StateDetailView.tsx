@@ -20,7 +20,7 @@ interface StateDetailViewProps {
 type DetailTab = 'issues' | 'reports' | 'jira'
 
 const tabStyle = (active: boolean): React.CSSProperties => ({
-  padding: `${spacing[2]} ${spacing[4]}`,
+  padding: `${spacing.xs} ${spacing.md}`,
   backgroundColor: active ? colors.brand.default : 'transparent',
   color: active ? colors.text.highEmphasis.onDark : colors.text.lowEmphasis.onLight,
   border: `1px solid ${active ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
@@ -37,7 +37,7 @@ const thStyle: React.CSSProperties = {
   color: colors.text.lowEmphasis.onLight,
   textTransform: 'uppercase' as const,
   letterSpacing: '0.5px',
-  padding: `${spacing[3]} ${spacing[4]}`,
+  padding: `${spacing.sm} ${spacing.md}`,
   textAlign: 'left',
   backgroundColor: colors.surface.lightDarker,
   borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
@@ -45,7 +45,7 @@ const thStyle: React.CSSProperties = {
 }
 
 const tdStyle: React.CSSProperties = {
-  padding: `${spacing[3]} ${spacing[4]}`,
+  padding: `${spacing.sm} ${spacing.md}`,
   borderBottom: `1px solid rgba(0, 0, 0, 0.06)`,
   verticalAlign: 'middle',
 }
@@ -140,7 +140,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
         {/* Header */}
         <div
           style={{
-            padding: `${spacing[5]} ${spacing[8]}`,
+            padding: `${spacing.lg} ${spacing['2xl']}`,
             borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
             display: 'flex',
             alignItems: 'center',
@@ -149,7 +149,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: spacing[2] }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: spacing.xs }}>
               <h2 style={{ ...typography.heading.h3, color: colors.text.highEmphasis.onLight, margin: 0 }}>
                 {state.stateName}
               </h2>
@@ -157,7 +157,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
                 {state.stateCode}
               </span>
             </div>
-            <div style={{ display: 'flex', gap: spacing[4], marginTop: spacing[2] }}>
+            <div style={{ display: 'flex', gap: spacing.md, marginTop: spacing.xs }}>
               <span style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
                 Score: <strong style={{ color: getScoreColor(state.latestScore) }}>{state.latestScore}%</strong>
               </span>
@@ -184,11 +184,11 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
               cursor: 'pointer',
               fontSize: 16,
               color: colors.text.lowEmphasis.onLight,
-              padding: `${spacing[1]} ${spacing[3]}`,
+              padding: `${spacing['2xs']} ${spacing.sm}`,
               fontFamily: fontFamilies.body,
               display: 'flex',
               alignItems: 'center',
-              gap: spacing[2],
+              gap: spacing.xs,
             }}
           >
             <span style={{ fontSize: 14 }}>Esc</span>
@@ -199,11 +199,11 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
         {/* WCAG Category Bars */}
         <div
           style={{
-            padding: `${spacing[4]} ${spacing[8]}`,
+            padding: `${spacing.md} ${spacing['2xl']}`,
             borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: spacing[4],
+            gap: spacing.md,
             flexShrink: 0,
           }}
         >
@@ -232,7 +232,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
         </div>
 
         {/* Tab Navigation */}
-        <div style={{ padding: `${spacing[4]} ${spacing[8]}`, display: 'flex', gap: spacing[2], flexShrink: 0 }}>
+        <div style={{ padding: `${spacing.md} ${spacing['2xl']}`, display: 'flex', gap: spacing.xs, flexShrink: 0 }}>
           <button onClick={() => setActiveTab('issues')} style={tabStyle(activeTab === 'issues')}>
             Issues ({allIssues.length})
           </button>
@@ -245,7 +245,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
         </div>
 
         {/* Scrollable Tab Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: `0 ${spacing[8]} ${spacing[8]}` }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: `0 ${spacing['2xl']} ${spacing['2xl']}` }}>
 
           {/* ─── Issues Tab ─── */}
           {activeTab === 'issues' && (
@@ -283,7 +283,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
                 </table>
               </div>
               {allIssues.length === 0 && (
-                <div style={{ padding: spacing[6], textAlign: 'center', color: colors.text.lowEmphasis.onLight, ...typography.body.sm }}>
+                <div style={{ padding: spacing.xl, textAlign: 'center', color: colors.text.lowEmphasis.onLight, ...typography.body.sm }}>
                   No issues found for this state.
                 </div>
               )}
@@ -292,7 +292,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
 
           {/* ─── Reports Tab ─── */}
           {activeTab === 'reports' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[3] }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
               {state.reports.map(report => {
                 const score = scoreReport(report)
                 const scoreColor = getScoreColor(score)
@@ -302,7 +302,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
                     style={{
                       border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                       borderRadius: borderRadius.md,
-                      padding: spacing[4],
+                      padding: spacing.md,
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -310,7 +310,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
                         <div style={{ ...typography.label.md, color: colors.text.highEmphasis.onLight }}>
                           {report.sourceFileName}
                         </div>
-                        <div style={{ display: 'flex', gap: spacing[3], marginTop: spacing[1] }}>
+                        <div style={{ display: 'flex', gap: spacing.sm, marginTop: spacing['2xs'] }}>
                           <span style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight }}>
                             {report.auditDate}
                           </span>
@@ -343,7 +343,7 @@ export default function StateDetailView({ state, onClose, onStatusChange, onDele
                 )
               })}
               {state.reports.length === 0 && (
-                <div style={{ padding: spacing[6], textAlign: 'center', color: colors.text.lowEmphasis.onLight, ...typography.body.sm }}>
+                <div style={{ padding: spacing.xl, textAlign: 'center', color: colors.text.lowEmphasis.onLight, ...typography.body.sm }}>
                   No reports uploaded for this state.
                 </div>
               )}
@@ -409,7 +409,7 @@ function IssueRow({
             onChange={(e) => onStatusChange(e.target.value as IssueStatus)}
             aria-label={`Status for issue ${issue.id}`}
             style={{
-              padding: `${spacing[1]} ${spacing[2]}`,
+              padding: `${spacing['2xs']} ${spacing.xs}`,
               borderRadius: borderRadius.sm,
               border: `1px solid ${colors.border.lowEmphasis.onLight}`,
               fontFamily: fontFamilies.body,
@@ -427,7 +427,7 @@ function IssueRow({
         <td style={tdStyle}>
           <span style={{
             ...typography.label.sm,
-            padding: `2px ${spacing[2]}`,
+            padding: `2px ${spacing.xs}`,
             borderRadius: borderRadius.sm,
             backgroundColor: effortStyle.bg,
             color: effortStyle.text,
@@ -480,12 +480,12 @@ function JiraStoriesSection({
   return (
     <div>
       {/* Controls */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3], flexWrap: 'wrap', marginBottom: spacing[4] }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.md }}>
         <select
           value={selectedReport}
           onChange={(e) => setSelectedReport(e.target.value)}
           style={{
-            padding: `${spacing[2]} ${spacing[3]}`,
+            padding: `${spacing.xs} ${spacing.sm}`,
             borderRadius: borderRadius.md,
             border: `1px solid ${colors.border.lowEmphasis.onLight}`,
             fontFamily: fontFamilies.body,
@@ -510,7 +510,7 @@ function JiraStoriesSection({
               }}
               aria-pressed={active}
               style={{
-                padding: `2px ${spacing[2]}`,
+                padding: `2px ${spacing.xs}`,
                 backgroundColor: active ? colors.brand.default : 'transparent',
                 color: active ? colors.text.highEmphasis.onDark : colors.text.lowEmphasis.onLight,
                 border: `1px solid ${active ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
@@ -542,9 +542,9 @@ function JiraStoriesSection({
       </div>
 
       {/* Story Cards */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2] }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
         {stories.length === 0 ? (
-          <div style={{ padding: spacing[6], textAlign: 'center', color: colors.text.lowEmphasis.onLight, ...typography.body.sm }}>
+          <div style={{ padding: spacing.xl, textAlign: 'center', color: colors.text.lowEmphasis.onLight, ...typography.body.sm }}>
             {state.reports.length === 0 ? 'Upload a report to generate Jira stories.' : 'No stories match the current filter.'}
           </div>
         ) : (

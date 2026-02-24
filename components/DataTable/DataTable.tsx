@@ -100,22 +100,22 @@ const densityConfig: Record<DataTableDensity, {
   cardPaddingX: string
 }> = {
   compact: {
-    cellPaddingY: spacing[1],
-    cellPaddingX: spacing[3],
-    cardPaddingY: spacing[2],
-    cardPaddingX: spacing[3],
+    cellPaddingY: spacing['2xs'],
+    cellPaddingX: spacing.sm,
+    cardPaddingY: spacing.xs,
+    cardPaddingX: spacing.sm,
   },
   default: {
-    cellPaddingY: spacing[2],
-    cellPaddingX: spacing[4],
-    cardPaddingY: spacing[3],
-    cardPaddingX: spacing[4],
+    cellPaddingY: spacing.xs,
+    cellPaddingX: spacing.md,
+    cardPaddingY: spacing.sm,
+    cardPaddingX: spacing.md,
   },
   comfortable: {
-    cellPaddingY: spacing[3],
-    cellPaddingX: spacing[4],
-    cardPaddingY: spacing[4],
-    cardPaddingX: spacing[5],
+    cellPaddingY: spacing.sm,
+    cellPaddingX: spacing.md,
+    cardPaddingY: spacing.md,
+    cardPaddingX: spacing.lg,
   },
 }
 
@@ -241,7 +241,7 @@ function CardView<T>({
 
   if (loading) {
     return (
-      <div role="list" aria-label="Loading data" style={{ display: 'grid', gridTemplateColumns: cardGridColumns, gap: spacing[3] }}>
+      <div role="list" aria-label="Loading data" style={{ display: 'grid', gridTemplateColumns: cardGridColumns, gap: spacing.sm }}>
         {Array.from({ length: loadingRows }).map((_, i) => (
           <div
             key={`skeleton-card-${i}`}
@@ -254,7 +254,7 @@ function CardView<T>({
             }}
           >
             <SkeletonPulse width="40%" height="18px" />
-            <div style={{ marginTop: spacing[2], display: 'flex', flexDirection: 'column', gap: spacing[1] }}>
+            <div style={{ marginTop: spacing.xs, display: 'flex', flexDirection: 'column', gap: spacing['2xs'] }}>
               <SkeletonPulse width="70%" />
               <SkeletonPulse width="55%" />
             </div>
@@ -270,7 +270,7 @@ function CardView<T>({
         backgroundColor: colors.surface.light,
         border: `1px solid ${colors.border.lowEmphasis.onLight}`,
         borderRadius: borderRadius.lg,
-        padding: `${spacing[8]} ${spacing[4]}`,
+        padding: `${spacing['2xl']} ${spacing.md}`,
         textAlign: 'center',
       }}>
         {emptyState || (
@@ -283,7 +283,7 @@ function CardView<T>({
   }
 
   return (
-    <div role="list" aria-label={`${data.length} items`} style={{ display: 'grid', gridTemplateColumns: cardGridColumns, gap: spacing[3] }}>
+    <div role="list" aria-label={`${data.length} items`} style={{ display: 'grid', gridTemplateColumns: cardGridColumns, gap: spacing.sm }}>
       {data.map((row, rowIndex) => {
         const key = rowKey(row, rowIndex)
         const clickable = !!onRowClick
@@ -313,7 +313,7 @@ function CardView<T>({
               border: `1px solid ${isSelected ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
               borderRadius: borderRadius.lg,
               padding: `${d.cardPaddingY} ${d.cardPaddingX}`,
-              paddingLeft: selectable ? spacing[10] : d.cardPaddingX,
+              paddingLeft: selectable ? spacing['3xl'] : d.cardPaddingX,
               cursor: clickable ? 'pointer' : 'default',
               transition: 'box-shadow 200ms ease, border-color 200ms ease, background-color 200ms ease',
             }}
@@ -341,14 +341,14 @@ function CardView<T>({
               </div>
             )}
 
-            <div style={{ ...typography.label.md, color: colors.text.highEmphasis.onLight, marginBottom: spacing[2] }}>
+            <div style={{ ...typography.label.md, color: colors.text.highEmphasis.onLight, marginBottom: spacing.xs }}>
               {primaryValue}
             </div>
 
             <dl style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-              gap: `${spacing[2]} ${spacing[4]}`,
+              gap: `${spacing.xs} ${spacing.md}`,
               margin: 0,
             }}>
               {otherCols.map(col => (
@@ -585,7 +585,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
           const d = densityConfig[density]
           return (
             <div ref={ref} style={{ width: '100%', ...styleProp }} {...props}>
-              <div style={{ display: 'grid', gridTemplateColumns: cardGridColumns, gap: spacing[4] }}>
+              <div style={{ display: 'grid', gridTemplateColumns: cardGridColumns, gap: spacing.md }}>
                 {Array.from({ length: loadingRows }).map((_, i) => (
                   <div
                     key={`skeleton-custom-${i}`}
@@ -593,13 +593,13 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                       backgroundColor: colors.surface.light,
                       border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                       borderRadius: borderRadius.lg,
-                      padding: spacing[4],
+                      padding: spacing.md,
                       minHeight: 160,
                     }}
                   >
                     <SkeletonPulse width="60%" height="16px" />
-                    <div style={{ marginTop: spacing[3] }}><SkeletonPulse width="80%" /></div>
-                    <div style={{ marginTop: spacing[2] }}><SkeletonPulse width="40%" /></div>
+                    <div style={{ marginTop: spacing.sm }}><SkeletonPulse width="80%" /></div>
+                    <div style={{ marginTop: spacing.xs }}><SkeletonPulse width="40%" /></div>
                   </div>
                 ))}
               </div>
@@ -614,7 +614,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                 backgroundColor: colors.surface.light,
                 border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                 borderRadius: borderRadius.lg,
-                padding: `${spacing[8]} ${spacing[4]}`,
+                padding: `${spacing['2xl']} ${spacing.md}`,
                 textAlign: 'center',
               }}>
                 {emptyState || (
@@ -629,7 +629,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
 
         return (
           <div ref={ref} style={{ width: '100%', ...styleProp }} {...props}>
-            <div style={{ display: 'grid', gridTemplateColumns: cardGridColumns, gap: spacing[4] }}>
+            <div style={{ display: 'grid', gridTemplateColumns: cardGridColumns, gap: spacing.md }}>
               {sortedData.map((row, rowIndex) => {
                 const key = rowKey(row, rowIndex)
                 return (
@@ -744,7 +744,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                 {selectable && (
                   <th
                     scope="col"
-                    style={{ ...thBaseStyle, width: 44, textAlign: 'center', padding: `${d.cellPaddingY} ${spacing[3]}` }}
+                    style={{ ...thBaseStyle, width: 44, textAlign: 'center', padding: `${d.cellPaddingY} ${spacing.sm}` }}
                   >
                     <InlineCheckbox
                       checked={allSelected}
@@ -803,7 +803,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
               {loading && Array.from({ length: loadingRows }).map((_, rowIdx) => (
                 <tr key={`skeleton-${rowIdx}`}>
                   {selectable && (
-                    <td style={{ ...tdBaseStyle, textAlign: 'center', borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`, padding: `${d.cellPaddingY} ${spacing[3]}` }}>
+                    <td style={{ ...tdBaseStyle, textAlign: 'center', borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`, padding: `${d.cellPaddingY} ${spacing.sm}` }}>
                       <SkeletonPulse width="16px" height="16px" />
                     </td>
                   )}
@@ -828,7 +828,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                     colSpan={totalCols}
                     style={{
                       ...tdBaseStyle, textAlign: 'center',
-                      padding: `${spacing[8]} ${spacing[4]}`,
+                      padding: `${spacing['2xl']} ${spacing.md}`,
                       color: colors.text.lowEmphasis.onLight,
                     }}
                   >
@@ -877,7 +877,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                   >
                     {selectable && (
                       <td
-                        style={{ ...tdBaseStyle, textAlign: 'center', width: 44, padding: `${d.cellPaddingY} ${spacing[3]}` }}
+                        style={{ ...tdBaseStyle, textAlign: 'center', width: 44, padding: `${d.cellPaddingY} ${spacing.sm}` }}
                         onClick={e => e.stopPropagation()}
                       >
                         <InlineCheckbox

@@ -49,8 +49,8 @@ export default function StateHealthCard({ state, selected, onClick }: StateHealt
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: spacing[4],
-        padding: spacing[5],
+        gap: spacing.md,
+        padding: spacing.lg,
         backgroundColor: colors.surface.light,
         border: `1px solid ${selected ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
         borderRadius: borderRadius.lg,
@@ -106,7 +106,7 @@ export default function StateHealthCard({ state, selected, onClick }: StateHealt
 
       {/* Info */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[2], marginBottom: spacing[1] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, marginBottom: spacing['2xs'] }}>
           <span
             style={{
               ...typography.label.md,
@@ -127,7 +127,7 @@ export default function StateHealthCard({ state, selected, onClick }: StateHealt
         </div>
 
         {/* Stats row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing[3] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
           <span style={{ ...typography.body.xs, color: scoreColor, fontWeight: 600 }}>
             {getStatusLabel(score)}
           </span>

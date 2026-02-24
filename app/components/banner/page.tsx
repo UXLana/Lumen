@@ -48,7 +48,7 @@ const bannerDocData: ComponentDocData = {
   tokens: [
     { token: 'colors.status.*', value: 'info, success, warning, error', usage: 'Banner variant colors' },
     { token: 'borderRadius.md', value: '8px', usage: 'Inline banner corners' },
-    { token: 'spacing[4]', value: '16px', usage: 'Internal padding' },
+    { token: 'spacing.md', value: '16px', usage: 'Internal padding' },
   ],
   relatedComponents: [
     { name: 'Badge', href: '/components/badge' },
@@ -181,14 +181,14 @@ import { Banner } from '@/components'`}</CodeBlock>
             </p>
 
             <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: spacing[12] }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: spacing['4xl'] }}>
                 {/* Preview/Code with Tabs */}
                 <div>
                   <Playground
                     preview={
                       <div style={{
                         width: '100%',
-                        padding: demoOnDark ? spacing[4] : '0',
+                        padding: demoOnDark ? spacing.md : '0',
                         background: demoOnDark ? colors.brand.primary : 'transparent',
                         borderRadius: demoOnDark ? borderRadius.md : undefined,
                         boxSizing: 'border-box',
@@ -207,7 +207,7 @@ import { Banner } from '@/components'`}</CodeBlock>
                       </div>
                     }
                     code={generateCode()}
-                    previewPadding={`${spacing[14]} ${spacing[6]}`}
+                    previewPadding={`56px ${spacing.xl}`}
                     previewMinHeight="168px"
                   />
                 </div>
@@ -299,7 +299,7 @@ import { Banner } from '@/components'`}</CodeBlock>
                         onChange={(e) => setDemoTitle(e.target.value)}
                         style={{
                           width: '100%',
-                          padding: spacing[2],
+                          padding: spacing.xs,
                           border: `1px solid ${colors.stroke.light}`,
                           borderRadius: borderRadius.sm,
                           boxSizing: 'border-box',
@@ -320,7 +320,7 @@ import { Banner } from '@/components'`}</CodeBlock>
                         placeholder="Add a description..."
                         style={{
                           width: '100%',
-                          padding: spacing[2],
+                          padding: spacing.xs,
                           border: `1px solid ${colors.stroke.light}`,
                           borderRadius: borderRadius.sm,
                           boxSizing: 'border-box',

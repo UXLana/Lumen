@@ -18,7 +18,7 @@ import UploadZone from './components/UploadZone'
 // ─── Shared Styles ──────────────────────────────────────────────────────────
 
 const btnPrimary: React.CSSProperties = {
-  padding: `${spacing[2]} ${spacing[5]}`,
+  padding: `${spacing.xs} ${spacing.lg}`,
   backgroundColor: colors.brand.default,
   color: colors.text.highEmphasis.onDark,
   border: 'none',
@@ -30,7 +30,7 @@ const btnPrimary: React.CSSProperties = {
 }
 
 const btnGhost: React.CSSProperties = {
-  padding: `${spacing[2]} ${spacing[5]}`,
+  padding: `${spacing.xs} ${spacing.lg}`,
   backgroundColor: 'transparent',
   color: colors.text.lowEmphasis.onLight,
   border: `1px solid ${colors.border.lowEmphasis.onLight}`,
@@ -42,7 +42,7 @@ const btnGhost: React.CSSProperties = {
 }
 
 const selectBase: React.CSSProperties = {
-  padding: `${spacing[2]} ${spacing[3]}`,
+  padding: `${spacing.xs} ${spacing.sm}`,
   borderRadius: borderRadius.md,
   border: `1px solid ${colors.border.lowEmphasis.onLight}`,
   fontFamily: fontFamilies.body,
@@ -57,7 +57,7 @@ const sectionLabel: React.CSSProperties = {
   color: colors.text.lowEmphasis.onLight,
   textTransform: 'uppercase' as const,
   letterSpacing: '0.5px',
-  marginBottom: spacing[4],
+  marginBottom: spacing.md,
 }
 
 // ─── Page Component ─────────────────────────────────────────────────────────
@@ -162,7 +162,7 @@ export default function ComplianceDashboardPage() {
         activeId="compliance"
         tabs={[]}
       >
-        <div style={{ padding: spacing[10], textAlign: 'center', color: colors.text.lowEmphasis.onLight }}>
+        <div style={{ padding: spacing['3xl'], textAlign: 'center', color: colors.text.lowEmphasis.onLight }}>
           Loading compliance data...
         </div>
       </StyleguideLayout>
@@ -178,7 +178,7 @@ export default function ComplianceDashboardPage() {
       activeId="compliance"
       tabs={[]}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[10] }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['3xl'] }}>
 
         {/* ═══════════════════════════════════════════════════════════════ */}
         {/* TOTAL HEALTH HERO                                              */}
@@ -196,16 +196,16 @@ export default function ComplianceDashboardPage() {
         {store.states.length === 0 && !showUpload && (
           <div
             style={{
-              padding: spacing[10],
+              padding: spacing['3xl'],
               textAlign: 'center',
               border: `1px dashed rgba(0, 0, 0, 0.15)`,
               borderRadius: borderRadius.lg,
             }}
           >
-            <p style={{ ...typography.heading.h4, color: colors.text.highEmphasis.onLight, marginBottom: spacing[2] }}>
+            <p style={{ ...typography.heading.h4, color: colors.text.highEmphasis.onLight, marginBottom: spacing.xs }}>
               No states tracked yet
             </p>
-            <p style={{ ...typography.body.md, color: colors.text.lowEmphasis.onLight, marginBottom: spacing[5] }}>
+            <p style={{ ...typography.body.md, color: colors.text.lowEmphasis.onLight, marginBottom: spacing.lg }}>
               Upload a VPAT report to start tracking accessibility compliance by state.
             </p>
             <button onClick={() => setShowUpload(true)} style={btnPrimary}>
@@ -219,7 +219,7 @@ export default function ComplianceDashboardPage() {
         {/* ═══════════════════════════════════════════════════════════════ */}
         {store.states.length > 0 && (
           <section>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing[4] }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md }}>
               <h2 style={{ ...sectionLabel, margin: 0 }}>Health by State</h2>
               <button
                 onClick={() => setShowUpload(!showUpload)}
@@ -240,7 +240,7 @@ export default function ComplianceDashboardPage() {
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                gap: spacing[4],
+                gap: spacing.md,
               }}
             >
               {store.states.map(state => {
@@ -305,17 +305,17 @@ export default function ComplianceDashboardPage() {
                 backgroundColor: colors.surface.light,
                 border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                 borderRadius: borderRadius.lg,
-                padding: spacing[6],
+                padding: spacing.xl,
               }}
             >
               {/* State Selector */}
-              <div style={{ marginBottom: spacing[4] }}>
+              <div style={{ marginBottom: spacing.md }}>
                 <label
                   style={{
                     ...typography.label.sm,
                     color: colors.text.lowEmphasis.onLight,
                     display: 'block',
-                    marginBottom: spacing[2],
+                    marginBottom: spacing.xs,
                   }}
                 >
                   State
@@ -357,7 +357,7 @@ export default function ComplianceDashboardPage() {
 
               {/* Error */}
               {uploadError && (
-                <p style={{ ...typography.body.sm, color: colors.text.important, marginTop: spacing[3] }}>
+                <p style={{ ...typography.body.sm, color: colors.text.important, marginTop: spacing.sm }}>
                   {uploadError}
                 </p>
               )}
@@ -368,29 +368,29 @@ export default function ComplianceDashboardPage() {
                   style={{
                     border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                     borderRadius: borderRadius.md,
-                    padding: spacing[5],
-                    marginTop: spacing[4],
+                    padding: spacing.lg,
+                    marginTop: spacing.md,
                   }}
                 >
-                  <h3 style={{ ...typography.heading.h5, color: colors.text.highEmphasis.onLight, marginBottom: spacing[4] }}>
+                  <h3 style={{ ...typography.heading.h5, color: colors.text.highEmphasis.onLight, marginBottom: spacing.md }}>
                     Parse Preview
                   </h3>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: spacing[4], marginBottom: spacing[5] }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: spacing.md, marginBottom: spacing.lg }}>
                     <PreviewStat label="File" value={parsedReport.sourceFileName} />
                     <PreviewStat label="Audit Date" value={parsedReport.auditDate} />
                     <PreviewStat label="Issues Found" value={String(parsedReport.issues.length)} />
                     <PreviewStat label="Score" value={`${calculateScore(parsedReport)}%`} />
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing[2], marginBottom: spacing[5] }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs, marginBottom: spacing.lg }}>
                     {parsedReport.issues.map(issue => (
                       <div
                         key={issue.id}
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: spacing[3],
-                          padding: `${spacing[2]} ${spacing[3]}`,
+                          gap: spacing.sm,
+                          padding: `${spacing.xs} ${spacing.sm}`,
                           backgroundColor: colors.surface.lightDarker,
                           borderRadius: borderRadius.sm,
                         }}
@@ -413,7 +413,7 @@ export default function ComplianceDashboardPage() {
                     ))}
                   </div>
 
-                  <div style={{ display: 'flex', gap: spacing[3] }}>
+                  <div style={{ display: 'flex', gap: spacing.sm }}>
                     <button onClick={handleConfirmImport} style={btnPrimary}>Import Report</button>
                     <button onClick={handleCancelPreview} style={btnGhost}>Cancel</button>
                   </div>
@@ -424,11 +424,11 @@ export default function ComplianceDashboardPage() {
               {uploadStatus === 'done' && (
                 <div
                   style={{
-                    padding: spacing[4],
+                    padding: spacing.md,
                     backgroundColor: colors.surface.success,
                     borderLeft: `3px solid ${colors.surfaceBorder.success}`,
                     borderRadius: borderRadius.md,
-                    marginTop: spacing[4],
+                    marginTop: spacing.md,
                   }}
                 >
                   <p style={{ ...typography.body.sm, color: colors.text.success, margin: 0 }}>
@@ -454,7 +454,7 @@ function PreviewStat({ label, value }: { label: string; value: string }) {
         color: colors.text.lowEmphasis.onLight,
         textTransform: 'uppercase' as const,
         letterSpacing: '0.5px',
-        marginBottom: spacing[1],
+        marginBottom: spacing['2xs'],
       }}>
         {label}
       </div>

@@ -24,7 +24,7 @@ interface ToolbarSlotProps {
 
 function ToolbarLeft({ children }: ToolbarSlotProps) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: spacing[1], paddingLeft: spacing[2] }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: spacing['2xs'], paddingLeft: spacing.xs }}>
       {children}
     </div>
   )
@@ -33,7 +33,7 @@ ToolbarLeft.displayName = 'DataTable.Toolbar.Left'
 
 function ToolbarRight({ children }: ToolbarSlotProps) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: spacing[1], marginLeft: 'auto' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: spacing['2xs'], marginLeft: 'auto' }}>
       {children}
     </div>
   )
@@ -48,8 +48,8 @@ export function Toolbar({ children }: ToolbarProps) {
         flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: spacing[2],
-        padding: spacing[2],
+        gap: spacing.xs,
+        padding: spacing.xs,
         backgroundColor: colors.surface.light,
         border: `1px solid ${colors.border.lowEmphasis.onLight}`,
         borderRadius: borderRadius.lg,
@@ -88,7 +88,7 @@ export function IconButton({ children, active, onClick, title, label, disabled }
         display: 'flex',
         alignItems: 'center',
         gap: 6,
-        padding: `6px ${spacing[2]}`,
+        padding: `6px ${spacing.xs}`,
         borderRadius: borderRadius.md,
         border: 'none',
         background: active ? colors.hover.onLight : 'transparent',
@@ -145,7 +145,7 @@ export function ViewToggle({ value, onChange }: ViewToggleProps) {
           width: 1,
           height: 24,
           backgroundColor: colors.border.lowEmphasis.onLight,
-          margin: `0 ${spacing[1]}`,
+          margin: `0 ${spacing['2xs']}`,
         }}
       />
       <IconButton active={value === 'cards'} onClick={() => onChange('cards')} title="Grid view">
@@ -237,11 +237,11 @@ export interface SelectionInfoProps {
 
 export function SelectionInfo({ count, children }: SelectionInfoProps) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: spacing[1] }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: spacing['2xs'] }}>
       <span
         style={{
           ...typography.body.sm,
-          marginRight: spacing[1],
+          marginRight: spacing['2xs'],
           color: count > 0 ? colors.brand.default : colors.text.lowEmphasis.onLight,
           fontWeight: count > 0 ? 500 : 400,
         }}
@@ -250,7 +250,7 @@ export function SelectionInfo({ count, children }: SelectionInfoProps) {
       </span>
       {count > 0 && (
         <>
-          <div style={{ width: 1, height: 20, backgroundColor: colors.border.lowEmphasis.onLight, margin: `0 ${spacing[1]}` }} />
+          <div style={{ width: 1, height: 20, backgroundColor: colors.border.lowEmphasis.onLight, margin: `0 ${spacing['2xs']}` }} />
           {children}
         </>
       )}
