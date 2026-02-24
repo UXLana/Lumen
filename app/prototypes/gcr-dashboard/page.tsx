@@ -1,7 +1,5 @@
-'use client';
-
-import { RegistryApp } from '@/prototypes/global-product-registry/screens/RegistryApp';
+'use client'
 
 export default function GCRDashboardPrototype() {
-  return <RegistryApp />;
+  return <div style={{ padding: 40, textAlign: 'center', opacity: 0.5 }}>GCR Dashboard — coming soon</div>
 }

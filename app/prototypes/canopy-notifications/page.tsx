@@ -1,7 +1,5 @@
 'use client'
 
-import { CanopyHome } from '@/prototypes/canopy-notifications/screens/CanopyHome'
-
 export default function CanopyNotificationsPrototypePage() {
-  return <CanopyHome />
+  return <div style={{ padding: 40, textAlign: 'center', opacity: 0.5 }}>Canopy Notifications — coming soon</div>
 }

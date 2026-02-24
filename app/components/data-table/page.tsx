@@ -430,7 +430,7 @@ import type { DataTableColumn, SortState } from '@/components'`}</CodeBlock>
                         <StyledCheckbox
                           label="Custom Cards"
                           checked={demoCustomCards}
-                          onChange={(v) => { setDemoCustomCards(v); if (v && demoDisplay === 'table') setDemoDisplay('cards') }}
+                          onChange={setDemoCustomCards}
                         />
                       )}
                     </div>
