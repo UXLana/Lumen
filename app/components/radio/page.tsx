@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Radio, RadioGroup } from '@/components'
 import { colors, spacing, typography, borderRadius } from '@/styles/design-tokens'
 
@@ -9,11 +9,68 @@ import { colors, spacing, typography, borderRadius } from '@/styles/design-token
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const radioDocData: ComponentDocData = {
+  displayName: 'Radio',
+  importPath: '@/components',
+  importStatement: `import { Radio, RadioGroup } from '@/components'\nimport type { RadioProps, RadioGroupProps } from '@/components'`,
+  description: 'Radio buttons allow users to select exactly one option from a set of mutually exclusive choices.',
+  props: [
+    { name: 'label', type: 'string', description: 'Label text displayed next to the radio' },
+    { name: 'metadata', type: 'string', description: 'Description text below the label' },
+    { name: 'checked', type: 'boolean', description: 'Controlled checked state' },
+    { name: 'onChange', type: '(value: string, event) => void', description: 'Change handler' },
+    { name: 'value', type: 'string', required: true, description: 'The value for this radio option' },
+    { name: 'fullWidth', type: 'boolean', description: 'Full-width mode' },
+    { name: 'noRoundedCorners', type: 'boolean', description: 'Remove rounded corners' },
+    { name: 'error', type: 'boolean', description: 'Error state' },
+    { name: 'disabled', type: 'boolean', description: 'Disabled state' },
+  ],
+  subComponents: [
+    {
+      name: 'RadioGroup',
+      description: 'Groups related radio buttons with shared label, value management, and error handling.',
+      props: [
+        { name: 'label', type: 'string', description: 'Group label' },
+        { name: 'value', type: 'string', description: 'Currently selected value' },
+        { name: 'onChange', type: '(value: string) => void', description: 'Change handler' },
+        { name: 'errorMessage', type: 'string', description: 'Error message text' },
+        { name: 'error', type: 'boolean', default: 'false', description: 'Show error state' },
+        { name: 'fullWidth', type: 'boolean', description: 'Full-width mode' },
+        { name: 'direction', type: "'vertical' | 'horizontal'", default: "'vertical'", description: 'Layout direction' },
+        { name: 'name', type: 'string', description: 'Group name (auto-generated if not provided)' },
+        { name: 'children', type: 'ReactNode', required: true, description: 'Radio components' },
+      ],
+    },
+  ],
+  accessibility: [
+    { feature: 'Native Element', description: 'Uses <input type="radio"> for full keyboard and screen reader support.' },
+    { feature: 'Group Semantics', description: 'RadioGroup uses role="radiogroup" with aria-labelledby.' },
+    { feature: 'Arrow Keys', description: 'Arrow keys navigate between radio options within a group.' },
+    { feature: 'Error Messages', description: 'aria-describedby links error messages; errors use role="alert".' },
+  ],
+  tokens: [
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Selected radio indicator' },
+    { token: 'colors.border.midEmphasis.onLight', value: 'Gray', usage: 'Unselected border' },
+    { token: 'colors.status.important', value: 'Red', usage: 'Error state border' },
+    { token: 'typography.body.sm', value: '14px/20px', usage: 'Label text' },
+  ],
+  relatedComponents: [
+    { name: 'Checkbox', href: '/components/checkbox' },
+    { name: 'Segmented Control', href: '/components/segmented-control' },
+    { name: 'List Item', href: '/components/list-item' },
+  ],
+  notes: [
+    'Use RadioGroup to manage shared value state and provide accessible group semantics.',
+    'Prefer Checkbox when multiple selections are needed.',
+    'Prefer Segmented Control for 2-4 options that need instant visual feedback.',
+  ],
+}
 
 export default function RadioPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -29,6 +86,7 @@ export default function RadioPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -417,6 +475,11 @@ import type { RadioProps, RadioGroupProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={radioDocData} />
       )}
     </StyleguideLayout>
   )

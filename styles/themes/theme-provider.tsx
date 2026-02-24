@@ -1,11 +1,11 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useLayoutEffect, useMemo, useCallback, type ReactNode } from 'react';
-import type { ProductTheme, ThemeColors } from './theme-interface';
+import type { ProductTheme, ThemeColors, ThemeTypography, ThemeBorderRadius, ThemeElevation, ThemeSpacing, ThemeIconStyle } from './theme-interface';
 import { traceTheme } from './trace';
 import { universityTheme } from './university';
 import { earthTheme } from './earth';
-import { applyThemeVars } from './css-vars';
+import { applyAllThemeVars } from './css-vars';
 
 // ---------------------------------------------------------------------------
 // Theme registry
@@ -89,7 +89,7 @@ export function SwitchableThemeProvider({ children }: SwitchableThemeProviderPro
   const activeTheme = useMemo(() => themeMap[themeName] ?? traceTheme, [themeName]);
 
   useLayoutEffect(() => {
-    applyThemeVars(activeTheme.colors as Record<string, any>, document.documentElement);
+    applyAllThemeVars(activeTheme, document.documentElement);
   }, [activeTheme]);
 
   const switcherValue = useMemo(() => ({ themeName, setThemeName }), [themeName, setThemeName]);
@@ -115,6 +115,31 @@ export function useTheme(): ProductTheme {
 /** Shorthand — returns just the colors from the active theme. */
 export function useColors(): ThemeColors {
   return useContext(ThemeContext).colors;
+}
+
+/** Shorthand — returns just the typography config from the active theme. */
+export function useTypography(): ThemeTypography {
+  return useContext(ThemeContext).typography;
+}
+
+/** Shorthand — returns just the border radius scale from the active theme. */
+export function useBorderRadius(): ThemeBorderRadius {
+  return useContext(ThemeContext).borderRadius;
+}
+
+/** Shorthand — returns just the elevation/shadow scale from the active theme. */
+export function useElevation(): ThemeElevation {
+  return useContext(ThemeContext).elevation;
+}
+
+/** Shorthand — returns just the semantic spacing values from the active theme. */
+export function useSpacing(): ThemeSpacing {
+  return useContext(ThemeContext).spacing;
+}
+
+/** Shorthand — returns just the icon style config from the active theme. */
+export function useIconStyle(): ThemeIconStyle {
+  return useContext(ThemeContext).iconStyle;
 }
 
 /** Access the theme switcher to change the active theme by name. */

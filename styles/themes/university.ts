@@ -6,6 +6,9 @@
  * Extracted from node 1-31355 (Metrc University Home) on 2026-02-10
  * Brand palette: forest green (#213F39) with gold (#DCC26D) accent,
  * warm off-white (#F9F8F3) page background.
+ *
+ * Visual identity: Academic/institutional — Playfair Display serif headings,
+ * sharper radii, denser spacing, filled icon set.
  */
 
 import type { ProductTheme } from './theme-interface';
@@ -297,6 +300,85 @@ export const universityTheme: ProductTheme = {
     grid: {
       finishedRowText: '#595959',
       packageIconColor: '#595959',
+    },
+  },
+
+  // ===========================================================================
+  // TYPOGRAPHY — Academic: Playfair Display for headings, Source Sans 3 for body
+  // ===========================================================================
+  typography: {
+    fontFamilies: {
+      display: 'var(--font-playfair-display), serif',
+      body: 'var(--font-source-sans-3), sans-serif',
+      mono: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    },
+    fontWeights: {
+      regular: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700',
+    },
+    scale: {
+      lineHeightTight: '1.15',
+      lineHeightNormal: '1.5',
+      letterSpacingHeading: '-0.3px',
+      letterSpacingBody: '0.1px',
+    },
+  },
+
+  // ===========================================================================
+  // BORDER RADIUS — Sharper, more institutional
+  // ===========================================================================
+  borderRadius: {
+    none: '0px',
+    xs: '1px',
+    sm: '2px',
+    md: '4px',
+    lg: '6px',
+    xl: '8px',
+    '2xl': '12px',
+    '3xl': '16px',
+    full: '9999px',
+  },
+
+  // ===========================================================================
+  // ELEVATION — Forest green tinted shadows
+  // ===========================================================================
+  elevation: {
+    none: 'none',
+    xs: '0px 1px 2px rgba(33, 63, 57, 0.06)',
+    sm: '0px 1px 3px rgba(33, 63, 57, 0.1), 0px 1px 2px rgba(33, 63, 57, 0.08)',
+    md: '0px 4px 6px -1px rgba(33, 63, 57, 0.1), 0px 2px 4px -1px rgba(33, 63, 57, 0.08)',
+    lg: '0px 10px 15px -3px rgba(33, 63, 57, 0.1), 0px 4px 6px -2px rgba(33, 63, 57, 0.06)',
+    xl: '0px 20px 25px -5px rgba(33, 63, 57, 0.12), 0px 10px 10px -5px rgba(33, 63, 57, 0.06)',
+    '2xl': '0px 25px 50px -12px rgba(33, 63, 57, 0.28)',
+    inner: 'inset 0px 2px 4px rgba(33, 63, 57, 0.08)',
+    brand: '0px 4px 14px rgba(33, 63, 57, 0.25)',
+    brandLg: '0px 10px 25px rgba(33, 63, 57, 0.3)',
+  },
+
+  // ===========================================================================
+  // SPACING — Denser, more compact
+  // ===========================================================================
+  spacing: {
+    unit: '4px',
+    inputPadding: '10px',
+    buttonPadding: '14px',
+    cardPadding: '20px',
+    sectionGap: '40px',
+    componentGap: '12px',
+  },
+
+  // ===========================================================================
+  // ICON STYLE — Filled set for academic look
+  // ===========================================================================
+  iconStyle: {
+    set: 'filled',
+    strokeWidth: '1.5',
+    cornerStyle: 'round',
+    defaultSize: '20',
+    overrides: {
+      Home: 'outlined',
     },
   },
 };

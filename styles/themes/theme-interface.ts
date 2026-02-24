@@ -2,11 +2,15 @@
  * MTR Design System - Theme Interface
  *
  * Every product theme must implement this interface.
- * Structure matches Figma mtr_sys_color_* taxonomy exactly.
+ * Color structure matches Figma mtr_sys_color_* taxonomy exactly.
+ *
+ * Non-color tokens (typography, radius, elevation, spacing, iconStyle)
+ * follow the same CSS custom property pattern — each produces --mtr-<category>-*
+ * vars at runtime so themes look visually distinct beyond just color.
  *
  * To create a new theme:
  * 1. Copy trace.ts as a starting point
- * 2. Override every color value
+ * 2. Override every value in colors, typography, borderRadius, elevation, spacing, iconStyle
  * 3. Register it in theme-provider.ts
  */
 
@@ -262,7 +266,120 @@ export interface ThemeColors {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Typography
+// ---------------------------------------------------------------------------
+
+export interface ThemeTypography {
+  /** Font family stacks — display (headings), body (paragraphs), mono (code) */
+  fontFamilies: {
+    display: string;
+    body: string;
+    mono: string;
+  };
+  /** Font weight values — all strings so they can be CSS-var-backed */
+  fontWeights: {
+    regular: string;
+    medium: string;
+    semibold: string;
+    bold: string;
+  };
+  /** Typographic scale tuning — line-height ratios and letter-spacing adjustments */
+  scale: {
+    /** Multiplier applied to tight line-heights (display/heading) — e.g. '1.2' */
+    lineHeightTight: string;
+    /** Multiplier applied to normal line-heights (body) — e.g. '1.5' */
+    lineHeightNormal: string;
+    /** Extra letter-spacing offset for headings — e.g. '-0.5px' */
+    letterSpacingHeading: string;
+    /** Extra letter-spacing offset for body text — e.g. '0px' */
+    letterSpacingBody: string;
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Border Radius
+// ---------------------------------------------------------------------------
+
+export interface ThemeBorderRadius {
+  none: string;
+  xs: string;
+  sm: string;
+  md: string;
+  lg: string;
+  xl: string;
+  '2xl': string;
+  '3xl': string;
+  full: string;
+}
+
+// ---------------------------------------------------------------------------
+// Elevation (Shadows)
+// ---------------------------------------------------------------------------
+
+export interface ThemeElevation {
+  none: string;
+  xs: string;
+  sm: string;
+  md: string;
+  lg: string;
+  xl: string;
+  '2xl': string;
+  inner: string;
+  /** Brand-tinted shadow — tinted with the theme's brand color */
+  brand: string;
+  /** Larger brand-tinted shadow */
+  brandLg: string;
+}
+
+// ---------------------------------------------------------------------------
+// Spacing (semantic overrides only — the numeric 0-96 scale stays global)
+// ---------------------------------------------------------------------------
+
+export interface ThemeSpacing {
+  /** Base spacing unit — e.g. '4px' */
+  unit: string;
+  /** Input internal padding — e.g. '12px' */
+  inputPadding: string;
+  /** Button internal padding — e.g. '16px' */
+  buttonPadding: string;
+  /** Card content padding — e.g. '24px' */
+  cardPadding: string;
+  /** Section-level padding — e.g. '48px' */
+  sectionGap: string;
+  /** Gap between sibling components — e.g. '16px' */
+  componentGap: string;
+}
+
+// ---------------------------------------------------------------------------
+// Icon Style
+// ---------------------------------------------------------------------------
+
+export type IconSetName = 'outlined' | 'filled' | 'duotone';
+
+export interface ThemeIconStyle {
+  /** Which icon set to use as default — 'outlined' | 'filled' | 'duotone' */
+  set: string;
+  /** Default stroke width for stroke-based icons — e.g. '1.5' */
+  strokeWidth: string;
+  /** Stroke cap/join style — 'round' | 'square' */
+  cornerStyle: string;
+  /** Default icon size in px — e.g. '20' */
+  defaultSize: string;
+  /** Per-icon overrides: { iconName: setName } — e.g. { Home: 'outlined' } */
+  overrides: Record<string, string>;
+}
+
+// ---------------------------------------------------------------------------
+// Product Theme (composite)
+// ---------------------------------------------------------------------------
+
 export interface ProductTheme {
   name: string;
   colors: ThemeColors;
+  typography: ThemeTypography;
+  borderRadius: ThemeBorderRadius;
+  elevation: ThemeElevation;
+  spacing: ThemeSpacing;
+  iconStyle: ThemeIconStyle;
 }

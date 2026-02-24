@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Avatar, AvatarGroup, AvatarSize, AvatarColor } from '@/components'
 import { colors, typography, avatar, borderRadius } from '@/styles/design-tokens'
 
@@ -9,7 +9,7 @@ import { colors, typography, avatar, borderRadius } from '@/styles/design-tokens
 // SAMPLE DATA
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 const sampleUsers = [
   { name: 'Alice Johnson', src: 'https://i.pravatar.cc/150?img=1' },
@@ -25,6 +25,65 @@ const sampleUsers = [
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const avatarDocData: ComponentDocData = {
+  displayName: 'Avatar',
+  importPath: '@/components',
+  importStatement: `import { Avatar, AvatarGroup } from '@/components'
+import type { AvatarProps, AvatarGroupProps, AvatarSize, AvatarColor } from '@/components'`,
+  description: 'Avatars represent users or entities with images, initials, or a default icon.',
+  props: [
+    { name: 'src', type: 'string', description: 'Image source URL' },
+    { name: 'alt', type: 'string', description: 'Alt text for the image' },
+    { name: 'name', type: 'string', description: 'User name for initials fallback and alt text' },
+    { name: 'size', type: "'xl' | 'lg' | 'md' | 'sm' | 'xs'", default: "'md'", description: 'Size of the avatar' },
+    { name: 'color', type: '1 | 2 | 3 | 4 | 5 | 6 | 7 | 8', description: 'Color variant for initials (1-8)' },
+    { name: 'focused', type: 'boolean', description: 'Shows focus ring' },
+    { name: 'onDark', type: 'boolean', description: 'Adds border for dark surfaces' },
+    { name: 'onClick', type: '() => void', description: 'Optional click handler' },
+    { name: 'className', type: 'string', description: 'Additional CSS class' },
+    { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
+  ],
+  subComponents: [
+    {
+      name: 'AvatarGroup',
+      description: 'Displays a group of avatars with optional overlap and overflow indicator.',
+      props: [
+        { name: 'avatars', type: 'AvatarProps[]', required: true, description: 'Array of avatar props' },
+        { name: 'max', type: 'number', description: 'Maximum avatars to display' },
+        { name: 'size', type: 'AvatarSize', description: 'Size of all avatars in the group' },
+        { name: 'compact', type: 'boolean', description: 'Overlapping layout' },
+        { name: 'onOverflowClick', type: '() => void', description: 'Click handler for overflow indicator' },
+        { name: 'className', type: 'string', description: 'Additional CSS class' },
+        { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
+      ],
+    },
+  ],
+  typeDefinitions: [
+    { name: 'AvatarSize', definition: "type AvatarSize = 'xl' | 'lg' | 'md' | 'sm' | 'xs'" },
+    { name: 'AvatarColor', definition: 'type AvatarColor = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8' },
+  ],
+  accessibility: [
+    { feature: 'Alt Text', description: 'Image avatars use alt from name or alt prop. Initials avatars use aria-label.' },
+    { feature: 'Role', description: 'Clickable avatars render as button with proper role.' },
+    { feature: 'Focus Ring', description: 'Visible focus ring for keyboard navigation.' },
+    { feature: 'Color Contrast', description: 'All 8 color variants meet WCAG contrast requirements for initials text.' },
+  ],
+  tokens: [
+    { token: 'Avatar sizes', value: 'xl:64, lg:48, md:40, sm:32, xs:24', usage: 'Avatar dimensions in pixels' },
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Focus ring color' },
+    { token: 'borderRadius (50%)', value: 'Circular', usage: 'Avatar shape' },
+  ],
+  relatedComponents: [
+    { name: 'List Item', href: '/components/list-item' },
+    { name: 'Header', href: '/components/header' },
+  ],
+  notes: [
+    'Provide a name prop for accessible initials fallback when no image is available.',
+    'Use AvatarGroup with compact mode for space-efficient user lists.',
+    'Color assignments (1-8) should be deterministic per user for consistency.',
+  ],
+}
 
 export default function AvatarPage() {
   const sizes: AvatarSize[] = ['xl', 'lg', 'md', 'sm', 'xs']
@@ -47,6 +106,7 @@ export default function AvatarPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -549,6 +609,11 @@ import type { AvatarProps, AvatarSize, AvatarColor } from '@/components'`}
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={avatarDocData} />
       )}
     </StyleguideLayout>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Button, ButtonGroup, DropdownIcon, ButtonSize, ButtonEmphasis } from '@/components'
 import { IconPlus, IconSettings } from '@/components/Icons'
 import { colors, typography, button, borderRadius } from '@/styles/design-tokens'
@@ -10,11 +10,74 @@ import { colors, typography, button, borderRadius } from '@/styles/design-tokens
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const buttonDocData: ComponentDocData = {
+  displayName: 'Button',
+  importPath: '@/components',
+  importStatement: `import { Button, ButtonGroup, DropdownIcon } from '@/components'
+import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`,
+  description: 'Buttons allow users to take actions and make choices with a single tap.',
+  props: [
+    { name: 'size', type: "'lg' | 'md'", default: "'md'", description: 'Size of the button' },
+    { name: 'emphasis', type: "'high' | 'mid' | 'low'", default: "'high'", description: 'Visual emphasis level' },
+    { name: 'onDark', type: 'boolean', default: 'false', description: 'Render for dark surfaces' },
+    { name: 'destructive', type: 'boolean', default: 'false', description: 'Destructive action style' },
+    { name: 'leftIcon', type: 'ReactNode', description: 'Icon before text' },
+    { name: 'rightIcon', type: 'ReactNode', description: 'Icon after text (dropdown)' },
+    { name: 'iconOnly', type: 'boolean', default: 'false', description: 'Icon-only button mode' },
+    { name: 'loading', type: 'boolean', default: 'false', description: 'Show loading spinner' },
+    { name: 'fullWidth', type: 'boolean', default: 'false', description: 'Full width button' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Disabled state' },
+    { name: 'focused', type: 'boolean', default: 'false', description: 'Force focus state (for demos)' },
+    { name: 'className', type: 'string', description: 'Additional CSS class' },
+    { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
+  ],
+  subComponents: [
+    {
+      name: 'ButtonGroup',
+      description: 'Groups buttons with consistent spacing and alignment.',
+      props: [
+        { name: 'spacing', type: "'default' | 'form' | 'formMobile' | 'inline'", default: "'default'", description: 'Spacing preset' },
+        { name: 'align', type: "'start' | 'center' | 'end' | 'stretch'", default: "'start'", description: 'Alignment of buttons' },
+        { name: 'className', type: 'string', description: 'Additional CSS class' },
+        { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
+      ],
+    },
+  ],
+  typeDefinitions: [
+    { name: 'ButtonSize', definition: "type ButtonSize = 'lg' | 'md'" },
+    { name: 'ButtonEmphasis', definition: "type ButtonEmphasis = 'high' | 'mid' | 'low'" },
+  ],
+  accessibility: [
+    { feature: 'Keyboard', description: 'Tab to focus, Enter/Space to activate. Focus ring visible on keyboard navigation.' },
+    { feature: 'ARIA', description: 'Uses native <button> element. aria-disabled set when disabled, aria-label required for iconOnly buttons.' },
+    { feature: 'Focus Ring', description: 'Visible 2px focus ring with offset, using brand color.' },
+    { feature: 'Loading State', description: 'Sets aria-busy="true" and disables interaction during loading.' },
+  ],
+  tokens: [
+    { token: 'button.typography.{size}', value: 'fontSize, fontWeight, lineHeight', usage: 'Text styling per size' },
+    { token: 'button.sizes.{size}', value: 'height, minWidth, padding, gap', usage: 'Dimensions per size' },
+    { token: 'button.emphasis.{level}', value: 'background, text, border per state', usage: 'Color theming per emphasis' },
+    { token: 'button.borderRadius', value: '999px (pill)', usage: 'Border radius' },
+    { token: 'button.transition', value: '150ms ease', usage: 'State transitions' },
+    { token: 'button.focus', value: 'color, width, offset', usage: 'Focus ring appearance' },
+  ],
+  relatedComponents: [
+    { name: 'Link', href: '/components/link' },
+    { name: 'Segmented Control', href: '/components/segmented-control' },
+  ],
+  notes: [
+    'Use one high-emphasis button per section to establish clear visual hierarchy.',
+    'Always provide aria-label for icon-only buttons.',
+    'Place low-emphasis (cancel) buttons before high-emphasis (submit) buttons in groups.',
+    'Use ButtonGroup with spacing="form" for form action rows.',
+  ],
+}
 
 export default function ButtonPage() {
   const sizes: ButtonSize[] = ['lg', 'md']
@@ -39,6 +102,7 @@ export default function ButtonPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -580,6 +644,11 @@ import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`}
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={buttonDocData} />
       )}
     </StyleguideLayout>
   )

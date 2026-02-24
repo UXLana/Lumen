@@ -22,6 +22,7 @@ This is the MTR Design System - a React/Next.js component library with design to
 - `/frontend-design` - UX consultation
 - `/confluence-to-prototype` - Compile Confluence specs into prototype-ready markdown
 - `/ux-brief-generator` - Research-first UX brief compiler with gap analysis and completeness scoring
+- `/component-documenter` - Generate dual-format (human + LLM) component documentation with YAML frontmatter, prop tables, token maps, and accessibility specs
 
 ## Conventions
 - Use design tokens from `styles/design-tokens.ts`

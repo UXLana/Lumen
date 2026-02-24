@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Tab, TabBar, TabItem, TabIconPosition, TabBarAlign } from '@/components'
 import { colors, typography, tab, borderRadius } from '@/styles/design-tokens'
 
@@ -9,7 +9,7 @@ import { colors, typography, tab, borderRadius } from '@/styles/design-tokens'
 // SAMPLE ICONS
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 function IconHome({ size = 20, color = 'currentColor' }: { size?: number; color?: string }) {
   return (
@@ -84,6 +84,67 @@ const tabsWithBadges: TabItem[] = [
 // PAGE COMPONENT
 // =============================================================================
 
+const tabDocData: ComponentDocData = {
+  displayName: 'Tab',
+  importPath: '@/components',
+  importStatement: `import { Tab, TabBar } from '@/components'\nimport type { TabProps, TabBarProps, TabItem, TabIconPosition, TabBarAlign } from '@/components'`,
+  description: 'Tabs organize content into separate views where only one view is visible at a time.',
+  props: [
+    { name: 'label', type: 'string', required: true, description: 'Tab label' },
+    { name: 'isActive', type: 'boolean', description: 'Whether this tab is active/selected' },
+    { name: 'iconPosition', type: "'none' | 'top' | 'leading' | 'only'", default: "'none'", description: 'Icon position' },
+    { name: 'icon', type: 'ReactNode', description: 'Icon element' },
+    { name: 'badge', type: 'number', description: 'Badge count' },
+    { name: 'onDark', type: 'boolean', description: 'Dark surface styling' },
+    { name: 'inverted', type: 'boolean', description: 'Inverted tab style' },
+    { name: 'mobileFooter', type: 'boolean', description: 'Mobile footer variant' },
+    { name: 'focused', type: 'boolean', description: 'Show focus ring (for demo)' },
+  ],
+  subComponents: [
+    {
+      name: 'TabBar',
+      description: 'Container for Tab components with layout management.',
+      props: [
+        { name: 'tabs', type: 'TabItem[]', required: true, description: 'Array of tab items' },
+        { name: 'activeTab', type: 'string', required: true, description: 'Currently active tab ID' },
+        { name: 'onTabChange', type: '(tabId: string) => void', required: true, description: 'Tab change callback' },
+        { name: 'iconPosition', type: 'TabIconPosition', description: 'Icon position for all tabs' },
+        { name: 'align', type: "'left' | 'center' | 'right' | 'stretch'", default: "'left'", description: 'Alignment of tabs' },
+        { name: 'stretched', type: 'boolean', description: 'Stretch tabs to fill width' },
+        { name: 'onDark', type: 'boolean', description: 'Dark surface styling' },
+        { name: 'hasDivider', type: 'boolean', description: 'Show divider line' },
+        { name: 'scrollable', type: 'boolean', description: 'Enable scrollable mode' },
+      ],
+    },
+  ],
+  typeDefinitions: [
+    { name: 'TabIconPosition', definition: "type TabIconPosition = 'none' | 'top' | 'leading' | 'only'" },
+    { name: 'TabBarAlign', definition: "type TabBarAlign = 'left' | 'center' | 'right' | 'stretch'" },
+    { name: 'TabItem', definition: "interface TabItem {\n  id: string\n  label: string\n  icon?: ReactNode\n  badge?: number\n  disabled?: boolean\n}" },
+  ],
+  accessibility: [
+    { feature: 'ARIA Roles', description: 'TabBar uses role="tablist", individual tabs use role="tab".' },
+    { feature: 'Keyboard', description: 'Arrow keys navigate tabs, Enter/Space activates, Home/End jump to first/last.' },
+    { feature: 'Selection', description: 'aria-selected on active tab, aria-controls links to panel.' },
+    { feature: 'Focus Management', description: 'Roving tabindex pattern - only active tab in tab order.' },
+  ],
+  tokens: [
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Active tab indicator' },
+    { token: 'colors.text.highEmphasis', value: 'Dark', usage: 'Active tab text' },
+    { token: 'colors.text.lowEmphasis', value: 'Gray', usage: 'Inactive tab text' },
+    { token: 'typography.label.md', value: '14px/20px', usage: 'Tab label text' },
+  ],
+  relatedComponents: [
+    { name: 'Segmented Control', href: '/components/segmented-control' },
+    { name: 'Accordion', href: '/components/accordion' },
+  ],
+  notes: [
+    'Use TabBar for the common pattern of tabs controlling content panels.',
+    'Use scrollable mode when tab count exceeds available width.',
+    'Use icon position "top" for navigation tabs, "leading" for content tabs.',
+  ],
+}
+
 export default function TabPage() {
   const iconPositions: TabIconPosition[] = ['none', 'leading', 'top', 'only']
   const alignments: TabBarAlign[] = ['left', 'center', 'right', 'stretch']
@@ -117,6 +178,7 @@ export default function TabPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -590,6 +652,10 @@ const tabs = [
         </div>
       </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={tabDocData} />
       )}
     </StyleguideLayout>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Stepper, StepperStep, LinearStepper, NonLinearStepper, DefaultStepIndicator, StepItem, StepStatus, StepIndicatorProps } from '@/components'
 import { colors, typography, stepper as stepperTokens, borderRadius } from '@/styles/design-tokens'
 
@@ -9,7 +9,7 @@ import { colors, typography, stepper as stepperTokens, borderRadius } from '@/st
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // CUSTOM INDICATOR EXAMPLES
@@ -66,6 +66,52 @@ function IconStepIndicator({ status, size = 12 }: StepIndicatorProps) {
 // PAGE COMPONENT
 // =============================================================================
 
+const stepperDocData: ComponentDocData = {
+  displayName: 'Stepper',
+  importPath: '@/components',
+  importStatement: `import { Stepper, LinearStepper, NonLinearStepper } from '@/components'\nimport type { StepperProps, StepItem, StepStatus, StepperVariant } from '@/components'`,
+  description: 'Steppers guide users through multi-step processes with progress indication.',
+  props: [
+    { name: 'steps', type: 'StepItem[]', required: true, description: 'Array of step items' },
+    { name: 'activeStep', type: 'number', required: true, description: 'Currently active step index (0-based)' },
+    { name: 'onStepChange', type: '(stepIndex: number) => void', description: 'Step change callback' },
+    { name: 'stepContent', type: 'ReactNode[]', description: 'Content for each step' },
+    { name: 'primaryButtonText', type: 'string', description: 'Primary button text for active step' },
+    { name: 'secondaryButtonText', type: 'string', description: 'Secondary button text' },
+    { name: 'onPrimaryClick', type: '() => void', description: 'Primary button callback' },
+    { name: 'onSecondaryClick', type: '() => void', description: 'Secondary button callback' },
+    { name: 'clickable', type: 'boolean', description: 'Whether steps are clickable' },
+    { name: 'variant', type: "'linear' | 'nonLinear'", description: 'Stepper variant' },
+    { name: 'className', type: 'string', description: 'Additional CSS class' },
+    { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
+  ],
+  typeDefinitions: [
+    { name: 'StepItem', definition: "interface StepItem {\n  id: string\n  label: string\n  metadata?: string\n  disabled?: boolean\n  icon?: ReactNode\n}" },
+    { name: 'StepStatus', definition: "type StepStatus = 'completed' | 'active' | 'pending' | 'disabled'" },
+    { name: 'StepperVariant', definition: "type StepperVariant = 'linear' | 'nonLinear'" },
+  ],
+  accessibility: [
+    { feature: 'ARIA', description: 'Steps use aria-current="step" for the active step.' },
+    { feature: 'Keyboard', description: 'Tab navigates between clickable steps, Enter/Space activates.' },
+    { feature: 'Progress', description: 'Step status (completed/active/pending) communicated via visual indicators and ARIA.' },
+  ],
+  tokens: [
+    { token: 'colors.status.success', value: 'Green', usage: 'Completed step indicator' },
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Active step indicator' },
+    { token: 'colors.text.lowEmphasis', value: 'Gray', usage: 'Pending step text' },
+  ],
+  relatedComponents: [
+    { name: 'Accordion', href: '/components/accordion' },
+    { name: 'Tab', href: '/components/tab' },
+  ],
+  notes: [
+    'Use LinearStepper for sequential flows where order matters.',
+    'Use NonLinearStepper when users can jump between steps freely.',
+    'Keep step labels concise - ideally 1-3 words.',
+    'Provide step content via the stepContent prop array.',
+  ],
+}
+
 export default function StepperPage() {
   // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -86,6 +132,7 @@ export default function StepperPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   const handleNext = () => {
@@ -632,6 +679,10 @@ const stepsWithIcons = [
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={stepperDocData} />
       )}
     </StyleguideLayout>
   )

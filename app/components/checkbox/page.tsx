@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Checkbox, CheckboxGroup } from '@/components'
 import { colors, spacing, typography, borderRadius, fontFamilies, fontWeights, transitionPresets } from '@/styles/design-tokens'
 
@@ -9,11 +9,73 @@ import { colors, spacing, typography, borderRadius, fontFamilies, fontWeights, t
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const checkboxDocData: ComponentDocData = {
+  displayName: 'Checkbox',
+  importPath: '@/components',
+  importStatement: `import { Checkbox, CheckboxGroup } from '@/components'
+import type { CheckboxProps, CheckboxGroupProps } from '@/components'`,
+  description: 'Checkboxes allow selection of one or more items from a set, with support for indeterminate state.',
+  props: [
+    { name: 'label', type: 'string', description: 'Label text displayed next to the checkbox' },
+    { name: 'metadata', type: 'string', description: 'Description text below the label' },
+    { name: 'checked', type: 'boolean', default: 'false', description: 'Controlled checked state' },
+    { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Indeterminate state (overrides checked visually)' },
+    { name: 'onChange', type: '(checked: boolean, event) => void', description: 'Change handler' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the checkbox' },
+    { name: 'error', type: 'boolean', default: 'false', description: 'Shows error border color' },
+    { name: 'isChild', type: 'boolean', default: 'false', description: 'Indents the checkbox for parent/child patterns' },
+    { name: 'fullWidth', type: 'boolean', default: 'false', description: 'Makes checkbox take full container width' },
+    { name: 'noRoundedCorners', type: 'boolean', default: 'false', description: 'Removes border radius for custom patterns' },
+  ],
+  subComponents: [
+    {
+      name: 'CheckboxGroup',
+      description: 'Groups related checkboxes with a shared label and error handling.',
+      props: [
+        { name: 'label', type: 'string', description: 'Group label text' },
+        { name: 'error', type: 'boolean', default: 'false', description: 'Shows error state' },
+        { name: 'errorMessage', type: 'string', description: 'Error message text' },
+        { name: 'fullWidth', type: 'boolean', default: 'false', description: 'Full container width' },
+        { name: 'children', type: 'ReactNode', required: true, description: 'Checkbox components' },
+      ],
+    },
+  ],
+  typeDefinitions: [],
+  accessibility: [
+    { feature: 'Native Element', description: 'Uses <input type="checkbox"> for full keyboard and screen reader support.' },
+    { feature: 'Focus Ring', description: 'Focus-visible ring using colors.focusBorder.onLight for keyboard navigation.' },
+    { feature: 'Error State', description: 'aria-invalid set on error state for assistive technology.' },
+    { feature: 'Error Messages', description: 'aria-describedby links error messages to checkbox groups; errors use role="alert".' },
+    { feature: 'Group Semantics', description: 'role="group" with aria-labelledby for checkbox groups.' },
+    { feature: 'Indeterminate', description: 'Communicated via native input.indeterminate property.' },
+  ],
+  tokens: [
+    { token: 'colors.brand.default', value: 'Theme brand color', usage: 'Checked/indeterminate background and border' },
+    { token: 'colors.border.midEmphasis.onLight', value: 'Gray border', usage: 'Unchecked border' },
+    { token: 'colors.status.important', value: 'Error red', usage: 'Error border color' },
+    { token: 'typography.body.sm', value: '14px/20px', usage: 'Label text' },
+    { token: 'typography.body.xs', value: '12px/16px', usage: 'Metadata and error text' },
+    { token: 'borderRadius.xs', value: '4px', usage: 'Checkbox indicator corners' },
+    { token: 'transitionPresets.default', value: '200ms ease', usage: 'State transitions' },
+  ],
+  relatedComponents: [
+    { name: 'Radio', href: '/components/radio' },
+    { name: 'Switch', href: '/components/switch' },
+    { name: 'List Item', href: '/components/list-item' },
+  ],
+  notes: [
+    'Use CheckboxGroup for related options to get shared label and error handling.',
+    'Use indeterminate state for parent checkboxes in parent/child selection patterns.',
+    'Prefer Radio when only one option can be selected from a group.',
+    'Prefer Switch for instant on/off toggles without a form submission.',
+  ],
+}
 
 export default function CheckboxPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -37,6 +99,7 @@ export default function CheckboxPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -490,6 +553,11 @@ import type { CheckboxProps, CheckboxGroupProps } from '@/components'`}</CodeBlo
 
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={checkboxDocData} />
       )}
     </StyleguideLayout>
   )

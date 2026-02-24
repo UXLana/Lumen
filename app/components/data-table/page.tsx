@@ -12,6 +12,8 @@ import {
   CollapsibleSection,
   CopyableToken,
   PixelValue,
+  ComponentDocumentation,
+  ComponentDocData,
 } from '../../design-system/shared'
 import {
   DataTable,
@@ -55,7 +57,70 @@ const statusColorMap: Record<string, { bg: string; text: string }> = {
 // PAGE COMPONENT
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
+
+const dataTableDocData: ComponentDocData = {
+  displayName: 'DataTable',
+  importPath: '@/components',
+  importStatement: `import { DataTable } from '@/components'\nimport type { DataTableProps, DataTableColumn, SortState, DataTableDisplay, DataTableDensity } from '@/components'`,
+  description: 'DataTable displays structured data in rows and columns with sorting, selection, responsive card view, and loading states.',
+  props: [
+    { name: 'columns', type: 'DataTableColumn<T>[]', required: true, description: 'Column definitions' },
+    { name: 'data', type: 'T[]', required: true, description: 'Data array' },
+    { name: 'rowKey', type: '(row: T, index: number) => string', required: true, description: 'Unique key extractor' },
+    { name: 'display', type: "'table' | 'cards' | 'auto'", default: "'table'", description: 'Display mode' },
+    { name: 'density', type: "'compact' | 'default' | 'comfortable'", default: "'default'", description: 'Row density' },
+    { name: 'breakpoint', type: 'number', description: 'Auto mode breakpoint in pixels' },
+    { name: 'striped', type: 'boolean', description: 'Alternating row backgrounds' },
+    { name: 'hoverable', type: 'boolean', description: 'Row hover effect' },
+    { name: 'onRowClick', type: '(row: T, index: number) => void', description: 'Row click handler' },
+    { name: 'sort', type: 'SortState', description: 'Controlled sort state' },
+    { name: 'onSortChange', type: '(sort: SortState) => void', description: 'Sort change callback' },
+    { name: 'caption', type: 'string', description: 'Table caption for accessibility' },
+    { name: 'emptyState', type: 'ReactNode', description: 'Empty state content' },
+    { name: 'loading', type: 'boolean', description: 'Loading state with skeleton rows' },
+    { name: 'loadingRows', type: 'number', description: 'Number of skeleton rows' },
+    { name: 'stickyHeader', type: 'boolean', description: 'Sticky header on scroll' },
+    { name: 'selectable', type: 'boolean', description: 'Enable row selection with checkboxes' },
+    { name: 'selectedKeys', type: 'Set<string>', description: 'Controlled selected row keys' },
+    { name: 'onSelectionChange', type: '(keys: Set<string>) => void', description: 'Selection change callback' },
+    { name: 'renderCard', type: '(row, index, options) => ReactNode', description: 'Custom card renderer' },
+    { name: 'cardGridColumns', type: 'string', description: 'CSS grid-template-columns for card grid' },
+  ],
+  typeDefinitions: [
+    { name: 'DataTableColumn<T>', definition: "interface DataTableColumn<T> {\n  key: string\n  header: string\n  align?: 'left' | 'center' | 'right'\n  width?: string | number\n  sortable?: boolean\n  render?: (row: T, index: number) => ReactNode\n  cardLabel?: string\n  cardPrimary?: boolean\n  hideOnCard?: boolean\n  visible?: boolean\n}" },
+    { name: 'SortState', definition: "interface SortState {\n  key: string\n  direction: 'asc' | 'desc' | 'none'\n}" },
+    { name: 'DataTableDisplay', definition: "type DataTableDisplay = 'table' | 'cards' | 'auto'" },
+    { name: 'DataTableDensity', definition: "type DataTableDensity = 'compact' | 'default' | 'comfortable'" },
+  ],
+  accessibility: [
+    { feature: 'Table Semantics', description: 'Uses native <table> with proper <thead>, <tbody>, <th> structure.' },
+    { feature: 'Caption', description: 'Caption prop provides accessible table description for screen readers.' },
+    { feature: 'Sort Controls', description: 'Sort buttons include aria-sort attribute on column headers.' },
+    { feature: 'Selection', description: 'Checkboxes use aria-label for row selection; header checkbox for select-all.' },
+    { feature: 'Card View', description: 'Card view maintains semantic structure with proper headings.' },
+  ],
+  tokens: [
+    { token: 'colors.surface.light', value: 'White', usage: 'Table background' },
+    { token: 'colors.surface.lightDarker', value: 'Gray', usage: 'Header and striped row background' },
+    { token: 'colors.border.lowEmphasis', value: 'Light gray', usage: 'Row borders' },
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Selection checkbox color' },
+    { token: 'typography.body.sm', value: '14px/20px', usage: 'Cell text' },
+    { token: 'typography.label.sm', value: '12px/16px', usage: 'Header text' },
+  ],
+  relatedComponents: [
+    { name: 'List Item', href: '/components/list-item' },
+    { name: 'Checkbox', href: '/components/checkbox' },
+    { name: 'Badge', href: '/components/badge' },
+  ],
+  notes: [
+    'Use display="auto" with a breakpoint for responsive table-to-card switching.',
+    'Provide a caption for accessibility, even if visually hidden.',
+    'Use the render function in column definitions for custom cell content.',
+    'Selection requires rowKey, selectable, selectedKeys, and onSelectionChange props.',
+    'Use renderCard for fully custom card layouts in card display mode.',
+  ],
+}
 
 export default function DataTablePage() {
   // Page tab state
@@ -138,6 +203,7 @@ export default function DataTablePage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   const playgroundCode = `<DataTable
@@ -724,6 +790,10 @@ const columns: DataTableColumn<Product>[] = [
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={dataTableDocData} />
       )}
     </StyleguideLayout>
   )

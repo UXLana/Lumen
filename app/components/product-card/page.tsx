@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { ProductCard } from '@/components'
 import { colors, typography, productCard } from '@/styles/design-tokens'
 
@@ -9,11 +9,55 @@ import { colors, typography, productCard } from '@/styles/design-tokens'
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const productCardDocData: ComponentDocData = {
+  displayName: 'ProductCard',
+  importPath: '@/components',
+  importStatement: `import { ProductCard } from '@/components'\nimport type { ProductCardProps, ProductTag, MarketBadge } from '@/components'`,
+  description: 'Product cards display cannabis product information with brand, SKU, tags, and market availability.',
+  props: [
+    { name: 'imageUrl', type: 'string', description: 'Product image URL' },
+    { name: 'brand', type: 'string', required: true, description: 'Brand name' },
+    { name: 'name', type: 'string', required: true, description: 'Product name' },
+    { name: 'sku', type: 'string', description: 'SKU number' },
+    { name: 'gapCount', type: 'number', description: 'Gap count badge' },
+    { name: 'tags', type: 'ProductTag[]', description: 'Product tags (e.g., Flower, THC 22%)' },
+    { name: 'markets', type: 'MarketBadge[]', description: 'Market badges (e.g., CA, NV)' },
+    { name: 'totalMarkets', type: 'number', description: 'Total markets count' },
+    { name: 'onClick', type: '() => void', description: 'Click handler' },
+    { name: 'style', type: 'CSSProperties', description: 'Custom styles' },
+  ],
+  typeDefinitions: [
+    { name: 'ProductTag', definition: "interface ProductTag {\n  label: string\n  variant?: 'default' | 'outlined'\n}" },
+    { name: 'MarketBadge', definition: "interface MarketBadge {\n  code: string\n  highlighted?: boolean\n}" },
+  ],
+  accessibility: [
+    { feature: 'Interactive Card', description: 'Clickable cards are focusable with proper keyboard support.' },
+    { feature: 'Image Alt', description: 'Product image uses product name as alt text.' },
+    { feature: 'Semantic Structure', description: 'Card content uses proper heading hierarchy.' },
+  ],
+  tokens: [
+    { token: 'colors.surface.light', value: 'White', usage: 'Card background' },
+    { token: 'shadows.sm', value: 'Box shadow', usage: 'Card elevation' },
+    { token: 'borderRadius.lg', value: '12px', usage: 'Card corners' },
+    { token: 'typography.label.md', value: '14px/20px', usage: 'Brand and tag text' },
+  ],
+  relatedComponents: [
+    { name: 'Marketplace Card', href: '/components/marketplace-card' },
+    { name: 'Badge', href: '/components/badge' },
+    { name: 'Data Table', href: '/components/data-table' },
+  ],
+  notes: [
+    'Use tags to display product attributes like category and THC content.',
+    'Market badges show regional availability with highlighted states.',
+    'Gap count badge indicates compliance gaps requiring attention.',
+  ],
+}
 
 export default function ProductCardPage() {
   // Page tab state
@@ -29,6 +73,7 @@ export default function ProductCardPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   const sampleTags = [
@@ -300,6 +345,10 @@ interface MarketBadge {
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={productCardDocData} />
       )}
     </StyleguideLayout>
   )

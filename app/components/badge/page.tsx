@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, TweakPanel, TweakField } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, TweakPanel, TweakField, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Badge, BadgeVariant, BadgeColor, BadgeSize } from '@/components'
 import { IconCheck, IconAlertCircle, IconInfo } from '@/components/Icons'
 import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
@@ -12,7 +12,47 @@ const BADGE_COMPONENT_PATH = 'components/Badge/Badge.tsx'
 // PAGE COMPONENT
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
+
+const badgeDocData: ComponentDocData = {
+  displayName: 'Badge',
+  importPath: '@/components',
+  importStatement: `import { Badge } from '@/components'
+import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/components'`,
+  description: 'Badges convey status, category, or count information with compact visual indicators.',
+  props: [
+    { name: 'variant', type: "'filled' | 'outlined' | 'subtle'", default: "'filled'", description: 'Visual variant' },
+    { name: 'color', type: "'neutral' | 'success' | 'warning' | 'error' | 'info' | 'brand'", default: "'neutral'", description: 'Color/intent of the badge' },
+    { name: 'size', type: "'sm' | 'md'", default: "'md'", description: 'Size of the badge' },
+    { name: 'icon', type: 'ReactNode', description: 'Optional icon before text' },
+    { name: 'children', type: 'ReactNode', required: true, description: 'Badge content (text)' },
+  ],
+  typeDefinitions: [
+    { name: 'BadgeVariant', definition: "type BadgeVariant = 'filled' | 'outlined' | 'subtle'" },
+    { name: 'BadgeColor', definition: "type BadgeColor = 'neutral' | 'success' | 'warning' | 'error' | 'info' | 'brand'" },
+    { name: 'BadgeSize', definition: "type BadgeSize = 'sm' | 'md'" },
+  ],
+  accessibility: [
+    { feature: 'Semantic HTML', description: 'Renders as <span> - add aria-label for meaningful context when used alone.' },
+    { feature: 'Color + Icon', description: 'Status is communicated with both color and icon, not color alone.' },
+    { feature: 'Contrast', description: 'All color/variant combinations meet WCAG AA contrast requirements.' },
+  ],
+  tokens: [
+    { token: 'colors.status.*', value: 'success, warning, error, info', usage: 'Badge color variants' },
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Brand color badge' },
+    { token: 'borderRadius.full', value: '999px', usage: 'Pill shape' },
+    { token: 'typography.label.sm', value: '12px/16px', usage: 'Badge text' },
+  ],
+  relatedComponents: [
+    { name: 'Banner', href: '/components/banner' },
+    { name: 'Assistive Message', href: '/components/assistive-message' },
+  ],
+  notes: [
+    'Use filled variant for strong emphasis, subtle for information that is secondary.',
+    'Always pair color with an icon for accessibility - do not rely on color alone.',
+    'Keep badge text concise - ideally 1-2 words or a short number.',
+  ],
+}
 
 export default function BadgePage() {
   const variants: BadgeVariant[] = ['filled', 'outlined', 'subtle']
@@ -240,6 +280,7 @@ export default function BadgePage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   const getIconForColor = (color: BadgeColor) => {
@@ -634,6 +675,11 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={badgeDocData} />
       )}
     </StyleguideLayout>
   )

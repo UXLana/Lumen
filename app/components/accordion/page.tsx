@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Accordion, AccordionItem } from '@/components'
 import { colors, spacing, typography, borderRadius } from '@/styles/design-tokens'
 
@@ -9,12 +9,73 @@ import { colors, spacing, typography, borderRadius } from '@/styles/design-token
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 type AccordionVariant = 'default' | 'filled' | 'inverted'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const accordionDocData: ComponentDocData = {
+  displayName: 'Accordion',
+  importPath: '@/components',
+  importStatement: `import { Accordion, AccordionItem } from '@/components'
+import type { AccordionProps, AccordionItemProps, AccordionVariant } from '@/components'`,
+  description: 'Accordions display collapsible content sections that can expand/collapse to reveal more information.',
+  props: [
+    { name: 'children', type: 'ReactNode', required: true, description: 'AccordionItem components' },
+    { name: 'variant', type: "'default' | 'filled' | 'inverted'", default: "'default'", description: 'Visual style variant' },
+    { name: 'allowMultiple', type: 'boolean', default: 'true', description: 'Allow multiple expanded items' },
+    { name: 'defaultExpandedIds', type: 'string[]', default: '[]', description: 'Initially expanded items (uncontrolled)' },
+    { name: 'expandedIds', type: 'string[]', description: 'Controlled expanded state' },
+    { name: 'onExpandedChange', type: '(ids: string[]) => void', description: 'Change callback' },
+    { name: 'fullWidth', type: 'boolean', default: 'true', description: 'Full width layout' },
+    { name: 'className', type: 'string', description: 'Additional CSS class' },
+    { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
+  ],
+  subComponents: [
+    {
+      name: 'AccordionItem',
+      description: 'Individual collapsible panel within an Accordion.',
+      props: [
+        { name: 'id', type: 'string', required: true, description: 'Unique identifier' },
+        { name: 'title', type: 'string', required: true, description: 'Header title text' },
+        { name: 'children', type: 'ReactNode', required: true, description: 'Panel content' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable interaction' },
+        { name: 'showMenu', type: 'boolean', default: 'false', description: 'Show overflow menu' },
+        { name: 'onMenuClick', type: '(id: string) => void', description: 'Menu click callback' },
+        { name: 'icon', type: 'ReactNode', description: 'Custom expand icon' },
+        { name: 'value', type: 'string', description: 'Text value on right side' },
+        { name: 'onValueClick', type: '(id: string) => void', description: 'Value text click callback' },
+      ],
+    },
+  ],
+  typeDefinitions: [
+    { name: 'AccordionVariant', definition: "type AccordionVariant = 'default' | 'filled' | 'inverted'" },
+  ],
+  accessibility: [
+    { feature: 'Keyboard', description: 'Tab to navigate between headers, Enter/Space to toggle panels.' },
+    { feature: 'ARIA', description: 'aria-expanded and aria-disabled on headers for state communication.' },
+    { feature: 'Focus Ring', description: 'Visible focus ring on interactive elements.' },
+    { feature: 'Screen Readers', description: 'Proper heading hierarchy with state announcements on expand/collapse.' },
+  ],
+  tokens: [
+    { token: 'typography.heading (20px)', value: '600 weight', usage: 'Title text' },
+    { token: 'typography.body.md (16px)', value: '400 weight', usage: 'Content text' },
+    { token: 'colors.border.lowEmphasis', value: 'Gray', usage: 'Divider lines (default variant)' },
+    { token: 'colors.surface.lightDarker', value: 'Gray bg', usage: 'Filled variant panel background' },
+  ],
+  relatedComponents: [
+    { name: 'Stepper', href: '/components/stepper' },
+    { name: 'Tab', href: '/components/tab' },
+  ],
+  notes: [
+    'Match variant to surface color: filled on white, inverted on gray.',
+    'Use allowMultiple={false} for FAQ-style single-expand behavior.',
+    'Avoid nesting accordions within accordions.',
+    'Keep 5-7 accordion items maximum for usability.',
+  ],
+}
 
 export default function AccordionPage() {
   const variants: AccordionVariant[] = ['default', 'filled', 'inverted']
@@ -33,6 +94,7 @@ export default function AccordionPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   // Dynamic background based on variant
@@ -467,6 +529,11 @@ import type { AccordionProps, AccordionItemProps } from '@/components'`}
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={accordionDocData} />
       )}
     </StyleguideLayout>
   )

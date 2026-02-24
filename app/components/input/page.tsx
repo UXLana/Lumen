@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Input } from '@/components'
 import { colors, spacing, typography, borderRadiusSemantics } from '@/styles/design-tokens'
 
@@ -9,11 +9,56 @@ import { colors, spacing, typography, borderRadiusSemantics } from '@/styles/des
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const inputDocData: ComponentDocData = {
+  displayName: 'Input',
+  importPath: '@/components',
+  importStatement: `import { Input } from '@/components'\nimport type { InputProps } from '@/components'`,
+  description: 'Input fields allow users to enter and edit text in forms and dialogs.',
+  props: [
+    { name: 'label', type: 'string', description: 'Label text above the input' },
+    { name: 'helperText', type: 'string', description: 'Helper/description text below the input' },
+    { name: 'errorMessage', type: 'string', description: 'Error message (shows error state)' },
+    { name: 'error', type: 'boolean', description: 'Whether the input has an error' },
+    { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Visual size' },
+    { name: 'fullWidth', type: 'boolean', description: 'Full-width mode' },
+    { name: 'startAdornment', type: 'ReactNode', description: 'Left icon/element' },
+    { name: 'endAdornment', type: 'ReactNode', description: 'Right icon/element' },
+    { name: 'onChange', type: '(value: string, event) => void', description: 'Change handler with value as first arg' },
+    { name: 'required', type: 'boolean', description: 'Whether the field is required' },
+    { name: 'disabled', type: 'boolean', description: 'Disabled state' },
+    { name: 'placeholder', type: 'string', description: 'Placeholder text' },
+  ],
+  accessibility: [
+    { feature: 'Label Association', description: 'Label automatically associated with input via htmlFor/id.' },
+    { feature: 'Error State', description: 'aria-invalid and aria-describedby link error messages to input.' },
+    { feature: 'Required', description: 'aria-required set when required prop is true.' },
+    { feature: 'Focus Ring', description: 'Visible focus ring on keyboard navigation.' },
+  ],
+  tokens: [
+    { token: 'colors.border.midEmphasis.onLight', value: 'Gray border', usage: 'Default border color' },
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Focus border color' },
+    { token: 'colors.status.important', value: 'Error red', usage: 'Error border and message color' },
+    { token: 'typography.body.md', value: '16px/24px', usage: 'Input text' },
+    { token: 'typography.label.sm', value: '14px/20px', usage: 'Label text' },
+    { token: 'borderRadius.md', value: '8px', usage: 'Input border radius' },
+  ],
+  relatedComponents: [
+    { name: 'Checkbox', href: '/components/checkbox' },
+    { name: 'Radio', href: '/components/radio' },
+    { name: 'Assistive Message', href: '/components/assistive-message' },
+  ],
+  notes: [
+    'Always provide a label for accessibility. Use aria-label if the label is visually hidden.',
+    'Use errorMessage prop instead of separate error components for consistent error display.',
+    'The onChange handler provides the value as the first argument for convenience.',
+  ],
+}
 
 export default function InputPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -30,6 +75,7 @@ export default function InputPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   const SearchIcon = () => (
@@ -427,6 +473,11 @@ import type { InputProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={inputDocData} />
       )}
     </StyleguideLayout>
   )

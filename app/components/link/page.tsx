@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Link } from '@/components'
 import { colors, spacing, typography } from '@/styles/design-tokens'
 
@@ -9,11 +9,44 @@ import { colors, spacing, typography } from '@/styles/design-tokens'
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const linkDocData: ComponentDocData = {
+  displayName: 'Link',
+  importPath: '@/components',
+  importStatement: `import { Link } from '@/components'\nimport type { LinkProps } from '@/components'`,
+  description: 'Links navigate users to other pages or resources with appropriate visual treatment.',
+  props: [
+    { name: 'size', type: "'sm' | 'md' | 'lg'", description: 'Link text size' },
+    { name: 'variant', type: "'default' | 'subtle' | 'inverted'", default: "'default'", description: 'Visual variant' },
+    { name: 'external', type: 'boolean', description: 'Show external link icon' },
+    { name: 'disabled', type: 'boolean', description: 'Disable the link' },
+    { name: 'children', type: 'ReactNode', required: true, description: 'Link content' },
+    { name: 'href', type: 'string', description: 'Navigation URL' },
+  ],
+  accessibility: [
+    { feature: 'Semantic HTML', description: 'Uses native <a> element for proper semantics and browser behavior.' },
+    { feature: 'External Links', description: 'External links include visual icon indicator and target="_blank" with rel="noopener noreferrer".' },
+    { feature: 'Focus Ring', description: 'Visible focus outline for keyboard navigation.' },
+    { feature: 'Disabled State', description: 'aria-disabled and tabIndex=-1 prevent interaction when disabled.' },
+  ],
+  tokens: [
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Default link color' },
+    { token: 'typography.body.*', value: 'sm/md/lg', usage: 'Link text sizing' },
+  ],
+  relatedComponents: [
+    { name: 'Button', href: '/components/button' },
+  ],
+  notes: [
+    'Use default variant for standard in-content links.',
+    'Use subtle variant for secondary or de-emphasized links.',
+    'Always indicate external links with the external prop for user awareness.',
+  ],
+}
 
 export default function LinkPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -27,6 +60,7 @@ export default function LinkPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   const previewBg = demoVariant === 'inverted' ? colors.surface.dark : undefined
@@ -341,6 +375,11 @@ import type { LinkProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={linkDocData} />
       )}
     </StyleguideLayout>
   )

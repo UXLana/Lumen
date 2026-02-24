@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { MarketplaceCard, MarketplaceAppStatus, MarketplaceCardVariant } from '@/components'
 import { colors, typography } from '@/styles/design-tokens'
 
@@ -43,7 +43,52 @@ const sampleApps = [
 // PAGE COMPONENT
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
+
+const marketplaceCardDocData: ComponentDocData = {
+  displayName: 'MarketplaceCard',
+  importPath: '@/components',
+  importStatement: `import { MarketplaceCard } from '@/components'\nimport type { MarketplaceCardProps, MarketplaceAppStatus, MarketplaceCardVariant } from '@/components'`,
+  description: 'Marketplace cards display app information in an integration marketplace with status, rating, and publisher details.',
+  props: [
+    { name: 'name', type: 'string', required: true, description: 'App name' },
+    { name: 'description', type: 'string', required: true, description: 'App description' },
+    { name: 'publisher', type: 'string', required: true, description: 'Publisher/developer name' },
+    { name: 'category', type: 'string', required: true, description: 'Category (e.g., Compliance, Analytics)' },
+    { name: 'iconUrl', type: 'string', description: 'App icon URL' },
+    { name: 'heroImageUrl', type: 'string', description: 'Hero/preview image URL' },
+    { name: 'rating', type: 'number', description: 'Rating value (0-5)' },
+    { name: 'reviewCount', type: 'number', description: 'Number of reviews' },
+    { name: 'status', type: "'installed' | 'uninstalled' | 'update-available'", description: 'Installation status' },
+    { name: 'isVerified', type: 'boolean', description: 'Whether the app is verified' },
+    { name: 'variant', type: "'default' | 'compact' | 'horizontal'", default: "'default'", description: 'Card layout variant' },
+    { name: 'onClick', type: '() => void', description: 'Click handler' },
+    { name: 'selected', type: 'boolean', description: 'Whether the card is selected' },
+  ],
+  typeDefinitions: [
+    { name: 'MarketplaceAppStatus', definition: "type MarketplaceAppStatus = 'installed' | 'uninstalled' | 'update-available'" },
+    { name: 'MarketplaceCardVariant', definition: "type MarketplaceCardVariant = 'default' | 'compact' | 'horizontal'" },
+  ],
+  accessibility: [
+    { feature: 'Interactive Card', description: 'Clickable cards render as focusable elements with proper role.' },
+    { feature: 'Status', description: 'Installation status conveyed with text and visual indicators.' },
+    { feature: 'Rating', description: 'Star rating includes accessible text alternative.' },
+  ],
+  tokens: [
+    { token: 'colors.surface.light', value: 'White', usage: 'Card background' },
+    { token: 'shadows.md', value: 'Box shadow', usage: 'Card elevation' },
+    { token: 'borderRadius.lg', value: '12px', usage: 'Card corners' },
+  ],
+  relatedComponents: [
+    { name: 'Product Card', href: '/components/product-card' },
+    { name: 'Badge', href: '/components/badge' },
+  ],
+  notes: [
+    'Use default variant for browse/discovery layouts.',
+    'Use compact variant for sidebar or condensed lists.',
+    'Use horizontal variant for search results or comparison views.',
+  ],
+}
 
 export default function MarketplaceCardPage() {
   const variants: MarketplaceCardVariant[] = ['default', 'compact', 'horizontal']
@@ -62,6 +107,7 @@ export default function MarketplaceCardPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -380,6 +426,10 @@ import type {
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={marketplaceCardDocData} />
       )}
     </StyleguideLayout>
   )

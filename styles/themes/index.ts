@@ -1,5 +1,27 @@
-export { ThemeProvider, SwitchableThemeProvider, useTheme, useColors, useThemeSwitcher, availableThemes, themeMap } from './theme-provider';
+export {
+  ThemeProvider,
+  SwitchableThemeProvider,
+  useTheme,
+  useColors,
+  useTypography,
+  useBorderRadius,
+  useElevation,
+  useSpacing,
+  useIconStyle,
+  useThemeSwitcher,
+  availableThemes,
+  themeMap,
+} from './theme-provider';
 export { traceTheme } from './trace';
 export { universityTheme } from './university';
 export { earthTheme } from './earth';
-export type { ProductTheme, ThemeColors } from './theme-interface';
+export type {
+  ProductTheme,
+  ThemeColors,
+  ThemeTypography,
+  ThemeBorderRadius,
+  ThemeElevation,
+  ThemeSpacing,
+  ThemeIconStyle,
+  IconSetName,
+} from './theme-interface';

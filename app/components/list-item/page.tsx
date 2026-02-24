@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { ListItem, List, ListItemLeftType, ListItemRightType, ListItemStatus, Avatar } from '@/components'
 import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
 
@@ -9,7 +9,7 @@ import { colors, typography, spacing, borderRadius } from '@/styles/design-token
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // SAMPLE ICONS
@@ -30,6 +30,73 @@ const chevronRightIcon = (
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const listItemDocData: ComponentDocData = {
+  displayName: 'ListItem',
+  importPath: '@/components',
+  importStatement: `import { ListItem, List } from '@/components'\nimport type { ListItemProps, ListProps, ListItemLeftType, ListItemRightType, ListItemLines } from '@/components'`,
+  description: 'List items display content in lists, menus, and selection interfaces with various content types and states.',
+  props: [
+    { name: 'primary', type: 'string', required: true, description: 'Primary text content' },
+    { name: 'secondary', type: 'string', description: 'Secondary text content' },
+    { name: 'tertiary', type: 'string', description: 'Tertiary text content' },
+    { name: 'lines', type: '1 | 2 | 3', default: '1', description: 'Number of text lines to show' },
+    { name: 'leftType', type: "'none' | 'avatar' | 'icon' | 'checkbox' | 'radio'", default: "'none'", description: 'Type of left content' },
+    { name: 'avatarProps', type: 'AvatarProps', description: 'Avatar props when leftType is avatar' },
+    { name: 'icon', type: 'ReactNode', description: 'Icon element when leftType is icon' },
+    { name: 'selected', type: 'boolean', description: 'Selected state for checkbox/radio' },
+    { name: 'status', type: "'enabled' | 'hover' | 'pressed' | 'nonActionable'", default: "'enabled'", description: 'Current status/state' },
+    { name: 'labelValuePair', type: 'boolean', description: 'Display as label-value pair' },
+    { name: 'divider', type: 'boolean', description: 'Show divider at bottom' },
+    { name: 'rightType', type: "'none' | 'iconButton' | 'toggle' | 'icon' | 'text'", default: "'none'", description: 'Type of right content' },
+    { name: 'rightText', type: 'string', description: 'Right text content' },
+    { name: 'toggleChecked', type: 'boolean', description: 'Toggle state when rightType is toggle' },
+    { name: 'onToggleChange', type: '(checked: boolean) => void', description: 'Toggle change handler' },
+    { name: 'onClick', type: '() => void', description: 'Click handler' },
+    { name: 'disabled', type: 'boolean', description: 'Disabled state' },
+  ],
+  subComponents: [
+    {
+      name: 'List',
+      description: 'Container for ListItem components with optional selection mode.',
+      props: [
+        { name: 'children', type: 'ReactNode', required: true, description: 'List items to render' },
+        { name: 'selectionMode', type: "'none' | 'single' | 'multiple'", default: "'none'", description: 'Selection mode' },
+        { name: 'roundedCorners', type: 'boolean', description: 'Rounded corners on list items' },
+        { name: 'aria-label', type: 'string', description: 'ARIA label for the list' },
+      ],
+    },
+  ],
+  typeDefinitions: [
+    { name: 'ListItemLeftType', definition: "type ListItemLeftType = 'none' | 'avatar' | 'icon' | 'checkbox' | 'radio'" },
+    { name: 'ListItemRightType', definition: "type ListItemRightType = 'none' | 'iconButton' | 'toggle' | 'icon' | 'text'" },
+    { name: 'ListItemLines', definition: 'type ListItemLines = 1 | 2 | 3' },
+  ],
+  accessibility: [
+    { feature: 'Selection', description: 'Checkbox/radio left types use native inputs for screen reader support.' },
+    { feature: 'List Semantics', description: 'List component renders with proper list role and aria-label.' },
+    { feature: 'Keyboard', description: 'Tab to navigate, Enter/Space to select or toggle.' },
+    { feature: 'Focus Ring', description: 'Visible focus indicator for keyboard navigation.' },
+  ],
+  tokens: [
+    { token: 'colors.surface.light', value: 'White', usage: 'Item background' },
+    { token: 'colors.hover.onLight', value: 'Light gray', usage: 'Hover background' },
+    { token: 'typography.body.md', value: '16px/24px', usage: 'Primary text' },
+    { token: 'typography.body.sm', value: '14px/20px', usage: 'Secondary/tertiary text' },
+    { token: 'spacing[3]', value: '12px', usage: 'Internal padding' },
+  ],
+  relatedComponents: [
+    { name: 'Avatar', href: '/components/avatar' },
+    { name: 'Checkbox', href: '/components/checkbox' },
+    { name: 'Switch', href: '/components/switch' },
+    { name: 'Data Table', href: '/components/data-table' },
+  ],
+  notes: [
+    'Use lines prop to control text truncation for consistent list heights.',
+    'Use List container with selectionMode for checkbox/radio selection patterns.',
+    'Combine leftType with rightType for rich list item layouts.',
+  ],
+}
 
 export default function ListItemPage() {
   // Page tab state
@@ -59,6 +126,7 @@ export default function ListItemPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   const leftTypes: ListItemLeftType[] = ['none', 'avatar', 'icon', 'checkbox', 'radio']
@@ -586,6 +654,10 @@ import type { ListItemLeftType, ListItemRightType, ListItemStatus } from '@/comp
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={listItemDocData} />
       )}
     </StyleguideLayout>
   )

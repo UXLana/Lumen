@@ -40,7 +40,7 @@ interface BaseIconProps extends IconProps {
 
 const BaseIcon: React.FC<BaseIconProps> = ({
   size = 'md',
-  strokeWidth = 1.5,
+  strokeWidth,
   label,
   children,
   style,
@@ -55,7 +55,7 @@ const BaseIcon: React.FC<BaseIconProps> = ({
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={strokeWidth}
+      strokeWidth={strokeWidth ?? 'var(--mtr-icon-style-strokeWidth, 1.5)'}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-label={label}

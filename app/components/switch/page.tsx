@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Switch } from '@/components'
 import { colors, spacing, typography, borderRadius } from '@/styles/design-tokens'
 
@@ -9,11 +9,48 @@ import { colors, spacing, typography, borderRadius } from '@/styles/design-token
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const switchDocData: ComponentDocData = {
+  displayName: 'Switch',
+  importPath: '@/components',
+  importStatement: `import { Switch } from '@/components'\nimport type { SwitchProps } from '@/components'`,
+  description: 'Switches toggle a single setting on or off with immediate effect.',
+  props: [
+    { name: 'label', type: 'string', description: 'Label text displayed next to the switch' },
+    { name: 'metadata', type: 'string', description: 'Description text below the label' },
+    { name: 'checked', type: 'boolean', description: 'Controlled on/off state' },
+    { name: 'onChange', type: '(checked: boolean, event) => void', description: 'Change handler' },
+    { name: 'labelPlacement', type: "'start' | 'end'", default: "'end'", description: 'Label placement relative to the switch' },
+    { name: 'fullWidth', type: 'boolean', description: 'Label and switch spread across container' },
+    { name: 'error', type: 'boolean', description: 'Error state' },
+    { name: 'disabled', type: 'boolean', description: 'Disabled state' },
+  ],
+  accessibility: [
+    { feature: 'Native Element', description: 'Uses <input type="checkbox"> with role="switch" for proper semantics.' },
+    { feature: 'Keyboard', description: 'Space to toggle, Tab to navigate.' },
+    { feature: 'State', description: 'aria-checked communicates the on/off state to screen readers.' },
+    { feature: 'Focus Ring', description: 'Visible focus ring on keyboard navigation.' },
+  ],
+  tokens: [
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Active/on track color' },
+    { token: 'colors.surface.disabled', value: 'Gray', usage: 'Inactive/off track color' },
+    { token: 'typography.body.sm', value: '14px/20px', usage: 'Label text' },
+  ],
+  relatedComponents: [
+    { name: 'Checkbox', href: '/components/checkbox' },
+    { name: 'Radio', href: '/components/radio' },
+  ],
+  notes: [
+    'Use Switch for settings that take effect immediately (no form submission needed).',
+    'Prefer Checkbox for options that require a form submission to take effect.',
+    'Use fullWidth with labelPlacement="start" for settings-style layouts.',
+  ],
+}
 
 export default function SwitchPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -29,6 +66,7 @@ export default function SwitchPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -347,6 +385,10 @@ import type { SwitchProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={switchDocData} />
       )}
     </StyleguideLayout>
   )

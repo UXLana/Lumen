@@ -12,6 +12,8 @@ import {
   CopyableToken,
   PixelValue,
   CollapsibleSection,
+  ComponentDocumentation,
+  ComponentDocData,
 } from '../../design-system/shared'
 import { Header, CanopyLogo } from '@/components'
 import { colors, typography, spacing, borderRadius, header as headerTokens } from '@/styles/design-tokens'
@@ -20,11 +22,68 @@ import { colors, typography, spacing, borderRadius, header as headerTokens } fro
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const headerDocData: ComponentDocData = {
+  displayName: 'Header',
+  importPath: '@/components',
+  importStatement: `import { Header, CanopyLogo } from '@/components'\nimport type { HeaderProps, CanopyLogoProps } from '@/components'`,
+  description: 'The Header provides top-level navigation with logo, search, organization selector, and action buttons.',
+  props: [
+    { name: 'logo', type: 'ReactNode', description: 'Logo element displayed at the left' },
+    { name: 'appName', type: 'string', description: 'App/Brand name next to logo' },
+    { name: 'appDescription', type: 'string', description: 'App description/subtitle' },
+    { name: 'searchPlaceholder', type: 'string', description: 'Search placeholder text' },
+    { name: 'searchValue', type: 'string', description: 'Search value (controlled)' },
+    { name: 'onSearchChange', type: '(value: string) => void', description: 'Search change callback' },
+    { name: 'onSearchSubmit', type: '(value: string) => void', description: 'Search submit callback' },
+    { name: 'showSearch', type: 'boolean', description: 'Whether to show the search bar' },
+    { name: 'orgName', type: 'string', description: 'Organization name' },
+    { name: 'orgLabel', type: 'string', description: 'Organization label' },
+    { name: 'orgBadge', type: 'ReactNode', description: 'Organization avatar/badge' },
+    { name: 'onOrgClick', type: '() => void', description: 'Org dropdown click callback' },
+    { name: 'actions', type: 'ReactNode', description: 'Right side action buttons' },
+    { name: 'showAppsButton', type: 'boolean', description: 'Show apps grid button' },
+    { name: 'onSidebarToggle', type: '() => void', description: 'Sidebar toggle callback' },
+    { name: 'onAppsClick', type: '() => void', description: 'Apps button click callback' },
+    { name: 'sticky', type: 'boolean', description: 'Whether the header is sticky' },
+    { name: 'style', type: 'CSSProperties', description: 'Custom styles' },
+    { name: 'className', type: 'string', description: 'Custom class name' },
+  ],
+  subComponents: [
+    {
+      name: 'CanopyLogo',
+      description: 'Default logo component for the Header.',
+      props: [
+        { name: 'size', type: "'sm' | 'md' | 'lg'", description: 'Logo size' },
+        { name: 'showText', type: 'boolean', description: 'Show text alongside the logo' },
+      ],
+    },
+  ],
+  accessibility: [
+    { feature: 'Landmark', description: 'Uses <header> element as a page landmark for navigation.' },
+    { feature: 'Search', description: 'Search input has role="search" with proper labeling.' },
+    { feature: 'Keyboard', description: 'All interactive elements are focusable and operable via keyboard.' },
+  ],
+  tokens: [
+    { token: 'colors.surface.dark', value: 'Dark bg', usage: 'Header background' },
+    { token: 'colors.text.highEmphasis.onDark', value: 'White', usage: 'Header text color' },
+    { token: 'spacing[4]', value: '16px', usage: 'Internal padding' },
+  ],
+  relatedComponents: [
+    { name: 'Left Nav', href: '/components/left-nav' },
+    { name: 'Tab', href: '/components/tab' },
+  ],
+  notes: [
+    'Use sticky prop for persistent navigation across scroll.',
+    'Combine with LeftNav for a full application shell layout.',
+    'The CanopyLogo component provides a consistent default logo.',
+  ],
+}
 
 export default function HeaderPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -38,6 +97,7 @@ export default function HeaderPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   // Generate code string based on current settings
@@ -463,6 +523,10 @@ import type { HeaderProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={headerDocData} />
       )}
     </StyleguideLayout>
   )

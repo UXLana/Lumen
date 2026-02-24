@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { LeftNav, LeftNavSection, LeftNavItem, LeftNavVariant, IconHome, IconProduct, IconBundle, IconIntegration, IconSettings, IconGrid, Button } from '@/components'
 import { colors, typography, sidebar as sidebarTokens, borderRadius, breakpoints } from '@/styles/design-tokens'
 import { IconMenu } from '@/components/Icons'
@@ -10,7 +10,7 @@ import { IconMenu } from '@/components/Icons'
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 type MobileBehavior = 'none' | 'drawer' | 'sheet'
 
 // =============================================================================
@@ -65,6 +65,57 @@ const demoFooterSections: LeftNavSection[] = [
 // PAGE COMPONENT
 // =============================================================================
 
+const leftNavDocData: ComponentDocData = {
+  displayName: 'LeftNav',
+  importPath: '@/components',
+  importStatement: `import { LeftNav } from '@/components'\nimport type { LeftNavProps, LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`,
+  description: 'Left navigation sidebar with collapsible sections, mobile drawer support, and multiple variants.',
+  props: [
+    { name: 'logo', type: 'ReactNode', description: 'Logo element displayed at the top' },
+    { name: 'collapsedLogo', type: 'ReactNode', description: 'Compact logo for collapsed state' },
+    { name: 'sections', type: 'LeftNavSection[]', required: true, description: 'Navigation sections' },
+    { name: 'footerSections', type: 'LeftNavSection[]', description: 'Footer sections (Admin, Settings)' },
+    { name: 'activeItemId', type: 'string', description: 'Currently active item ID' },
+    { name: 'collapsed', type: 'boolean', description: 'Whether sidebar is collapsed' },
+    { name: 'onCollapseChange', type: '(collapsed: boolean) => void', description: 'Collapse state change callback' },
+    { name: 'onItemClick', type: '(item: LeftNavItem) => void', description: 'Item click callback' },
+    { name: 'showCollapseToggle', type: 'boolean', description: 'Show collapse toggle button' },
+    { name: 'variant', type: "'default' | 'flat' | 'grouped'", default: "'default'", description: 'Section header behavior variant' },
+    { name: 'mobileBehavior', type: "'drawer' | 'sheet' | 'none'", default: "'drawer'", description: 'Mobile behavior mode' },
+    { name: 'mobileOpen', type: 'boolean', description: 'Whether mobile drawer is open' },
+    { name: 'onMobileClose', type: '() => void', description: 'Mobile close callback' },
+    { name: 'style', type: 'CSSProperties', description: 'Additional styles' },
+    { name: 'className', type: 'string', description: 'Additional class name' },
+  ],
+  typeDefinitions: [
+    { name: 'LeftNavVariant', definition: "type LeftNavVariant = 'default' | 'flat' | 'grouped'" },
+    { name: 'LeftNavSection', definition: "interface LeftNavSection {\n  id: string\n  title?: string\n  icon?: ReactNode\n  items: LeftNavItem[]\n  defaultExpanded?: boolean\n}" },
+    { name: 'LeftNavItem', definition: "interface LeftNavItem {\n  id: string\n  label: string\n  href: string\n  icon?: ReactNode\n  isActive?: boolean\n  disabled?: boolean\n}" },
+  ],
+  accessibility: [
+    { feature: 'Landmark', description: 'Uses <nav> element with aria-label for identification.' },
+    { feature: 'Keyboard', description: 'Tab navigates items, Enter activates links, Arrow keys in collapsed tooltips.' },
+    { feature: 'Collapse State', description: 'aria-expanded on section headers communicates expand/collapse.' },
+    { feature: 'Mobile', description: 'Drawer uses focus trap and Escape to close.' },
+  ],
+  tokens: [
+    { token: 'colors.surface.light', value: 'White', usage: 'Nav background' },
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Active item indicator' },
+    { token: 'borderRadius.md', value: '8px', usage: 'Nav item corners' },
+    { token: 'shadows.lg', value: 'Box shadow', usage: 'Collapsed popover shadow' },
+  ],
+  relatedComponents: [
+    { name: 'Header', href: '/components/header' },
+    { name: 'Accordion', href: '/components/accordion' },
+  ],
+  notes: [
+    'Use default variant for collapsible section headers with chevron.',
+    'Use flat variant when no section grouping is needed.',
+    'Use grouped variant for visible but non-collapsible section headers.',
+    'Collapsed state shows tooltips/popovers on hover for navigation.',
+  ],
+}
+
 export default function LeftNavPage() {
   // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -83,6 +134,7 @@ export default function LeftNavPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   const handleItemClick = (item: LeftNavItem) => {
@@ -538,6 +590,10 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={leftNavDocData} />
       )}
     </StyleguideLayout>
   )

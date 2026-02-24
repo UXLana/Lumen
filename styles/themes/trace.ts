@@ -298,4 +298,81 @@ export const traceTheme: ProductTheme = {
       packageIconColor: '#595959',
     },
   },
+
+  // ===========================================================================
+  // TYPOGRAPHY
+  // ===========================================================================
+  typography: {
+    fontFamilies: {
+      display: 'var(--font-dm-sans), sans-serif',
+      body: 'var(--font-dm-sans), sans-serif',
+      mono: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    },
+    fontWeights: {
+      regular: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700',
+    },
+    scale: {
+      lineHeightTight: '1.2',
+      lineHeightNormal: '1.5',
+      letterSpacingHeading: '-0.5px',
+      letterSpacingBody: '0px',
+    },
+  },
+
+  // ===========================================================================
+  // BORDER RADIUS
+  // ===========================================================================
+  borderRadius: {
+    none: '0px',
+    xs: '2px',
+    sm: '4px',
+    md: '8px',
+    lg: '12px',
+    xl: '16px',
+    '2xl': '24px',
+    '3xl': '32px',
+    full: '9999px',
+  },
+
+  // ===========================================================================
+  // ELEVATION (Shadows)
+  // ===========================================================================
+  elevation: {
+    none: 'none',
+    xs: '0px 1px 2px rgba(0, 0, 0, 0.05)',
+    sm: '0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)',
+    md: '0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06)',
+    lg: '0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    xl: '0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    '2xl': '0px 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    inner: 'inset 0px 2px 4px rgba(0, 0, 0, 0.06)',
+    brand: '0px 4px 14px rgba(0, 81, 81, 0.25)',
+    brandLg: '0px 10px 25px rgba(0, 81, 81, 0.3)',
+  },
+
+  // ===========================================================================
+  // SPACING (semantic overrides)
+  // ===========================================================================
+  spacing: {
+    unit: '4px',
+    inputPadding: '12px',
+    buttonPadding: '16px',
+    cardPadding: '24px',
+    sectionGap: '48px',
+    componentGap: '16px',
+  },
+
+  // ===========================================================================
+  // ICON STYLE
+  // ===========================================================================
+  iconStyle: {
+    set: 'outlined',
+    strokeWidth: '1.5',
+    cornerStyle: 'round',
+    defaultSize: '20',
+    overrides: {},
+  },
 };

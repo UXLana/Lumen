@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { SegmentedControl, SegmentItem, SegmentedControlSize } from '@/components'
 import { colors, typography, borderRadius } from '@/styles/design-tokens'
 
@@ -9,7 +9,48 @@ import { colors, typography, borderRadius } from '@/styles/design-tokens'
 // PAGE COMPONENT
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
+
+const segmentedControlDocData: ComponentDocData = {
+  displayName: 'SegmentedControl',
+  importPath: '@/components',
+  importStatement: `import { SegmentedControl } from '@/components'\nimport type { SegmentedControlProps, SegmentItem, SegmentedControlSize } from '@/components'`,
+  description: 'Segmented controls allow users to toggle between a small set of mutually exclusive options.',
+  props: [
+    { name: 'segments', type: 'SegmentItem[]', required: true, description: 'Array of segment items' },
+    { name: 'value', type: 'string', required: true, description: 'Currently selected segment ID' },
+    { name: 'onChange', type: '(segmentId: string) => void', required: true, description: 'Change callback' },
+    { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
+    { name: 'fullWidth', type: 'boolean', description: 'Full width mode' },
+    { name: 'onDark', type: 'boolean', description: 'Dark surface styling' },
+    { name: 'className', type: 'string', description: 'Additional CSS class' },
+    { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
+  ],
+  typeDefinitions: [
+    { name: 'SegmentItem', definition: "interface SegmentItem {\n  id: string\n  label: string\n  disabled?: boolean\n}" },
+    { name: 'SegmentedControlSize', definition: "type SegmentedControlSize = 'sm' | 'md' | 'lg'" },
+  ],
+  accessibility: [
+    { feature: 'ARIA Role', description: 'Uses role="tablist" with individual segments as role="tab".' },
+    { feature: 'Keyboard', description: 'Arrow keys navigate between segments, Enter/Space to select.' },
+    { feature: 'Selection State', description: 'aria-selected communicates the active segment.' },
+    { feature: 'Disabled', description: 'aria-disabled on individual disabled segments.' },
+  ],
+  tokens: [
+    { token: 'colors.brand.default', value: 'Theme brand', usage: 'Active segment indicator' },
+    { token: 'colors.surface.lightDarker', value: 'Gray', usage: 'Track background' },
+    { token: 'borderRadius.md', value: '8px', usage: 'Control and segment radius' },
+  ],
+  relatedComponents: [
+    { name: 'Tab', href: '/components/tab' },
+    { name: 'Radio', href: '/components/radio' },
+  ],
+  notes: [
+    'Best for 2-5 options. Use Tab for more options or when content panels change.',
+    'Each segment should have a concise label (1-2 words).',
+    'Use fullWidth to distribute segments evenly across the container.',
+  ],
+}
 
 export default function SegmentedControlPage() {
   const sizes: SegmentedControlSize[] = ['sm', 'md', 'lg']
@@ -54,6 +95,7 @@ export default function SegmentedControlPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -388,6 +430,10 @@ const segments = [
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={segmentedControlDocData} />
       )}
     </StyleguideLayout>
   )

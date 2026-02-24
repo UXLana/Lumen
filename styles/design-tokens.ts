@@ -20,8 +20,8 @@
  */
 
 import { traceTheme } from './themes/trace';
-import { themeColorsToVarRefs } from './themes/css-vars';
-import type { ThemeColors } from './themes/theme-interface';
+import { themeColorsToVarRefs, tokensToVarRefs } from './themes/css-vars';
+import type { ThemeColors, ThemeTypography, ThemeBorderRadius, ThemeElevation, ThemeSpacing } from './themes/theme-interface';
 
 // =============================================================================
 // COLOR TOKENS — CSS-variable-backed, auto-themed via SwitchableThemeProvider
@@ -92,20 +92,22 @@ export const colors = {
 };
 
 // =============================================================================
-// TYPOGRAPHY TOKENS
+// TYPOGRAPHY TOKENS — CSS-variable-backed, auto-themed via SwitchableThemeProvider
 // =============================================================================
 
+const _themedTypo = tokensToVarRefs(traceTheme.typography as unknown as Record<string, any>, '--mtr-typo') as unknown as ThemeTypography;
+
 export const fontFamilies = {
-  display: '"DM Sans", sans-serif',
-  body: '"DM Sans", sans-serif',
-  mono: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+  display: _themedTypo.fontFamilies.display,
+  body: _themedTypo.fontFamilies.body,
+  mono: _themedTypo.fontFamilies.mono,
 } as const;
 
 export const fontWeights = {
-  regular: 400,
-  medium: 500,
-  semibold: 600,
-  bold: 700,
+  regular: _themedTypo.fontWeights.regular,
+  medium: _themedTypo.fontWeights.medium,
+  semibold: _themedTypo.fontWeights.semibold,
+  bold: _themedTypo.fontWeights.bold,
 } as const;
 
 export const typography = {
@@ -328,8 +330,11 @@ export const spacing = {
   96: '384px',
 } as const;
 
-// Semantic spacing aliases
+// Semantic spacing aliases — component-specific values are CSS-variable-backed
+const _themedSpacing = tokensToVarRefs(traceTheme.spacing as unknown as Record<string, any>, '--mtr-space') as unknown as ThemeSpacing;
+
 export const spacingSemantics = {
+  // Named scale (stays static — structural, not themed)
   none: spacing[0],
   xs: spacing[1],
   sm: spacing[2],
@@ -339,36 +344,42 @@ export const spacingSemantics = {
   '2xl': spacing[12],
   '3xl': spacing[16],
   '4xl': spacing[24],
-  
-  // Component-specific
-  inputPadding: spacing[3],
-  buttonPadding: spacing[4],
-  cardPadding: spacing[6],
-  sectionPadding: spacing[12],
-  pagePadding: spacing[16],
-  
+
+  // Component-specific — themed via CSS vars
+  inputPadding: _themedSpacing.inputPadding,
+  buttonPadding: _themedSpacing.buttonPadding,
+  cardPadding: _themedSpacing.cardPadding,
+  sectionPadding: spacing[12], // stays static
+  pagePadding: spacing[16], // stays static
+
   // Layout
-  gutter: spacing[4],
+  gutter: _themedSpacing.componentGap,
   containerPadding: spacing[6],
+
+  // New semantic aliases
+  sectionGap: _themedSpacing.sectionGap,
+  componentGap: _themedSpacing.componentGap,
 } as const;
 
 // =============================================================================
-// BORDER RADIUS TOKENS
+// BORDER RADIUS TOKENS — CSS-variable-backed, auto-themed
 // =============================================================================
+
+const _themedRadius = tokensToVarRefs(traceTheme.borderRadius as unknown as Record<string, any>, '--mtr-radius') as unknown as ThemeBorderRadius;
 
 export const borderRadius = {
-  none: '0px',
-  xs: '2px',
-  sm: '4px',
-  md: '8px',
-  lg: '12px',
-  xl: '16px',
-  '2xl': '24px',
-  '3xl': '32px',
-  full: '9999px',
+  none: _themedRadius.none,
+  xs: _themedRadius.xs,
+  sm: _themedRadius.sm,
+  md: _themedRadius.md,
+  lg: _themedRadius.lg,
+  xl: _themedRadius.xl,
+  '2xl': _themedRadius['2xl'],
+  '3xl': _themedRadius['3xl'],
+  full: _themedRadius.full,
 } as const;
 
-// Semantic radius aliases
+// Semantic radius aliases — reference themed border radius vars
 export const borderRadiusSemantics = {
   button: borderRadius.md,
   input: borderRadius.md,
@@ -380,25 +391,32 @@ export const borderRadiusSemantics = {
 } as const;
 
 // =============================================================================
-// SHADOW TOKENS
+// TYPOGRAPHY SCALE (computed from themed font families & weights)
+// =============================================================================
+// NOTE: The typography composite object references fontFamilies.* and fontWeights.*
+// which are now CSS var strings. This means all computed typography styles
+// auto-update when the theme changes — no component code changes needed.
+
+// =============================================================================
+// SHADOW TOKENS — CSS-variable-backed, auto-themed
 // =============================================================================
 
+const _themedElevation = tokensToVarRefs(traceTheme.elevation as unknown as Record<string, any>, '--mtr-elevation') as unknown as ThemeElevation;
+
 export const shadows = {
-  none: 'none',
-  xs: '0px 1px 2px rgba(0, 0, 0, 0.05)',
-  sm: '0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)',
-  md: '0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06)',
-  lg: '0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05)',
-  xl: '0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
-  '2xl': '0px 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  inner: 'inset 0px 2px 4px rgba(0, 0, 0, 0.06)',
-  
-  // Colored shadows using brand (18, 122, 86 = #127A56)
-  brand: '0px 4px 14px rgba(18, 122, 86, 0.25)',
-  brandLg: '0px 10px 25px rgba(18, 122, 86, 0.3)',
+  none: _themedElevation.none,
+  xs: _themedElevation.xs,
+  sm: _themedElevation.sm,
+  md: _themedElevation.md,
+  lg: _themedElevation.lg,
+  xl: _themedElevation.xl,
+  '2xl': _themedElevation['2xl'],
+  inner: _themedElevation.inner,
+  brand: _themedElevation.brand,
+  brandLg: _themedElevation.brandLg,
 } as const;
 
-// Semantic shadow aliases
+// Semantic shadow aliases — reference themed elevation vars
 export const shadowSemantics = {
   card: shadows.sm,
   cardHover: shadows.md,
@@ -407,7 +425,9 @@ export const shadowSemantics = {
   button: shadows.xs,
   buttonHover: shadows.sm,
   input: shadows.none,
-  inputFocus: `0px 0px 0px 3px #C6E7DA`,
+  inputFocus: `0px 0px 0px 3px ${colors.selectedHighlight}`,
+  brand: shadows.brand,
+  brandLg: shadows.brandLg,
 } as const;
 
 // =============================================================================
@@ -959,7 +979,7 @@ export const tab = {
       active: {
         text: 'rgba(0, 0, 0, 0.95)',
         background: 'transparent',
-        indicator: '#127A56',
+        indicator: colors.brand.default,
       },
       inactive: {
         text: 'rgba(0, 0, 0, 0.60)',
@@ -982,7 +1002,7 @@ export const tab = {
       active: {
         text: '#FFFFFF',
         background: 'transparent',
-        indicator: '#78CFB8',
+        indicator: colors.brand.lighter,
       },
       inactive: {
         text: 'rgba(255, 255, 255, 0.60)',
@@ -1003,9 +1023,9 @@ export const tab = {
     // Inverted tabs
     inverted: {
       active: {
-        text: '#127A56',
+        text: colors.brand.default,
         background: '#FFFFFF',
-        indicator: '#127A56',
+        indicator: colors.brand.default,
       },
       inactive: {
         text: 'rgba(0, 0, 0, 0.60)',
@@ -1081,7 +1101,7 @@ export const bannerIcon = {
   // Size
   size: '24px',
   padding: '8px',
-  borderRadius: '16px',
+  borderRadius: borderRadius.xl,
 
   // Variants - Light mode
   variants: {
@@ -1296,7 +1316,7 @@ export const banner = {
   // Icon container (from Figma)
   iconContainer: {
     size: '40px',
-    borderRadius: '16px',
+    borderRadius: borderRadius.xl,
   },
 
   // Button styles (from Figma)
@@ -1407,7 +1427,7 @@ export const sidebar = {
         background: 'rgba(0, 0, 0, 0.1)',
         text: 'rgba(0, 0, 0, 0.95)',
         icon: 'rgba(0, 0, 0, 0.95)',
-        indicator: '#127A56', // Left accent bar for active state
+        indicator: colors.brand.default, // Left accent bar for active state
       },
     },
     // Updated for WCAG 1.4.3 contrast compliance (4.5:1 minimum)
@@ -1457,7 +1477,7 @@ export const header = {
       background: '#F5F5F5',
       backgroundFocus: '#FFFFFF',
       border: 'transparent',
-      borderFocus: '#127A56',
+      borderFocus: colors.brand.default,
       placeholder: 'rgba(0, 0, 0, 0.50)',
       text: 'rgba(0, 0, 0, 0.95)',
       icon: 'rgba(0, 0, 0, 0.50)',
@@ -1468,7 +1488,7 @@ export const header = {
   iconButton: {
     size: '40px',
     iconSize: '24px',
-    borderRadius: '8px',
+    borderRadius: borderRadius.md,
     colors: {
       default: {
         background: 'transparent',
@@ -1485,7 +1505,7 @@ export const header = {
   orgDropdown: {
     height: '40px',
     paddingX: '12px',
-    borderRadius: '8px',
+    borderRadius: borderRadius.md,
     gap: '8px',
     typography: {
       name: {
@@ -1530,7 +1550,7 @@ export const statsCard = {
   icon: {
     size: '48px',
     containerSize: '48px',
-    borderRadius: '12px',
+    borderRadius: borderRadius.lg,
     background: '#F5F5F5',
   },
 
@@ -1561,7 +1581,7 @@ export const statsCard = {
   },
 
   // Border
-  borderRadius: '12px',
+  borderRadius: borderRadius.lg,
 } as const;
 
 // =============================================================================
@@ -1577,7 +1597,7 @@ export const productCard = {
   image: {
     height: '160px',
     background: '#F5F5F5',
-    borderRadius: '8px',
+    borderRadius: borderRadius.md,
     iconSize: '48px',
     iconColor: 'rgba(0, 0, 0, 0.20)',
   },
@@ -1673,7 +1693,7 @@ export const productCard = {
 
   // Hover state
   hover: {
-    shadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    shadow: shadows.sm,
     borderColor: 'rgba(0, 0, 0, 0.12)',
   },
 
@@ -1754,15 +1774,15 @@ export const stepper = {
     size: '32px',
     borderRadius: '50%',
 
-    // Colors per state (using brand primary #127A56)
+    // Colors per state — uses themed brand color
     colors: {
       completed: {
-        background: '#127A56',
+        background: colors.brand.default,
         text: '#FFFFFF',
         border: 'transparent',
       },
       active: {
-        background: '#127A56',
+        background: colors.brand.default,
         text: '#FFFFFF',
         border: 'transparent',
       },
@@ -1792,7 +1812,7 @@ export const stepper = {
     width: '2px',
 
     colors: {
-      completed: '#127A56',
+      completed: colors.brand.default,
       pending: 'rgba(0, 0, 0, 0.15)',
     },
   },

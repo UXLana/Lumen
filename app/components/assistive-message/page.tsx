@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { AssistiveMessage, AssistiveMessageType } from '@/components'
 import { colors, typography, assistiveMessage as tokens } from '@/styles/design-tokens'
 
 const COMPONENT_PATH = 'components/AssistiveMessage/AssistiveMessage.tsx'
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 const ALL_TYPES: AssistiveMessageType[] = [
   'assistive',
@@ -39,6 +39,43 @@ const DEMO_TEXT: Record<AssistiveMessageType, string> = {
   info: 'We will use this for verification',
 }
 
+const assistiveMessageDocData: ComponentDocData = {
+  displayName: 'AssistiveMessage',
+  importPath: '@/components',
+  importStatement: `import { AssistiveMessage } from '@/components'\nimport type { AssistiveMessageProps, AssistiveMessageType } from '@/components'`,
+  description: 'Assistive messages provide contextual feedback below form fields including helper text, errors, warnings, and success states.',
+  props: [
+    { name: 'type', type: "'assistive' | 'disabled' | 'error' | 'error-overflow' | 'warning' | 'success' | 'info'", default: "'assistive'", description: 'Visual type/state of the message' },
+    { name: 'children', type: 'ReactNode', required: true, description: 'The assistive/helper text content' },
+    { name: 'counter', type: 'string', description: 'Character counter (e.g. "12/30")' },
+    { name: 'icon', type: 'ReactNode | null', description: 'Override the default icon (pass null to hide)' },
+  ],
+  typeDefinitions: [
+    { name: 'AssistiveMessageType', definition: "type AssistiveMessageType = 'assistive' | 'disabled' | 'error' | 'error-overflow' | 'warning' | 'success' | 'info'" },
+  ],
+  accessibility: [
+    { feature: 'Live Region', description: 'Error and warning messages use aria-live="polite" for screen reader announcements.' },
+    { feature: 'Association', description: 'Use aria-describedby on the input to link to this message.' },
+    { feature: 'Icon + Color', description: 'Status conveyed through icon, color, and text - not color alone.' },
+  ],
+  tokens: [
+    { token: 'colors.status.important', value: 'Red', usage: 'Error message color' },
+    { token: 'colors.status.success', value: 'Green', usage: 'Success message color' },
+    { token: 'colors.status.caution', value: 'Yellow', usage: 'Warning message color' },
+    { token: 'typography.body.xs', value: '12px/16px', usage: 'Message text' },
+  ],
+  relatedComponents: [
+    { name: 'Input', href: '/components/input' },
+    { name: 'Banner', href: '/components/banner' },
+    { name: 'Badge', href: '/components/badge' },
+  ],
+  notes: [
+    'Always pair with a form field using aria-describedby for accessibility.',
+    'Use counter for character-limited fields to show remaining characters.',
+    'Use error-overflow type when error text is too long for inline display.',
+  ],
+}
+
 export default function AssistiveMessagePage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
   const [demoType, setDemoType] = useState<AssistiveMessageType>('assistive')
@@ -49,6 +86,7 @@ export default function AssistiveMessagePage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -375,6 +413,10 @@ import type { AssistiveMessageProps, AssistiveMessageType } from '@/components'`
             </div>
           </section>
         </>
+      )}
+
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={assistiveMessageDocData} />
       )}
     </StyleguideLayout>
   )

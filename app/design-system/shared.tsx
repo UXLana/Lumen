@@ -866,7 +866,7 @@ export function StyleguideLayout({
             {!sidebarCollapsed && (
               <div>
                 <Link href="/design-system" style={sharedStyles.sidebarTitle}>
-                  Metrc Design System
+                  Design System
                 </Link>
                 <p style={sharedStyles.sidebarSubtitle}>v1.0.0</p>
               </div>
@@ -1843,5 +1843,427 @@ export function TweakPanel({ fields, onChange, onSave }: TweakPanelProps) {
         })}
       </div>
     </div>
+  )
+}
+
+// =============================================================================
+// COMPONENT DOCUMENTATION TAB
+// =============================================================================
+
+export interface DocPropItem {
+  name: string
+  type: string
+  default?: string
+  required?: boolean
+  description: string
+}
+
+export interface DocTypeDefinition {
+  name: string
+  definition: string
+}
+
+export interface DocAccessibilityItem {
+  feature: string
+  description: string
+}
+
+export interface DocTokenItem {
+  token: string
+  value: string
+  usage: string
+}
+
+export interface DocSubComponent {
+  name: string
+  description: string
+  props: DocPropItem[]
+}
+
+export interface ComponentDocData {
+  displayName: string
+  importPath: string
+  importStatement: string
+  description: string
+  props: DocPropItem[]
+  typeDefinitions?: DocTypeDefinition[]
+  accessibility?: DocAccessibilityItem[]
+  tokens?: DocTokenItem[]
+  subComponents?: DocSubComponent[]
+  relatedComponents?: { name: string; href: string }[]
+  notes?: string[]
+}
+
+export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
+  const [copiedImport, setCopiedImport] = useState(false)
+  const [copiedYaml, setCopiedYaml] = useState(false)
+
+  const handleCopyImport = () => {
+    navigator.clipboard.writeText(data.importStatement)
+    setCopiedImport(true)
+    setTimeout(() => setCopiedImport(false), 2000)
+  }
+
+  const yamlBlock = [
+    `component: ${data.displayName}`,
+    `import: "${data.importPath}"`,
+    `description: "${data.description}"`,
+    `props:`,
+    ...data.props.map(p =>
+      `  - name: ${p.name}\n    type: "${p.type}"\n    required: ${!!p.required}\n    default: ${p.default ? `"${p.default}"` : 'null'}\n    description: "${p.description}"`
+    ),
+    ...(data.subComponents?.length ? data.subComponents.flatMap(sc => [
+      `sub_components:`,
+      `  - name: ${sc.name}`,
+      `    description: "${sc.description}"`,
+      `    props:`,
+      ...sc.props.map(p =>
+        `      - name: ${p.name}\n        type: "${p.type}"\n        required: ${!!p.required}\n        default: ${p.default ? `"${p.default}"` : 'null'}\n        description: "${p.description}"`
+      ),
+    ]) : []),
+    ...(data.accessibility?.length ? [
+      `accessibility:`,
+      ...data.accessibility.map(a =>
+        `  - feature: "${a.feature}"\n    description: "${a.description}"`
+      ),
+    ] : []),
+  ].join('\n')
+
+  const handleCopyYaml = () => {
+    navigator.clipboard.writeText(yamlBlock)
+    setCopiedYaml(true)
+    setTimeout(() => setCopiedYaml(false), 2000)
+  }
+
+  return (
+    <>
+      {/* LLM-Friendly YAML Block */}
+      <section style={sharedStyles.section}>
+        <h2 style={sharedStyles.sectionTitle}>Machine-Readable Reference</h2>
+        <p style={sharedStyles.sectionDescription}>
+          Structured metadata for AI assistants, code generators, and automated tooling.
+        </p>
+        <div style={{ position: 'relative' }}>
+          <button
+            onClick={handleCopyYaml}
+            style={{
+              position: 'absolute',
+              top: '12px',
+              right: '12px',
+              background: copiedYaml ? colors.status.success : colors.surface.lightDarker,
+              border: 'none',
+              borderRadius: borderRadius.sm,
+              padding: '6px 12px',
+              cursor: 'pointer',
+              fontSize: '12px',
+              fontWeight: 600,
+              fontFamily: fontFamilies.body,
+              color: copiedYaml ? '#fff' : colors.text.lowEmphasis.onLight,
+              transition: transitionPresets.default,
+              zIndex: 1,
+            }}
+          >
+            {copiedYaml ? 'Copied!' : 'Copy YAML'}
+          </button>
+          <pre style={{
+            ...sharedStyles.codeBlock,
+            maxHeight: '320px',
+            overflowY: 'auto',
+            fontSize: '12px',
+            lineHeight: '1.5',
+          }}>
+            {yamlBlock}
+          </pre>
+        </div>
+      </section>
+
+      {/* API Reference */}
+      <section style={sharedStyles.section}>
+        <h2 style={sharedStyles.sectionTitle}>API Reference</h2>
+
+        {/* Import */}
+        <div style={sharedStyles.card}>
+          <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Import</h3>
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={handleCopyImport}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: copiedImport ? colors.status.success : 'rgba(0,0,0,0.06)',
+                border: 'none',
+                borderRadius: borderRadius.sm,
+                padding: '4px 10px',
+                cursor: 'pointer',
+                fontSize: '11px',
+                fontWeight: 600,
+                fontFamily: fontFamilies.body,
+                color: copiedImport ? '#fff' : colors.text.lowEmphasis.onLight,
+                transition: transitionPresets.default,
+              }}
+            >
+              {copiedImport ? 'Copied!' : 'Copy'}
+            </button>
+            <pre style={sharedStyles.codeBlock}>{data.importStatement}</pre>
+          </div>
+        </div>
+
+        {/* Props */}
+        <div style={sharedStyles.card}>
+          <h3 style={sharedStyles.cardTitle}>{data.displayName} Props</h3>
+          <div style={sharedStyles.tableContainer}>
+            <table style={sharedStyles.table}>
+              <thead>
+                <tr>
+                  <th style={sharedStyles.th}>Prop</th>
+                  <th style={sharedStyles.th}>Type</th>
+                  <th style={sharedStyles.th}>Default</th>
+                  <th style={{ ...sharedStyles.th, width: '40%' }}>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.props.map((p) => (
+                  <tr key={p.name}>
+                    <td style={sharedStyles.td}>
+                      <code style={{
+                        fontFamily: fontFamilies.mono,
+                        fontSize: '13px',
+                        color: colors.brand.default,
+                        fontWeight: 600,
+                      }}>
+                        {p.name}
+                        {p.required && <span style={{ color: colors.status.important }}> *</span>}
+                      </code>
+                    </td>
+                    <td style={sharedStyles.td}>
+                      <code style={{
+                        fontFamily: fontFamilies.mono,
+                        fontSize: '12px',
+                        background: colors.surface.lightDarker,
+                        padding: '2px 6px',
+                        borderRadius: borderRadius.xs,
+                      }}>
+                        {p.type}
+                      </code>
+                    </td>
+                    <td style={sharedStyles.td}>
+                      {p.default ? (
+                        <code style={{ fontFamily: fontFamilies.mono, fontSize: '12px' }}>{p.default}</code>
+                      ) : (
+                        <span style={{ color: colors.text.disabled.onLight }}>—</span>
+                      )}
+                    </td>
+                    <td style={{ ...sharedStyles.td, color: colors.text.lowEmphasis.onLight }}>{p.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Sub-component Props */}
+        {data.subComponents?.map((sc) => (
+          <div key={sc.name} style={sharedStyles.card}>
+            <h3 style={sharedStyles.cardTitle}>{sc.name} Props</h3>
+            <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: '16px' }}>{sc.description}</p>
+            <div style={sharedStyles.tableContainer}>
+              <table style={sharedStyles.table}>
+                <thead>
+                  <tr>
+                    <th style={sharedStyles.th}>Prop</th>
+                    <th style={sharedStyles.th}>Type</th>
+                    <th style={sharedStyles.th}>Default</th>
+                    <th style={{ ...sharedStyles.th, width: '40%' }}>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sc.props.map((p) => (
+                    <tr key={p.name}>
+                      <td style={sharedStyles.td}>
+                        <code style={{
+                          fontFamily: fontFamilies.mono,
+                          fontSize: '13px',
+                          color: colors.brand.default,
+                          fontWeight: 600,
+                        }}>
+                          {p.name}
+                          {p.required && <span style={{ color: colors.status.important }}> *</span>}
+                        </code>
+                      </td>
+                      <td style={sharedStyles.td}>
+                        <code style={{
+                          fontFamily: fontFamilies.mono,
+                          fontSize: '12px',
+                          background: colors.surface.lightDarker,
+                          padding: '2px 6px',
+                          borderRadius: borderRadius.xs,
+                        }}>
+                          {p.type}
+                        </code>
+                      </td>
+                      <td style={sharedStyles.td}>
+                        {p.default ? (
+                          <code style={{ fontFamily: fontFamilies.mono, fontSize: '12px' }}>{p.default}</code>
+                        ) : (
+                          <span style={{ color: colors.text.disabled.onLight }}>—</span>
+                        )}
+                      </td>
+                      <td style={{ ...sharedStyles.td, color: colors.text.lowEmphasis.onLight }}>{p.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* Type Definitions */}
+      {data.typeDefinitions && data.typeDefinitions.length > 0 && (
+        <section style={sharedStyles.section}>
+          <h2 style={sharedStyles.sectionTitle}>Type Definitions</h2>
+          <p style={sharedStyles.sectionDescription}>
+            TypeScript types exported from this component for use in your application.
+          </p>
+          {data.typeDefinitions.map((td) => (
+            <div key={td.name} style={sharedStyles.card}>
+              <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>{td.name}</h3>
+              <pre style={sharedStyles.codeBlock}>{td.definition}</pre>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {/* Accessibility */}
+      {data.accessibility && data.accessibility.length > 0 && (
+        <section style={sharedStyles.section}>
+          <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
+          <p style={sharedStyles.sectionDescription}>
+            Built-in accessibility features and ARIA support.
+          </p>
+          <div style={sharedStyles.tableContainer}>
+            <table style={sharedStyles.table}>
+              <thead>
+                <tr>
+                  <th style={{ ...sharedStyles.th, width: '25%' }}>Feature</th>
+                  <th style={sharedStyles.th}>Implementation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.accessibility.map((a) => (
+                  <tr key={a.feature}>
+                    <td style={{ ...sharedStyles.td, fontWeight: 600 }}>{a.feature}</td>
+                    <td style={{ ...sharedStyles.td, color: colors.text.lowEmphasis.onLight }}>{a.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* Design Tokens */}
+      {data.tokens && data.tokens.length > 0 && (
+        <section style={sharedStyles.section}>
+          <h2 style={sharedStyles.sectionTitle}>Design Token Dependencies</h2>
+          <p style={sharedStyles.sectionDescription}>
+            Design tokens consumed by this component. Override these tokens to customize appearance.
+          </p>
+          <div style={sharedStyles.tableContainer}>
+            <table style={sharedStyles.table}>
+              <thead>
+                <tr>
+                  <th style={sharedStyles.th}>Token</th>
+                  <th style={sharedStyles.th}>Value</th>
+                  <th style={sharedStyles.th}>Usage</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.tokens.map((t) => (
+                  <tr key={t.token}>
+                    <td style={sharedStyles.td}>
+                      <code style={{
+                        fontFamily: fontFamilies.mono,
+                        fontSize: '12px',
+                        background: colors.surface.lightDarker,
+                        padding: '2px 6px',
+                        borderRadius: borderRadius.xs,
+                      }}>
+                        {t.token}
+                      </code>
+                    </td>
+                    <td style={sharedStyles.td}>
+                      <code style={{ fontFamily: fontFamilies.mono, fontSize: '12px' }}>{t.value}</code>
+                    </td>
+                    <td style={{ ...sharedStyles.td, color: colors.text.lowEmphasis.onLight }}>{t.usage}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* Notes */}
+      {data.notes && data.notes.length > 0 && (
+        <section style={sharedStyles.section}>
+          <h2 style={sharedStyles.sectionTitle}>Notes</h2>
+          <div style={{
+            background: colors.surface.lightDarker,
+            borderRadius: borderRadius.md,
+            padding: '20px 24px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+          }}>
+            {data.notes.map((note, i) => (
+              <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{
+                  flexShrink: 0,
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: colors.brand.default,
+                  marginTop: '7px',
+                }} />
+                <span style={{ ...typography.body.sm, color: colors.text.highEmphasis.onLight }}>{note}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Related Components */}
+      {data.relatedComponents && data.relatedComponents.length > 0 && (
+        <section style={sharedStyles.section}>
+          <h2 style={sharedStyles.sectionTitle}>Related Components</h2>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            {data.relatedComponents.map((rc) => (
+              <a
+                key={rc.name}
+                href={rc.href}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 16px',
+                  borderRadius: borderRadius.md,
+                  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                  textDecoration: 'none',
+                  color: colors.text.highEmphasis.onLight,
+                  ...typography.label.md,
+                  transition: transitionPresets.default,
+                  background: colors.surface.light,
+                }}
+              >
+                {rc.name}
+                <span style={{ color: colors.text.lowEmphasis.onLight, fontSize: '16px' }}>→</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </>
   )
 }

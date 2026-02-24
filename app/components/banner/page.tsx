@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Banner, BannerVariant, BannerSurface, BannerButtonAlignment } from '@/components'
 import { colors, typography, spacing, borderRadius, bannerIcon, banner } from '@/styles/design-tokens'
 
@@ -9,8 +9,58 @@ import { colors, typography, spacing, borderRadius, bannerIcon, banner } from '@
 // PAGE COMPONENT
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 type ButtonOption = 'none' | 'one' | 'both'
+
+const bannerDocData: ComponentDocData = {
+  displayName: 'Banner',
+  importPath: '@/components',
+  importStatement: `import { Banner } from '@/components'\nimport type { BannerProps, BannerVariant, BannerSize } from '@/components'`,
+  description: 'Banners display prominent messages and optional actions at the top of a page or section.',
+  props: [
+    { name: 'variant', type: "'info' | 'success' | 'warning' | 'error'", default: "'info'", description: 'Semantic variant' },
+    { name: 'size', type: "'md' | 'lg'", default: "'md'", description: 'Size of the banner' },
+    { name: 'bannerStyle', type: "'inline'", description: 'Inline style with rounded corners and outline' },
+    { name: 'surface', type: "'color' | 'light'", description: 'Surface type (color or light background)' },
+    { name: 'buttonAlignment', type: "'side' | 'below'", description: 'Button alignment' },
+    { name: 'title', type: 'string', description: 'Main title/heading' },
+    { name: 'children', type: 'ReactNode', description: 'Main content text' },
+    { name: 'icon', type: 'ReactNode', description: 'Icon displayed on the left' },
+    { name: 'dismissible', type: 'boolean', description: 'Whether banner can be dismissed' },
+    { name: 'onDismiss', type: '() => void', description: 'Dismiss callback' },
+    { name: 'primaryAction', type: '{ label: string; onClick: () => void }', description: 'Primary action button' },
+    { name: 'secondaryAction', type: '{ label: string; onClick: () => void }', description: 'Secondary action button' },
+    { name: 'onDark', type: 'boolean', description: 'Display on dark background' },
+    { name: 'className', type: 'string', description: 'Additional CSS class' },
+    { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
+  ],
+  typeDefinitions: [
+    { name: 'BannerVariant', definition: "type BannerVariant = 'info' | 'success' | 'warning' | 'error'" },
+    { name: 'BannerSize', definition: "type BannerSize = 'md' | 'lg'" },
+    { name: 'BannerStyle', definition: "type BannerStyle = 'inline'" },
+    { name: 'BannerSurface', definition: "type BannerSurface = 'color' | 'light'" },
+  ],
+  accessibility: [
+    { feature: 'ARIA Role', description: 'Uses role="alert" for error/warning, role="status" for info/success.' },
+    { feature: 'Dismiss Button', description: 'Dismiss button includes aria-label="Dismiss" for screen readers.' },
+    { feature: 'Color + Icon', description: 'Status conveyed through both color and icon, not color alone.' },
+  ],
+  tokens: [
+    { token: 'colors.status.*', value: 'info, success, warning, error', usage: 'Banner variant colors' },
+    { token: 'borderRadius.md', value: '8px', usage: 'Inline banner corners' },
+    { token: 'spacing[4]', value: '16px', usage: 'Internal padding' },
+  ],
+  relatedComponents: [
+    { name: 'Badge', href: '/components/badge' },
+    { name: 'Assistive Message', href: '/components/assistive-message' },
+  ],
+  notes: [
+    'Use error variant for critical issues that require immediate user attention.',
+    'Use info variant for neutral announcements and tips.',
+    'Always include an icon for accessibility - do not rely on color alone.',
+    'Banners with actions should have clear, descriptive action labels.',
+  ],
+}
 
 export default function BannerPage() {
   const variants: BannerVariant[] = ['info', 'success', 'warning', 'error']
@@ -39,6 +89,7 @@ export default function BannerPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   // Generate action props based on button option
@@ -522,6 +573,11 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={bannerDocData} />
       )}
     </StyleguideLayout>
   )

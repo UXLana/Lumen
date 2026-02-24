@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection } from '../../design-system/shared'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Divider } from '@/components'
 import { colors, spacing, typography } from '@/styles/design-tokens'
 
@@ -9,11 +9,41 @@ import { colors, spacing, typography } from '@/styles/design-tokens'
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation'
+type PageTab = 'overview' | 'implementation' | 'documentation'
 
 // =============================================================================
 // PAGE COMPONENT
 // =============================================================================
+
+const dividerDocData: ComponentDocData = {
+  displayName: 'Divider',
+  importPath: '@/components',
+  importStatement: `import { Divider } from '@/components'\nimport type { DividerProps } from '@/components'`,
+  description: 'Dividers separate content into clear groups with a thin horizontal or vertical line.',
+  props: [
+    { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Orientation of the divider' },
+    { name: 'variant', type: "'light' | 'medium' | 'heavy'", default: "'light'", description: 'Visual weight' },
+    { name: 'spacing', type: "'none' | 'sm' | 'md' | 'lg'", default: "'none'", description: 'Spacing above and below (or left and right)' },
+    { name: 'onDark', type: 'boolean', description: 'For dark backgrounds' },
+  ],
+  accessibility: [
+    { feature: 'Semantic HTML', description: 'Uses <hr> element with role="separator" for proper semantics.' },
+    { feature: 'ARIA Orientation', description: 'aria-orientation set for vertical dividers.' },
+  ],
+  tokens: [
+    { token: 'colors.border.lowEmphasis.onLight', value: 'Light gray', usage: 'Light variant color' },
+    { token: 'colors.border.midEmphasis.onLight', value: 'Mid gray', usage: 'Medium variant color' },
+    { token: 'colors.border.highEmphasis.onLight', value: 'Dark gray', usage: 'Heavy variant color' },
+  ],
+  relatedComponents: [
+    { name: 'List Item', href: '/components/list-item' },
+    { name: 'Accordion', href: '/components/accordion' },
+  ],
+  notes: [
+    'Use light variant for subtle separation, heavy for strong visual breaks.',
+    'Vertical dividers work well in toolbars and inline layouts.',
+  ],
+}
 
 export default function DividerPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
@@ -27,6 +57,7 @@ export default function DividerPage() {
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'implementation', label: 'Implementation' },
+    { id: 'documentation', label: 'Documentation' },
   ]
 
   return (
@@ -334,6 +365,11 @@ import type { DividerProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
         </>
+      )}
+
+      {/* ========== DOCUMENTATION TAB ========== */}
+      {activePageTab === 'documentation' && (
+        <ComponentDocumentation data={dividerDocData} />
       )}
     </StyleguideLayout>
   )
