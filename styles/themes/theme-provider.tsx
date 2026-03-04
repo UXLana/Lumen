@@ -5,13 +5,14 @@ import type { ProductTheme, ThemeColors, ThemeTypography, ThemeBorderRadius, The
 import { traceTheme } from './trace';
 import { universityTheme } from './university';
 import { earthTheme } from './earth';
+import { ridTheme } from './rid';
 import { applyAllThemeVars } from './css-vars';
 
 // ---------------------------------------------------------------------------
 // Theme registry
 // ---------------------------------------------------------------------------
 
-const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme];
+const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme, ridTheme];
 const themeMap: Record<string, ProductTheme> = Object.fromEntries(
   availableThemes.map((t) => [t.name, t]),
 );

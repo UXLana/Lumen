@@ -24,7 +24,7 @@ import React from 'react';
 import type { IconProps } from './Icons';
 import { resolveIcon } from './registry';
 import type { IconSetName } from './registry';
-import { useIconStyle } from '@/styles/themes';
+import { useIconStyle } from '../../styles/themes';
 
 export interface ThemedIconProps extends IconProps {
   /** Icon name — matches the export name without the "Icon" prefix.

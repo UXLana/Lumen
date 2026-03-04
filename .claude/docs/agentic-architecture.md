@@ -27,6 +27,7 @@ flowchart TB
         FTE["figma-token-extractor"]
         DA["design-accessibility"]
         UBG["ux-brief-generator"]
+        TG["theme-generator"]
     end
 
     subgraph Perspectives["💭 PERSPECTIVE AGENTS (Sub-agents)"]
@@ -88,6 +89,7 @@ Skills are instruction sets that the orchestrator reads and applies. They don't 
 | `figma-token-extractor` | Extract design tokens from Figma and integrate via design-system-builder |
 | `design-accessibility` | Audit and fix accessibility issues |
 | `ux-brief-generator` | Gather sources (Confluence, Jira, Notion) and compile UX briefs with gap analysis |
+| `theme-generator` | Generate a complete product theme from a single brand color with color recommendations |
 
 ### Perspective Agents (Sub-agents)
 Spawned for risky or uncertain decisions. They debate and write to shared state.
@@ -130,3 +132,4 @@ Sequential validation pipeline for outputs.
 | 2026-01-28 | Initial architecture diagram | Claude |
 | 2026-01-29 | Added figma-token-extractor skill | Claude |
 | 2026-02-13 | Added ux-brief-generator skill | Claude |
+| 2026-03-04 | Added theme-generator skill | Claude |

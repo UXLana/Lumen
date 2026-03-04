@@ -314,6 +314,7 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
     ref
   ) => {
     const [isHovered, setIsHovered] = useState(false)
+    const [isFocused, setIsFocused] = useState(false)
 
     const isActive = status === 'active'
     const isCompleted = status === 'completed'
@@ -347,8 +348,6 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
       paddingRight: '8px',
       borderRadius: '8px',
       cursor: isClickable ? 'pointer' : 'default',
-      transition: 'background-color 0.15s ease',
-      backgroundColor: isClickable && isHovered ? 'rgba(0, 0, 0, 0.06)' : 'transparent',
       ...style,
     }
 
@@ -633,16 +632,14 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onFocus={(e) => {
-          if (isClickable) {
-            // WCAG 2.4.7 & 2.4.11: Visible focus indicator with sufficient contrast
-            e.currentTarget.style.outline = `3px solid ${stepper.focus.color}`
-            e.currentTarget.style.outlineOffset = '2px'
+          // Only show focus ring when the container itself is focused (not child buttons)
+          if (isClickable && e.target === e.currentTarget) {
+            setIsFocused(true)
           }
         }}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-            e.currentTarget.style.outline = 'none'
-            e.currentTarget.style.outlineOffset = '0'
+            setIsFocused(false)
           }
         }}
         role={isClickable ? 'button' : undefined}
@@ -651,8 +648,26 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
         aria-current={isActive ? 'step' : undefined}
         aria-label={isClickable ? getAccessibleLabel() : undefined}
       >
-        {/* Focus ring */}
+        {/* Focus ring (demo prop) */}
         {focused && <span style={focusRingStyles} aria-hidden="true" />}
+
+        {/* Focus ring on step indicator circle only */}
+        {isClickable && isFocused && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '14px',
+              left: '6px',
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              outline: `${stepper.focus.width} solid ${stepper.focus.color}`,
+              outlineOffset: '1px',
+              pointerEvents: 'none',
+            }}
+            aria-hidden="true"
+          />
+        )}
 
         {/* Step column with indicator and connectors */}
         <div style={stepColumnStyles}>

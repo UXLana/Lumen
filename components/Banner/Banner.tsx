@@ -1,13 +1,13 @@
 'use client'
 
 import React, { forwardRef } from 'react'
-import { fontFamilies, banner, bannerIcon } from '@/styles/design-tokens'
+import { fontFamilies, banner, bannerIcon } from '../../styles/design-tokens'
 import {
   IconInfoFilled,
   IconSuccessFilled,
   IconWarningFilled,
   IconErrorFilled,
-} from '@/components/Icons'
+} from '../Icons'
 
 // =============================================================================
 // TYPES & CONTRACTS

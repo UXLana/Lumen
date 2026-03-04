@@ -10,6 +10,10 @@ export type { AccordionProps, AccordionItemProps } from './Accordion'
 export { Avatar, AvatarGroup } from './Avatar'
 export type { AvatarProps, AvatarGroupProps, AvatarSize, AvatarColor } from './Avatar'
 
+// Chip
+export { Chip, ChipGroup } from './Chip'
+export type { ChipProps, ChipGroupProps, ChipState, ChipLeftContent } from './Chip'
+
 // Checkbox
 export { Checkbox, CheckboxGroup } from './Checkbox'
 export type { CheckboxProps, CheckboxGroupProps, CheckboxState } from './Checkbox'
@@ -99,6 +103,17 @@ export type { ToastProps, ToastVariant, ToastPosition, ToastItem, UseToastReturn
 // ConfirmDialog
 export { ConfirmDialog } from './ConfirmDialog'
 export type { ConfirmDialogProps, ConfirmDialogVariant } from './ConfirmDialog'
+
+// FullScreenModal
+export { FullScreenModal, FullScreenModalPanel } from './FullScreenModal'
+export type {
+  FullScreenModalProps,
+  FullScreenModalPanelProps,
+  FullScreenModalColumns,
+  FullScreenModalHeaderButton,
+  FullScreenModalPanelBackground,
+  FullScreenModalPanelBorder,
+} from './FullScreenModal'
 
 // AssistiveMessage
 export { AssistiveMessage } from './AssistiveMessage'

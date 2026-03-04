@@ -7,9 +7,9 @@ import {
   transitionPresets,
   zIndex,
   button as buttonTokens,
-} from '@/styles/design-tokens'
-import { useColors } from '@/styles/themes'
-import { Button } from '@/components/Button'
+} from '../../styles/design-tokens'
+import { useColors } from '../../styles/themes'
+import { Button } from '../Button'
 
 // =============================================================================
 // REDUCED MOTION HOOK

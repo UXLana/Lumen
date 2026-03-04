@@ -9,8 +9,8 @@ import {
   zIndex,
   borderRadius,
   shadows,
-} from '@/styles/design-tokens'
-import { useColors } from '@/styles/themes'
+} from '../../styles/design-tokens'
+import { useColors } from '../../styles/themes'
 
 // =============================================================================
 // TYPES

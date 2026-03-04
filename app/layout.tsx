@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { DM_Sans, Playfair_Display, Source_Sans_3, Merriweather, Nunito_Sans } from 'next/font/google'
+import { DM_Sans, Inter, Playfair_Display, Source_Sans_3, Merriweather, Nunito_Sans } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -10,6 +10,15 @@ const dmSans = DM_Sans({
   style: ['normal', 'italic'],
   display: 'swap',
   variable: '--font-dm-sans',
+})
+
+// RID theme fonts
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-inter',
 })
 
 // University theme fonts
@@ -59,7 +68,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${playfairDisplay.variable} ${sourceSans3.variable} ${merriweather.variable} ${nunitoSans.variable}`}
+      className={`${dmSans.variable} ${inter.variable} ${playfairDisplay.variable} ${sourceSans3.variable} ${merriweather.variable} ${nunitoSans.variable}`}
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>
