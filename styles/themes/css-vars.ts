@@ -118,4 +118,7 @@ export function applyAllThemeVars(
   // Icon Style (skip `overrides` — it's an object with non-string-leaf values for runtime use)
   const { overrides: _overrides, ...iconStyleVars } = theme.iconStyle;
   applyThemeVars(iconStyleVars as unknown as NestedRecord, target, '--mtr-icon-style');
+
+  // Component Radius (per-theme semantic radius overrides)
+  applyThemeVars(theme.componentRadius as unknown as NestedRecord, target, '--mtr-comp-radius');
 }

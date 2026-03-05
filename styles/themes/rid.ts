@@ -14,14 +14,14 @@
  * - Outlined icons (vs University's filled)
  *
  * Design notes:
- * - Links use blue (#0B6BCB) with underline decoration (apply via CSS)
+ * - Links use teal (#007E8A) with underline decoration via text.action tokens
  * - All text-on-surface combos verified WCAG 2.1 AA (≥4.5:1)
  */
 
 import type { ProductTheme } from './theme-interface';
 
 export const ridTheme: ProductTheme = {
-  name: 'rid',
+  name: 'RID',
   colors: {
     brand: {
       default: '#213F39',
@@ -71,9 +71,9 @@ export const ridTheme: ProductTheme = {
         onDark: 'rgba(255, 255, 255, 0.30)',
       },
       action: {
-        enabled: '#0B6BCB',
-        hover: '#084D93',
-        active: '#063D76',
+        enabled: '#007E8A',
+        hover: '#006370',
+        active: '#004A55',
       },
       success: '#006B50',
       warning: '#A35C00',
@@ -259,7 +259,7 @@ export const ridTheme: ProductTheme = {
     selectedHighlight_hover: '#C5D8D4',
 
     focusBorder: {
-      onLight: '#0B6BCB',
+      onLight: '#007E8A',
       onDark: 'rgba(255, 255, 255, 0.65)',
     },
 
@@ -385,5 +385,13 @@ export const ridTheme: ProductTheme = {
     cornerStyle: 'round',
     defaultSize: '20',
     overrides: {},
+  },
+
+  // ===========================================================================
+  // COMPONENT RADIUS — Per-theme semantic radius overrides
+  // ===========================================================================
+  componentRadius: {
+    button: '4px',
+    badge: '4px',
   },
 };

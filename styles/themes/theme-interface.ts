@@ -371,6 +371,17 @@ export interface ThemeIconStyle {
 }
 
 // ---------------------------------------------------------------------------
+// Component Radius (per-theme overrides for specific component radii)
+// ---------------------------------------------------------------------------
+
+export interface ThemeComponentRadius {
+  /** Border radius for buttons — e.g. '4px', '10px', '12px' */
+  button: string;
+  /** Border radius for badges — e.g. '4px', '9999px' */
+  badge?: string;
+}
+
+// ---------------------------------------------------------------------------
 // Product Theme (composite)
 // ---------------------------------------------------------------------------
 
@@ -382,4 +393,5 @@ export interface ProductTheme {
   elevation: ThemeElevation;
   spacing: ThemeSpacing;
   iconStyle: ThemeIconStyle;
+  componentRadius: ThemeComponentRadius;
 }

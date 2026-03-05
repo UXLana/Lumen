@@ -375,4 +375,11 @@ export const traceTheme: ProductTheme = {
     defaultSize: '20',
     overrides: {},
   },
+
+  // ===========================================================================
+  // COMPONENT RADIUS — Per-theme semantic radius overrides
+  // ===========================================================================
+  componentRadius: {
+    button: '12px',
+  },
 };

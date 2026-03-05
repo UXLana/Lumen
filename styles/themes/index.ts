@@ -16,6 +16,7 @@ export { traceTheme } from './trace';
 export { universityTheme } from './university';
 export { earthTheme } from './earth';
 export { ridTheme } from './rid';
+export { microsoftDarkTheme } from './microsoft-dark';
 export type {
   ProductTheme,
   ThemeColors,

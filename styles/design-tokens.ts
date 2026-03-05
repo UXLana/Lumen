@@ -880,8 +880,8 @@ export const button = {
     offset: '5px',
   },
 
-  // Border radius - pill-like shape for high/mid emphasis buttons
-  borderRadius: '10px',
+  // Border radius — per-theme via componentRadius.button CSS var
+  borderRadius: 'var(--mtr-comp-radius-button)',
 
   // Transition
   transition: '200ms ease-out',
@@ -946,7 +946,7 @@ export const tab = {
   colors: {
     light: {
       active: {
-        text: 'rgba(0, 0, 0, 0.95)',
+        text: colors.brand.default,
         background: 'transparent',
         indicator: colors.brand.default,
       },

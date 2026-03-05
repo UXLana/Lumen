@@ -93,15 +93,15 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
         ? '#FFFFFF'
         : variant === 'subtle'
           ? colors.text.highEmphasis.onLight
-          : colors.brand.default
+          : colors.text.action.enabled
 
     const hoverColor = disabled
       ? colors.text.disabled.onLight
       : variant === 'inverted'
         ? 'rgba(255, 255, 255, 0.80)'
         : variant === 'subtle'
-          ? colors.brand.default
-          : colors.brand.darker
+          ? colors.text.action.enabled
+          : colors.text.action.hover
 
     const currentSize = sizeStyles[size]
 
@@ -111,7 +111,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
       fontWeight: fontWeights.medium,
       lineHeight: currentSize.lineHeight,
       color: isHovered && !disabled ? hoverColor : textColor,
-      textDecoration: isHovered && !disabled ? 'underline' : variant === 'subtle' ? 'none' : 'underline',
+      textDecoration: 'underline',
       textUnderlineOffset: '2px',
       cursor: disabled ? 'not-allowed' : 'pointer',
       opacity: disabled ? 0.6 : 1,

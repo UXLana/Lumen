@@ -377,4 +377,11 @@ export const earthTheme: ProductTheme = {
     defaultSize: '20',
     overrides: {},
   },
+
+  // ===========================================================================
+  // COMPONENT RADIUS — Per-theme semantic radius overrides
+  // ===========================================================================
+  componentRadius: {
+    button: '10px',
+  },
 };

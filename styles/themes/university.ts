@@ -304,12 +304,12 @@ export const universityTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // TYPOGRAPHY — Academic: Playfair Display for headings, Source Sans 3 for body
+  // TYPOGRAPHY — Academic: DM Sans for a clean, modern feel
   // ===========================================================================
   typography: {
     fontFamilies: {
-      display: 'var(--font-playfair-display), serif',
-      body: 'var(--font-source-sans-3), sans-serif',
+      display: '"DM Sans", var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+      body: '"DM Sans", var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
       mono: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     },
     fontWeights: {
@@ -380,5 +380,12 @@ export const universityTheme: ProductTheme = {
     overrides: {
       Home: 'outlined',
     },
+  },
+
+  // ===========================================================================
+  // COMPONENT RADIUS — Per-theme semantic radius overrides
+  // ===========================================================================
+  componentRadius: {
+    button: '10px',
   },
 };
