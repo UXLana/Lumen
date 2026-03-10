@@ -13,6 +13,10 @@ description: Generate and iterate on UI prototypes from requirements, creating d
 - Iterating on UI designs based on feedback
 - Building directly from a Confluence page or spec URL
 
+## Audience & Defaults
+
+This skill is optimized for Product Managers building concept prototypes. Default to low-fi fidelity unless the user explicitly asks for high-fi. Infer reasonable defaults from the requirements rather than asking excessive questions. If the user provides specific hex colors, pixel values, or font names, do not use them literally — map to the closest design token instead. The design system is the source of truth for all visual decisions.
+
 ## Input Sources
 
 This skill accepts requirements from multiple sources:
@@ -198,7 +202,9 @@ For each component gap identified:
 2. **Use design tokens exclusively** — all tokens are CSS-variable-backed and theme-responsive
 3. **Match the MTR Design System visual language** (see reference below)
 4. **Export from `/components/index.ts`**
-5. After prototype is approved, run `/design-system-builder` to add documentation pages
+5. **Add to README** under "Components Created" with a `⚠️ Needs Design Review` flag
+
+**Design Review Gate:** Do NOT run `/design-system-builder` to create documentation pages until the UX lead has reviewed and approved the component. Prototype-created components are real but provisional until reviewed.
 
 ## MTR Visual Language Reference (REQUIRED for all new components)
 
@@ -340,6 +346,8 @@ import {
 } from '@/styles/design-tokens'
 
 export interface ComponentNameProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Accessible label for the region */
+  'aria-label': string
   // Props here
 }
 
@@ -348,6 +356,8 @@ export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
     return (
       <div
         ref={ref}
+        role="region"
+        tabIndex={0}
         style={{
           fontFamily: fontFamilies.body,
           fontSize: typography.body.md.fontSize,
@@ -368,6 +378,10 @@ export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
 ComponentName.displayName = 'ComponentName'
 ```
 
+### Step 5b: Navigation & Prototype Shell
+
+For multi-screen prototypes, create a shared prototype shell with basic navigation (sidebar or top nav) that links all screens together. Import the shell as a layout wrapper so PMs can click through the full flow. Single-screen prototypes do not need a shell. The nav should use existing `LeftNav` or `Sidebar` components if available, otherwise build a minimal one with design tokens.
+
 ### Step 6: Build Screens
 For each screen, create a Next.js page component:
 - Import design tokens from `@/styles/design-tokens`
@@ -376,6 +390,10 @@ For each screen, create a Next.js page component:
 - Every visual element should use design tokens — no hardcoded colors, spacing, or font sizes
 - Use **domain-realistic content** (see Content Reference below) — never use lorem ipsum
 - Build iteratively: structure first, then styling, then interactions
+
+#### Mock Data & Interactivity
+
+For prototypes that need to feel dynamic (filtering, searching, tab switching), use React `useState` to drive interactions. Keep mock datasets in a separate `data.ts` file alongside the prototype page — not inline in the component. Reference the Domain Content tables for realistic values. The state switcher (default/loading/empty/error) should remain at the top of each page as a separate concern from in-page interactivity.
 
 ### Step 7: Build All Required States (MANDATORY)
 Every screen MUST include these states — build each as a switchable view:
@@ -511,6 +529,8 @@ All prototype content MUST use realistic cannabis regulatory terminology. This m
 - **Use inline styles** — no Tailwind, no CSS modules
 - **Zero hardcoded values** — every color, spacing, font size, radius, and shadow must come from design tokens. If you write a hex color, pixel value, or font name directly in a style, it will not respond to themes.
 - **Prototype pages are exploratory** — but the components they use are production-quality and theme-aware
+- **Responsive behavior** — Build for the target device only. Do not add responsive breakpoints unless explicitly requested. Set a `maxWidth` on the prototype page matching the target device (375px mobile, 768px tablet, 1440px desktop) and center it on the screen. This keeps prototypes focused and avoids ambiguity during review.
+- **Iteration versioning** — Do not create iteration folders. Use git commits to track prototype versions. Update the README decisions log on each iteration with the date and what changed. The README is the single source of truth for prototype history.
 
 ## User Input Required
 
