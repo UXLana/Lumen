@@ -491,15 +491,15 @@ All prototype content MUST use realistic cannabis regulatory terminology. This m
 | **Test Status** | Pending, In Progress, Passed, Failed, Retesting |
 | **Compliance Status** | Compliant, Non-Compliant, Under Review, Corrective Action Required |
 
-### Sample User Personas
+### User Personas
 
-| Role | Name | Context |
-|------|------|---------|
-| **State Regulator** | Maria Chen, Compliance Officer | Reviews licensee reports, investigates discrepancies |
-| **Cultivator** | James Wilson, Grow Manager | Tags plants, reports harvests, creates packages |
-| **Distributor** | Sarah Rodriguez, Logistics Lead | Creates transfer manifests, tracks deliveries |
-| **Dispensary** | David Kim, Inventory Manager | Receives packages, manages retail inventory, reports sales |
-| **Lab Technician** | Dr. Aisha Patel, Lab Director | Logs test results, issues certificates of analysis |
+| Role | Description | Key Needs |
+|------|-------------|-----------|
+| **Single-Market Operators** | Organizations operating in one state with plans to expand | Scalable foundation, compliance alignment, growth-ready infrastructure |
+| **Independent Brands** | Brand owners who license products to operators or use contract manufacturing | Product catalog management, brand visibility, retail partnerships |
+| **Third-Party Consultants** | Marketing, compliance, and operations consultants serving multiple organizations | Cross-organization access, read-only reporting, project-based permissions |
+| **Technology Partners** | Software vendors building integrations with Canopy | API access, developer documentation, partner program support |
+| **Retail Dispensaries** | Individual retail locations or small retail chains | Product verification, inventory management, payment processing |
 
 ### Sample Quantities & Values
 
