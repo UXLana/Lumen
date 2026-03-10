@@ -6,7 +6,9 @@ import {
   fontFamilies,
   sidebar,
   transitionPresets,
+  getSidebarColors,
 } from '@/styles/design-tokens'
+import { useColors } from '@/styles/themes/theme-provider'
 
 // =============================================================================
 // TYPES
@@ -55,12 +57,14 @@ interface SidebarItemProps {
 }
 
 function SidebarItem({ item, isActive, collapsed, onClick }: SidebarItemProps) {
+  const themeColors = useColors()
+  const sidebarColors = getSidebarColors(themeColors)
   const [isHovered, setIsHovered] = useState(false)
 
   const getItemColors = () => {
-    if (isActive) return sidebar.colors.item.active
-    if (isHovered) return sidebar.colors.item.hover
-    return sidebar.colors.item.default
+    if (isActive) return sidebarColors.item.active
+    if (isHovered) return sidebarColors.item.hover
+    return sidebarColors.item.default
   }
 
   const itemColors = getItemColors()
@@ -132,6 +136,9 @@ function SidebarSection({
   onItemClick,
   isFirst,
 }: SidebarSectionProps) {
+  const themeColors = useColors()
+  const sidebarColors = getSidebarColors(themeColors)
+
   const sectionStyle: React.CSSProperties = {
     marginTop: isFirst ? '0' : sidebar.section.marginTop,
   }
@@ -146,7 +153,7 @@ function SidebarSection({
     lineHeight: sidebar.section.labelTypography.lineHeight,
     letterSpacing: sidebar.section.labelTypography.letterSpacing,
     textTransform: sidebar.section.labelTypography.textTransform,
-    color: sidebar.colors.sectionLabel,
+    color: sidebarColors.sectionLabel,
   }
 
   return (
@@ -180,13 +187,16 @@ export function Sidebar({
   collapsed = false,
   style,
 }: SidebarProps) {
+  const themeColors = useColors()
+  const sidebarColors = getSidebarColors(themeColors)
+
   const sidebarStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     width: collapsed ? sidebar.collapsedWidth : sidebar.width,
     height: '100vh',
-    backgroundColor: sidebar.colors.background,
-    borderRight: `1px solid ${sidebar.colors.border}`,
+    backgroundColor: sidebarColors.background,
+    borderRight: `1px solid ${sidebarColors.border}`,
     padding: `${sidebar.padding.y} ${sidebar.padding.x}`,
     transition: `width ${transitionPresets.default}`,
     overflow: 'hidden',
@@ -211,7 +221,7 @@ export function Sidebar({
   const footerStyle: React.CSSProperties = {
     marginTop: 'auto',
     paddingTop: '16px',
-    borderTop: `1px solid ${sidebar.colors.border}`,
+    borderTop: `1px solid ${sidebarColors.border}`,
   }
 
   return (

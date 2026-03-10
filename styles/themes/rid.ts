@@ -19,6 +19,7 @@
  */
 
 import type { ProductTheme } from './theme-interface';
+import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
 export const ridTheme: ProductTheme = {
   name: 'RID',
@@ -334,19 +335,9 @@ export const ridTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // BORDER RADIUS — Modern: moderate, balanced
+  // BORDER RADIUS — base: 2px (smallest baseline)
   // ===========================================================================
-  borderRadius: {
-    none: '0px',
-    xs: '2px',
-    sm: '4px',
-    md: '8px',
-    lg: '12px',
-    xl: '16px',
-    '2xl': '24px',
-    '3xl': '32px',
-    full: '9999px',
-  },
+  borderRadius: buildBorderRadius(2),
 
   // ===========================================================================
   // ELEVATION — Forest green tinted shadows (brand RGB: 33, 63, 57)
@@ -388,10 +379,7 @@ export const ridTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // COMPONENT RADIUS — Per-theme semantic radius overrides
+  // COMPONENT RADIUS — base: 2, button overridden to match sm (2×2 = 4px)
   // ===========================================================================
-  componentRadius: {
-    button: '4px',
-    badge: '4px',
-  },
+  componentRadius: buildComponentRadius(2, { button: '4px' }),
 };

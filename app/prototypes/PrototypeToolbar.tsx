@@ -1,0 +1,242 @@
+'use client'
+
+import React, { useState, useRef, useEffect } from 'react'
+import {
+  colors,
+  spacing,
+  fontFamilies,
+  fontWeights,
+  typography,
+  borderRadiusSemantics,
+  zIndex,
+  shadowSemantics,
+} from '@/styles/design-tokens'
+import { useThemeSwitcher, availableThemes } from '@/styles/themes'
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+export type ViewState = 'default' | 'loading' | 'empty' | 'error'
+
+export interface UseCase {
+  /** Short identifier shown in the selector, e.g. "Use Case 1" */
+  label: string
+  /** Brief description of the scenario */
+  description: string
+}
+
+interface PrototypeToolbarProps {
+  viewState: ViewState
+  onViewStateChange: (state: ViewState) => void
+  /** Additional states beyond the standard four */
+  extraStates?: string[]
+  /** Use cases / scenarios for this prototype */
+  useCases?: UseCase[]
+  /** Currently selected use case index */
+  activeUseCase?: number
+  /** Callback when use case changes */
+  onUseCaseChange?: (index: number) => void
+}
+
+const VIEW_STATES: ViewState[] = ['default', 'loading', 'empty', 'error']
+
+// =============================================================================
+// SHARED STYLES
+// =============================================================================
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: fontFamilies.mono,
+  fontSize: '10px',
+  fontWeight: fontWeights.semibold,
+  color: colors.text.disabled.onLight,
+  textTransform: 'uppercase',
+  letterSpacing: '0.05em',
+  marginBottom: '4px',
+}
+
+const selectStyle: React.CSSProperties = {
+  width: '100%',
+  padding: `4px ${spacing.xs}`,
+  fontFamily: fontFamilies.body,
+  fontSize: typography.body.sm.fontSize,
+  fontWeight: fontWeights.regular,
+  color: colors.text.highEmphasis.onLight,
+  backgroundColor: colors.surface.light,
+  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+  borderRadius: borderRadiusSemantics.input,
+  cursor: 'pointer',
+  outline: 'none',
+  appearance: 'auto' as React.CSSProperties['appearance'],
+}
+
+// =============================================================================
+// COMPONENT
+// =============================================================================
+
+export function PrototypeToolbar({
+  viewState,
+  onViewStateChange,
+  extraStates,
+  useCases,
+  activeUseCase,
+  onUseCaseChange,
+}: PrototypeToolbarProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const { themeName, setThemeName } = useThemeSwitcher()
+  const panelRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  // Close on click outside
+  useEffect(() => {
+    if (!isOpen) return
+    function handleClick(e: MouseEvent) {
+      if (
+        panelRef.current && !panelRef.current.contains(e.target as Node) &&
+        buttonRef.current && !buttonRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [isOpen])
+
+  // Close on Escape
+  useEffect(() => {
+    if (!isOpen) return
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setIsOpen(false)
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [isOpen])
+
+  const allStates = extraStates ? [...VIEW_STATES, ...extraStates] : VIEW_STATES
+  const hasUseCases = useCases && useCases.length > 0 && onUseCaseChange
+
+  return (
+    <>
+      {/* Trigger button */}
+      <button
+        ref={buttonRef}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Prototype dev tools"
+        aria-expanded={isOpen}
+        style={{
+          position: 'fixed',
+          bottom: spacing.xl,
+          left: spacing.xl,
+          zIndex: zIndex.modal,
+          width: '40px',
+          height: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: isOpen ? colors.brand.default : 'rgba(0, 0, 0, 0.85)',
+          color: '#FFFFFF',
+          border: 'none',
+          borderRadius: '50%',
+          cursor: 'pointer',
+          boxShadow: shadowSemantics.dropdown,
+          transition: 'background-color 150ms ease-out',
+        }}
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M6.75 2.25h4.5M6.75 9h4.5M6.75 15.75h4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="4.5" cy="2.25" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="13.5" cy="9" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="4.5" cy="15.75" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+        </svg>
+      </button>
+
+      {/* Panel */}
+      {isOpen && (
+        <div
+          ref={panelRef}
+          style={{
+            position: 'fixed',
+            bottom: '74px',
+            left: spacing.xl,
+            zIndex: zIndex.modal,
+            width: '220px',
+            backgroundColor: colors.surface.light,
+            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+            borderRadius: borderRadiusSemantics.card,
+            boxShadow: shadowSemantics.dropdown,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: spacing.sm,
+            padding: spacing.sm,
+          }}
+        >
+          {/* Use case selector */}
+          {hasUseCases && (
+            <div>
+              <div style={labelStyle}>Use Case</div>
+              <select
+                value={activeUseCase ?? 0}
+                onChange={(e) => onUseCaseChange(Number(e.target.value))}
+                aria-label="Use case scenario"
+                style={selectStyle}
+              >
+                {useCases.map((uc, i) => (
+                  <option key={i} value={i}>
+                    {uc.label}
+                  </option>
+                ))}
+              </select>
+              {useCases[activeUseCase ?? 0] && (
+                <div
+                  style={{
+                    fontFamily: fontFamilies.body,
+                    fontSize: typography.body.xs.fontSize,
+                    color: colors.text.lowEmphasis.onLight,
+                    marginTop: '4px',
+                    lineHeight: '1.4',
+                  }}
+                >
+                  {useCases[activeUseCase ?? 0].description}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* State selector */}
+          <div>
+            <div style={labelStyle}>State</div>
+            <select
+              value={viewState}
+              onChange={(e) => onViewStateChange(e.target.value as ViewState)}
+              aria-label="Prototype view state"
+              style={selectStyle}
+            >
+              {allStates.map((state) => (
+                <option key={state} value={state}>
+                  {state.charAt(0).toUpperCase() + state.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Theme selector */}
+          <div>
+            <div style={labelStyle}>Theme</div>
+            <select
+              value={themeName}
+              onChange={(e) => setThemeName(e.target.value)}
+              aria-label="Theme"
+              style={selectStyle}
+            >
+              {availableThemes.map((theme) => (
+                <option key={theme.name} value={theme.name}>
+                  {theme.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}

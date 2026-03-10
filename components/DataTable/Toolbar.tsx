@@ -52,7 +52,7 @@ export function Toolbar({ children }: ToolbarProps) {
         padding: spacing.xs,
         backgroundColor: colors.surface.light,
         border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-        borderRadius: borderRadius.lg,
+        borderRadius: borderRadius.md,
       }}
     >
       {children}
@@ -231,24 +231,54 @@ SortButton.displayName = 'DataTable.SortButton'
 
 export interface SelectionInfoProps {
   count: number
+  onClear?: () => void
+  emptyText?: string
   /** Bulk action buttons rendered as children */
   children?: React.ReactNode
 }
 
-export function SelectionInfo({ count, children }: SelectionInfoProps) {
+const ClearIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M4 4L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M12 4L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+)
+
+export function SelectionInfo({
+  count,
+  onClear,
+  emptyText = 'Actions will appear here after selection',
+  children,
+}: SelectionInfoProps) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: spacing['2xs'] }}>
       <span
         style={{
           ...typography.body.sm,
           marginRight: spacing['2xs'],
-          color: count > 0 ? colors.brand.default : colors.text.lowEmphasis.onLight,
+          color: count > 0 ? colors.text.highEmphasis.onLight : colors.text.lowEmphasis.onLight,
           fontWeight: count > 0 ? 500 : 400,
         }}
       >
         Selected: {count}
       </span>
-      {count > 0 && (
+
+      {count > 0 && onClear && (
+        <IconButton onClick={onClear} title="Clear selection">
+          <ClearIcon />
+        </IconButton>
+      )}
+
+      {count === 0 && emptyText && (
+        <>
+          <div style={{ width: 1, height: 20, backgroundColor: colors.border.lowEmphasis.onLight, margin: `0 ${spacing['2xs']}` }} />
+          <span style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
+            {emptyText}
+          </span>
+        </>
+      )}
+
+      {count > 0 && children && (
         <>
           <div style={{ width: 1, height: 20, backgroundColor: colors.border.lowEmphasis.onLight, margin: `0 ${spacing['2xs']}` }} />
           {children}

@@ -55,10 +55,20 @@ const IconTools = ({ size = 'md' }: { size?: string }) => (
   </svg>
 )
 
+// Layers icon for Prototypes section
+const IconPrototypes = ({ size = 'md' }: { size?: string }) => (
+  <svg width={size === 'sm' ? 16 : 20} height={size === 'sm' ? 16 : 20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 2L2 6.5l8 4.5 8-4.5L10 2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 10l8 4.5L18 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 13.5l8 4.5 8-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
 const iconMap: Record<string, React.FC> = {
   foundations: () => <IconFoundations size="md" />,
   components: () => <IconComponents size="md" />,
   tools: () => <IconTools size="md" />,
+  prototypes: () => <IconPrototypes size="md" />,
 }
 
 // =============================================================================
@@ -106,6 +116,17 @@ export const navSections = [
       { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'stepper', label: 'Stepper', href: '/components/stepper' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
+    ],
+  },
+  {
+    id: 'prototypes',
+    title: 'Prototypes',
+    items: [
+      { id: 'prototypes-index', label: 'All Prototypes', href: '/prototypes' },
+      { id: 'product-registry', label: 'Product Registry', href: '/prototypes/product-registry' },
+      { id: 'qr-verify', label: 'QR Verify', href: '/prototypes/qr-verify' },
+      { id: 'product-search', label: 'Product Search', href: '/prototypes/product-search' },
+      { id: 'transfer-manifest', label: 'Transfer Manifest', href: '/prototypes/transfer-manifest' },
     ],
   },
   {
@@ -756,6 +777,7 @@ export function StyleguideLayout({
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     foundations: true,
     components: true,
+    prototypes: true,
     tools: true,
   })
 
@@ -985,22 +1007,24 @@ export function StyleguideLayout({
           </header>
 
           {/* Tabs - Outside the header */}
-          <nav role="tablist" style={sharedStyles.tabsContainer}>
-            {displayTabs.map((tab) => (
-              <button
-                key={tab.id}
-                role="tab"
-                aria-selected={currentTab === tab.id}
-                style={{
-                  ...sharedStyles.tab,
-                  ...(currentTab === tab.id ? sharedStyles.tabActive : {}),
-                }}
-                onClick={() => onTabChange?.(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
+          {displayTabs.length > 0 && (
+            <nav role="tablist" style={sharedStyles.tabsContainer}>
+              {displayTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  role="tab"
+                  aria-selected={currentTab === tab.id}
+                  style={{
+                    ...sharedStyles.tab,
+                    ...(currentTab === tab.id ? sharedStyles.tabActive : {}),
+                  }}
+                  onClick={() => onTabChange?.(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          )}
         </div>
 
         <main style={sharedStyles.main}>

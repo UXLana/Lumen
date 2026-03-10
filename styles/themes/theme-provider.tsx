@@ -6,14 +6,15 @@ import { traceTheme } from './trace';
 import { universityTheme } from './university';
 import { earthTheme } from './earth';
 import { ridTheme } from './rid';
-import { microsoftDarkTheme } from './microsoft-dark';
+import { ridDarkTheme } from './rid-dark';
+import { claudeLightTheme } from './claude-light';
 import { applyAllThemeVars } from './css-vars';
 
 // ---------------------------------------------------------------------------
 // Theme registry
 // ---------------------------------------------------------------------------
 
-const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme, ridTheme, microsoftDarkTheme];
+const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme, ridTheme, ridDarkTheme, claudeLightTheme];
 const themeMap: Record<string, ProductTheme> = Object.fromEntries(
   availableThemes.map((t) => [t.name, t]),
 );

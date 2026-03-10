@@ -23,7 +23,7 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
   props: [
     { name: 'variant', type: "'filled' | 'outlined' | 'subtle'", default: "'filled'", description: 'Visual variant' },
     { name: 'color', type: "'neutral' | 'success' | 'warning' | 'error' | 'info' | 'brand'", default: "'neutral'", description: 'Color/intent of the badge' },
-    { name: 'size', type: "'sm' | 'md'", default: "'md'", description: 'Size of the badge' },
+    { name: 'size', type: "'sm' | 'md'", default: "'sm'", description: 'Size of the badge' },
     { name: 'icon', type: 'ReactNode', description: 'Optional icon before text' },
     { name: 'children', type: 'ReactNode', required: true, description: 'Badge content (text)' },
   ],
@@ -38,10 +38,10 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
     { feature: 'Contrast', description: 'All color/variant combinations meet WCAG AA contrast requirements.' },
   ],
   tokens: [
-    { token: 'colors.status.*', value: 'success, warning, error, info', usage: 'Badge color variants' },
+    { token: 'colors.badge.*', value: 'charcoal, success, warning, important, info (+ Light variants)', usage: 'Badge color variants (theme-aware)' },
     { token: 'colors.brand.default', value: 'Theme brand', usage: 'Brand color badge' },
-    { token: 'borderRadius.full', value: '999px', usage: 'Pill shape' },
-    { token: 'typography.label.sm', value: '12px/16px', usage: 'Badge text' },
+    { token: 'borderRadius', value: '8px', usage: 'Badge shape' },
+    { token: 'typography.body.xs / .sm', value: '12px / 14px', usage: 'Badge text (sm / md size)' },
   ],
   relatedComponents: [
     { name: 'Banner', href: '/components/banner' },
@@ -519,7 +519,7 @@ import { Badge } from '@/components'`}</CodeBlock>
               <SpecTable
                 headers={['Property', 'Token', 'Value']}
                 rows={[
-                  ['Badge Radius', <CopyableToken key="br" token="borderRadius.full" />, <PixelValue key="brv" value="9999px" />],
+                  ['Badge Radius', <PixelValue key="br" value="8px (hardcoded)" />, <PixelValue key="brv" value="8px" />],
                 ]}
               />
             </div>
@@ -541,12 +541,12 @@ import { Badge } from '@/components'`}</CodeBlock>
               <SpecTable
                 headers={['Color', 'Filled BG Token', 'Subtle BG Token', 'Text on Filled']}
                 rows={[
-                  ['neutral', <CopyableToken key="n-bg" token="#757575" />, <CopyableToken key="n-sbg" token="#F5F5F5" />, <PixelValue key="n-txt" value="#FFFFFF" />],
-                  ['success', <CopyableToken key="s-bg" token="colors.semantic.success.main" />, <CopyableToken key="s-sbg" token="colors.semantic.success.light" />, <PixelValue key="s-txt" value="#FFFFFF" />],
-                  ['warning', <CopyableToken key="w-bg" token="colors.semantic.warning.main" />, <CopyableToken key="w-sbg" token="colors.semantic.warning.light" />, <PixelValue key="w-txt" value="#000000" />],
-                  ['error', <CopyableToken key="e-bg" token="colors.semantic.error.main" />, <CopyableToken key="e-sbg" token="colors.semantic.error.light" />, <PixelValue key="e-txt" value="#FFFFFF" />],
-                  ['info', <CopyableToken key="i-bg" token="colors.semantic.info.main" />, <CopyableToken key="i-sbg" token="colors.semantic.info.light" />, <PixelValue key="i-txt" value="#FFFFFF" />],
-                  ['brand', <CopyableToken key="b-bg" token="colors.brand.primary" />, <CopyableToken key="b-sbg" token="colors.primary[50]" />, <PixelValue key="b-txt" value="#FFFFFF" />],
+                  ['neutral', <CopyableToken key="n-bg" token="colors.badge.charcoal" />, <CopyableToken key="n-sbg" token="colors.badge.charcoalLight" />, <PixelValue key="n-txt" value="#FFFFFF" />],
+                  ['success', <CopyableToken key="s-bg" token="colors.badge.success" />, <CopyableToken key="s-sbg" token="colors.badge.successLight" />, <PixelValue key="s-txt" value="#FFFFFF" />],
+                  ['warning', <CopyableToken key="w-bg" token="colors.badge.warning" />, <CopyableToken key="w-sbg" token="colors.badge.yellowLight" />, <PixelValue key="w-txt" value="#FFFFFF" />],
+                  ['error', <CopyableToken key="e-bg" token="colors.badge.important" />, <CopyableToken key="e-sbg" token="colors.badge.importantLight" />, <PixelValue key="e-txt" value="#FFFFFF" />],
+                  ['info', <CopyableToken key="i-bg" token="colors.badge.info" />, <CopyableToken key="i-sbg" token="colors.badge.infoLight" />, <PixelValue key="i-txt" value="#FFFFFF" />],
+                  ['brand', <CopyableToken key="b-bg" token="colors.brand.default" />, <CopyableToken key="b-sbg" token="colors.brand.lighter" />, <PixelValue key="b-txt" value="#FFFFFF" />],
                 ]}
               />
             </div>

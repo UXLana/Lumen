@@ -313,6 +313,27 @@ export interface ThemeBorderRadius {
   full: string;
 }
 
+/**
+ * Build a complete border radius scale from a single base value.
+ * All tokens cascade from the base via fixed multipliers [1, 2, 4, 6, 8, 12, 16].
+ * Changing the base for a theme updates every radius token consistently.
+ *
+ * Reference bases: University=1, RID/MS-Dark=2, Earth=3, Trace=4
+ */
+export function buildBorderRadius(base: number): ThemeBorderRadius {
+  return {
+    none: '0px',
+    xs: `${base}px`,
+    sm: `${base * 2}px`,
+    md: `${base * 4}px`,
+    lg: `${base * 6}px`,
+    xl: `${base * 8}px`,
+    '2xl': `${base * 12}px`,
+    '3xl': `${base * 16}px`,
+    full: '9999px',
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Elevation (Shadows)
 // ---------------------------------------------------------------------------
@@ -371,14 +392,47 @@ export interface ThemeIconStyle {
 }
 
 // ---------------------------------------------------------------------------
-// Component Radius (per-theme overrides for specific component radii)
+// Component Radius — derived from base, with per-theme overrides
 // ---------------------------------------------------------------------------
 
 export interface ThemeComponentRadius {
-  /** Border radius for buttons — e.g. '4px', '10px', '12px' */
+  badge: string;
+  input: string;
   button: string;
-  /** Border radius for badges — e.g. '4px', '9999px' */
-  badge?: string;
+  card: string;
+  modal: string;
+  chip: string;
+  avatar: string;
+}
+
+/**
+ * Build component-level border radii from the same base used in buildBorderRadius.
+ * Each component has a default multiplier relative to the base:
+ *
+ *   badge  = base × 2  (= sm)
+ *   input  = base × 2  (= sm)
+ *   button = base × 3  (between sm and md — unique to buttons)
+ *   card   = base × 6  (= lg)
+ *   modal  = base × 8  (= xl)
+ *   chip   = full (9999px)
+ *   avatar = full (9999px)
+ *
+ * Pass overrides to replace any default for a specific theme.
+ */
+export function buildComponentRadius(
+  base: number,
+  overrides?: Partial<ThemeComponentRadius>,
+): ThemeComponentRadius {
+  return {
+    badge:  `${base * 2}px`,
+    input:  `${base * 2}px`,
+    button: `${base * 3}px`,
+    card:   `${base * 6}px`,
+    modal:  `${base * 8}px`,
+    chip:   '9999px',
+    avatar: '9999px',
+    ...overrides,
+  };
 }
 
 // ---------------------------------------------------------------------------

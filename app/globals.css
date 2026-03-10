@@ -197,16 +197,25 @@
   --mtr-typo-scale-letterSpacingHeading: -0.5px;
   --mtr-typo-scale-letterSpacingBody: 0px;
 
-  /* Border Radius */
+  /* Border Radius — Trace base=4 */
   --mtr-radius-none: 0px;
-  --mtr-radius-xs: 2px;
-  --mtr-radius-sm: 4px;
-  --mtr-radius-md: 8px;
-  --mtr-radius-lg: 12px;
-  --mtr-radius-xl: 16px;
-  --mtr-radius-2xl: 24px;
-  --mtr-radius-3xl: 32px;
+  --mtr-radius-xs: 4px;
+  --mtr-radius-sm: 8px;
+  --mtr-radius-md: 16px;
+  --mtr-radius-lg: 24px;
+  --mtr-radius-xl: 32px;
+  --mtr-radius-2xl: 48px;
+  --mtr-radius-3xl: 64px;
   --mtr-radius-full: 9999px;
+
+  /* Component Radius — Trace base=4 */
+  --mtr-comp-radius-badge: 8px;
+  --mtr-comp-radius-input: 8px;
+  --mtr-comp-radius-button: 12px;
+  --mtr-comp-radius-card: 24px;
+  --mtr-comp-radius-modal: 32px;
+  --mtr-comp-radius-chip: 9999px;
+  --mtr-comp-radius-avatar: 9999px;
 
   /* Elevation (Shadows) */
   --mtr-elevation-none: none;

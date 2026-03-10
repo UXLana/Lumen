@@ -4,7 +4,7 @@ import React, { forwardRef } from 'react'
 import {
   colors,
   spacing,
-  borderRadius,
+  borderRadiusSemantics,
   typography,
   fontFamilies,
   fontWeights,
@@ -46,96 +46,98 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 // =============================================================================
-// COLOR CONFIGURATIONS (hardcoded values since statusColors removed)
+// COLOR CONFIGURATIONS — theme-aware via CSS variable tokens
 // =============================================================================
 
+type ColorScheme = { background: string; text: string; border: string }
+
 const colorConfig: Record<BadgeColor, {
-  filled: { background: string; text: string; border: string }
-  outlined: { background: string; text: string; border: string }
-  subtle: { background: string; text: string; border: string }
+  filled: ColorScheme
+  outlined: ColorScheme
+  subtle: ColorScheme
 }> = {
   neutral: {
     filled: {
-      background: '#666666',
+      background: colors.badge.charcoal,
       text: '#FFFFFF',
-      border: '#666666',
+      border: colors.badge.charcoal,
     },
     outlined: {
       background: 'transparent',
-      text: '#666666',
-      border: '#BDBDBD',
+      text: colors.badge.charcoal,
+      border: colors.badge.charcoalLight,
     },
     subtle: {
-      background: '#F0F0F0',
-      text: '#666666',
+      background: colors.badge.charcoalLight,
+      text: colors.badge.charcoal,
       border: 'transparent',
     },
   },
   success: {
     filled: {
-      background: '#1B7F66',
+      background: colors.badge.success,
       text: '#FFFFFF',
-      border: '#1B7F66',
+      border: colors.badge.success,
     },
     outlined: {
       background: 'transparent',
-      text: '#1B7F66',
-      border: '#1B7F66',
+      text: colors.badge.success,
+      border: colors.badge.success,
     },
     subtle: {
-      background: '#DEEDE9',
-      text: '#155E4C',
+      background: colors.badge.successLight,
+      text: colors.badge.success,
       border: 'transparent',
     },
   },
   warning: {
     filled: {
-      background: '#D17600',
+      background: colors.badge.warning,
       text: '#FFFFFF',
-      border: '#D17600',
+      border: colors.badge.warning,
     },
     outlined: {
       background: 'transparent',
-      text: '#9A5700',
-      border: '#D17600',
+      text: colors.badge.warning,
+      border: colors.badge.warning,
     },
     subtle: {
-      background: '#F9ECDC',
-      text: '#9A5700',
+      background: colors.badge.yellowLight,
+      text: colors.badge.warning,
       border: 'transparent',
     },
   },
   error: {
     filled: {
-      background: '#DC0C22',
+      background: colors.badge.important,
       text: '#FFFFFF',
-      border: '#DC0C22',
+      border: colors.badge.important,
     },
     outlined: {
       background: 'transparent',
-      text: '#DC0C22',
-      border: '#DC0C22',
+      text: colors.badge.important,
+      border: colors.badge.important,
     },
     subtle: {
-      background: '#FBE4E7',
-      text: '#9A0818',
+      background: colors.badge.importantLight,
+      text: colors.badge.important,
       border: 'transparent',
     },
   },
   info: {
     filled: {
-      background: '#6E61FF',
+      background: colors.badge.info,
       text: '#FFFFFF',
-      border: '#6E61FF',
+      border: colors.badge.info,
     },
     outlined: {
       background: 'transparent',
-      text: '#6E61FF',
-      border: '#6E61FF',
+      text: colors.badge.info,
+      border: colors.badge.info,
     },
     subtle: {
-      background: '#EBEFFF',
-      text: '#4338CA',
+      background: colors.badge.infoLight,
+      text: colors.badge.info,
       border: 'transparent',
     },
   },
@@ -151,7 +153,7 @@ const colorConfig: Record<BadgeColor, {
       border: colors.brand.default,
     },
     subtle: {
-      background: '#E7F2EE',
+      background: colors.brand.lighter,
       text: colors.brand.default,
       border: 'transparent',
     },
@@ -227,7 +229,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       backgroundColor: colorScheme.background,
       color: colorScheme.text,
       border: `1px solid ${colorScheme.border}`,
-      borderRadius: '8px',
+      borderRadius: borderRadiusSemantics.badge,
       whiteSpace: 'nowrap',
       ...style,
     }

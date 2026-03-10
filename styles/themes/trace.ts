@@ -8,6 +8,7 @@
  */
 
 import type { ProductTheme } from './theme-interface';
+import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
 export const traceTheme: ProductTheme = {
   name: 'trace',
@@ -323,19 +324,9 @@ export const traceTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // BORDER RADIUS
+  // BORDER RADIUS — base: 4px (Trace = 2× RID)
   // ===========================================================================
-  borderRadius: {
-    none: '0px',
-    xs: '2px',
-    sm: '4px',
-    md: '8px',
-    lg: '12px',
-    xl: '16px',
-    '2xl': '24px',
-    '3xl': '32px',
-    full: '9999px',
-  },
+  borderRadius: buildBorderRadius(4),
 
   // ===========================================================================
   // ELEVATION (Shadows)
@@ -377,9 +368,7 @@ export const traceTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // COMPONENT RADIUS — Per-theme semantic radius overrides
+  // COMPONENT RADIUS — base: 4, no overrides needed (button = 4×3 = 12px)
   // ===========================================================================
-  componentRadius: {
-    button: '12px',
-  },
+  componentRadius: buildComponentRadius(4),
 };

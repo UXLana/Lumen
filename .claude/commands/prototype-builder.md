@@ -15,7 +15,7 @@ description: Generate and iterate on UI prototypes from requirements, creating d
 
 ## Audience & Defaults
 
-This skill is optimized for Product Managers building concept prototypes. Default to low-fi fidelity unless the user explicitly asks for high-fi. Infer reasonable defaults from the requirements rather than asking excessive questions. If the user provides specific hex colors, pixel values, or font names, do not use them literally — map to the closest design token instead. The design system is the source of truth for all visual decisions.
+This skill is optimized for Product Managers building concept prototypes. Default to wireframe fidelity unless the user explicitly asks for high-fi. Infer reasonable defaults from the requirements rather than asking excessive questions. If the user provides specific hex colors, pixel values, or font names, do not use them literally — map to the closest design token instead. The design system is the source of truth for all visual decisions.
 
 ## Input Sources
 
@@ -48,11 +48,13 @@ Every prototype MUST have a README.md that tracks its state. Create on first bui
 # Prototype: [Project Name]
 
 ## Config
+- **Owner**: [name of person who requested/built the prototype]
+- **Status**: [draft | in-review | approved | archived]
 - **Theme**: [theme name]
-- **Device**: [mobile/tablet/desktop]
-- **Fidelity**: [wireframe/low-fi/high-fi]
-- **Created**: [date]
-- **Last updated**: [date]
+- **Device**: [mobile/tablet/desktop] ([375px | 768px | 1440px])
+- **Fidelity**: [wireframe/high-fi]
+- **Created**: [YYYY-MM-DD]
+- **Last updated**: [YYYY-MM-DD]
 
 ## Sources
 - [Confluence URL or description of input]
@@ -73,7 +75,29 @@ Every prototype MUST have a README.md that tracks its state. Create on first bui
 
 ## Open Questions
 - [question]
+
+## Prompts
+<!-- Auto-appended by /prototype-builder on each invocation -->
+1. [YYYY-MM-DD] "[The user's original prompt or request that triggered this build/iteration]"
+   - Links: [Confluence: Page Title](url), [JIRA-1234](url)
 ```
+
+**Prompt logging rule:** Every time `/prototype-builder` is invoked (new build or extend):
+1. Append the user's input to the `## Prompts` section in the README with the date, the verbatim or lightly cleaned-up prompt text, and any source URLs
+2. Also append an entry to the prototype's `prompts` array in `app/prototypes/registry.json`:
+   ```json
+   {
+     "date": "YYYY-MM-DD",
+     "text": "The user's prompt or request",
+     "links": [
+       { "label": "Confluence: Page Title", "url": "https://metrc-tech.atlassian.net/wiki/..." },
+       { "label": "JIRA-1234", "url": "https://metrc-tech.atlassian.net/browse/JIRA-1234" }
+     ]
+   }
+   ```
+   The `links` array is optional — only include it when the prompt referenced a Confluence page, Jira ticket, Notion page, or other external URL. Use a short descriptive label (e.g., "Confluence: Transfer Manifest Spec", "JIRA-1234", "Notion: UX Brief").
+
+This creates a replayable history of how the prototype evolved, visible both in the README and in the UI. Links are rendered as clickable chips in the prompts drawer.
 
 This file is the primary input for **Extend mode** — it tells the skill what already exists, what's in progress, and what's been decided.
 
@@ -81,9 +105,36 @@ This file is the primary input for **Extend mode** — it tells the skill what a
 
 | Level | What It Looks Like | When to Use |
 |-------|-------------------|-------------|
-| **Wireframe** | Gray boxes, structure only, no real content | Early exploration, flow validation |
-| **Low-fi** | Basic token styling, placeholder content, key interactions | Stakeholder alignment, UX review |
-| **High-fi** | Full design tokens, real content, animations, states | Developer handoff, final review |
+| **Wireframe** | Neutral tokens only — surfaces, borders, and text emphasis tokens. No brand colors, no status colors, no shadows. Layout uses full spacing, radius, and typography tokens so proportions are accurate and theme-responsive. All content is realistic (no lorem ipsum). | Structure validation, flow review, early stakeholder alignment |
+| **High-fi** | Full design tokens — brand colors, status colors, shadows, hover states, transitions, all interaction states. Production-quality content. | Design review, developer handoff, final review |
+
+### Wireframe Token Rules
+
+Wireframe mode uses **only** these token categories — everything else is suppressed:
+
+#### Allowed (structure & hierarchy)
+| Token Category | Examples | Purpose |
+|---------------|----------|---------|
+| `colors.surface.*` | `surface.light`, `surface.lightDarker` | Distinguish content areas |
+| `colors.text.*` | `text.highEmphasis.onLight`, `text.lowEmphasis.onLight`, `text.disabled.onLight` | Text hierarchy |
+| `colors.border.*` | `border.lowEmphasis.onLight`, `border.midEmphasis.onLight`, `border.highEmphasis.onLight` | Structure boundaries |
+| `spacing.*` | All spacing tokens | Layout rhythm and proportions |
+| `borderRadiusSemantics.*` | All radius tokens | Component shape identity |
+| `typography.*` | All type tokens | Text hierarchy and readability |
+| `fontFamilies.*` | `display`, `body`, `mono` | Font identity |
+| `fontWeights.*` | All weight tokens | Text emphasis |
+
+#### Suppressed (visual identity)
+| Token Category | Wireframe Replacement |
+|---------------|----------------------|
+| `colors.brand.*` | Use `colors.border.highEmphasis.onLight` for button outlines, `colors.surface.lightDarker` for button fills |
+| `colors.status.*` | Use `colors.border.midEmphasis.onLight` — all statuses render the same neutral tone |
+| `shadowSemantics.*` | No shadows — all surfaces are flat |
+| `colors.hover.*` | No hover color changes |
+| `colors.focusBorder.*` | Still allowed (accessibility requirement) |
+| `colors.selectedHighlight` | Use `colors.surface.lightDarker` |
+
+Wireframe prototypes still respond to theme switching because all tokens are CSS-variable-backed. A wireframe in Trace will have subtly different surface tones than one in Earth.
 
 ## Modes
 
@@ -151,7 +202,7 @@ Before anything else, check if a prototype already exists for the project:
 **Always ask:**
 1. **Theme** — Which theme should this prototype use? Read `styles/themes/index.ts` to list available themes (Trace, Earth, University, RID, Claude Light, etc.) and ask the user to pick one. The prototype page should wrap content in the appropriate theme provider.
 2. **Target device** — Mobile (375px), tablet (768px), or desktop (1440px)?
-3. **Fidelity** — Defaults to low-fi per Audience & Defaults. Confirm with the user or let them override. Don't ask as an open-ended question — present the default and let them change it if needed.
+3. **Fidelity** — Defaults to wireframe per Audience & Defaults. Confirm with the user or let them override. Don't ask as an open-ended question — present the default and let them change it if needed.
 
 **Ask if not already answered by the source material:**
 4. **User role** — Who is this screen for? (state regulator, licensed operator, admin, etc.)
@@ -178,7 +229,11 @@ From all gathered inputs (Confluence, brief, verbal), extract and organize:
 - **Business rules** — validation, permissions, state-specific logic
 - **Open questions** — ambiguities to flag before building
 
-### Step 3: Screen Inventory
+### Step 3: Plan & Approval Gate (REQUIRED — all prototypes)
+
+**Every prototype — regardless of screen count — requires a plan and explicit user approval before building.** Even single-page prototypes have layout decisions (content hierarchy, section order, data groupings) worth validating upfront. The cost of a quick plan is always lower than rebuilding.
+
+#### 3a: Screen Inventory
 Present a table of screens with priority:
 
 | Screen | Priority | Complexity | Notes |
@@ -187,7 +242,62 @@ Present a table of screens with priority:
 | Detail View | P0 | Medium | From dashboard click |
 | Settings | P1 | Low | Configuration |
 
-Get user confirmation before building.
+#### 3b: Layout Plan
+
+**For single-page prototypes**, describe the page layout as a vertical content map:
+- List each section from top to bottom with its purpose, primary content, and key interactions
+- Note content hierarchy (what's most prominent, what's secondary)
+- Call out data groupings and how information is organized
+
+Example:
+```
+Page Layout: Product Detail
+─────────────────────────────
+1. Header bar — breadcrumb nav, page title (product name), status badge, action buttons (Edit, Archive)
+2. Summary strip — key metrics in a horizontal row: THC%, package weight, batch ID, test status
+3. Primary content — two-column layout:
+   - Left (2/3): package history timeline, transfer records table
+   - Right (1/3): product metadata card, compliance notes
+4. Footer actions — secondary actions: print label, export CSV, view audit log
+```
+
+**For multi-page prototypes (2+ screens)**, generate a **Mermaid flowchart** showing the prototype's structure:
+
+- **Sitemap** — hierarchical view of all screens and their parent/child relationships
+- **User flow** — how the user moves between screens (entry points, navigation paths, actions that trigger transitions)
+- Include key states where navigation branches (e.g., "If no results → Empty state", "If error → Error page")
+- Label edges with the trigger action (click, submit, nav link, back button)
+
+Example format:
+```mermaid
+flowchart TD
+    A[Dashboard] -->|Click row| B[Detail View]
+    A -->|Click 'New'| C[Create Form]
+    B -->|Click 'Edit'| D[Edit Form]
+    B -->|Click 'Back'| A
+    C -->|Submit| B
+    C -->|Cancel| A
+    D -->|Save| B
+    D -->|Cancel| B
+
+    style A fill:#f9f9f9,stroke:#333
+```
+
+For complex prototypes with multiple user roles or branching flows, create separate flowcharts for each major path.
+
+#### 3c: Present Plan for Approval
+Present the complete plan to the user:
+1. Screen inventory table
+2. Layout plan (single page) or flowchart (multi-page)
+3. Summary of key interactions and states per screen
+4. Any open questions or assumptions
+
+**Do NOT proceed to Step 4 until the user explicitly approves the plan.** The user may want to:
+- Reorder sections or change content hierarchy
+- Add, remove, or reprioritize screens
+- Change the flow between screens
+- Clarify requirements before building
+- Adjust scope (e.g., "Let's start with just the P0 screens")
 
 ### Step 4: Component Inventory Check (REQUIRED)
 Before writing any screen code:
@@ -392,7 +502,7 @@ For each screen, create a Next.js page component:
 
 #### Mock Data & Interactivity
 
-For prototypes that need to feel dynamic (filtering, searching, tab switching), use React `useState` to drive interactions. Keep mock datasets in a separate `data.ts` file alongside the prototype page — not inline in the component. Reference the Domain Content tables for realistic values. The state switcher (default/loading/empty/error) should remain at the top of each page as a separate concern from in-page interactivity.
+For prototypes that need to feel dynamic (filtering, searching, tab switching), use React `useState` to drive interactions. Keep mock datasets in a separate `data.ts` file alongside the prototype page — not inline in the component. Reference the Domain Content tables for realistic values.
 
 ### Step 7: Build All Required States (MANDATORY)
 Every screen MUST include these states — build each as a switchable view:
@@ -406,10 +516,48 @@ Every screen MUST include these states — build each as a switchable view:
 | **Partial** | Some data loaded, some failed or pending | If applicable |
 | **Permission denied** | Access restricted message | If role-based |
 
-Add a state switcher control (dev-only) at the top of each prototype page so reviewers can toggle between states:
+Use the shared `PrototypeToolbar` component for state switching, theme switching, and use case selection. It renders as a floating `+` button in the bottom-left corner that opens a popover with controls. **Never build an inline state switcher bar** — always use this shared component.
+
+**The PrototypeToolbar is MANDATORY on every prototype page** — even single-state, single-use-case pages. At minimum it provides theme switching and a labeled "Use Case 1" entry. Every prototype must define at least one use case with a short descriptor.
+
 ```tsx
-const [viewState, setViewState] = useState<'default' | 'loading' | 'empty' | 'error'>('default')
+import { PrototypeToolbar, ViewState, UseCase } from '@/app/prototypes/PrototypeToolbar'
+
+const USE_CASES: UseCase[] = [
+  { label: 'Use Case 1 — New operator', description: 'First-time user with no products in catalog' },
+  { label: 'Use Case 2 — Power user', description: 'Experienced operator with 500+ products across 4 markets' },
+  { label: 'Use Case 3 — Compliance review', description: 'Regulator reviewing flagged products' },
+]
+
+export default function ScreenPage() {
+  const [viewState, setViewState] = useState<ViewState>('default')
+  const [activeUseCase, setActiveUseCase] = useState(0)
+
+  return (
+    <div>
+      {/* Screen content driven by viewState and activeUseCase */}
+      {viewState === 'default' && <DefaultView useCase={activeUseCase} />}
+      {viewState === 'loading' && <LoadingView />}
+      {viewState === 'empty' && <EmptyView />}
+      {viewState === 'error' && <ErrorView />}
+
+      {/* Floating dev toolbar — bottom-left */}
+      <PrototypeToolbar
+        viewState={viewState}
+        onViewStateChange={setViewState}
+        useCases={USE_CASES}
+        activeUseCase={activeUseCase}
+        onUseCaseChange={setActiveUseCase}
+      />
+    </div>
+  )
+}
 ```
+
+The toolbar includes:
+- **Use case selector** — switch between named scenarios with short descriptions. Define use cases as `UseCase[]` with `label` and `description`. The description appears below the selector to remind reviewers what they're looking at.
+- **State selector** — switch between default/loading/empty/error states. Pass `extraStates` for additional states (e.g., `extraStates={['partial', 'denied']}`).
+- **Theme switcher** — preview the prototype in any available theme.
 
 ### Step 8: Accessibility Audit
 After building screens and components, run `/design-accessibility` on all new components:
@@ -456,11 +604,17 @@ Refine based on feedback. Common iteration patterns:
 - Content changes → update with more realistic data
 - After changes, **re-capture screenshots** for the modified screens
 
-### Step 12: Update README & Handoff
+### Step 12: Register in Prototypes Index
+When creating a **new** prototype, add an entry to `app/prototypes/page.tsx`:
+1. Add a new object to the `prototypes` array with: `id`, `name`, `description`, `owner`, `status`, `device`, `fidelity`, `created`, `updated`, `href`, `screens`
+2. Add a nav item to the `prototypes` section in `app/design-system/shared.tsx` → `navSections` array
+
+### Step 13: Update README & Handoff
 After every build or iteration:
 1. **Update `prototypes/[project]/README.md`** — mark screens as Complete/In Progress, add new components to the list, log decisions, update "Last updated" date
-2. **Re-capture screenshots** if screens changed
-3. When fully approved:
+2. **Update `app/prototypes/page.tsx`** — sync the prototype's `status`, `screens` count, and `updated` date
+3. **Re-capture screenshots** if screens changed
+4. When fully approved:
    a. Run component gap analysis — list all remaining `[COMPONENT_GAP]` TODOs
    b. For each gap, suggest whether to create via `/component-generator` or use existing components
    c. Pass new components to `/design-system-builder` for documentation pages

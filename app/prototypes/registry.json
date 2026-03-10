@@ -1,0 +1,89 @@
+[
+  {
+    "id": "product-registry",
+    "name": "Product Registry",
+    "description": "Product catalog with search, filters, and CRUD flows for the GCR platform.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "desktop",
+    "fidelity": "high-fi",
+    "created": "2026-03-10",
+    "updated": "2026-03-10",
+    "href": "/prototypes/product-registry",
+    "screens": 3,
+    "tags": ["gcr", "crud"],
+    "dsComponents": ["DataTable", "Badge", "ProductCard", "Header", "Input", "Select", "Button"],
+    "openQuestions": [
+      "Should bulk actions be available in the catalog view?",
+      "How should draft vs published products be visually differentiated?"
+    ],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": []
+  },
+  {
+    "id": "qr-verify",
+    "name": "QR Product Verify",
+    "description": "Consumer-facing product verification page accessed via QR code scan.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "mobile",
+    "fidelity": "high-fi",
+    "created": "2026-03-10",
+    "updated": "2026-03-10",
+    "href": "/prototypes/qr-verify",
+    "screens": 3,
+    "tags": ["consumer-facing", "compliance"],
+    "dsComponents": ["Badge", "DetailField", "Divider", "Skeleton", "EmptyState", "Button"],
+    "openQuestions": [
+      "Should the CoA link open a real PDF viewer or redirect to the lab's website?",
+      "Should there be a 'Report a problem' link for suspected counterfeit products?",
+      "How does the QR URL schema work? (e.g., verify.metrc.com/p/{packageTag})"
+    ],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": []
+  },
+  {
+    "id": "product-search",
+    "name": "Product Search",
+    "description": "Interactive product search flow with results, selection, and detail view.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "desktop",
+    "fidelity": "high-fi",
+    "created": "2026-02-01",
+    "updated": "2026-02-20",
+    "href": "/prototypes/product-search",
+    "screens": 1,
+    "tags": ["gcr", "search"],
+    "dsComponents": [],
+    "openQuestions": [
+      "Should search results be paginated or infinite scroll?"
+    ],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": []
+  },
+  {
+    "id": "transfer-manifest",
+    "name": "Transfer Manifest",
+    "description": "Detail view for cannabis product transfer manifests.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "desktop",
+    "fidelity": "wireframe",
+    "created": "2026-01-20",
+    "updated": "2026-03-10",
+    "href": "/prototypes/transfer-manifest",
+    "screens": 1,
+    "tags": ["canopy", "logistics"],
+    "dsComponents": ["Badge", "Button", "DataTable", "DetailField", "EmptyState", "Skeleton"],
+    "openQuestions": [
+      "Should there be a list/index view for all manifests?"
+    ],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": []
+  }
+]

@@ -57,3 +57,5 @@ Screenshot*.png
 # OS
 .DS_Store
 Thumbs.db
+data/
+*.tgz

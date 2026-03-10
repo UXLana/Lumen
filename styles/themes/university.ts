@@ -12,6 +12,7 @@
  */
 
 import type { ProductTheme } from './theme-interface';
+import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
 export const universityTheme: ProductTheme = {
   name: 'university',
@@ -304,12 +305,12 @@ export const universityTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // TYPOGRAPHY — Academic: DM Sans for a clean, modern feel
+  // TYPOGRAPHY — Academic: Playfair Display headings, Source Sans 3 body
   // ===========================================================================
   typography: {
     fontFamilies: {
-      display: '"DM Sans", var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
-      body: '"DM Sans", var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif',
+      display: 'var(--font-playfair-display), "Playfair Display", Georgia, serif',
+      body: 'var(--font-source-sans-3), "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif',
       mono: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     },
     fontWeights: {
@@ -327,19 +328,9 @@ export const universityTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // BORDER RADIUS — Sharper, more institutional
+  // BORDER RADIUS — base: 1px (sharpest, institutional)
   // ===========================================================================
-  borderRadius: {
-    none: '0px',
-    xs: '1px',
-    sm: '2px',
-    md: '4px',
-    lg: '6px',
-    xl: '8px',
-    '2xl': '12px',
-    '3xl': '16px',
-    full: '9999px',
-  },
+  borderRadius: buildBorderRadius(1),
 
   // ===========================================================================
   // ELEVATION — Forest green tinted shadows
@@ -383,9 +374,7 @@ export const universityTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // COMPONENT RADIUS — Per-theme semantic radius overrides
+  // COMPONENT RADIUS — base: 1, button overridden (1×3=3px → 10px design choice)
   // ===========================================================================
-  componentRadius: {
-    button: '10px',
-  },
+  componentRadius: buildComponentRadius(1, { button: '10px' }),
 };

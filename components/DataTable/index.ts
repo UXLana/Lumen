@@ -7,15 +7,7 @@ import {
   SortButton,
   SelectionInfo,
 } from './Toolbar'
-
-// Attach sub-components as static properties for compound-component API:
-//   <DataTable.Toolbar>
-//     <DataTable.Toolbar.Left> ... </DataTable.Toolbar.Left>
-//     <DataTable.Toolbar.Right>
-//       <DataTable.FilterButton ... />
-//       <DataTable.ViewToggle ... />
-//     </DataTable.Toolbar.Right>
-//   </DataTable.Toolbar>
+import { ProgressBar } from './ProgressBar'
 
 type DataTableWithSubs = typeof DataTableBase & {
   Toolbar: typeof Toolbar
@@ -24,6 +16,7 @@ type DataTableWithSubs = typeof DataTableBase & {
   FilterButton: typeof FilterButton
   SortButton: typeof SortButton
   SelectionInfo: typeof SelectionInfo
+  ProgressBar: typeof ProgressBar
 }
 
 const DataTable = DataTableBase as DataTableWithSubs
@@ -33,6 +26,7 @@ DataTable.ViewToggle = ViewToggle
 DataTable.FilterButton = FilterButton
 DataTable.SortButton = SortButton
 DataTable.SelectionInfo = SelectionInfo
+DataTable.ProgressBar = ProgressBar
 
 export { DataTable }
 export default DataTable
@@ -56,3 +50,8 @@ export type {
   SortButtonProps,
   SelectionInfoProps,
 } from './Toolbar'
+
+export type {
+  ProgressBarProps,
+  ProgressBarStatus,
+} from './ProgressBar'

@@ -10,6 +10,7 @@
  */
 
 import type { ProductTheme } from './theme-interface';
+import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
 export const earthTheme: ProductTheme = {
   name: 'earth',
@@ -325,19 +326,9 @@ export const earthTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // BORDER RADIUS — Softer, more organic
+  // BORDER RADIUS — base: 3px (organic, softer)
   // ===========================================================================
-  borderRadius: {
-    none: '0px',
-    xs: '3px',
-    sm: '6px',
-    md: '12px',
-    lg: '16px',
-    xl: '20px',
-    '2xl': '28px',
-    '3xl': '36px',
-    full: '9999px',
-  },
+  borderRadius: buildBorderRadius(3),
 
   // ===========================================================================
   // ELEVATION — Sienna/earth tinted shadows
@@ -379,9 +370,7 @@ export const earthTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // COMPONENT RADIUS — Per-theme semantic radius overrides
+  // COMPONENT RADIUS — base: 3, button overridden (3×3=9px → 10px design choice)
   // ===========================================================================
-  componentRadius: {
-    button: '10px',
-  },
+  componentRadius: buildComponentRadius(3, { button: '10px' }),
 };

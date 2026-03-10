@@ -249,7 +249,7 @@ function CardView<T>({
             style={{
               backgroundColor: colors.surface.light,
               border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-              borderRadius: borderRadius.lg,
+              borderRadius: borderRadius.md,
               padding: `${d.cardPaddingY} ${d.cardPaddingX}`,
             }}
           >
@@ -269,7 +269,7 @@ function CardView<T>({
       <div style={{
         backgroundColor: colors.surface.light,
         border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-        borderRadius: borderRadius.lg,
+        borderRadius: borderRadius.md,
         padding: `${spacing['2xl']} ${spacing.md}`,
         textAlign: 'center',
       }}>
@@ -311,7 +311,7 @@ function CardView<T>({
               position: 'relative',
               backgroundColor: isSelected ? colors.selectedHighlight : colors.surface.light,
               border: `1px solid ${isSelected ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
-              borderRadius: borderRadius.lg,
+              borderRadius: borderRadius.md,
               padding: `${d.cardPaddingY} ${d.cardPaddingX}`,
               paddingLeft: selectable ? spacing['3xl'] : d.cardPaddingX,
               cursor: clickable ? 'pointer' : 'default',
@@ -592,7 +592,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
                     style={{
                       backgroundColor: colors.surface.light,
                       border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                      borderRadius: borderRadius.lg,
+                      borderRadius: borderRadius.md,
                       padding: spacing.md,
                       minHeight: 160,
                     }}
@@ -676,7 +676,7 @@ export const DataTable = forwardRef<HTMLDivElement, DataTableProps>(
     const containerStyle: React.CSSProperties = {
       backgroundColor: colors.surface.light,
       border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-      borderRadius: borderRadius.lg,
+      borderRadius: borderRadius.md,
       overflow: 'hidden',
       ...styleProp,
     }

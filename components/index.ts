@@ -131,6 +131,18 @@ export type {
 export { AssistiveMessage } from './AssistiveMessage'
 export type { AssistiveMessageProps, AssistiveMessageType } from './AssistiveMessage'
 
+// Select
+export { Select } from './Select'
+export type { SelectProps, SelectOption } from './Select'
+
+// Textarea
+export { Textarea } from './Textarea'
+export type { TextareaProps } from './Textarea'
+
+// StatsCard
+export { StatsCard, StatsCardGroup } from './StatsCard'
+export type { StatsCardProps, StatsCardGroupProps } from './StatsCard'
+
 // DataTable
 export { DataTable } from './DataTable'
 export type {

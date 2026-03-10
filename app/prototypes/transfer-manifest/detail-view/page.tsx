@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { PrototypeToolbar, ViewState } from '@/app/prototypes/PrototypeToolbar'
 import {
   colors,
   spacing,
@@ -27,8 +28,6 @@ import type { DataTableColumn } from '@/components'
 // =============================================================================
 // TYPES
 // =============================================================================
-
-type ViewState = 'default' | 'loading' | 'empty' | 'error'
 
 interface PackageItem {
   id: string
@@ -371,48 +370,6 @@ export default function TransferManifestDetailPage() {
       backgroundColor: colors.surface.lightDarker,
       fontFamily: fontFamilies.body,
     }}>
-      {/* State switcher — dev only */}
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        display: 'flex',
-        gap: spacing.xs,
-        padding: `${spacing.xs} ${spacing['2xl']}`,
-        backgroundColor: colors.surface.dark,
-        borderBottom: `1px solid ${colors.border.lowEmphasis.onDark}`,
-      }}>
-        <span style={{
-          fontFamily: fontFamilies.mono,
-          fontSize: typography.label.sm.fontSize,
-          color: colors.text.lowEmphasis.onDark,
-          alignSelf: 'center',
-          marginRight: spacing.xs,
-        }}>
-          State:
-        </span>
-        {(['default', 'loading', 'empty', 'error'] as ViewState[]).map((state) => (
-          <button
-            key={state}
-            onClick={() => setViewState(state)}
-            style={{
-              fontFamily: fontFamilies.mono,
-              fontSize: typography.label.sm.fontSize,
-              fontWeight: viewState === state ? fontWeights.semibold : fontWeights.regular,
-              color: viewState === state ? colors.text.highEmphasis.onDark : colors.text.lowEmphasis.onDark,
-              backgroundColor: viewState === state ? colors.brand.default : 'transparent',
-              border: 'none',
-              borderRadius: borderRadiusSemantics.badge,
-              padding: `${spacing['2xs']} ${spacing.sm}`,
-              cursor: 'pointer',
-              transition: 'background-color 150ms ease-out, color 150ms ease-out',
-            }}
-          >
-            {state}
-          </button>
-        ))}
-      </div>
-
       {/* Main content */}
       <div style={{
         maxWidth: '1200px',
@@ -573,6 +530,7 @@ export default function TransferManifestDetailPage() {
           onClose={() => dismiss(t.id)}
         />
       ))}
+      <PrototypeToolbar viewState={viewState} onViewStateChange={setViewState} />
     </div>
   )
 }

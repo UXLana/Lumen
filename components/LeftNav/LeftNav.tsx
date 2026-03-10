@@ -11,7 +11,10 @@ import {
   shadows,
   button,
   breakpoints,
+  getSidebarColors,
+  type SidebarColors,
 } from '@/styles/design-tokens'
+import { useColors } from '@/styles/themes/theme-provider'
 
 // =============================================================================
 // FOCUS STYLES (WCAG 2.4.7, 2.4.11 compliant)
@@ -42,6 +45,16 @@ function usePrefersReducedMotion(): boolean {
   }, [])
 
   return prefersReducedMotion
+}
+
+// =============================================================================
+// SIDEBAR COLORS CONTEXT (theme-aware)
+// =============================================================================
+
+const SidebarColorsContext = createContext<SidebarColors>(sidebar.colors)
+
+function useSidebarColors(): SidebarColors {
+  return useContext(SidebarColorsContext)
 }
 
 // =============================================================================
@@ -273,6 +286,7 @@ function PopoverMenu({
   onClose,
   triggerRef,
 }: PopoverMenuProps) {
+  const sidebarColors = useSidebarColors()
   const menuRef = useRef<HTMLDivElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
@@ -332,7 +346,7 @@ function PopoverMenu({
     top: position.top,
     left: position.left,
     backgroundColor: colors.surface.default,
-    border: `1px solid ${sidebar.colors.border}`,
+    border: `1px solid ${sidebarColors.border}`,
     borderRadius: '8px',
     padding: '8px',
     minWidth: '180px',
@@ -354,7 +368,7 @@ function PopoverMenu({
     fontWeight: sidebar.section.labelTypography.fontWeight,
     letterSpacing: sidebar.section.labelTypography.letterSpacing,
     textTransform: sidebar.section.labelTypography.textTransform,
-    color: sidebar.colors.sectionLabel,
+    color: sidebarColors.sectionLabel,
   }
 
   return (
@@ -370,7 +384,7 @@ function PopoverMenu({
       {section.title && (
         <div style={headerStyle}>
           {section.icon && (
-            <span style={{ color: sidebar.colors.sectionLabel }}>{section.icon}</span>
+            <span style={{ color: sidebarColors.sectionLabel }}>{section.icon}</span>
           )}
           {section.title}
         </div>
@@ -394,13 +408,14 @@ interface PopoverMenuItemProps {
 }
 
 function PopoverMenuItem({ item, isActive, onClick }: PopoverMenuItemProps) {
+  const sidebarColors = useSidebarColors()
   const [isHovered, setIsHovered] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
 
   const getColors = () => {
-    if (isActive) return sidebar.colors.item.active
-    if (isHovered) return sidebar.colors.item.hover
-    return sidebar.colors.item.default
+    if (isActive) return sidebarColors.item.active
+    if (isHovered) return sidebarColors.item.hover
+    return sidebarColors.item.default
   }
 
   const itemColors = getColors()
@@ -470,6 +485,7 @@ function LeftNavItemComponent({
   collapsed,
   onClick,
 }: LeftNavItemComponentProps) {
+  const sidebarColors = useSidebarColors()
   const [isHovered, setIsHovered] = useState(false)
   const [isFocusVisible, setIsFocusVisible] = useState(false)
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null)
@@ -486,13 +502,13 @@ function LeftNavItemComponent({
     }
     if (isActive) {
       return {
-        ...sidebar.colors.item.active,
+        ...sidebarColors.item.active,
         // Background is handled by inner pill element, not the container
         background: 'transparent',
       }
     }
-    if (isHovered) return sidebar.colors.item.hover
-    return sidebar.colors.item.default
+    if (isHovered) return sidebarColors.item.hover
+    return sidebarColors.item.default
   }
 
   const itemColors = getItemColors()
@@ -544,7 +560,7 @@ function LeftNavItemComponent({
         bottom: '4px',
         left: '-10px',
         right: '-10px',
-        backgroundColor: isActive ? sidebar.colors.item.active.background : (isHovered ? sidebar.colors.item.hover.background : 'transparent'),
+        backgroundColor: isActive ? sidebarColors.item.active.background : (isHovered ? sidebarColors.item.hover.background : 'transparent'),
         borderRadius: sidebar.collapsedIconButton?.borderRadius || '14.4px',
         zIndex: 0,
         transition: `all ${transitionPresets.fast}`,
@@ -555,7 +571,7 @@ function LeftNavItemComponent({
         bottom: '4px',
         left: '-12px',
         right: '-12px',
-        backgroundColor: isActive ? sidebar.colors.item.active.background : (isHovered ? sidebar.colors.item.hover.background : 'transparent'),
+        backgroundColor: isActive ? sidebarColors.item.active.background : (isHovered ? sidebarColors.item.hover.background : 'transparent'),
         borderRadius: sidebar.navItem.borderRadius,
         zIndex: 0,
         transition: `all ${transitionPresets.fast}`,
@@ -701,6 +717,7 @@ function RailItem({
   onPopoverEnter,
   onPopoverLeave,
 }: RailItemProps) {
+  const sidebarColors = useSidebarColors()
   const [isRailHovered, setIsRailHovered] = useState(false)
   const [isRailFocused, setIsRailFocused] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -713,11 +730,11 @@ function RailItem({
     height: sidebar.navItem.height,
     borderRadius: sidebar.navItem.borderRadius,
     backgroundColor: isRailHovered || showPopover
-      ? sidebar.colors.item.hover.background
+      ? sidebarColors.item.hover.background
       : 'transparent',
     color: isRailHovered || showPopover
-      ? sidebar.colors.item.hover.icon
-      : sidebar.colors.item.default.icon,
+      ? sidebarColors.item.hover.icon
+      : sidebarColors.item.default.icon,
     cursor: 'pointer',
     transition: `all ${transitionPresets.default}`,
     border: 'none',
@@ -799,6 +816,7 @@ function LeftNavSectionComponent({
   onItemClick,
   isFirst,
 }: LeftNavSectionComponentProps) {
+  const sidebarColors = useSidebarColors()
   const [isExpanded, setIsExpanded] = useState(section.defaultExpanded !== false)
   const [showPopover, setShowPopover] = useState(false)
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 })
@@ -872,12 +890,12 @@ function LeftNavSectionComponent({
     lineHeight: sidebar.section.labelTypography.lineHeight,
     letterSpacing: sidebar.section.labelTypography.letterSpacing,
     textTransform: sidebar.section.labelTypography.textTransform,
-    color: sidebar.colors.sectionLabel,
+    color: sidebarColors.sectionLabel,
     cursor: isCollapsible ? 'pointer' : 'default',
     userSelect: 'none',
     borderRadius: '4px',
     outline: 'none',
-    backgroundColor: isHeaderHovered && isCollapsible ? 'rgba(0, 0, 0, 0.02)' : 'transparent',
+    backgroundColor: isHeaderHovered && isCollapsible ? sidebarColors.subtleHover : 'transparent',
     transition: `background-color ${transitionPresets.fast}`,
     ...(isHeaderFocused ? focusRingStyle : {}),
   }
@@ -951,7 +969,7 @@ function LeftNavSectionComponent({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {section.icon && (
-              <span style={{ color: sidebar.colors.sectionLabel, display: 'flex' }}>
+              <span style={{ color: sidebarColors.sectionLabel, display: 'flex' }}>
                 {section.icon}
               </span>
             )}
@@ -1016,6 +1034,7 @@ interface MobileHeaderProps {
 }
 
 function MobileHeader({ logo, onClose }: MobileHeaderProps) {
+  const sidebarColors = useSidebarColors()
   const [isCloseHovered, setIsCloseHovered] = useState(false)
   const [isCloseFocused, setIsCloseFocused] = useState(false)
 
@@ -1024,7 +1043,7 @@ function MobileHeader({ logo, onClose }: MobileHeaderProps) {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '16px 20px',
-    borderBottom: `1px solid ${sidebar.colors.border}`,
+    borderBottom: `1px solid ${sidebarColors.border}`,
   }
 
   const closeButtonStyle: React.CSSProperties = {
@@ -1035,8 +1054,8 @@ function MobileHeader({ logo, onClose }: MobileHeaderProps) {
     height: '40px',
     borderRadius: '8px',
     border: 'none',
-    backgroundColor: isCloseHovered ? 'rgba(0, 0, 0, 0.06)' : 'transparent',
-    color: sidebar.colors.item.default.icon,
+    backgroundColor: isCloseHovered ? sidebarColors.controlHover : 'transparent',
+    color: sidebarColors.item.default.icon,
     cursor: 'pointer',
     transition: `all ${transitionPresets.fast}`,
     outline: 'none',
@@ -1089,6 +1108,8 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
     },
     ref
   ) => {
+    const themeColors = useColors()
+    const sidebarColors = getSidebarColors(themeColors)
     const [isToggleHovered, setIsToggleHovered] = useState(false)
     const [isToggleFocused, setIsToggleFocused] = useState(false)
     const prefersReducedMotion = usePrefersReducedMotion()
@@ -1128,7 +1149,7 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
       width: sidebar.width,
       maxWidth: '85vw',
       backgroundColor: colors.surface.default,
-      borderRight: `1px solid ${sidebar.colors.border}`,
+      borderRight: `1px solid ${sidebarColors.border}`,
       zIndex: zIndex.modal,
       transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
       transition: prefersReducedMotion ? 'none' : `transform ${transitionPresets.slow}`,
@@ -1164,8 +1185,8 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
       flexDirection: 'column',
       width: collapsed ? sidebar.collapsedWidth : sidebar.width,
       height: '100%',
-      backgroundColor: sidebar.colors.background,
-      borderRight: `1px solid ${sidebar.colors.border}`,
+      backgroundColor: sidebarColors.background,
+      borderRight: `1px solid ${sidebarColors.border}`,
       padding: `${sidebar.padding.y} ${sidebar.padding.x}`,
       transition: prefersReducedMotion ? 'none' : `width ${transitionPresets.default}`,
       overflow: 'hidden',
@@ -1200,8 +1221,8 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
       height: '28px',
       borderRadius: '6px',
       border: 'none',
-      backgroundColor: isToggleHovered ? 'rgba(0, 0, 0, 0.06)' : 'transparent',
-      color: sidebar.colors.item.default.icon,
+      backgroundColor: isToggleHovered ? sidebarColors.controlHover : 'transparent',
+      color: sidebarColors.item.default.icon,
       cursor: 'pointer',
       transition: `all ${transitionPresets.fast}`,
       flexShrink: 0,
@@ -1220,7 +1241,7 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
     const footerStyle: React.CSSProperties = {
       marginTop: 'auto',
       paddingTop: '16px',
-      borderTop: `1px solid ${sidebar.colors.border}`,
+      borderTop: `1px solid ${sidebarColors.border}`,
       flexShrink: 0,
     }
 
@@ -1278,7 +1299,7 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
       const mobileStyle = mobileBehavior === 'sheet' ? mobileSheetStyle : mobileDrawerStyle
 
       return (
-        <>
+        <SidebarColorsContext.Provider value={sidebarColors}>
           <MobileOverlay
             visible={mobileOpen}
             onClick={() => onMobileClose?.()}
@@ -1310,48 +1331,50 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
               {renderNavContent(true)}
             </div>
           </nav>
-        </>
+        </SidebarColorsContext.Provider>
       )
     }
 
     // Desktop rendering
     return (
-      <nav
-        ref={ref}
-        style={navStyle}
-        className={className}
-        aria-label="Main navigation"
-      >
-        {/* Logo and Toggle */}
-        <div style={logoContainerStyle}>
-          {(logo || collapsedLogo) && (
-            <div style={logoContentStyle}>
-              {collapsed ? collapsedLogo || logo : logo}
-            </div>
-          )}
-          {showCollapseToggle && (
-            <button
-              type="button"
-              style={toggleButtonStyle}
-              onClick={handleCollapseToggle}
-              onMouseEnter={() => setIsToggleHovered(true)}
-              onMouseLeave={() => setIsToggleHovered(false)}
-              onFocus={() => setIsToggleFocused(true)}
-              onBlur={() => setIsToggleFocused(false)}
-              aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              aria-expanded={!collapsed}
-            >
-              {collapsed ? (
-                <IconSidebarOpen size="sm" />
-              ) : (
-                <IconSidebarClose size="sm" />
-              )}
-            </button>
-          )}
-        </div>
+      <SidebarColorsContext.Provider value={sidebarColors}>
+        <nav
+          ref={ref}
+          style={navStyle}
+          className={className}
+          aria-label="Main navigation"
+        >
+          {/* Logo and Toggle */}
+          <div style={logoContainerStyle}>
+            {(logo || collapsedLogo) && (
+              <div style={logoContentStyle}>
+                {collapsed ? collapsedLogo || logo : logo}
+              </div>
+            )}
+            {showCollapseToggle && (
+              <button
+                type="button"
+                style={toggleButtonStyle}
+                onClick={handleCollapseToggle}
+                onMouseEnter={() => setIsToggleHovered(true)}
+                onMouseLeave={() => setIsToggleHovered(false)}
+                onFocus={() => setIsToggleFocused(true)}
+                onBlur={() => setIsToggleFocused(false)}
+                aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                aria-expanded={!collapsed}
+              >
+                {collapsed ? (
+                  <IconSidebarOpen size="sm" />
+                ) : (
+                  <IconSidebarClose size="sm" />
+                )}
+              </button>
+            )}
+          </div>
 
-        {renderNavContent(false)}
-      </nav>
+          {renderNavContent(false)}
+        </nav>
+      </SidebarColorsContext.Provider>
     )
   }
 )

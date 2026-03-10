@@ -16,7 +16,9 @@ export { traceTheme } from './trace';
 export { universityTheme } from './university';
 export { earthTheme } from './earth';
 export { ridTheme } from './rid';
-export { microsoftDarkTheme } from './microsoft-dark';
+export { ridDarkTheme } from './rid-dark';
+export { claudeLightTheme } from './claude-light';
+export { buildBorderRadius, buildComponentRadius } from './theme-interface';
 export type {
   ProductTheme,
   ThemeColors,

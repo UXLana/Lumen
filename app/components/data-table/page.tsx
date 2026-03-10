@@ -21,6 +21,7 @@ import {
   DataTableDensity,
   DataTableColumn,
   SortState,
+  ProductCard,
 } from '@/components'
 import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
 
@@ -33,24 +34,28 @@ interface SampleProduct {
   name: string
   sku: string
   status: 'active' | 'pending' | 'inactive'
+  brand: string
+  category: string
   market: string
+  markets: { code: string; highlighted: boolean }[]
+  totalMarkets: number
   compliance: number
   lastUpdated: string
 }
 
 const sampleData: SampleProduct[] = [
-  { id: '1', name: 'Green Dream Gummy', sku: 'GDG-001', status: 'active', market: 'California', compliance: 98, lastUpdated: '2026-02-20' },
-  { id: '2', name: 'Mountain Haze Pre-Roll', sku: 'MHP-042', status: 'active', market: 'Colorado', compliance: 95, lastUpdated: '2026-02-19' },
-  { id: '3', name: 'Calm Drops Tincture', sku: 'CDT-018', status: 'pending', market: 'Oregon', compliance: 72, lastUpdated: '2026-02-18' },
-  { id: '4', name: 'Solar Bloom Flower', sku: 'SBF-105', status: 'active', market: 'Michigan', compliance: 100, lastUpdated: '2026-02-17' },
-  { id: '5', name: 'Pacific Mist Vape', sku: 'PMV-063', status: 'inactive', market: 'California', compliance: 45, lastUpdated: '2026-01-30' },
-  { id: '6', name: 'Twilight Edible Bar', sku: 'TEB-077', status: 'pending', market: 'Nevada', compliance: 81, lastUpdated: '2026-02-15' },
+  { id: '1', name: 'Green Dream Gummy', sku: 'GDG-001', status: 'active', brand: 'Wyld', category: 'Edibles', market: 'California', markets: [{ code: 'CA', highlighted: true }, { code: 'NV', highlighted: true }, { code: 'CO', highlighted: false }], totalMarkets: 3, compliance: 98, lastUpdated: '2026-02-20' },
+  { id: '2', name: 'Mountain Haze Pre-Roll', sku: 'MHP-042', status: 'active', brand: 'Lowell', category: 'Pre-Rolls', market: 'Colorado', markets: [{ code: 'CO', highlighted: true }, { code: 'MI', highlighted: false }], totalMarkets: 2, compliance: 95, lastUpdated: '2026-02-19' },
+  { id: '3', name: 'Calm Drops Tincture', sku: 'CDT-018', status: 'pending', brand: 'Papa & Barkley', category: 'Tinctures', market: 'Oregon', markets: [{ code: 'OR', highlighted: true }], totalMarkets: 1, compliance: 72, lastUpdated: '2026-02-18' },
+  { id: '4', name: 'Solar Bloom Flower', sku: 'SBF-105', status: 'active', brand: 'Cookies', category: 'Flower', market: 'Michigan', markets: [{ code: 'MI', highlighted: true }, { code: 'CA', highlighted: true }, { code: 'NV', highlighted: true }], totalMarkets: 3, compliance: 100, lastUpdated: '2026-02-17' },
+  { id: '5', name: 'Pacific Mist Vape', sku: 'PMV-063', status: 'inactive', brand: 'Stiiizy', category: 'Vapes', market: 'California', markets: [{ code: 'CA', highlighted: true }], totalMarkets: 1, compliance: 45, lastUpdated: '2026-01-30' },
+  { id: '6', name: 'Twilight Edible Bar', sku: 'TEB-077', status: 'pending', brand: 'Kiva', category: 'Edibles', market: 'Nevada', markets: [{ code: 'NV', highlighted: true }, { code: 'CA', highlighted: false }], totalMarkets: 2, compliance: 81, lastUpdated: '2026-02-15' },
 ]
 
 const statusColorMap: Record<string, { bg: string; text: string }> = {
-  active: { bg: '#E8F5E9', text: '#2E7D32' },
-  pending: { bg: '#FFF8E1', text: '#F57F17' },
-  inactive: { bg: '#FFEBEE', text: '#C62828' },
+  active: { bg: colors.badge.successLight, text: colors.badge.success },
+  pending: { bg: colors.badge.yellowLight, text: colors.badge.warning },
+  inactive: { bg: colors.badge.importantLight, text: colors.badge.important },
 }
 
 // =============================================================================
@@ -137,7 +142,6 @@ export default function DataTablePage() {
   const [demoSelectable, setDemoSelectable] = useState(false)
   const [demoSelected, setDemoSelected] = useState<Set<string>>(new Set())
   const [demoToolbar, setDemoToolbar] = useState(false)
-  const [demoCustomCards, setDemoCustomCards] = useState(false)
   const [demoFilterActive, setDemoFilterActive] = useState(false)
 
   const columns: DataTableColumn<SampleProduct>[] = useMemo(() => [
@@ -184,13 +188,9 @@ export default function DataTablePage() {
       key: 'compliance',
       header: 'Compliance',
       align: 'center' as const,
-      width: '120px',
+      width: '160px',
       sortable: true,
-      render: (row) => {
-        const pct = row.compliance
-        const color = pct >= 90 ? '#2E7D32' : pct >= 70 ? '#F57F17' : '#C62828'
-        return <span style={{ fontWeight: 600, color }}>{pct}%</span>
-      },
+      render: (row) => <DataTable.ProgressBar value={row.compliance} />,
     },
     {
       key: 'lastUpdated',
@@ -315,39 +315,22 @@ import type { DataTableColumn, SortState } from '@/components'`}</CodeBlock>
                           onSelectionChange={setDemoSelected}
                           caption="Product compliance overview"
                           onRowClick={(row) => alert(`Clicked: ${row.name}`)}
-                          cardGridColumns="repeat(3, 1fr)"
-                          renderCard={demoCustomCards ? (row, _i, { selected, onSelect }) => (
-                            <div
-                              onClick={onSelect}
-                              style={{
-                                backgroundColor: selected ? colors.selectedHighlight : colors.surface.light,
-                                border: `1px solid ${selected ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
-                                borderRadius: borderRadius.lg,
-                                padding: spacing.md,
-                                cursor: 'pointer',
-                                transition: 'border-color 150ms ease',
-                              }}
-                            >
-                              <div style={{
-                                width: '100%', height: 80, borderRadius: borderRadius.md,
-                                backgroundColor: colors.surface.lightDarker,
-                                marginBottom: spacing.sm,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                ...typography.body.sm, color: colors.text.disabled.onLight,
-                              }}>
-                                Image placeholder
-                              </div>
-                              <div style={{ ...typography.label.md, color: colors.text.highEmphasis.onLight }}>{row.name}</div>
-                              <div style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight, marginTop: 4 }}>
-                                {row.market} &middot; {row.sku}
-                              </div>
-                              <div style={{ marginTop: 8 }}>
-                                {(() => { const c = statusColorMap[row.status]; return (
-                                  <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: '9999px', fontSize: '12px', fontWeight: 500, backgroundColor: c.bg, color: c.text, textTransform: 'capitalize' }}>{row.status}</span>
-                                )})()}
-                              </div>
-                            </div>
-                          ) : undefined}
+                          cardGridColumns="repeat(auto-fill, minmax(280px, 1fr))"
+                          renderCard={(row, _i, { selected, onSelect }) => (
+                            <ProductCard
+                              layout="vertical"
+                              name={row.name}
+                              sku={row.sku}
+                              brands={[row.brand]}
+                              categories={[row.category]}
+                              typeLabel="Product"
+                              markets={row.markets}
+                              totalMarkets={row.totalMarkets}
+                              selected={selected}
+                              onSelect={() => onSelect()}
+                              onClick={() => alert(`View details: ${row.name}`)}
+                            />
+                          )}
                         />
                       </div>
                     }
@@ -426,13 +409,6 @@ import type { DataTableColumn, SortState } from '@/components'`}</CodeBlock>
                         checked={demoToolbar}
                         onChange={setDemoToolbar}
                       />
-                      {demoDisplay !== 'table' && (
-                        <StyledCheckbox
-                          label="Custom Cards"
-                          checked={demoCustomCards}
-                          onChange={setDemoCustomCards}
-                        />
-                      )}
                     </div>
                   </div>
                 </div>

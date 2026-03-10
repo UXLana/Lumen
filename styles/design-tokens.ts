@@ -348,15 +348,17 @@ export const borderRadius = {
   full: _themedRadius.full,
 } as const;
 
-// Semantic radius aliases — reference themed border radius vars
+// Semantic radius aliases — reference per-theme componentRadius CSS vars.
+// These cascade from the theme's base via buildComponentRadius(), with per-theme
+// overrides. Changing the base updates every component radius automatically.
 export const borderRadiusSemantics = {
-  button: borderRadius.md,
-  input: borderRadius.md,
-  card: borderRadius.lg,
-  modal: borderRadius.xl,
-  badge: borderRadius.full,
-  avatar: borderRadius.full,
-  chip: borderRadius.full,
+  button: 'var(--mtr-comp-radius-button)',
+  input:  'var(--mtr-comp-radius-input)',
+  card:   'var(--mtr-comp-radius-card)',
+  modal:  'var(--mtr-comp-radius-modal)',
+  badge:  'var(--mtr-comp-radius-badge)',
+  chip:   'var(--mtr-comp-radius-chip)',
+  avatar: 'var(--mtr-comp-radius-avatar)',
 } as const;
 
 // =============================================================================
@@ -1376,7 +1378,8 @@ export const sidebar = {
     },
   },
 
-  // Colors (from Figma)
+  // Colors — static defaults (Trace light theme).
+  // For theme-aware colors, use getSidebarColors(themeColors) instead.
   colors: {
     background: 'rgba(0, 0, 0, 0.05)',
     backgroundAlt: '#f3f4f5',
@@ -1402,6 +1405,9 @@ export const sidebar = {
     // Updated for WCAG 1.4.3 contrast compliance (4.5:1 minimum)
     // Original: rgba(0, 0, 0, 0.50) = ~3.95:1, Updated: rgba(0, 0, 0, 0.65) = ~5.74:1
     sectionLabel: 'rgba(0, 0, 0, 0.65)',
+    // Subtle hover for section headers / toggle buttons
+    subtleHover: 'rgba(0, 0, 0, 0.02)',
+    controlHover: 'rgba(0, 0, 0, 0.06)',
   },
 
   // Collapsed state icon button (from Figma)
@@ -1413,6 +1419,62 @@ export const sidebar = {
   // Transition
   transition: '200ms ease-out',
 } as const;
+
+// =============================================================================
+// THEME-AWARE SIDEBAR COLORS
+// =============================================================================
+
+/**
+ * Derive sidebar colors from the active theme.
+ *
+ * Maps semantic theme tokens to sidebar-specific color slots so dark themes
+ * (like RID-Dark) work automatically — no per-theme sidebar overrides needed.
+ *
+ * The key insight: dark themes map dark values INTO the `onLight` slots,
+ * so using `onLight` tokens consistently handles both light and dark surfaces.
+ */
+export interface SidebarColors {
+  background: string;
+  backgroundAlt: string;
+  border: string;
+  item: {
+    default: { background: string; text: string; icon: string };
+    hover: { background: string; text: string; icon: string };
+    active: { background: string; text: string; icon: string; indicator: string };
+  };
+  sectionLabel: string;
+  subtleHover: string;
+  controlHover: string;
+}
+
+export function getSidebarColors(tc: ThemeColors): SidebarColors {
+  return {
+    background: tc.hover.onLight,
+    backgroundAlt: tc.surface.lightDarker,
+    border: tc.border.lowEmphasis.onLight,
+    item: {
+      default: {
+        background: 'transparent',
+        text: tc.navItemText.enabled.onLight,
+        icon: tc.navItemText.enabled.onLight,
+      },
+      hover: {
+        background: tc.hover.onLight,
+        text: tc.text.highEmphasis.onLight,
+        icon: tc.text.highEmphasis.onLight,
+      },
+      active: {
+        background: tc.selected.onLight,
+        text: tc.text.highEmphasis.onLight,
+        icon: tc.text.highEmphasis.onLight,
+        indicator: tc.brand.default,
+      },
+    },
+    sectionLabel: tc.text.lowEmphasis.onLight,
+    subtleHover: tc.surface.disabled.onLight,
+    controlHover: tc.hover.onLight,
+  };
+}
 
 // =============================================================================
 // HEADER TOKENS
