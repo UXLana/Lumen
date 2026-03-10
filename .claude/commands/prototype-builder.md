@@ -366,8 +366,7 @@ export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
           padding: spacing.md,
           borderRadius: borderRadiusSemantics.card,
           border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-          boxShadow: shadowSemantics.card,
-          transition: 'border-color 200ms ease-out, box-shadow 200ms ease-out',
+          transition: 'border-color 200ms ease-out',
           ...style,
         }}
         {...props}
@@ -538,13 +537,76 @@ Use these names and roles when building prototype screens that show logged-in us
 ## Integration Rules
 
 - **Theme-first** — All visual tokens are CSS-variable-backed. Components automatically respond to theme changes. Never import values from a specific theme file (e.g., `trace.ts`) — always import from `@/styles/design-tokens`.
+- **Default to Trace theme** — Unless the user explicitly requests a different theme, prototype layouts MUST use `traceTheme`. Trace is the primary design system theme and source of truth for fonts (DM Sans), border radius (base=4), and elevation.
 - **Use existing components first** — `import { Badge, DataTable } from '@/components'`
 - **Build what's missing** — if a component doesn't exist, create it as a real design system component (not a prototype-only throwaway). It should be reusable beyond this prototype.
 - **Use inline styles** — no Tailwind, no CSS modules
-- **Zero hardcoded values** — every color, spacing, font size, radius, and shadow must come from design tokens. If you write a hex color, pixel value, or font name directly in a style, it will not respond to themes.
+- **Zero hardcoded values** — every color, spacing, font size, radius, and shadow must come from design tokens. If you write a hex color, pixel value, or font name directly in a style, it will not respond to themes. This includes `borderRadius` — always use `borderRadiusSemantics.*` or `borderRadius.*` tokens, never literal `'8px'` or `'6px'`.
+- **No gratuitous drop shadows** — Do not add `boxShadow: shadowSemantics.card` to containers, stat cards, or wrappers by default. Keep surfaces flat. Only use elevation shadows when intentionally creating visual hierarchy (e.g., dropdowns, modals, popovers). The DataTable and other components manage their own elevation internally.
 - **Prototype pages are exploratory** — but the components they use are production-quality and theme-aware
 - **Responsive behavior** — Build for the target device only. Do not add responsive breakpoints unless explicitly requested. Set a `maxWidth` on the prototype page matching the target device (375px mobile, 768px tablet, 1440px desktop) and center it on the screen. This keeps prototypes focused and avoids ambiguity during review.
 - **Iteration versioning** — Do not create iteration folders. Use git commits to track prototype versions. Update the README decisions log on each iteration with the date and what changed. The README is the single source of truth for prototype history.
+
+## Component Composition Rules (CRITICAL)
+
+These rules prevent common integration mistakes when composing design system components in prototypes.
+
+### DataTable
+- **Never wrap DataTable in a custom card container.** DataTable renders its own container with `backgroundColor`, `border`, and `borderRadius`. Adding an outer `<div>` with the same styles creates double borders and double radius.
+- **Use `DataTable.Toolbar`** for search, filters, and view controls — not a custom filter bar. Compose it with `DataTable.Toolbar.Left` (filters) and `DataTable.Toolbar.Right` (count, view toggle).
+- **Use `DataTable.ViewToggle`** to let users switch between table and card views. Wire it to a `display` state that feeds into DataTable's `display` prop.
+- **Use `renderCard` with `ProductCard`** when DataTable has a card view. Don't rely on DataTable's default card renderer — use the design system's `ProductCard` component for richer, branded cards.
+- **Input/Select inside Toolbar** should use `size="sm"`, no `label` prop (the placeholder or first option serves as the label), and `fullWidth` on Input. Remove the default `marginBottom` on Input with `style={{ marginBottom: 0 }}`.
+
+Example:
+```tsx
+<DataTable.Toolbar>
+  <DataTable.Toolbar.Left>
+    <Input placeholder="Search..." size="sm" fullWidth style={{ marginBottom: 0, maxWidth: '280px' }} startAdornment={<SearchIcon />} />
+    <Select options={filterOptions} size="sm" style={{ minWidth: '140px' }} />
+    {activeFilterCount > 0 && (
+      <DataTable.IconButton onClick={clearFilters} title="Clear filters" label="Clear">
+        <CloseIcon />
+      </DataTable.IconButton>
+    )}
+  </DataTable.Toolbar.Left>
+  <DataTable.Toolbar.Right>
+    <span>{count} items</span>
+    <DataTable.ViewToggle value={display} onChange={setDisplay} />
+  </DataTable.Toolbar.Right>
+</DataTable.Toolbar>
+<DataTable
+  columns={columns}
+  data={data}
+  display={display}
+  renderCard={(row, i, { selected, onSelect }) => (
+    <ProductCard name={row.name} sku={row.sku} ... selected={selected} onSelect={onSelect} bordered />
+  )}
+/>
+```
+
+### Badge — Accessibility for Categories
+- **Never use a single Badge color for all categories.** When displaying categorical data (e.g., product categories like Flower, Concentrate, Edible), map each category to a distinct `BadgeColor` for visual differentiation and accessibility.
+- **Prefer `variant="outlined"` for categories** — outlined badges use the semantic color as text/border on transparent background, providing high contrast and clear differentiation.
+- **Reserve `variant="filled"` for status indicators** (Active/Archived, Pass/Fail) where the filled background conveys semantic meaning.
+
+Example category-to-color mapping:
+```tsx
+const categoryColorMap: Record<string, BadgeProps['color']> = {
+  flower: 'success',
+  concentrate: 'info',
+  edible: 'warning',
+  'pre-roll': 'neutral',
+  tincture: 'brand',
+  topical: 'error',
+}
+```
+
+### Button Order
+- **High-emphasis buttons always go rightmost.** When displaying multiple buttons (e.g., "Create Bundle" + "Create Product"), the primary action (highest emphasis) must be the last/rightmost button. Secondary actions go to the left.
+
+### Select Component
+- Import `Select` separately: `import { Select } from '@/components/Select'` — it is not re-exported from the barrel `@/components` index.
 
 ## User Input Required
 
