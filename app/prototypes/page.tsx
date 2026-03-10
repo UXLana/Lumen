@@ -146,9 +146,26 @@ function FidelityIndicator({ current }: { current: string }) {
 
 type DrawerTab = 'prompts' | 'questions'
 
-const MY_OWNER = process.env.NEXT_PUBLIC_PROTOTYPE_OWNER ?? 'Lana Holston'
+const STORAGE_KEY = 'mtr-prototype-owner'
+const allOwners = Array.from(new Set(prototypes.map((p) => p.owner))).sort()
 
-function PrototypeCard({ prototype, onOpenDrawer }: { prototype: PrototypeEntry; onOpenDrawer: (p: PrototypeEntry, tab: DrawerTab) => void }) {
+function useCurrentOwner() {
+  const [owner, setOwner] = useState<string>('')
+
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    setOwner(stored || allOwners[0] || '')
+  }, [])
+
+  const updateOwner = (name: string) => {
+    localStorage.setItem(STORAGE_KEY, name)
+    setOwner(name)
+  }
+
+  return [owner, updateOwner] as const
+}
+
+function PrototypeCard({ prototype, onOpenDrawer, currentOwner }: { prototype: PrototypeEntry; onOpenDrawer: (p: PrototypeEntry, tab: DrawerTab) => void; currentOwner: string }) {
   const [isHovered, setIsHovered] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -375,7 +392,7 @@ function PrototypeCard({ prototype, onOpenDrawer }: { prototype: PrototypeEntry;
                   onOpenDrawer(prototype, 'questions')
                 }}
               />
-              {prototype.owner === MY_OWNER && (
+              {prototype.owner === currentOwner && (
                 <>
                   <div style={{ height: '1px', backgroundColor: colors.border.lowEmphasis.onLight, margin: `${spacing['2xs']} 0` }} />
                   <OverflowMenuItem
@@ -458,6 +475,7 @@ function QuestionIcon() {
 // =============================================================================
 
 export default function PrototypesIndexPage() {
+  const [currentOwner, setCurrentOwner] = useCurrentOwner()
   const [ownershipTab, setOwnershipTab] = useState<'mine' | 'others'>('mine')
   const [activeStatusFilter, setActiveStatusFilter] = useState<PrototypeStatus | 'all'>('all')
   const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null)
@@ -466,7 +484,7 @@ export default function PrototypesIndexPage() {
   const [drawerTab, setDrawerTab] = useState<DrawerTab>('prompts')
 
   const ownershipFiltered = prototypes.filter((p) =>
-    ownershipTab === 'mine' ? p.owner === MY_OWNER : p.owner !== MY_OWNER
+    ownershipTab === 'mine' ? p.owner === currentOwner : p.owner !== currentOwner
   )
 
   const filtered = ownershipFiltered
@@ -478,8 +496,8 @@ export default function PrototypesIndexPage() {
     ...Object.fromEntries(allStatuses.map((s) => [s, ownershipFiltered.filter((p) => p.status === s).length])),
   }
 
-  const mineCount = prototypes.filter((p) => p.owner === MY_OWNER).length
-  const othersCount = prototypes.filter((p) => p.owner !== MY_OWNER).length
+  const mineCount = prototypes.filter((p) => p.owner === currentOwner).length
+  const othersCount = prototypes.filter((p) => p.owner !== currentOwner).length
   const allTags = Array.from(new Set(ownershipFiltered.flatMap((p) => p.tags))).sort()
 
   return (
@@ -488,6 +506,43 @@ export default function PrototypesIndexPage() {
       title="Prototypes"
       description="Browse all prototypes built with the MTR Design System."
       tabs={[]}
+      headerAction={allOwners.length > 1 ? (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: spacing.xs,
+          fontFamily: fontFamilies.body,
+          fontSize: typography.body.sm.fontSize,
+          color: colors.text.lowEmphasis.onDark,
+        }}>
+          <span>Viewing as</span>
+          <select
+            value={currentOwner}
+            onChange={(e) => {
+              setCurrentOwner(e.target.value)
+              setOwnershipTab('mine')
+              setActiveStatusFilter('all')
+              setActiveTagFilter(null)
+            }}
+            style={{
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              fontWeight: fontWeights.semibold,
+              color: colors.text.highEmphasis.onDark,
+              backgroundColor: 'rgba(255,255,255,0.15)',
+              border: `1px solid rgba(255,255,255,0.25)`,
+              borderRadius: borderRadiusSemantics.badge,
+              padding: `${spacing['2xs']} ${spacing.sm}`,
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            {allOwners.map((owner) => (
+              <option key={owner} value={owner} style={{ color: colors.text.highEmphasis.onLight, backgroundColor: colors.surface.light }}>{owner}</option>
+            ))}
+          </select>
+        </div>
+      ) : undefined}
     >
       <div style={{ maxWidth: '960px' }}>
         {/* Ownership tabs */}
@@ -619,7 +674,7 @@ export default function PrototypesIndexPage() {
           gap: spacing.lg,
         }}>
           {filtered.map((prototype) => (
-            <PrototypeCard key={prototype.id} prototype={prototype} onOpenDrawer={(p, tab) => { setDrawerPrototype(p); setDrawerTab(tab) }} />
+            <PrototypeCard key={prototype.id} prototype={prototype} currentOwner={currentOwner} onOpenDrawer={(p, tab) => { setDrawerPrototype(p); setDrawerTab(tab) }} />
           ))}
         </div>
 

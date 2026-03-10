@@ -753,6 +753,7 @@ interface StyleguideLayoutProps {
   tabs?: { id: string; label: string }[]
   activeTab?: string
   onTabChange?: (tabId: string) => void
+  headerAction?: React.ReactNode
 }
 
 export function StyleguideLayout({
@@ -763,6 +764,7 @@ export function StyleguideLayout({
   tabs,
   activeTab,
   onTabChange,
+  headerAction,
 }: StyleguideLayoutProps) {
   // Default tabs if none provided
   const displayTabs = tabs || innerPageTabs
@@ -1002,7 +1004,10 @@ export function StyleguideLayout({
             ...sharedStyles.header,
             background: `linear-gradient(135deg, ${colors.brand.darker} 0%, ${colors.brand.default} 50%, ${colors.brand.lighter} 100%)`,
           }}>
-            <h1 style={sharedStyles.headerTitle}>{title}</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <h1 style={sharedStyles.headerTitle}>{title}</h1>
+              {headerAction}
+            </div>
             <p style={sharedStyles.headerDescription}>{description}</p>
           </header>
 
