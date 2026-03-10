@@ -1,6 +1,6 @@
 ---
-name: confluence-to-prototype
-description: Fetch Confluence pages and compile them into a comprehensive markdown prompt for building clickable prototypes in Claude Code
+name: confluence-to-prototype-spec
+description: Fetch Confluence pages and compile them into a structured prototype spec for use with /prototype-builder
 ---
 
 # Confluence to Prototype Compiler

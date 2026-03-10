@@ -107,8 +107,6 @@ export default function ComponentNamePage() {
           {/* Quick Start */}
           {/* Interactive Playground */}
           {/* Design Tokens */}
-          {/* Background Variations */}
-          {/* Common Use Cases */}
         </>
       )}
 
@@ -154,6 +152,89 @@ When receiving prototype handoffs:
 2. Track review status in component headers
 3. Iterate based on Content/A11y/UX feedback
 4. Promote to canonical `/components/` when approved
+
+## Mode: Library Audit
+
+Run a comprehensive audit of the design system library.
+
+### Audit Checklist
+
+- [ ] All components have TypeScript types
+- [ ] All components have documentation pages
+- [ ] All tokens are used (no orphans)
+- [ ] All components use tokens (no hardcoded values)
+- [ ] Exports are correctly configured
+- [ ] Accessibility requirements documented
+- [ ] Documentation uses correct import paths (package name, not @/ aliases)
+- [ ] Quick Start sections show both package and alias imports
+- [ ] No hardcoded hex colors in components (use design tokens)
+- [ ] CSS custom properties map to design tokens (globals.css)
+
+### Import Path Standards
+
+Documentation Quick Start sections should show both import methods:
+
+```tsx
+// Package import (recommended for consumers)
+import { ComponentName } from '@metrc/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { ComponentName } from '@/components'
+```
+
+**Why this matters:**
+- `@/components` assumes the consumer has the same path alias configured
+- External consumers need the package name (`@metrc/design-system`)
+- Internal documentation can use either, but should show both options
+
+### Capabilities
+
+- **Inventory management** — Component catalog maintenance, token inventory tracking, icon library organization, pattern documentation
+- **Dependency mapping** — Track which components depend on which tokens and other components
+- **Redundancy identification** — Find duplicate or overlapping components and tokens
+- **Gap analysis** — Identify missing components, undocumented APIs, and token coverage holes
+
+## Mode: UI Polish
+
+Improve the visual design, interactions, and UX of the design system documentation app.
+
+### When to Use
+
+- Improving navigation design (sidebar, active states, mobile drawer)
+- Fixing layout issues and responsive breakpoints
+- Enhancing visual hierarchy (typography, spacing, color usage)
+- Adding/improving interactions (hover, focus, transitions)
+- Polishing cards, containers, code blocks, tables
+- Improving accessibility (focus states, contrast, reduced motion)
+
+### Interaction Standards
+
+- **Transitions**: 150ms (fast), 200ms (default), 300ms (slow)
+- **Hover**: Subtle background changes, no layout shift
+- **Focus**: Always visible, ring-2 with primary color
+- **Active**: Slight scale reduction (0.98)
+
+### Accessibility Checklist
+
+- [ ] Body text contrast: 4.5:1 minimum
+- [ ] All interactive elements focusable
+- [ ] Focus order follows reading order
+- [ ] Reduced motion respected
+
+### Critical Rules
+
+1. **Always use design tokens** — Never hardcode colors, spacing, radius, etc.
+2. **Test at all breakpoints** — 320px, 640px, 768px, 1024px, 1280px
+3. **Ensure accessibility** — Focus states, contrast, reduced motion
+
+### What This Mode Does NOT Handle
+
+| Task | Use Instead |
+|------|-------------|
+| Adding new documented components | Builder mode (default) |
+| Creating icons | `/icon-generator` |
+| Building UI components | `/component-generator` |
+| Updating token values | `/brand-tokens-translator` |
 
 ## User Input Required
 

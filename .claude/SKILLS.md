@@ -12,17 +12,19 @@
 
 | Command | Purpose |
 |---------|---------|
-| `/design-system-builder` | Maintain design system docs & UI |
-| `/design-system-ui` | Improve design system app UX |
-| `/design-system-librarian` | Organize & catalog the library |
+| `/design-system-builder` | Maintain design system docs, UI polish, and library audits |
 | `/design-accessibility` | Audit accessibility (WCAG 2.2 + Section 508) |
+
+## Quality
+
+| Command | Purpose |
+|---------|---------|
+| `/review` | Code quality review and commit readiness |
 
 ## Planning & Strategy
 
 | Command | Purpose |
 |---------|---------|
-| `/design-brief-generator` | Generate design briefs |
 | `/design-lead-thought-partner` | Strategic design thinking |
-| `/frontend-design` | UX consultation |
 | `/brand-tokens-translator` | Convert brand specs to tokens |
 | `/notion-spec-to-implementation` | PRD to code |

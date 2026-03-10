@@ -16,22 +16,27 @@ description: Create production-ready React components with TypeScript types, acc
 
 | File Path | Purpose |
 |-----------|---------|
-| `/components/ui/[ComponentName].tsx` | Component implementation |
-| `/components/ui/index.ts` | Component exports |
-| `/components/[ComponentName]/` | Complex components with sub-components |
+| `/components/[ComponentName]/[ComponentName].tsx` | Component implementation |
+| `/components/[ComponentName]/index.ts` | Component exports |
 
 ## Component Structure
 
 ```tsx
-// /components/ui/ComponentName.tsx
+// /components/[ComponentName]/[ComponentName].tsx
 
 'use client'
 
-import { forwardRef } from 'react'
-import { cn } from '@/lib/utils'
-import { colors, spacing, radius } from '@/styles/design-tokens'
+import React, { forwardRef } from 'react'
+import {
+  colors,
+  spacing,
+  borderRadiusSemantics,
+  typography,
+  fontFamilies,
+  fontWeights,
+} from '@/styles/design-tokens'
 
-export interface ComponentNameProps {
+export interface ComponentNameProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'primary' | 'secondary' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   disabled?: boolean
@@ -39,20 +44,45 @@ export interface ComponentNameProps {
 }
 
 export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
-  ({ variant = 'primary', size = 'md', disabled, children, ...props }, ref) => {
+  ({ variant = 'primary', size = 'md', disabled, children, style, ...props }, ref) => {
+    const baseStyles: React.CSSProperties = {
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: fontFamilies.primary,
+      fontSize: typography.body.md,
+      fontWeight: fontWeights.medium,
+      borderRadius: borderRadiusSemantics.interactive,
+      transition: 'background-color 150ms ease, color 150ms ease',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      opacity: disabled ? 0.5 : 1,
+      ...style,
+    }
+
+    // Variant styles
+    const variantStyles: Record<string, React.CSSProperties> = {
+      primary: {
+        backgroundColor: colors.brand.default,
+        color: '#FFFFFF',
+        padding: `${spacing.componentY} ${spacing.componentX}`,
+      },
+      secondary: {
+        backgroundColor: 'transparent',
+        color: colors.brand.default,
+        border: `1px solid ${colors.border.midEmphasis}`,
+        padding: `${spacing.componentY} ${spacing.componentX}`,
+      },
+      ghost: {
+        backgroundColor: 'transparent',
+        color: colors.text.highEmphasis.onLight,
+        padding: `${spacing.componentY} ${spacing.componentX}`,
+      },
+    }
+
     return (
       <div
         ref={ref}
-        className={cn(
-          // Base styles
-          'inline-flex items-center justify-center',
-          // Variant styles
-          variant === 'primary' && 'bg-primary-500 text-white',
-          // Size styles
-          size === 'md' && 'px-4 py-2',
-          // State styles
-          disabled && 'opacity-50 cursor-not-allowed'
-        )}
+        style={{ ...baseStyles, ...variantStyles[variant] }}
         {...props}
       >
         {children}

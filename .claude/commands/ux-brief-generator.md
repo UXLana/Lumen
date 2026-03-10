@@ -57,7 +57,7 @@ The generated brief includes:
 After generating, suggest follow-up skills based on completeness:
 - Score > 70%: Suggest `/prototype-builder`
 - Missing accessibility context: Suggest `/design-accessibility`
-- Missing design direction: Suggest `/frontend-design`
+- Missing design direction: Suggest `/design-lead-thought-partner`
 
 ## User Input Required
 
