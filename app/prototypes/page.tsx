@@ -32,6 +32,8 @@ interface PrototypeEntry {
   created: string
   updated: string
   href: string
+  devUrl?: string
+  localPath?: string
   screens: number
   prUrl?: string
   tags: string[]
@@ -170,9 +172,13 @@ function PrototypeCard({ prototype, onOpenDrawer }: { prototype: PrototypeEntry;
   const questionCount = prototype.openQuestions.length
   const componentCount = prototype.dsComponents.length
 
+  const cardHref = prototype.href || prototype.devUrl
+  const isExternalUrl = cardHref?.startsWith('http')
+
   return (
     <a
-      href={prototype.href}
+      href={cardHref || '#'}
+      {...(isExternalUrl ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -378,7 +384,8 @@ function PrototypeCard({ prototype, onOpenDrawer }: { prototype: PrototypeEntry;
                       e.preventDefault()
                       e.stopPropagation()
                       setMenuOpen(false)
-                      window.open(`cursor://file/Users/lanaholston/Desktop/Code/app/prototypes/${prototype.id}`, '_self')
+                      const path = prototype.localPath || `/Users/lanaholston/Desktop/Code/app/prototypes/${prototype.id}`
+                      window.open(`cursor://file${path}`, '_self')
                     }}
                   />
                 </>
