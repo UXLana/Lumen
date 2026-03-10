@@ -151,7 +151,7 @@ Before anything else, check if a prototype already exists for the project:
 **Always ask:**
 1. **Theme** — Which theme should this prototype use? Read `styles/themes/index.ts` to list available themes (Trace, Earth, University, RID, Claude Light, etc.) and ask the user to pick one. The prototype page should wrap content in the appropriate theme provider.
 2. **Target device** — Mobile (375px), tablet (768px), or desktop (1440px)?
-3. **Fidelity** — Wireframe, low-fi, or high-fi?
+3. **Fidelity** — Defaults to low-fi per Audience & Defaults. Confirm with the user or let them override. Don't ask as an open-ended question — present the default and let them change it if needed.
 
 **Ask if not already answered by the source material:**
 4. **User role** — Who is this screen for? (state regulator, licensed operator, admin, etc.)
@@ -500,6 +500,20 @@ All prototype content MUST use realistic cannabis regulatory terminology. This m
 | **Third-Party Consultants** | Marketing, compliance, and operations consultants serving multiple organizations | Cross-organization access, read-only reporting, project-based permissions |
 | **Technology Partners** | Software vendors building integrations with Canopy | API access, developer documentation, partner program support |
 | **Retail Dispensaries** | Individual retail locations or small retail chains | Product verification, inventory management, payment processing |
+
+### Sample Users (for screen content)
+
+These are individual fake people for populating prototype UI elements (avatars, welcome messages, activity logs, audit trails).
+
+| Name | Role | Organization | Context |
+|------|------|--------------|---------|
+| Maria Chen | Compliance Officer | Oregon Liquor & Cannabis Commission | Reviews licensee reports, investigates discrepancies |
+| James Wilson | Grow Manager | Green Leaf Cultivation LLC | Tags plants, reports harvests, creates packages |
+| Sarah Rodriguez | Logistics Lead | Pacific Coast Extracts | Creates transfer manifests, tracks deliveries |
+| David Kim | Inventory Manager | Mountain View Dispensary | Receives packages, manages retail inventory, reports sales |
+| Dr. Aisha Patel | Lab Director | Emerald Analytics Testing | Logs test results, issues certificates of analysis |
+
+Use these names and roles when building prototype screens that show logged-in users, activity feeds, assignment lists, or audit trails.
 
 ### Sample Quantities & Values
 
