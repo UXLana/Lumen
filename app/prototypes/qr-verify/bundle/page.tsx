@@ -127,7 +127,7 @@ function BundleProductCard({
             {product.name}
           </span>
           <div style={{ display: 'flex', gap: spacing['2xs'], alignItems: 'center' }}>
-            <Badge variant="outlined" color={categoryColorMap[product.category] || 'neutral'} size="sm">
+            <Badge variant="subtle" color={categoryColorMap[product.category] || 'neutral'} size="sm">
               {product.category}
             </Badge>
             <span
@@ -258,14 +258,14 @@ function BundleProductCard({
 
           {/* Badges row */}
           <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
-            <Badge variant="outlined" color={strainTypeColorMap[product.strainType] || 'neutral'} size="sm">
+            <Badge variant="subtle" color={strainTypeColorMap[product.strainType] || 'neutral'} size="sm">
               {product.strainType}
             </Badge>
-            <Badge variant="outlined" color="neutral" size="sm">
+            <Badge variant="subtle" color="neutral" size="sm">
               {product.strain}
             </Badge>
             <Badge
-              variant="filled"
+              variant="subtle"
               color={product.testStatus === 'passed' ? 'success' : 'warning'}
               size="sm"
             >
@@ -338,10 +338,10 @@ function BundleDetail({ bundle }: { bundle: BundleData }) {
       {/* Bundle header */}
       <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-          <Badge variant="filled" color="brand" size="md">
+          <Badge variant="subtle" color="brand" size="md">
             Bundle
           </Badge>
-          <Badge variant="outlined" color="neutral" size="md">
+          <Badge variant="subtle" color="neutral" size="md">
             {bundle.totalItems} items
           </Badge>
         </div>

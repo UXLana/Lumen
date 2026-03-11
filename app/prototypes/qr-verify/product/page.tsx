@@ -154,7 +154,7 @@ function LabResultRow({ test }: { test: LabResult }) {
           </span>
         )}
         <Badge
-          variant="filled"
+          variant="subtle"
           color={test.result === 'passed' ? 'success' : test.result === 'failed' ? 'error' : 'warning'}
           size="sm"
         >
@@ -327,23 +327,24 @@ function ProductDetail({ product }: { product: ProductData }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {/* Product image placeholder */}
+      {/* Product image */}
       <div
-        aria-label={`Photo of ${product.name}`}
         style={{
           width: '100%',
           height: '220px',
+          overflow: 'hidden',
           backgroundColor: colors.surface.lightDarker,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
         }}
       >
-        <svg width={48} height={48} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="3" y="3" width="18" height="18" rx="2" stroke={colors.text.disabled.onLight} strokeWidth="1.5" />
-          <circle cx="8.5" cy="8.5" r="2" stroke={colors.text.disabled.onLight} strokeWidth="1.5" />
-          <path d="M21 15l-5-5L5 21" stroke={colors.text.disabled.onLight} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <img
+          src="/prototypes/qr-verify/product-photo.png"
+          alt={`Photo of ${product.name}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+          }}
+        />
       </div>
 
       {/* Product identity */}
@@ -369,14 +370,14 @@ function ProductDetail({ product }: { product: ProductData }) {
         >
           by {product.brand}
         </span>
-        <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap', marginTop: spacing['2xs'] }}>
-          <Badge variant="outlined" color={categoryColorMap[product.category] || 'neutral'}>
+        <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap', marginTop: spacing['2xs'] }}>
+          <Badge variant="subtle" color="neutral" size="sm">
             {product.category}
           </Badge>
-          <Badge variant="outlined" color={strainTypeColorMap[product.strainType] || 'neutral'}>
+          <Badge variant="subtle" color="neutral" size="sm">
             {product.strainType}
           </Badge>
-          <Badge variant="outlined" color="neutral">
+          <Badge variant="subtle" color="neutral" size="sm">
             {product.strain}
           </Badge>
         </div>
@@ -399,8 +400,8 @@ function ProductDetail({ product }: { product: ProductData }) {
       <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
         <SectionHeader>Potency</SectionHeader>
         <PotencyBar label="THC" value={product.thc} maxValue={35} color={colors.brand.default} />
-        <PotencyBar label="CBD" value={product.cbd} maxValue={25} color={colors.status.info} />
-        <PotencyBar label="Terpenes" value={product.terpenes} maxValue={10} color={colors.status.success} />
+        <PotencyBar label="CBD" value={product.cbd} maxValue={25} color={colors.brand.default} />
+        <PotencyBar label="Terpenes" value={product.terpenes} maxValue={10} color={colors.brand.default} />
       </div>
 
       <Divider spacing="none" />
@@ -410,7 +411,7 @@ function ProductDetail({ product }: { product: ProductData }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <SectionHeader>Lab Results</SectionHeader>
           <Badge
-            variant="filled"
+            variant="subtle"
             color={product.testStatus === 'passed' ? 'success' : product.testStatus === 'failed' ? 'error' : 'warning'}
             size="md"
           >
@@ -485,6 +486,7 @@ function ProductDetail({ product }: { product: ProductData }) {
           target="_blank"
           rel="noopener noreferrer"
           style={{
+            marginTop: `calc(${spacing.md} - ${spacing.sm})`,
             fontFamily: fontFamilies.body,
             fontSize: typography.body.sm.fontSize,
             fontWeight: fontWeights.medium,

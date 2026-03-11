@@ -90,6 +90,47 @@
     "context": null
   },
   {
+    "id": "rid-landing-page",
+    "name": "RID Landing Page",
+    "description": "Consumer-facing Retail ID mobile landing page exploring 4 GTM use cases: compliance-first, compliance+brand, brand-forward, and brand-only.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "mobile",
+    "fidelity": "high-fi",
+    "created": "2026-03-11",
+    "updated": "2026-03-11",
+    "href": "/prototypes/rid-landing-page",
+    "screens": 1,
+    "tags": ["rid", "consumer-facing", "compliance", "gtm"],
+    "dsComponents": ["Badge", "DetailField", "Divider", "Skeleton", "EmptyState", "Button"],
+    "openQuestions": [
+      "How does the state seal/logo get uploaded?",
+      "Should the campaign banner be dismissible by the consumer?",
+      "Which warning messages are required by MA regulation vs. configurable?"
+    ],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": [
+      {
+        "date": "2026-03-11",
+        "text": "Create another version of qr-verify prototype taking Urban Consultants Confluence context into consideration. Need brand-primary, brand-secondary, no-compliance/brand-only options. Research if some states don't need compliance. Use MA, generate fictitious product image.",
+        "links": [
+          { "label": "Confluence: Mobile Landing Page Discussion with Urban + Consultants", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants" }
+        ]
+      }
+    ],
+    "context": {
+      "summary": "Explores the consumer-facing mobile landing page for Retail ID across different state adoption models, based on Urban consultant feedback emphasizing compliance-first positioning and state configurability.",
+      "documents": [
+        { "label": "Confluence: Mobile Landing Page Discussion with Urban + Consultants", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850", "type": "confluence" },
+        { "label": "Confluence: 2026 Roadmap and Approach", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/759234565", "type": "confluence" },
+        { "label": "Confluence: State Regulator Management Portal", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/764313602", "type": "confluence" },
+        { "label": "Confluence: Mobile Landing Pages Ideas and Feedback", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/762904578", "type": "confluence" }
+      ],
+      "notes": "The 'two flavors' GTM model (mandated vs. non-mandated) from the 2026 Roadmap directly informed the 4 use cases."
+    }
+  },
+  {
     "id": "transfer-manifest",
     "name": "Transfer Manifest",
     "description": "Detail view for cannabis product transfer manifests.",

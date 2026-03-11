@@ -735,6 +735,29 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
   onClose: () => void
 }) {
   const drawerRef = useRef<HTMLDivElement>(null)
+  const [supabaseContext, setSupabaseContext] = useState<PrototypeContext | null>(null)
+  const [contextLoaded, setContextLoaded] = useState(false)
+
+  // Fetch context from Supabase when drawer opens
+  useEffect(() => {
+    if (!prototype) {
+      setContextLoaded(false)
+      setSupabaseContext(null)
+      return
+    }
+    setContextLoaded(false)
+    fetch(`/api/prototypes/${prototype.id}/context`)
+      .then(res => res.json())
+      .then(data => {
+        setSupabaseContext(data.context || null)
+        setContextLoaded(true)
+      })
+      .catch(() => {
+        // Fall back to registry.json context
+        setSupabaseContext(prototype.context)
+        setContextLoaded(true)
+      })
+  }, [prototype])
 
   useEffect(() => {
     if (!prototype) return
@@ -753,7 +776,7 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
 
   const prompts = prototype.prompts || []
   const questions = prototype.openQuestions || []
-  const context = prototype.context
+  const context = contextLoaded ? supabaseContext : prototype.context
 
   const tabs: { key: DrawerTab; label: string; count?: number }[] = [
     { key: 'prompts', label: 'Prompts', count: prompts.length },
@@ -1016,7 +1039,7 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
           )}
 
           {activeTab === 'context' && (
-            <ContextTabContent context={context} prototypeId={prototype.id} />
+            <ContextTabContent context={context} prototypeId={prototype.id} onSave={(ctx) => setSupabaseContext(ctx)} />
           )}
         </div>
       </div>
@@ -1036,7 +1059,7 @@ const DOC_TYPE_LABELS: Record<string, string> = {
   other: 'Link',
 }
 
-function ContextTabContent({ context, prototypeId }: { context: PrototypeContext | null; prototypeId: string }) {
+function ContextTabContent({ context, prototypeId, onSave }: { context: PrototypeContext | null; prototypeId: string; onSave?: (ctx: PrototypeContext) => void }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editSummary, setEditSummary] = useState(context?.summary || '')
   const [editNotes, setEditNotes] = useState(context?.notes || '')
@@ -1044,7 +1067,6 @@ function ContextTabContent({ context, prototypeId }: { context: PrototypeContext
   const [newDocLabel, setNewDocLabel] = useState('')
   const [newDocUrl, setNewDocUrl] = useState('')
   const [newDocType, setNewDocType] = useState<ContextDocument['type']>('confluence')
-  const [copyFeedback, setCopyFeedback] = useState(false)
 
   const handleStartEdit = () => {
     setEditSummary(context?.summary || '')
@@ -1065,17 +1087,35 @@ function ContextTabContent({ context, prototypeId }: { context: PrototypeContext
     setEditDocs(editDocs.filter((_, i) => i !== index))
   }
 
-  const handleCopyJson = () => {
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  const handleSave = async () => {
     const updatedContext: PrototypeContext = {
       summary: editSummary.trim(),
       documents: editDocs,
       notes: editNotes.trim(),
     }
-    const json = JSON.stringify(updatedContext, null, 2)
-    navigator.clipboard.writeText(json).then(() => {
-      setCopyFeedback(true)
-      setTimeout(() => setCopyFeedback(false), 2000)
-    })
+    setIsSaving(true)
+    setSaveError(null)
+    try {
+      const res = await fetch(`/api/prototypes/${prototypeId}/context`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ context: updatedContext }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Failed to save')
+      }
+      // Update local state via callback
+      if (onSave) onSave(updatedContext)
+      setIsEditing(false)
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to save')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   // View mode
@@ -1430,34 +1470,19 @@ function ContextTabContent({ context, prototypeId }: { context: PrototypeContext
           Cancel
         </Button>
         <div style={{ display: 'flex', gap: spacing.xs, alignItems: 'center' }}>
-          {copyFeedback && (
+          {saveError && (
             <span style={{
               fontFamily: fontFamilies.body,
               fontSize: typography.body.xs.fontSize,
-              color: colors.status.success,
+              color: colors.status.important,
             }}>
-              Copied to clipboard
+              {saveError}
             </span>
           )}
-          <Button emphasis="high" size="md" onClick={handleCopyJson}>
-            Copy JSON
+          <Button emphasis="high" size="md" onClick={handleSave} disabled={isSaving}>
+            {isSaving ? 'Saving...' : 'Save'}
           </Button>
         </div>
-      </div>
-
-      {/* Instructions */}
-      <div style={{
-        padding: spacing.sm,
-        backgroundColor: colors.surface.lightDarker,
-        borderRadius: borderRadiusSemantics.card,
-        fontFamily: fontFamilies.body,
-        fontSize: typography.body.xs.fontSize,
-        color: colors.text.lowEmphasis.onLight,
-        lineHeight: '1.5',
-      }}>
-        Copy the JSON above and paste it as the <code style={{ fontFamily: fontFamilies.mono, fontSize: '11px' }}>&quot;context&quot;</code> value
-        for <code style={{ fontFamily: fontFamilies.mono, fontSize: '11px' }}>&quot;{prototypeId}&quot;</code> in{' '}
-        <code style={{ fontFamily: fontFamilies.mono, fontSize: '11px' }}>app/prototypes/registry.json</code>.
       </div>
     </div>
   )
