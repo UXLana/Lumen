@@ -1,0 +1,17 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CODEOWNERS — MTR Design System
+# ─────────────────────────────────────────────────────────────────────────────
+# Lana Holston owns all skill definitions, Claude commands, and config.
+# Changes to these paths require her review before merging.
+
+# Claude Code skills and commands
+/.claude/commands/                @UXLana
+/Skills/                          @UXLana
+
+# Claude project instructions
+/CLAUDE.md                        @UXLana
+/.claude/docs/                    @UXLana
+
+# Design tokens (source of truth)
+/styles/design-tokens.ts          @UXLana
+/styles/themes/                   @UXLana

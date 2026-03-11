@@ -25,6 +25,13 @@ This is the MTR Design System - a React/Next.js component library with design to
 - `/component-documenter` - Generate dual-format (human + LLM) component documentation with YAML frontmatter, prop tables, token maps, and accessibility specs
 - `/theme-generator` - Generate a complete product theme from a single brand color with intelligent color recommendations
 
+## Skill Ownership
+- Files in `.claude/commands/`, `Skills/`, and `.claude/docs/` are owned by Lana Holston (@UXLana)
+- Do not modify, rename, or delete existing skills without Lana's explicit approval
+- Do not modify `CLAUDE.md`, `styles/design-tokens.ts`, or `styles/themes/` without Lana's approval
+- Team members may create personal skills in their own `~/.claude/commands/` directory
+- See `.github/CODEOWNERS` for enforcement via GitHub PR reviews
+
 ## Conventions
 - Use design tokens from `styles/design-tokens.ts`
 - Components follow pattern: `components/{Name}/{Name}.tsx`

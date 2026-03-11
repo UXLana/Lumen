@@ -18,7 +18,8 @@
     "openQuestions": [],
     "lastReviewedBy": null,
     "lastReviewedDate": null,
-    "prompts": []
+    "prompts": [],
+    "context": null
   },
   {
     "id": "rid-label-prototype",
@@ -39,7 +40,8 @@
     "openQuestions": [],
     "lastReviewedBy": null,
     "lastReviewedDate": null,
-    "prompts": []
+    "prompts": [],
+    "context": null
   },
   {
     "id": "qr-verify",
@@ -62,7 +64,8 @@
     ],
     "lastReviewedBy": null,
     "lastReviewedDate": null,
-    "prompts": []
+    "prompts": [],
+    "context": null
   },
   {
     "id": "product-search",
@@ -83,7 +86,8 @@
     ],
     "lastReviewedBy": null,
     "lastReviewedDate": null,
-    "prompts": []
+    "prompts": [],
+    "context": null
   },
   {
     "id": "transfer-manifest",
@@ -104,6 +108,7 @@
     ],
     "lastReviewedBy": null,
     "lastReviewedDate": null,
-    "prompts": []
+    "prompts": [],
+    "context": null
   }
 ]

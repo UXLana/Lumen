@@ -76,6 +76,12 @@ Every prototype MUST have a README.md that tracks its state. Create on first bui
 ## Open Questions
 - [question]
 
+## Context
+<!-- Optional: business context, linked documents, and notes for collaborators -->
+- **Summary**: [brief description of business context]
+- **Documents**: [Confluence: Page Title](url), [Jira: TICKET-123](url)
+- **Notes**: [constraints, stakeholder decisions, research findings]
+
 ## Prompts
 <!-- Auto-appended by /prototype-builder on each invocation -->
 1. [YYYY-MM-DD] "[The user's original prompt or request that triggered this build/iteration]"
@@ -210,6 +216,9 @@ Before anything else, check if a prototype already exists for the project:
 6. **Key data** — What data should appear? Any sample values or real data to use?
 7. **States needed** — Which states matter? (loading, empty, error, success, permissions-based)
 8. **Known constraints** — Multi-state variations? Accessibility-critical workflows? Offline support?
+
+**Optionally offer (don't block on it):**
+9. **Context documents** — "Do you have any context documents to attach? (Confluence specs, Jira epics, Notion pages, Figma files, research findings — not required, but useful for collaborators reviewing the prototype later)" If provided, store them in the `context` field of the prototype's `registry.json` entry using the schema: `{ summary: string, documents: [{ label, url, type }], notes: string }`. Also add a `## Context` section in the prototype's `README.md`.
 
 **Present a summary** of what was gathered (from all sources) before proceeding:
 - List of screens identified

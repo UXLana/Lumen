@@ -21,6 +21,18 @@ import registry from './registry.json'
 
 type PrototypeStatus = 'draft' | 'in-review' | 'approved' | 'archived'
 
+interface ContextDocument {
+  label: string
+  url: string
+  type: 'confluence' | 'notion' | 'jira' | 'figma' | 'other'
+}
+
+interface PrototypeContext {
+  summary: string
+  documents: ContextDocument[]
+  notes: string
+}
+
 interface PrototypeEntry {
   id: string
   name: string
@@ -42,6 +54,7 @@ interface PrototypeEntry {
   lastReviewedBy: string | null
   lastReviewedDate: string | null
   prompts: { date: string; text: string; links?: { label: string; url: string }[] }[]
+  context: PrototypeContext | null
 }
 
 const prototypes = registry as PrototypeEntry[]
@@ -144,7 +157,7 @@ function FidelityIndicator({ current }: { current: string }) {
 // PROTOTYPE CARD
 // =============================================================================
 
-type DrawerTab = 'prompts' | 'questions'
+type DrawerTab = 'prompts' | 'questions' | 'context'
 
 const STORAGE_KEY = 'mtr-prototype-owner'
 const allOwners = Array.from(new Set(prototypes.map((p) => p.owner))).sort()
@@ -390,6 +403,15 @@ function PrototypeCard({ prototype, onOpenDrawer, currentOwner }: { prototype: P
                   e.stopPropagation()
                   setMenuOpen(false)
                   onOpenDrawer(prototype, 'questions')
+                }}
+              />
+              <OverflowMenuItem
+                label={`Context${prototype.context ? '' : ' (empty)'}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setMenuOpen(false)
+                  onOpenDrawer(prototype, 'context')
                 }}
               />
               {prototype.owner === currentOwner && (
@@ -731,10 +753,12 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
 
   const prompts = prototype.prompts || []
   const questions = prototype.openQuestions || []
+  const context = prototype.context
 
-  const tabs: { key: DrawerTab; label: string; count: number }[] = [
+  const tabs: { key: DrawerTab; label: string; count?: number }[] = [
     { key: 'prompts', label: 'Prompts', count: prompts.length },
     { key: 'questions', label: 'Open Questions', count: questions.length },
+    { key: 'context', label: 'Context' },
   ]
 
   return (
@@ -841,7 +865,7 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
                   transition: 'color 150ms ease-out',
                 }}
               >
-                {tab.label} ({tab.count})
+                {tab.label}{tab.count !== undefined ? ` (${tab.count})` : ''}
               </button>
             )
           })}
@@ -990,9 +1014,476 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
               </div>
             )
           )}
+
+          {activeTab === 'context' && (
+            <ContextTabContent context={context} prototypeId={prototype.id} />
+          )}
         </div>
       </div>
     </>
+  )
+}
+
+// =============================================================================
+// CONTEXT TAB
+// =============================================================================
+
+const DOC_TYPE_LABELS: Record<string, string> = {
+  confluence: 'Confluence',
+  notion: 'Notion',
+  jira: 'Jira',
+  figma: 'Figma',
+  other: 'Link',
+}
+
+function ContextTabContent({ context, prototypeId }: { context: PrototypeContext | null; prototypeId: string }) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editSummary, setEditSummary] = useState(context?.summary || '')
+  const [editNotes, setEditNotes] = useState(context?.notes || '')
+  const [editDocs, setEditDocs] = useState<ContextDocument[]>(context?.documents || [])
+  const [newDocLabel, setNewDocLabel] = useState('')
+  const [newDocUrl, setNewDocUrl] = useState('')
+  const [newDocType, setNewDocType] = useState<ContextDocument['type']>('confluence')
+  const [copyFeedback, setCopyFeedback] = useState(false)
+
+  const handleStartEdit = () => {
+    setEditSummary(context?.summary || '')
+    setEditNotes(context?.notes || '')
+    setEditDocs(context?.documents || [])
+    setIsEditing(true)
+  }
+
+  const handleAddDoc = () => {
+    if (!newDocLabel.trim() || !newDocUrl.trim()) return
+    setEditDocs([...editDocs, { label: newDocLabel.trim(), url: newDocUrl.trim(), type: newDocType }])
+    setNewDocLabel('')
+    setNewDocUrl('')
+    setNewDocType('confluence')
+  }
+
+  const handleRemoveDoc = (index: number) => {
+    setEditDocs(editDocs.filter((_, i) => i !== index))
+  }
+
+  const handleCopyJson = () => {
+    const updatedContext: PrototypeContext = {
+      summary: editSummary.trim(),
+      documents: editDocs,
+      notes: editNotes.trim(),
+    }
+    const json = JSON.stringify(updatedContext, null, 2)
+    navigator.clipboard.writeText(json).then(() => {
+      setCopyFeedback(true)
+      setTimeout(() => setCopyFeedback(false), 2000)
+    })
+  }
+
+  // View mode
+  if (!isEditing) {
+    if (!context) {
+      return (
+        <div style={{ textAlign: 'center', padding: spacing['2xl'] }}>
+          <DrawerEmptyState message="No context added yet. Add business context, research links, and notes to help collaborators understand this prototype." />
+          <Button emphasis="mid" size="md" onClick={handleStartEdit} style={{ marginTop: spacing.md }}>
+            Add Context
+          </Button>
+        </div>
+      )
+    }
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+        {/* Edit button */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <button
+            onClick={handleStartEdit}
+            aria-label="Edit context"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: spacing['2xs'],
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              fontWeight: fontWeights.medium,
+              color: colors.text.action.enabled,
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: `${spacing['2xs']} ${spacing.xs}`,
+              borderRadius: borderRadiusSemantics.button,
+              transition: 'background-color 150ms ease-out',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.hover.onLight }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent' }}
+          >
+            <EditIcon />
+            Edit
+          </button>
+        </div>
+
+        {/* Summary */}
+        {context.summary && (
+          <div>
+            <ContextSectionLabel>Summary</ContextSectionLabel>
+            <p style={{
+              margin: 0,
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              color: colors.text.highEmphasis.onLight,
+              lineHeight: '1.6',
+            }}>
+              {context.summary}
+            </p>
+          </div>
+        )}
+
+        {/* Documents */}
+        {context.documents.length > 0 && (
+          <div>
+            <ContextSectionLabel>Linked Documents</ContextSectionLabel>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              {context.documents.map((doc, i) => (
+                <a
+                  key={i}
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: spacing.sm,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    backgroundColor: colors.surface.lightDarker,
+                    borderRadius: borderRadiusSemantics.card,
+                    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                    textDecoration: 'none',
+                    transition: 'border-color 150ms ease-out',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = colors.text.action.enabled }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.border.lowEmphasis.onLight }}
+                >
+                  <span style={{
+                    fontFamily: fontFamilies.mono,
+                    fontSize: '10px',
+                    fontWeight: fontWeights.medium,
+                    color: colors.text.lowEmphasis.onLight,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    flexShrink: 0,
+                    minWidth: '72px',
+                  }}>
+                    {DOC_TYPE_LABELS[doc.type] || doc.type}
+                  </span>
+                  <span style={{
+                    fontFamily: fontFamilies.body,
+                    fontSize: typography.body.sm.fontSize,
+                    color: colors.text.action.enabled,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {doc.label}
+                  </span>
+                  <LinkIcon />
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Notes */}
+        {context.notes && (
+          <div>
+            <ContextSectionLabel>Notes</ContextSectionLabel>
+            <div style={{
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              color: colors.text.highEmphasis.onLight,
+              lineHeight: '1.6',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+            }}>
+              {context.notes}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Edit mode
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+      {/* Summary */}
+      <div>
+        <ContextSectionLabel>Summary</ContextSectionLabel>
+        <textarea
+          value={editSummary}
+          onChange={(e) => setEditSummary(e.target.value)}
+          placeholder="Brief description of business context, goals, and rationale..."
+          rows={3}
+          style={{
+            width: '100%',
+            fontFamily: fontFamilies.body,
+            fontSize: typography.body.sm.fontSize,
+            color: colors.text.highEmphasis.onLight,
+            backgroundColor: colors.surface.light,
+            border: `1px solid ${colors.border.midEmphasis.onLight}`,
+            borderRadius: borderRadiusSemantics.input,
+            padding: spacing.sm,
+            resize: 'vertical',
+            outline: 'none',
+            lineHeight: '1.5',
+            boxSizing: 'border-box',
+          }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = colors.focusBorder.onLight }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight }}
+        />
+      </div>
+
+      {/* Documents */}
+      <div>
+        <ContextSectionLabel>Linked Documents</ContextSectionLabel>
+
+        {/* Existing docs */}
+        {editDocs.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs, marginBottom: spacing.sm }}>
+            {editDocs.map((doc, i) => (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: spacing.xs,
+                  padding: `${spacing['2xs']} ${spacing.sm}`,
+                  backgroundColor: colors.surface.lightDarker,
+                  borderRadius: borderRadiusSemantics.card,
+                  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                }}
+              >
+                <span style={{
+                  fontFamily: fontFamilies.mono,
+                  fontSize: '10px',
+                  fontWeight: fontWeights.medium,
+                  color: colors.text.lowEmphasis.onLight,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  flexShrink: 0,
+                  minWidth: '72px',
+                }}>
+                  {DOC_TYPE_LABELS[doc.type] || doc.type}
+                </span>
+                <span style={{
+                  flex: 1,
+                  fontFamily: fontFamilies.body,
+                  fontSize: typography.body.sm.fontSize,
+                  color: colors.text.highEmphasis.onLight,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {doc.label}
+                </span>
+                <button
+                  onClick={() => handleRemoveDoc(i)}
+                  aria-label={`Remove ${doc.label}`}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: colors.text.disabled.onLight,
+                    borderRadius: borderRadiusSemantics.button,
+                    flexShrink: 0,
+                    transition: 'color 150ms ease-out',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = colors.status.important }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = colors.text.disabled.onLight }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Add new doc */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: spacing.xs,
+          padding: spacing.sm,
+          backgroundColor: colors.surface.lightDarker,
+          borderRadius: borderRadiusSemantics.card,
+          border: `1px dashed ${colors.border.lowEmphasis.onLight}`,
+        }}>
+          <div style={{ display: 'flex', gap: spacing.xs }}>
+            <select
+              value={newDocType}
+              onChange={(e) => setNewDocType(e.target.value as ContextDocument['type'])}
+              style={{
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.highEmphasis.onLight,
+                backgroundColor: colors.surface.light,
+                border: `1px solid ${colors.border.midEmphasis.onLight}`,
+                borderRadius: borderRadiusSemantics.input,
+                padding: `${spacing['2xs']} ${spacing.xs}`,
+                flexShrink: 0,
+                outline: 'none',
+              }}
+            >
+              <option value="confluence">Confluence</option>
+              <option value="notion">Notion</option>
+              <option value="jira">Jira</option>
+              <option value="figma">Figma</option>
+              <option value="other">Other</option>
+            </select>
+            <input
+              type="text"
+              value={newDocLabel}
+              onChange={(e) => setNewDocLabel(e.target.value)}
+              placeholder="Label"
+              style={{
+                flex: 1,
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.highEmphasis.onLight,
+                backgroundColor: colors.surface.light,
+                border: `1px solid ${colors.border.midEmphasis.onLight}`,
+                borderRadius: borderRadiusSemantics.input,
+                padding: `${spacing['2xs']} ${spacing.xs}`,
+                outline: 'none',
+                minWidth: 0,
+              }}
+            />
+          </div>
+          <div style={{ display: 'flex', gap: spacing.xs }}>
+            <input
+              type="url"
+              value={newDocUrl}
+              onChange={(e) => setNewDocUrl(e.target.value)}
+              placeholder="https://..."
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddDoc() }}
+              style={{
+                flex: 1,
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.highEmphasis.onLight,
+                backgroundColor: colors.surface.light,
+                border: `1px solid ${colors.border.midEmphasis.onLight}`,
+                borderRadius: borderRadiusSemantics.input,
+                padding: `${spacing['2xs']} ${spacing.xs}`,
+                outline: 'none',
+                minWidth: 0,
+              }}
+            />
+            <Button emphasis="mid" size="md" onClick={handleAddDoc} disabled={!newDocLabel.trim() || !newDocUrl.trim()}>
+              Add
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Notes */}
+      <div>
+        <ContextSectionLabel>Notes</ContextSectionLabel>
+        <textarea
+          value={editNotes}
+          onChange={(e) => setEditNotes(e.target.value)}
+          placeholder="Constraints, stakeholder decisions, regulatory requirements, research findings..."
+          rows={6}
+          style={{
+            width: '100%',
+            fontFamily: fontFamilies.body,
+            fontSize: typography.body.sm.fontSize,
+            color: colors.text.highEmphasis.onLight,
+            backgroundColor: colors.surface.light,
+            border: `1px solid ${colors.border.midEmphasis.onLight}`,
+            borderRadius: borderRadiusSemantics.input,
+            padding: spacing.sm,
+            resize: 'vertical',
+            outline: 'none',
+            lineHeight: '1.5',
+            boxSizing: 'border-box',
+          }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = colors.focusBorder.onLight }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight }}
+        />
+      </div>
+
+      {/* Actions */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: spacing.sm,
+        borderTop: `1px solid ${colors.border.lowEmphasis.onLight}`,
+      }}>
+        <Button emphasis="low" size="md" onClick={() => setIsEditing(false)}>
+          Cancel
+        </Button>
+        <div style={{ display: 'flex', gap: spacing.xs, alignItems: 'center' }}>
+          {copyFeedback && (
+            <span style={{
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.xs.fontSize,
+              color: colors.status.success,
+            }}>
+              Copied to clipboard
+            </span>
+          )}
+          <Button emphasis="high" size="md" onClick={handleCopyJson}>
+            Copy JSON
+          </Button>
+        </div>
+      </div>
+
+      {/* Instructions */}
+      <div style={{
+        padding: spacing.sm,
+        backgroundColor: colors.surface.lightDarker,
+        borderRadius: borderRadiusSemantics.card,
+        fontFamily: fontFamilies.body,
+        fontSize: typography.body.xs.fontSize,
+        color: colors.text.lowEmphasis.onLight,
+        lineHeight: '1.5',
+      }}>
+        Copy the JSON above and paste it as the <code style={{ fontFamily: fontFamilies.mono, fontSize: '11px' }}>&quot;context&quot;</code> value
+        for <code style={{ fontFamily: fontFamilies.mono, fontSize: '11px' }}>&quot;{prototypeId}&quot;</code> in{' '}
+        <code style={{ fontFamily: fontFamilies.mono, fontSize: '11px' }}>app/prototypes/registry.json</code>.
+      </div>
+    </div>
+  )
+}
+
+function ContextSectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{
+      fontFamily: fontFamilies.mono,
+      fontSize: '10px',
+      fontWeight: fontWeights.semibold,
+      color: colors.text.lowEmphasis.onLight,
+      textTransform: 'uppercase',
+      letterSpacing: '0.08em',
+      marginBottom: spacing.xs,
+    }}>
+      {children}
+    </div>
+  )
+}
+
+function EditIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M10 1.5l2.5 2.5L4.5 12H2v-2.5L10 1.5z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 }
 
