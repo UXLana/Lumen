@@ -26,11 +26,24 @@ export interface UseCase {
   description: string
 }
 
+export interface Version {
+  /** Short label shown in the selector, e.g. "v1", "v2 — Updated layout" */
+  label: string
+  /** Brief description of what changed in this version */
+  description: string
+}
+
 interface PrototypeToolbarProps {
   viewState: ViewState
   onViewStateChange: (state: ViewState) => void
   /** Additional states beyond the standard four */
   extraStates?: string[]
+  /** Versions of this prototype (selector shown when 2+) */
+  versions?: Version[]
+  /** Currently selected version index */
+  activeVersion?: number
+  /** Callback when version changes */
+  onVersionChange?: (index: number) => void
   /** Use cases / scenarios for this prototype */
   useCases?: UseCase[]
   /** Currently selected use case index */
@@ -78,6 +91,9 @@ export function PrototypeToolbar({
   viewState,
   onViewStateChange,
   extraStates,
+  versions,
+  activeVersion,
+  onVersionChange,
   useCases,
   activeUseCase,
   onUseCaseChange,
@@ -113,6 +129,7 @@ export function PrototypeToolbar({
   }, [isOpen])
 
   const allStates = extraStates ? [...VIEW_STATES, ...extraStates] : VIEW_STATES
+  const hasVersions = versions && versions.length > 1 && onVersionChange
   const hasUseCases = useCases && useCases.length > 0 && onUseCaseChange
 
   return (
@@ -170,6 +187,38 @@ export function PrototypeToolbar({
             padding: spacing.sm,
           }}
         >
+          {/* Version selector */}
+          {hasVersions && (
+            <div>
+              <div style={labelStyle}>Version</div>
+              <select
+                value={activeVersion ?? 0}
+                onChange={(e) => onVersionChange(Number(e.target.value))}
+                aria-label="Prototype version"
+                style={selectStyle}
+              >
+                {versions.map((v, i) => (
+                  <option key={i} value={i}>
+                    {v.label}
+                  </option>
+                ))}
+              </select>
+              {versions[activeVersion ?? 0] && (
+                <div
+                  style={{
+                    fontFamily: fontFamilies.body,
+                    fontSize: typography.body.xs.fontSize,
+                    color: colors.text.lowEmphasis.onLight,
+                    marginTop: '4px',
+                    lineHeight: '1.4',
+                  }}
+                >
+                  {versions[activeVersion ?? 0].description}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Use case selector */}
           {hasUseCases && (
             <div>

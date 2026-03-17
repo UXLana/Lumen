@@ -33,6 +33,21 @@ interface PrototypeContext {
   notes: string
 }
 
+interface FeedbackActionItem {
+  text: string
+  completed: boolean
+}
+
+interface FeedbackEntry {
+  id: string
+  date: string
+  source: string
+  participants: string
+  actionItems: FeedbackActionItem[]
+  themes: string
+  decisions: string
+}
+
 interface PrototypeEntry {
   id: string
   name: string
@@ -55,6 +70,10 @@ interface PrototypeEntry {
   lastReviewedDate: string | null
   prompts: { date: string; text: string; links?: { label: string; url: string }[] }[]
   context: PrototypeContext | null
+  version?: number
+  versions?: { label: string; date: string; description: string }[]
+  parentId?: string
+  isSnapshot?: boolean
 }
 
 const prototypes = registry as PrototypeEntry[]
@@ -157,17 +176,19 @@ function FidelityIndicator({ current }: { current: string }) {
 // PROTOTYPE CARD
 // =============================================================================
 
-type DrawerTab = 'prompts' | 'questions' | 'context'
+type DrawerTab = 'prompts' | 'questions' | 'context' | 'feedback'
 
 const STORAGE_KEY = 'mtr-prototype-owner'
 const allOwners = Array.from(new Set(prototypes.map((p) => p.owner))).sort()
 
 function useCurrentOwner() {
-  const [owner, setOwner] = useState<string>('')
+  const [owner, setOwner] = useState<string>(allOwners[0] || '')
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY)
-    setOwner(stored || allOwners[0] || '')
+    if (stored && allOwners.includes(stored)) {
+      setOwner(stored)
+    }
   }, [])
 
   const updateOwner = (name: string) => {
@@ -225,7 +246,7 @@ function PrototypeCard({ prototype, onOpenDrawer, currentOwner }: { prototype: P
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header: name + status */}
+      {/* Header: name + version/status badges */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: spacing.sm }}>
         <h3 style={{
           margin: 0,
@@ -236,9 +257,39 @@ function PrototypeCard({ prototype, onOpenDrawer, currentOwner }: { prototype: P
         }}>
           {prototype.name}
         </h3>
-        <Badge color={status.color} variant="filled" size="sm">
-          {status.label}
-        </Badge>
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexShrink: 0 }}>
+          {prototype.versions && prototype.versions.length > 1 && (
+            <span style={{
+              fontFamily: fontFamilies.mono,
+              fontSize: '10px',
+              fontWeight: fontWeights.medium,
+              color: colors.brand.default,
+              backgroundColor: `${colors.brand.default}14`,
+              padding: '1px 6px',
+              borderRadius: borderRadius.full,
+              whiteSpace: 'nowrap',
+            }}>
+              {prototype.versions.length} versions
+            </span>
+          )}
+          {prototype.version && !prototype.versions && (
+            <span style={{
+              fontFamily: fontFamilies.mono,
+              fontSize: '10px',
+              fontWeight: fontWeights.medium,
+              color: prototype.isSnapshot ? colors.text.disabled.onLight : colors.brand.default,
+              backgroundColor: prototype.isSnapshot ? colors.surface.lightDarker : `${colors.brand.default}14`,
+              padding: '1px 6px',
+              borderRadius: borderRadius.full,
+              whiteSpace: 'nowrap',
+            }}>
+              v{prototype.version}
+            </span>
+          )}
+          <Badge color={status.color} variant="filled" size="sm">
+            {status.label}
+          </Badge>
+        </div>
       </div>
 
       {/* Description */}
@@ -414,6 +465,15 @@ function PrototypeCard({ prototype, onOpenDrawer, currentOwner }: { prototype: P
                   onOpenDrawer(prototype, 'context')
                 }}
               />
+              <OverflowMenuItem
+                label="Feedback"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setMenuOpen(false)
+                  onOpenDrawer(prototype, 'feedback')
+                }}
+              />
               {prototype.owner === currentOwner && (
                 <>
                   <div style={{ height: '1px', backgroundColor: colors.border.lowEmphasis.onLight, margin: `${spacing['2xs']} 0` }} />
@@ -509,17 +569,18 @@ export default function PrototypesIndexPage() {
     ownershipTab === 'mine' ? p.owner === currentOwner : p.owner !== currentOwner
   )
 
+  // Hide snapshots unless explicitly filtering by "archived" status
   const filtered = ownershipFiltered
-    .filter((p) => activeStatusFilter === 'all' || p.status === activeStatusFilter)
+    .filter((p) => activeStatusFilter === 'all' ? !p.isSnapshot : p.status === activeStatusFilter)
     .filter((p) => !activeTagFilter || p.tags.includes(activeTagFilter))
 
   const counts: Record<string, number> = {
-    all: ownershipFiltered.length,
+    all: ownershipFiltered.filter((p) => !p.isSnapshot).length,
     ...Object.fromEntries(allStatuses.map((s) => [s, ownershipFiltered.filter((p) => p.status === s).length])),
   }
 
-  const mineCount = prototypes.filter((p) => p.owner === currentOwner).length
-  const othersCount = prototypes.filter((p) => p.owner !== currentOwner).length
+  const mineCount = prototypes.filter((p) => p.owner === currentOwner && !p.isSnapshot).length
+  const othersCount = prototypes.filter((p) => p.owner !== currentOwner && !p.isSnapshot).length
   const allTags = Array.from(new Set(ownershipFiltered.flatMap((p) => p.tags))).sort()
 
   return (
@@ -737,6 +798,8 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
   const drawerRef = useRef<HTMLDivElement>(null)
   const [supabaseContext, setSupabaseContext] = useState<PrototypeContext | null>(null)
   const [contextLoaded, setContextLoaded] = useState(false)
+  const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>([])
+  const [feedbackLoaded, setFeedbackLoaded] = useState(false)
 
   // Fetch context from Supabase when drawer opens
   useEffect(() => {
@@ -749,13 +812,34 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
     fetch(`/api/prototypes/${prototype.id}/context`)
       .then(res => res.json())
       .then(data => {
-        setSupabaseContext(data.context || null)
+        // Use Supabase data if present, otherwise fall back to registry.json
+        setSupabaseContext(data.context || prototype.context)
         setContextLoaded(true)
       })
       .catch(() => {
-        // Fall back to registry.json context
+        // Network error — fall back to registry.json context
         setSupabaseContext(prototype.context)
         setContextLoaded(true)
+      })
+  }, [prototype])
+
+  // Fetch feedback from Supabase when drawer opens
+  useEffect(() => {
+    if (!prototype) {
+      setFeedbackLoaded(false)
+      setFeedbackEntries([])
+      return
+    }
+    setFeedbackLoaded(false)
+    fetch(`/api/prototypes/${prototype.id}/feedback`)
+      .then(res => res.json())
+      .then(data => {
+        setFeedbackEntries(data.feedback || [])
+        setFeedbackLoaded(true)
+      })
+      .catch(() => {
+        setFeedbackEntries([])
+        setFeedbackLoaded(true)
       })
   }, [prototype])
 
@@ -782,6 +866,7 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
     { key: 'prompts', label: 'Prompts', count: prompts.length },
     { key: 'questions', label: 'Open Questions', count: questions.length },
     { key: 'context', label: 'Context' },
+    { key: 'feedback', label: 'Feedback' },
   ]
 
   return (
@@ -1040,6 +1125,14 @@ function DetailDrawer({ prototype, activeTab, onTabChange, onClose }: {
 
           {activeTab === 'context' && (
             <ContextTabContent context={context} prototypeId={prototype.id} onSave={(ctx) => setSupabaseContext(ctx)} />
+          )}
+
+          {activeTab === 'feedback' && (
+            <FeedbackTabContent
+              feedback={feedbackLoaded ? feedbackEntries : []}
+              prototypeId={prototype.id}
+              onUpdate={(entries) => setFeedbackEntries(entries)}
+            />
           )}
         </div>
       </div>
@@ -1484,6 +1577,562 @@ function ContextTabContent({ context, prototypeId, onSave }: { context: Prototyp
           </Button>
         </div>
       </div>
+    </div>
+  )
+}
+
+// =============================================================================
+// FEEDBACK TAB
+// =============================================================================
+
+const SOURCE_LABELS: Record<string, string> = {
+  teams: 'Teams Meeting',
+  slack: 'Slack Thread',
+  async: 'Async Review',
+  email: 'Email',
+  inPerson: 'In Person',
+  other: 'Other',
+}
+
+function FeedbackTabContent({ feedback, prototypeId, onUpdate }: {
+  feedback: FeedbackEntry[]
+  prototypeId: string
+  onUpdate: (entries: FeedbackEntry[]) => void
+}) {
+  const [isAdding, setIsAdding] = useState(false)
+
+  // Form state
+  const [newDate, setNewDate] = useState(() => new Date().toISOString().split('T')[0])
+  const [newSource, setNewSource] = useState('teams')
+  const [newParticipants, setNewParticipants] = useState('')
+  const [newThemes, setNewThemes] = useState('')
+  const [newDecisions, setNewDecisions] = useState('')
+  const [newActionItems, setNewActionItems] = useState<FeedbackActionItem[]>([])
+  const [newActionText, setNewActionText] = useState('')
+
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  const resetForm = () => {
+    setNewDate(new Date().toISOString().split('T')[0])
+    setNewSource('teams')
+    setNewParticipants('')
+    setNewThemes('')
+    setNewDecisions('')
+    setNewActionItems([])
+    setNewActionText('')
+    setSaveError(null)
+  }
+
+  const handleAddActionItem = () => {
+    if (!newActionText.trim()) return
+    setNewActionItems([...newActionItems, { text: newActionText.trim(), completed: false }])
+    setNewActionText('')
+  }
+
+  const handleRemoveActionItem = (index: number) => {
+    setNewActionItems(newActionItems.filter((_, i) => i !== index))
+  }
+
+  const handleSave = async () => {
+    const entry: FeedbackEntry = {
+      id: crypto.randomUUID(),
+      date: newDate,
+      source: newSource,
+      participants: newParticipants.trim(),
+      actionItems: newActionItems,
+      themes: newThemes.trim(),
+      decisions: newDecisions.trim(),
+    }
+    setIsSaving(true)
+    setSaveError(null)
+    try {
+      const res = await fetch(`/api/prototypes/${prototypeId}/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entry }),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Failed to save')
+      }
+      const data = await res.json()
+      onUpdate(data.feedback)
+      resetForm()
+      setIsAdding(false)
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to save')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleToggleActionItem = async (entryId: string, actionIndex: number) => {
+    const updated = feedback.map(entry => {
+      if (entry.id !== entryId) return entry
+      return {
+        ...entry,
+        actionItems: entry.actionItems.map((item, i) =>
+          i === actionIndex ? { ...item, completed: !item.completed } : item
+        ),
+      }
+    })
+    onUpdate(updated)
+    try {
+      await fetch(`/api/prototypes/${prototypeId}/feedback`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ feedback: updated }),
+      })
+    } catch {
+      onUpdate(feedback)
+    }
+  }
+
+  // Add mode
+  if (isAdding) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+        {/* Date */}
+        <div>
+          <ContextSectionLabel>Date</ContextSectionLabel>
+          <input
+            type="date"
+            value={newDate}
+            onChange={(e) => setNewDate(e.target.value)}
+            style={{
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              color: colors.text.highEmphasis.onLight,
+              backgroundColor: colors.surface.light,
+              border: `1px solid ${colors.border.midEmphasis.onLight}`,
+              borderRadius: borderRadiusSemantics.input,
+              padding: `${spacing['2xs']} ${spacing.sm}`,
+              outline: 'none',
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = colors.focusBorder.onLight }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight }}
+          />
+        </div>
+
+        {/* Source */}
+        <div>
+          <ContextSectionLabel>Source</ContextSectionLabel>
+          <select
+            value={newSource}
+            onChange={(e) => setNewSource(e.target.value)}
+            style={{
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              color: colors.text.highEmphasis.onLight,
+              backgroundColor: colors.surface.light,
+              border: `1px solid ${colors.border.midEmphasis.onLight}`,
+              borderRadius: borderRadiusSemantics.input,
+              padding: `${spacing['2xs']} ${spacing.sm}`,
+              outline: 'none',
+            }}
+          >
+            {Object.entries(SOURCE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Participants */}
+        <div>
+          <ContextSectionLabel>Participants</ContextSectionLabel>
+          <input
+            type="text"
+            value={newParticipants}
+            onChange={(e) => setNewParticipants(e.target.value)}
+            placeholder="Names, comma-separated (e.g., Lana Holston, David Eagleson)"
+            style={{
+              width: '100%',
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              color: colors.text.highEmphasis.onLight,
+              backgroundColor: colors.surface.light,
+              border: `1px solid ${colors.border.midEmphasis.onLight}`,
+              borderRadius: borderRadiusSemantics.input,
+              padding: `${spacing['2xs']} ${spacing.sm}`,
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = colors.focusBorder.onLight }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight }}
+          />
+        </div>
+
+        {/* Themes */}
+        <div>
+          <ContextSectionLabel>Feedback Themes</ContextSectionLabel>
+          <textarea
+            value={newThemes}
+            onChange={(e) => setNewThemes(e.target.value)}
+            placeholder="Key feedback themes from this session..."
+            rows={3}
+            style={{
+              width: '100%',
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              color: colors.text.highEmphasis.onLight,
+              backgroundColor: colors.surface.light,
+              border: `1px solid ${colors.border.midEmphasis.onLight}`,
+              borderRadius: borderRadiusSemantics.input,
+              padding: spacing.sm,
+              resize: 'vertical',
+              outline: 'none',
+              lineHeight: '1.5',
+              boxSizing: 'border-box',
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = colors.focusBorder.onLight }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight }}
+          />
+        </div>
+
+        {/* Decisions */}
+        <div>
+          <ContextSectionLabel>Decisions</ContextSectionLabel>
+          <textarea
+            value={newDecisions}
+            onChange={(e) => setNewDecisions(e.target.value)}
+            placeholder="Decisions made during this review..."
+            rows={3}
+            style={{
+              width: '100%',
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              color: colors.text.highEmphasis.onLight,
+              backgroundColor: colors.surface.light,
+              border: `1px solid ${colors.border.midEmphasis.onLight}`,
+              borderRadius: borderRadiusSemantics.input,
+              padding: spacing.sm,
+              resize: 'vertical',
+              outline: 'none',
+              lineHeight: '1.5',
+              boxSizing: 'border-box',
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = colors.focusBorder.onLight }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight }}
+          />
+        </div>
+
+        {/* Action Items */}
+        <div>
+          <ContextSectionLabel>Action Items</ContextSectionLabel>
+
+          {/* Existing action items */}
+          {newActionItems.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs, marginBottom: spacing.sm }}>
+              {newActionItems.map((item, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: spacing.xs,
+                    padding: `${spacing['2xs']} ${spacing.sm}`,
+                    backgroundColor: colors.surface.lightDarker,
+                    borderRadius: borderRadiusSemantics.card,
+                    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                  }}
+                >
+                  <span style={{
+                    flex: 1,
+                    fontFamily: fontFamilies.body,
+                    fontSize: typography.body.sm.fontSize,
+                    color: colors.text.highEmphasis.onLight,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {item.text}
+                  </span>
+                  <button
+                    onClick={() => handleRemoveActionItem(i)}
+                    aria-label={`Remove action item: ${item.text}`}
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: colors.text.disabled.onLight,
+                      borderRadius: borderRadiusSemantics.button,
+                      flexShrink: 0,
+                      transition: 'color 150ms ease-out',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = colors.status.important }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = colors.text.disabled.onLight }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                      <path d="M3 3L9 9M9 3L3 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add new action item */}
+          <div style={{
+            display: 'flex',
+            gap: spacing.xs,
+            padding: spacing.sm,
+            backgroundColor: colors.surface.lightDarker,
+            borderRadius: borderRadiusSemantics.card,
+            border: `1px dashed ${colors.border.lowEmphasis.onLight}`,
+          }}>
+            <input
+              type="text"
+              value={newActionText}
+              onChange={(e) => setNewActionText(e.target.value)}
+              placeholder="Action item text..."
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddActionItem() }}
+              style={{
+                flex: 1,
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.highEmphasis.onLight,
+                backgroundColor: colors.surface.light,
+                border: `1px solid ${colors.border.midEmphasis.onLight}`,
+                borderRadius: borderRadiusSemantics.input,
+                padding: `${spacing['2xs']} ${spacing.xs}`,
+                outline: 'none',
+                minWidth: 0,
+              }}
+            />
+            <Button emphasis="mid" size="md" onClick={handleAddActionItem} disabled={!newActionText.trim()}>
+              Add
+            </Button>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingTop: spacing.sm,
+          borderTop: `1px solid ${colors.border.lowEmphasis.onLight}`,
+        }}>
+          <Button emphasis="low" size="md" onClick={() => { resetForm(); setIsAdding(false) }}>
+            Cancel
+          </Button>
+          <div style={{ display: 'flex', gap: spacing.xs, alignItems: 'center' }}>
+            {saveError && (
+              <span style={{
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.xs.fontSize,
+                color: colors.status.important,
+              }}>
+                {saveError}
+              </span>
+            )}
+            <Button emphasis="high" size="md" onClick={handleSave} disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // View mode — empty state
+  if (feedback.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: spacing['2xl'] }}>
+        <DrawerEmptyState message="No feedback recorded yet. Add review notes, action items, and decisions from stakeholder sessions." />
+        <Button emphasis="mid" size="md" onClick={() => setIsAdding(true)} style={{ marginTop: spacing.md }}>
+          Add Feedback
+        </Button>
+      </div>
+    )
+  }
+
+  // View mode — list
+  const openCount = feedback.reduce((sum, e) => sum + e.actionItems.filter(a => !a.completed).length, 0)
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+      {/* Header with add button and open action items summary */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {openCount > 0 && (
+          <span style={{
+            fontFamily: fontFamilies.body,
+            fontSize: typography.body.xs.fontSize,
+            color: colors.text.warning,
+            fontWeight: fontWeights.medium,
+          }}>
+            {openCount} open action item{openCount !== 1 ? 's' : ''}
+          </span>
+        )}
+        <div style={{ marginLeft: 'auto' }}>
+          <button
+            onClick={() => setIsAdding(true)}
+            aria-label="Add feedback"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: spacing['2xs'],
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.sm.fontSize,
+              fontWeight: fontWeights.medium,
+              color: colors.text.action.enabled,
+              backgroundColor: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: `${spacing['2xs']} ${spacing.xs}`,
+              borderRadius: borderRadiusSemantics.button,
+              transition: 'background-color 150ms ease-out',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.hover.onLight }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M7 3v8M3 7h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            Add Feedback
+          </button>
+        </div>
+      </div>
+
+      {/* Feedback entries */}
+      {feedback.map((entry) => (
+        <div
+          key={entry.id}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: spacing.md,
+            padding: spacing.md,
+            backgroundColor: colors.surface.lightDarker,
+            borderRadius: borderRadiusSemantics.card,
+            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+          }}
+        >
+          {/* Header: date + source */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{
+              fontFamily: fontFamilies.mono,
+              fontSize: '11px',
+              color: colors.text.disabled.onLight,
+            }}>
+              {entry.date}
+            </span>
+            <Badge color="neutral" variant="outlined" size="sm">
+              {SOURCE_LABELS[entry.source] || entry.source}
+            </Badge>
+          </div>
+
+          {/* Participants */}
+          {entry.participants && (
+            <div>
+              <ContextSectionLabel>Participants</ContextSectionLabel>
+              <p style={{
+                margin: 0,
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.highEmphasis.onLight,
+              }}>
+                {entry.participants}
+              </p>
+            </div>
+          )}
+
+          {/* Action Items */}
+          {entry.actionItems.length > 0 && (
+            <div>
+              <ContextSectionLabel>Action Items</ContextSectionLabel>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['2xs'] }}>
+                {entry.actionItems.map((item, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleToggleActionItem(entry.id, i)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: spacing.xs,
+                      padding: `${spacing['2xs']} 0`,
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      width: '100%',
+                    }}
+                  >
+                    <span style={{
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: borderRadius.xs,
+                      border: `1.5px solid ${item.completed ? colors.status.success : colors.border.midEmphasis.onLight}`,
+                      backgroundColor: item.completed ? colors.status.success : 'transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                      transition: 'all 150ms ease-out',
+                    }}>
+                      {item.completed && (
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                          <path d="M2 5l2.5 2.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </span>
+                    <span style={{
+                      fontFamily: fontFamilies.body,
+                      fontSize: typography.body.sm.fontSize,
+                      color: item.completed ? colors.text.disabled.onLight : colors.text.highEmphasis.onLight,
+                      textDecoration: item.completed ? 'line-through' : 'none',
+                      lineHeight: '1.4',
+                    }}>
+                      {item.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Themes */}
+          {entry.themes && (
+            <div>
+              <ContextSectionLabel>Themes</ContextSectionLabel>
+              <div style={{
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.highEmphasis.onLight,
+                lineHeight: '1.6',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+              }}>
+                {entry.themes}
+              </div>
+            </div>
+          )}
+
+          {/* Decisions */}
+          {entry.decisions && (
+            <div>
+              <ContextSectionLabel>Decisions</ContextSectionLabel>
+              <div style={{
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.highEmphasis.onLight,
+                lineHeight: '1.6',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+              }}>
+                {entry.decisions}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   )
 }

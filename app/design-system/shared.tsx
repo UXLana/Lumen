@@ -101,6 +101,7 @@ export const navSections = [
       { id: 'button', label: 'Button', href: '/components/button' },
       { id: 'checkbox', label: 'Checkbox', href: '/components/checkbox' },
       { id: 'chip', label: 'Chip', href: '/components/chip' },
+      { id: 'combobox', label: 'Combobox', href: '/components/combobox' },
       { id: 'data-table', label: 'Data Table', href: '/components/data-table' },
       { id: 'divider', label: 'Divider', href: '/components/divider' },
       { id: 'full-screen-modal', label: 'Full Screen Modal', href: '/components/full-screen-modal' },
@@ -116,6 +117,8 @@ export const navSections = [
       { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'stepper', label: 'Stepper', href: '/components/stepper' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
+      { id: 'progress-bar', label: 'Progress Bar', href: '/components/progress-bar' },
+      { id: 'upload', label: 'Upload', href: '/components/upload' },
     ],
   },
   {
@@ -125,8 +128,10 @@ export const navSections = [
       { id: 'prototypes-index', label: 'All Prototypes', href: '/prototypes' },
       { id: 'product-registry', label: 'Product Registry', href: '/prototypes/product-registry' },
       { id: 'qr-verify', label: 'QR Verify', href: '/prototypes/qr-verify' },
+      { id: 'rid-landing-page', label: 'RID Landing Page', href: '/prototypes/rid-landing-page' },
       { id: 'product-search', label: 'Product Search', href: '/prototypes/product-search' },
       { id: 'transfer-manifest', label: 'Transfer Manifest', href: '/prototypes/transfer-manifest' },
+      { id: 'rid-tag-generator', label: 'RID Tag Generator', href: '/prototypes/rid-tag-generator' },
     ],
   },
   {

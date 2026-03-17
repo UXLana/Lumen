@@ -117,6 +117,10 @@
         "links": [
           { "label": "Confluence: Mobile Landing Page Discussion with Urban + Consultants", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants" }
         ]
+      },
+      {
+        "date": "2026-03-17",
+        "text": "Replace the legal banners on top of the page with a CCC + Compliance Passed + Metrc Retail ID branded banner image."
       }
     ],
     "context": {
@@ -151,5 +155,47 @@
     "lastReviewedDate": null,
     "prompts": [],
     "context": null
+  },
+  {
+    "id": "rid-tag-generator",
+    "name": "RID Tag Generator",
+    "description": "Guided step-by-step wizard for operators to generate QR-coded tags: select template, configure quantities/reels, generate, and download CSV/PDF.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "desktop",
+    "fidelity": "high-fi",
+    "created": "2026-03-16",
+    "updated": "2026-03-16",
+    "href": "/prototypes/rid-tag-generator",
+    "screens": 1,
+    "tags": ["rid", "tag-generation", "wizard"],
+    "dsComponents": ["LinearStepper", "Badge", "Banner", "Button", "Input", "Select", "ProgressBar", "EmptyState", "Skeleton", "Divider"],
+    "openQuestions": [
+      "Should the Learn more link on migrated templates go to a Pendo guide or Confluence doc?",
+      "Can the migrated template banner be removed after a couple months?",
+      "What are the maximum tags per reel?",
+      "Should regulators have a batch approve action?",
+      "How long does QR code generation actually take?"
+    ],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": [
+      {
+        "date": "2026-03-16",
+        "text": "Build a RID tag generation wizard — step-by-step flow where operators configure a template, enter quantities, calculate reels, generate QR codes, and download CSV/PDF. Based on meeting transcript with Ryan Andrews, Grant Kemp, and Tanika Tompkins."
+      }
+    ],
+    "versions": [
+      {
+        "label": "v1",
+        "date": "2026-03-16",
+        "description": "Initial wizard flow from March 2026 meeting with Ryan Andrews, Grant Kemp, and Tanika Tompkins"
+      }
+    ],
+    "context": {
+      "summary": "Guided step-by-step wizard for RID tag generation. Operators select templates, configure quantity and reels, generate QR codes with unique IDs, and download CSV (always) + PDF (optional). Regulators get a separate order review view.",
+      "documents": [],
+      "notes": "Ryan Andrews excited about guided step-by-step approach. Grant Kemp noted Learn more link environment issue. Changed print to download per Lana's decision. Migrated template banner planned for eventual removal."
+    }
   }
 ]
