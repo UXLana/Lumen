@@ -160,3 +160,36 @@ export type {
   SortButtonProps,
   SelectionInfoProps,
 } from './DataTable'
+
+// ProgressBar
+export { ProgressBar } from './ProgressBar'
+export type { ProgressBarProps, ProgressBarSize, ProgressBarVariant } from './ProgressBar'
+
+// Upload
+export { Upload, DropZone, UploadFile, UploadFileList, UploadIcon, useUpload } from './Upload'
+export type {
+  UploadProps,
+  UploadStatus,
+  DropZoneProps,
+  DropZoneIcon,
+  DropZoneStatus,
+  UploadFileProps,
+  UploadFileItem,
+  UploadFileStatus,
+  UploadFileListProps,
+  UploadIconProps,
+  UploadIconType,
+  UploadIconState,
+  UseUploadOptions,
+  UseUploadReturn,
+} from './Upload'
+
+// Combobox
+export { Combobox, useCombobox } from './Combobox'
+export type {
+  ComboboxProps,
+  ComboboxOption,
+  ComboboxStatus,
+  UseComboboxOptions,
+  UseComboboxReturn,
+} from './Combobox'

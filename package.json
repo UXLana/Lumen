@@ -15,7 +15,7 @@
     "./styles/design-tokens": "./styles/design-tokens.ts"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3333",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
+    "@supabase/supabase-js": "^2.99.1",
     "better-sqlite3": "^12.6.2",
     "openai": "^6.27.0",
     "uuid": "^13.0.0"

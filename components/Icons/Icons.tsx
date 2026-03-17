@@ -1065,3 +1065,34 @@ export const IconDataTable: React.FC<IconProps> = (props) => (
   </BaseIcon>
 )
 IconDataTable.displayName = 'IconDataTable'
+
+// =============================================================================
+// UPLOAD-RELATED ICONS
+// =============================================================================
+
+export const IconPaperclip: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+  </BaseIcon>
+)
+IconPaperclip.displayName = 'IconPaperclip'
+
+export const IconImport: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <path d="M12 3v12" />
+    <path d="M8 11l4 4 4-4" />
+    <path d="M20 21H4" />
+    <path d="M20 17V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12" />
+  </BaseIcon>
+)
+IconImport.displayName = 'IconImport'
+
+export const IconFilePdf: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <path d="M7 15h2a1.5 1.5 0 0 0 0-3H7v6" />
+    <path d="M13 13h1.5a1.5 1.5 0 0 1 0 3H13v-6h1.5a1.5 1.5 0 0 1 0 3" />
+  </BaseIcon>
+)
+IconFilePdf.displayName = 'IconFilePdf'
