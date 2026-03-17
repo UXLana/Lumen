@@ -32,6 +32,13 @@ This is the MTR Design System - a React/Next.js component library with design to
 - Team members may create personal skills in their own `~/.claude/commands/` directory
 - See `.github/CODEOWNERS` for enforcement via GitHub PR reviews
 
+## Workflow Principles
+- **Plan first**: Enter plan mode for any task with 3+ steps or architectural decisions. If something goes sideways, stop and re-plan immediately — don't keep pushing.
+- **Verify before done**: Never mark work complete without proving it works (tests pass, visual check, a11y audit). Ask yourself: "Would a staff engineer approve this?"
+- **Learn from corrections**: After any user correction, update MEMORY.md with the pattern to prevent repeats.
+- **Simplicity first**: Make every change as simple as possible. Find root causes — no temporary fixes. Senior developer standards.
+- **Minimal impact**: Changes should only touch what's necessary. Avoid introducing bugs by keeping scope tight.
+
 ## Conventions
 - Use design tokens from `styles/design-tokens.ts`
 - Components follow pattern: `components/{Name}/{Name}.tsx`

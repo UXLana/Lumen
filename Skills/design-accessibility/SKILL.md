@@ -487,6 +487,77 @@ Use `scripts/generate-vpat-report.py` as the generator. Key functions:
 
 ---
 
+## Confluence Documentation
+
+All audit outputs are automatically published to Confluence unless `--no-confluence` is passed.
+
+### Configuration
+
+| Setting | Value |
+|---------|-------|
+| Cloud | metrc-tech.atlassian.net |
+| Space | UE1 (User Experience) |
+| Space ID | 520290313 |
+| Parent Page | Metrc Accessibility Compliance |
+| Parent Page ID | 785743883 |
+
+### Page Hierarchy
+
+```
+Metrc Accessibility Compliance (785743883)
+├── VPAT Remediation Status (786169859)
+├── Metrc ARIA Treegrid Accessibility Audit (664862732)
+├── Accessibility Testing Strategy (785809421)
+├── Dev Updates & Release Notes
+│   └── Dev Update: VPAT Fixes Shipped 3/6/2026 (785907726)
+├── Component Audits
+│   └── [auto-created per audit]
+└── axe Scan Results Archive
+    └── [auto-created per import]
+```
+
+### What Each Mode Publishes
+
+| Mode | Confluence Action | Parent Page |
+|------|-------------------|-------------|
+| Standard audit | Create/update subpage for audited component | Component Audits |
+| `--from-axe` | Create subpage with parsed scan results | axe Scan Results Archive |
+| `--vpat` | Create/update state-specific subpage | VPAT Remediation Status |
+| `--report` | Create subpage with formal report | Metrc Accessibility Compliance |
+| `--compliance` | Append Section 508 findings to relevant state page | VPAT Remediation Status |
+| `--external` | Create subpage for external page audit | Component Audits |
+| `--manual` | Update testing checklist page | Accessibility Testing Strategy |
+| `--screen-reader` | Attach SR test scripts to relevant audit page | Component Audits |
+
+### Publishing Behavior
+
+1. **Auto-publish (default):** After generating output locally, create or update the corresponding Confluence page using `createConfluencePage` or `updateConfluencePage` MCP tools
+2. **Content format:** Always use `contentFormat: "markdown"` for Confluence pages
+3. **Page titles:** Use descriptive titles with dates (e.g., "axe Scan: Plants Page - 2026-03-17")
+4. **Updates vs creates:** Search for existing page by title before creating. If found, update it. If not, create new
+5. **Skip with `--no-confluence`:** When flag is present, skip all Confluence publishing and only output locally
+
+### MCP Tools Used
+
+```
+createConfluencePage:
+  cloudId: "metrc-tech.atlassian.net"
+  spaceId: "520290313"
+  parentId: [parent page ID from hierarchy above]
+  contentFormat: "markdown"
+  title: [descriptive title]
+  body: [markdown content]
+
+updateConfluencePage:
+  cloudId: "metrc-tech.atlassian.net"
+  pageId: [existing page ID]
+  contentFormat: "markdown"
+  body: [updated markdown content]
+  versionMessage: [description of changes]
+```
+
+---
+
 ## Quick Reference: What to Use When
 
 | Situation | Command |

@@ -271,6 +271,33 @@ Track which states have been analyzed. Always check existing reports before gene
 
 ---
 
+---
+
+## Confluence Documentation
+
+All outputs are automatically published to Confluence. Every mode creates or updates a page under the **Metrc Accessibility Compliance** parent page in the UE1 space.
+
+**Confluence parent page:** [Metrc Accessibility Compliance](https://metrc-tech.atlassian.net/wiki/spaces/UE1/pages/785743883) (ID: 785743883)
+
+| Mode | Publishes To |
+|------|-------------|
+| Standard audit | Component Audits subpage |
+| `--from-axe` | axe Scan Results Archive subpage |
+| `--vpat` | VPAT Remediation Status subpage (per state) |
+| `--report` | Formal report subpage |
+| `--compliance` | VPAT Remediation Status subpage |
+| `--external` | Component Audits subpage |
+| `--manual` | Accessibility Testing Strategy page |
+| `--screen-reader` | Component Audits subpage |
+
+**To skip Confluence publishing:** Add `--no-confluence` to any command.
+
+**MCP tools:** Uses `createConfluencePage` / `updateConfluencePage` with `cloudId: "metrc-tech.atlassian.net"`, `spaceId: "520290313"`, `contentFormat: "markdown"`.
+
+See `/Skills/design-accessibility/SKILL.md` for full Confluence configuration, page hierarchy, and MCP tool usage.
+
+---
+
 ## Detailed Specification
 
 See `/Skills/design-accessibility/SKILL.md` for full audit criteria, fix patterns, and checklists.
@@ -290,3 +317,4 @@ Specify what to audit:
 - Add `--compliance` for Section 508 + regulatory checks
 - Add `--report` for formal documentation output
 - **`--vpat` for full VPAT remediation report with Jira stories** (requires state name, VPAT doc, and ADA scan)
+- Add `--no-confluence` to skip publishing to Confluence (local-only output)

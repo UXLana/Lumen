@@ -305,6 +305,59 @@ export type ButtonEmphasis = 'high' | 'mid' | 'low'
 export type Status = 'idle' | 'loading' | 'success' | 'error'
 ```
 
+## Overlay / Dropdown Interaction Patterns
+
+### Blur Race Condition (CRITICAL)
+
+Any component with a focusable trigger and a floating menu (combobox, select, dropdown,
+popover, autocomplete) **must** add `onMouseDown={(e) => e.preventDefault()}` to the
+menu/listbox container. Without this, clicking menu items triggers blur on the trigger
+element, which closes the menu before the click event fires — making selection impossible.
+
+```tsx
+// ❌ BROKEN — menu closes before click registers
+<ul role="listbox">
+  <li onClick={() => selectOption(option)}>Option</li>
+</ul>
+
+// ✅ FIXED — preventDefault on mousedown keeps focus on trigger
+<ul role="listbox" onMouseDown={(e) => e.preventDefault()}>
+  <li onClick={() => selectOption(option)}>Option</li>
+</ul>
+```
+
+**Why it happens:** When a user clicks a non-focusable `<li>`, the input loses focus.
+The blur handler fires first (closing the menu), and by the time the click event fires,
+the `<li>` is no longer in the DOM. `e.preventDefault()` on `mousedown` prevents the
+focus change entirely, so the blur never fires and the click handler works normally.
+
+**Applies to:** Combobox, Select, Dropdown Menu, Autocomplete, Popover with interactive
+content, Date Picker, Color Picker — any component where a trigger opens a floating
+panel with clickable items.
+
+### Close on Outside Click
+
+Use `onBlur` on the container with `relatedTarget` check (not document click listeners):
+
+```tsx
+const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+    closeMenu()
+  }
+}
+
+<div onBlur={handleBlur}>
+  <input />
+  <ul onMouseDown={(e) => e.preventDefault()}>
+    {/* options */}
+  </ul>
+</div>
+```
+
+Both patterns work together: `onBlur` closes the menu when focus leaves the container,
+while `onMouseDown preventDefault` ensures clicking inside the menu doesn't count as
+leaving.
+
 ## Accessibility Patterns
 
 ### Keyboard Navigation

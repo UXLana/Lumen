@@ -78,21 +78,35 @@ shadows.xs / .sm / .md / .lg / .xl
 
 ### For Color/Brand Updates
 1. **Receive brand specs** (Figma link, PDF, style guide, hex values)
-2. **Map to ThemeColors interface** — every property must be populated
-3. **Create or update theme file** in `styles/themes/[name].ts`
-4. **Register theme** in `styles/themes/theme-provider.tsx` and `styles/themes/index.ts`
-5. **Verify** with `npx tsc --noEmit` for type safety
+2. **If extracting from a website**: use `curl` to fetch full HTML (WebFetch often fails on SPAs). Look for the local project first (`~/Desktop/` etc.) — local CSS/tailwind.config is far more reliable than scraping.
+3. **Identify brand identity visually, not by CSS var names** — `--primary` in a codebase often maps to link/button accent, not the dominant brand color. Look at the screenshot/OG image and identify the 2-3 dominant colors (background, text, accent). Ask the user to confirm the brand palette before generating 200+ tokens.
+4. **Map to ThemeColors interface** — every property must be populated
+5. **Create or update theme file** in `styles/themes/[name].ts`
+6. **Register theme** in `styles/themes/theme-provider.tsx` and `styles/themes/index.ts`
+7. **Register fonts in `app/layout.tsx`** — if the theme uses fonts not already imported, add them via `next/font/google` with a `--font-*` CSS variable. Use `var(--font-*)` in the theme's typography.fontFamilies so Next.js font optimization works.
+8. **Check `globals.css`** — verify `body` background/text use themed `--mtr-*` vars, not legacy hardcoded vars.
+9. **Clear `.next` cache** — run `rm -rf .next` before restarting the dev server after theme changes to avoid stale cache errors.
+10. **Verify** with `npx tsc --noEmit` for type safety
 
 ### For Typography/Spacing Updates
 1. **Receive specs** (font names, size scale, spacing values)
 2. **Update shared tokens** in `styles/design-tokens.ts`
-3. **Verify** no components break with new values
+3. **Register any new fonts** in `app/layout.tsx` via `next/font/google`
+4. **Verify** no components break with new values
 
 ### For Figma Variable Sync
 1. **Use `/figma-token-extractor`** to pull variables from Figma
 2. **Review extracted values** against current tokens
 3. **Update theme files** with new values
 4. **Run type check** to ensure interface compliance
+
+## Common Pitfalls
+
+- **SPA websites**: WebFetch returns empty shells for React/Vite/Next.js sites. Always try `curl` first, or check for a local copy of the project.
+- **CSS `--primary` ≠ brand color**: The dominant visual color (what users associate with the brand) may differ from what's labeled "primary" in CSS. Use screenshots to confirm.
+- **Font registration**: Creating a theme with new fonts is not enough — fonts must also be loaded in `app/layout.tsx` via `next/font/google` and exposed as `--font-*` CSS variables.
+- **Legacy CSS vars in globals.css**: Body background/text may use old non-themed vars (`--color-neutral-*`). These must be updated to `--mtr-*` vars for theme switching to work.
+- **`.next` cache**: Always clear `.next/` after changing `layout.tsx` or adding new theme imports. Stale caches cause `Cannot find module` errors.
 
 ## Naming Conventions
 

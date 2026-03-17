@@ -27,6 +27,7 @@ This skill accepts requirements from multiple sources:
 | **Confluence search** | Describe the feature by name (e.g., "transfer manifest redesign") | Searches Confluence using CQL, presents matching pages, and asks user to confirm before fetching. |
 | **UX brief** | Path to a brief from `/ux-brief-generator` | Reads the brief file and extracts requirements. |
 | **Verbal description** | Describe what you want in plain language | Proceeds directly to discovery questions to fill in gaps. |
+| **Meeting transcript** | Paste transcript text or provide path to a `.vtt` file | Extracts action items, feedback themes, and decisions. Saves to Feedback API, then enters Extend mode to address the action items. |
 | **Mixed** | Any combination of the above | Merges all sources, deduplicates, and flags conflicts. |
 
 ## File Locations
@@ -88,9 +89,23 @@ Every prototype MUST have a README.md that tracks its state. Create on first bui
    - Links: [Confluence: Page Title](url), [JIRA-1234](url)
 ```
 
-**Prompt logging rule:** Every time `/prototype-builder` is invoked (new build or extend):
-1. Append the user's input to the `## Prompts` section in the README with the date, the verbatim or lightly cleaned-up prompt text, and any source URLs
-2. Also append an entry to the prototype's `prompts` array in `app/prototypes/registry.json`:
+**Prompt logging rule:** Log a new prompt whenever the user gives a **directive that changes scope or adds something** to the prototype. This includes:
+
+| User Message Type | Log as Prompt? | Example |
+|---|---|---|
+| Initial invocation request | **Yes** | "Build a product catalog page with filtering" |
+| New directive (within same conversation) | **Yes** | "Now add the brand-only version" / "Change the header layout" / "Add an error state" |
+| Answering discovery questions | No | "Use Trace theme, desktop" |
+| Approving a plan | No | "Looks good, build it" |
+| Minor iteration feedback | No — log as Decision instead | "Make that text bigger" / "Swap those two columns" |
+| Providing a new source URL mid-conversation | **Yes** | "Also incorporate this Confluence page: [url]" |
+
+A prompt is **not** limited to explicit `/prototype-builder` invocations. The skill stays active for the full conversation, and new directives within that conversation are separate prompts. The test is: _"Did the user ask for something new or different, beyond answering my questions or approving my plan?"_ If yes, log it.
+
+For each prompt, append to both:
+
+1. The `## Prompts` section in the README with the date, verbatim or lightly cleaned-up prompt text, and any source URLs
+2. The prototype's `prompts` array in `app/prototypes/registry.json`:
    ```json
    {
      "date": "YYYY-MM-DD",
@@ -144,7 +159,7 @@ Wireframe prototypes still respond to theme switching because all tokens are CSS
 
 ## Modes
 
-This skill operates in two modes, detected automatically:
+This skill operates in three modes, detected automatically:
 
 ### New Prototype
 When `prototypes/[project]/` does **not** exist. Starts from scratch with full discovery.
@@ -152,11 +167,86 @@ When `prototypes/[project]/` does **not** exist. Starts from scratch with full d
 ### Extend Existing Prototype
 When `prototypes/[project]/` **already exists**. Reads the current state and adds to it.
 
+### Feedback Intake → Extend
+When the user provides a **meeting transcript** (pasted text or `.vtt` file path) alongside a prototype name. Extracts feedback, saves it, then enters Extend mode to address the action items. See Step 0a below.
+
 You can also target a **specific page** within a prototype:
 - `/prototype-builder transfer-manifest` → extend the transfer-manifest prototype
 - `/prototype-builder transfer-manifest/detail-view` → work only on the detail-view page
 
 ## Workflow
+
+### Step 0a: Feedback Intake Detection (automatic)
+
+Before entering the standard workflow, check if the user has provided a **meeting transcript** — either pasted text or a path to a `.vtt` file. Detect this when:
+
+- The input contains **speaker-attributed dialogue** (e.g., `Ryan Andrews: ...`, `<v Lana Holston>...`, or timestamped speaker lines)
+- The user says "apply feedback", "here's the transcript", "extract from this meeting", or similar
+- A `.vtt` file path is provided
+
+**If transcript content is detected:**
+
+1. **Identify the target prototype** — the user must name one (e.g., `/prototype-builder rid-landing-page [transcript]`). If unclear, ask: "Which prototype should this feedback be applied to?"
+
+2. **Parse the transcript** — extract:
+   - **Participants**: All speakers mentioned
+   - **Action items**: Anything someone committed to do, was asked to do, or a change that was requested. Look for phrases like "I'll check that", "let's change", "we need to", "can you", "should we", task assignments, and follow-ups
+   - **Feedback themes**: Recurring topics, concerns raised, things praised or questioned
+   - **Decisions**: Things that were agreed upon, resolved, or settled during the conversation
+
+3. **Present the extracted feedback** for user confirmation:
+   ```
+   Extracted from transcript:
+
+   Participants: Lana Holston, Ryan Andrews, Grant Kemp
+
+   Action Items:
+   - [ ] Ryan: Check "Learn More" link behavior in UAT
+   - [ ] Lana: Talk to Bill about next steps
+
+   Themes:
+   - Download vs print UX — using download icon since users aren't printing yet
+   - Guided step-by-step approach endorsed
+
+   Decisions:
+   - CSV always generated, PDF optional
+   - Change print icon to download for now
+
+   Save this to [prototype-name] feedback and start addressing the action items?
+   ```
+
+4. **On confirmation**, POST to the Feedback API:
+   ```
+   POST /api/prototypes/[project-id]/feedback
+   {
+     "entry": {
+       "id": "<generated UUID>",
+       "date": "<today or date from transcript>",
+       "source": "<detected: 'teams', 'slack', 'async', or ask>",
+       "participants": "<comma-separated names>",
+       "actionItems": [{ "text": "...", "completed": false }, ...],
+       "themes": "<extracted themes as text>",
+       "decisions": "<extracted decisions as text>"
+     }
+   }
+   ```
+
+5. **Enter Extend mode** (Step 0 below) with the action items as the initial requirements. The skill should say:
+   ```
+   Feedback saved. Entering Extend mode to address [N] action items:
+   1. [action item 1]
+   2. [action item 2]
+   ...
+   ```
+   Then proceed with Step 0 → Step 4 (Component Inventory Check) as usual, treating the action items as the user's change requests.
+
+**VTT file parsing notes:**
+- `.vtt` files use `<v Speaker Name>text</v>` format with timestamps
+- Strip the VTT header (`WEBVTT`), timestamps, and voice tags to get clean speaker-attributed text
+- Group consecutive lines by the same speaker into single utterances
+- Ignore filler responses ("Mhm", "OK", "Yeah") when extracting action items — but include them for context when determining agreement/decisions
+
+---
 
 ### Step 0: Detect Existing Prototype (automatic)
 
@@ -164,10 +254,12 @@ Before anything else, check if a prototype already exists for the project:
 
 1. **Check `prototypes/` directory** — list existing prototype directories
 2. **If the user named a project that matches an existing directory**, enter **Extend mode**:
-   a. Read `prototypes/[project]/README.md` to understand current state
-   b. List all existing screen files in the prototype directory
-   c. Read existing prototype components to understand what's already been built
-   d. Present a summary to the user:
+   a. **Snapshot the current version** — Before modifying any files, create a snapshot copy (see Snapshot Versioning section below). This preserves the previous version at a separate URL.
+   b. Read `prototypes/[project]/README.md` to understand current state
+   c. List all existing screen files in the prototype directory
+   d. Read existing prototype components to understand what's already been built
+   e. **Fetch feedback**: Call `GET /api/prototypes/[project-id]/feedback` to retrieve review feedback. Summarize any entries with open (uncompleted) action items — these represent unresolved reviewer requests that should inform the next iteration.
+   f. Present a summary to the user:
       ```
       Existing prototype: [project-name]
       Theme: [theme from README]
@@ -183,9 +275,16 @@ Before anything else, check if a prototype already exists for the project:
       Components created for this prototype:
       - TransferCard (/components/TransferCard/)
       - StatusTimeline (/components/StatusTimeline/)
+
+      Recent feedback:
+      - [2026-03-15] Teams Meeting — 3 open action items, 1 completed
+        Themes: Navigation felt confusing on mobile; liked compliance-first framing
+      - [2026-03-12] Async Review — 2 open action items
+        Themes: Questioned whether brand content should be above fold
       ```
-   e. Ask: **"What would you like to add or change?"**
-   f. If the user specifies a page (e.g., `transfer-manifest/detail-view`), scope all work to that page only — read it, understand it, modify it
+      If no feedback exists, omit the "Recent feedback" section.
+   g. Ask: **"What would you like to add or change?"** — If there are open action items from feedback, also mention: "There are [N] open action items from recent reviews. Would you like to address those?"
+   h. If the user specifies a page (e.g., `transfer-manifest/detail-view`), scope all work to that page only — read it, understand it, modify it
 3. **If no match**, enter **New Prototype mode** and proceed to Step 1
 
 **In Extend mode, skip Steps 1-3** (theme/device/fidelity are already set) unless the user explicitly wants to change them. Jump directly to Step 4 (Component Inventory Check) with the user's new requirements.
@@ -708,7 +807,75 @@ Use these names and roles when building prototype screens that show logged-in us
 - **No gratuitous drop shadows** — Do not add `boxShadow: shadowSemantics.card` to containers, stat cards, or wrappers by default. Keep surfaces flat. Only use elevation shadows when intentionally creating visual hierarchy (e.g., dropdowns, modals, popovers). The DataTable and other components manage their own elevation internally.
 - **Prototype pages are exploratory** — but the components they use are production-quality and theme-aware
 - **Responsive behavior** — Build for the target device only. Do not add responsive breakpoints unless explicitly requested. Set a `maxWidth` on the prototype page matching the target device (375px mobile, 768px tablet, 1440px desktop) and center it on the screen. This keeps prototypes focused and avoids ambiguity during review.
-- **Iteration versioning** — Do not create iteration folders. Use git commits to track prototype versions. Update the README decisions log on each iteration with the date and what changed. The README is the single source of truth for prototype history.
+- **Iteration versioning** — Before modifying an existing prototype, create a **snapshot** of its current state so previous versions remain viewable. See the Snapshot Versioning section below for details. Also update the README decisions log on each iteration with the date and what changed.
+
+## Snapshot Versioning
+
+Before modifying an existing prototype in Extend mode, **always create a snapshot** of the current state. This preserves previous versions as separately viewable prototypes.
+
+### How it works
+
+1. **Determine the next version number**: Check for existing `[project]-v*` directories in `prototypes/`. If `rid-landing-page-v1` exists, the next snapshot is `rid-landing-page-v2`. If none exist, start with `v1`.
+
+2. **Copy the directory**:
+   ```bash
+   cp -r app/prototypes/[project]/ app/prototypes/[project]-v[N]/
+   ```
+
+3. **Update the snapshot's README**: In the copied directory's `README.md`, change the `Status` to `archived` and add a note:
+   ```markdown
+   - **Status**: archived
+   - **Snapshot**: v[N] — frozen on [YYYY-MM-DD] before iteration [N+1]
+   ```
+
+4. **Add a snapshot entry to `registry.json`**: Add a new entry for the snapshot with:
+   ```json
+   {
+     "id": "[project]-v[N]",
+     "name": "[Original Name] (v[N])",
+     "description": "[original description]",
+     "owner": "[same owner]",
+     "status": "archived",
+     "device": "[same]",
+     "fidelity": "[same]",
+     "created": "[original created date]",
+     "updated": "[today — the date it was snapshotted]",
+     "href": "/prototypes/[project]-v[N]",
+     "screens": [same],
+     "tags": ["[same tags]", "snapshot"],
+     "dsComponents": ["[same]"],
+     "openQuestions": [],
+     "lastReviewedBy": null,
+     "lastReviewedDate": null,
+     "prompts": ["[copy from parent]"],
+     "context": null,
+     "version": [N],
+     "parentId": "[project]",
+     "isSnapshot": true
+   }
+   ```
+
+5. **Update the current prototype's registry entry**: Add or increment the `version` field:
+   ```json
+   {
+     "id": "[project]",
+     "version": [N+1],
+     ...
+   }
+   ```
+
+6. **Confirm to the user**:
+   ```
+   Snapshot saved: v[N] → /prototypes/[project]-v[N]
+   Now working on v[N+1] of [project-name].
+   ```
+
+### Rules
+- **Only snapshot in Extend mode** — new prototypes start at v1, no snapshot needed
+- **Don't snapshot snapshots** — if the user somehow targets a `-v[N]` directory, warn them and redirect to the current version
+- **Snapshots are read-only by convention** — the skill should never modify a `-v[N]` directory after creating it
+- **Feedback and context are NOT copied** — snapshots use the directory files only. Supabase data (feedback, context) stays attached to the parent prototype ID
+- **Snapshots share feedback/context with parent** — the Feedback and Context tabs in the UI are keyed by prototype ID. Snapshots point to the parent ID, so they share the same feedback history
 
 ## Component Composition Rules (CRITICAL)
 
