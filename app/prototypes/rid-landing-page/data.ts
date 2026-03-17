@@ -112,6 +112,51 @@ export const massachusettsConfig: StateConfig = {
 }
 
 // ---------------------------------------------------------------------------
+// Brand Data — for "About Brand" tab in v2
+// ---------------------------------------------------------------------------
+
+export interface BrandData {
+  name: string
+  tagline: string
+  logo?: string
+  heroImages: string[]
+  description: string
+  extendedDescription?: string
+  website: string
+  purchaseUrl: string
+  faqs: { question: string; answer: string }[]
+}
+
+export const sampleBrand: BrandData = {
+  name: 'Commonwealth Edibles Co.',
+  tagline: 'Real-Fruit Cannabis Infused Gummies',
+  heroImages: [],
+  description:
+    'Commonwealth Edibles Co. is a craft cannabis brand based in Northampton, Massachusetts, specializing in small-batch, real-fruit edibles. Every product is made with locally sourced ingredients and full-spectrum cannabis extracts.',
+  extendedDescription:
+    'Our gummies use cannabis extracts blended with unique botanical and fruit terpenes to craft world class flavors, effects, and experiences. Our products are designed and continuously improved by a team of food scientists who work daily to create our industry leading cannabis edibles. Our stringent manufacturing standards and quality controls ensure consistent dosing and flavor throughout every batch of product we produce.',
+  website: 'https://commonwealthedibles.com',
+  purchaseUrl: 'https://commonwealthedibles.com/dispensaries',
+  faqs: [
+    {
+      question: 'What effects do they have?',
+      answer:
+        'Our gummies contain THC, the psychoactive component of cannabis which is responsible for creating the "high" experienced when consuming cannabis products. Effects vary by strain and individual tolerance. Start low, go slow.',
+    },
+    {
+      question: 'Where should I start?',
+      answer:
+        'We recommend starting with a single 5mg or 10mg serving and waiting at least 2 hours before consuming more. Our Blueberry Bliss Gummies (Hybrid) are a great starting point for new consumers.',
+    },
+    {
+      question: 'Can I purchase your products online?',
+      answer:
+        'Due to Massachusetts state regulations, cannabis products cannot be sold online. You can find our products at licensed dispensaries across the state. Visit our website for a store locator.',
+    },
+  ],
+}
+
+// ---------------------------------------------------------------------------
 // Sample Product — Edible (to show serving info prominently)
 // ---------------------------------------------------------------------------
 
@@ -129,8 +174,8 @@ export const sampleProduct: ProductData = {
   servingsPerPackage: 10,
   thcPerServing: '10mg',
   thcPerPackage: '100mg',
-  thcPercent: '10.0%',
-  cbdPercent: '0.5%',
+  thcPercent: '10mg/serving',
+  cbdPercent: '2mg/serving',
   terpenes: '1.8%',
   harvestDate: 'Feb 8, 2026',
   packageDate: 'Feb 24, 2026',

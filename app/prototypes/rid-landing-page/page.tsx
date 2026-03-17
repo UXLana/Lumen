@@ -1,24 +1,29 @@
 'use client'
 
 import React, { useState } from 'react'
-import { PrototypeToolbar, ViewState, UseCase } from '@/app/prototypes/PrototypeToolbar'
+import { PrototypeToolbar, ViewState, UseCase, Version } from '@/app/prototypes/PrototypeToolbar'
 import {
   colors,
   spacing,
   fontFamilies,
   fontWeights,
   typography,
-  borderRadius,
   borderRadiusSemantics,
 } from '@/styles/design-tokens'
-import { Badge, Banner, DetailField, Divider, Skeleton, EmptyState, Button, Link, IconCheckCircle, IconStar, IconHeart, IconBadge } from '@/components'
-import type { BadgeProps, IconProps } from '@/components'
-import { sampleProduct, massachusettsConfig } from './data'
-import type { ProductData, StateConfig, LabResult } from './data'
+import { Accordion, AccordionItem, TabBar, Badge, Banner, DetailField, Divider, Skeleton, EmptyState, Button, Link, IconCheckCircle, IconStar, IconHeart, IconBadge } from '@/components'
+import type { TabItem } from '@/components'
+import type { IconProps } from '@/components'
+import { sampleProduct, sampleBrand, massachusettsConfig } from './data'
+import type { ProductData, BrandData, StateConfig, LabResult } from './data'
 
 // =============================================================================
 // USE CASES
 // =============================================================================
+
+const VERSIONS: Version[] = [
+  { label: 'v1 — Product Only', description: 'Product details page. Single-view layout.' },
+  { label: 'v2 — Product + Brand', description: 'Tabbed view with Product Details and About Brand.' },
+]
 
 const USE_CASES: UseCase[] = [
   {
@@ -31,11 +36,7 @@ const USE_CASES: UseCase[] = [
   },
   {
     label: 'UC3 — Brand-Forward',
-    description: 'Non-mandated market. Brand primary, lightweight compliance.',
-  },
-  {
-    label: 'UC4 — Brand-Only',
-    description: 'Pre-mandate / voluntary. No state compliance features.',
+    description: 'Non-mandated / voluntary market. Brand primary, lightweight compliance.',
   },
 ]
 
@@ -197,73 +198,24 @@ function ImagePlaceholder() {
 }
 
 // =============================================================================
-// STATE HEADER (Compliance modes)
+// COMPLIANCE BANNER — CCC + Compliance Passed + Metrc RID (single image)
 // =============================================================================
 
-function StateHeader({ config, compact }: { config: StateConfig; compact?: boolean }) {
+function ComplianceBanner({ variant = 'default' }: { variant?: 'default' | 'large' }) {
+  const src = variant === 'large'
+    ? '/prototypes/rid-landing-page/ccc-large.png'
+    : '/prototypes/rid-landing-page/compliance-banner.png'
   return (
-    <div
+    <img
+      src={src}
+      alt="Cannabis Control Commission — Compliance Passed — Metrc Retail ID"
+      role="banner"
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: spacing.xs,
-        padding: `${spacing.xs} ${spacing.md}`,
-        backgroundColor: compact ? 'transparent' : colors.surface.lightDarker,
-        borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
+        width: '100%',
+        height: 'auto',
+        display: 'block',
       }}
-    >
-      <div
-        aria-hidden="true"
-        style={{
-          width: compact ? '24px' : '32px',
-          height: compact ? '24px' : '32px',
-          borderRadius: '50%',
-          backgroundColor: colors.surface.light,
-          border: `1.5px solid ${colors.border.midEmphasis.onLight}`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        <span
-          style={{
-            fontFamily: fontFamilies.display,
-            fontSize: compact ? '8px' : '10px',
-            fontWeight: fontWeights.bold,
-            color: colors.text.highEmphasis.onLight,
-          }}
-        >
-          {config.abbreviation}
-        </span>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <span
-          style={{
-            fontFamily: fontFamilies.display,
-            fontSize: compact ? typography.label.sm.fontSize : typography.label.md.fontSize,
-            fontWeight: fontWeights.semibold,
-            color: colors.text.highEmphasis.onLight,
-          }}
-        >
-          {compact ? `${config.abbreviation} Regulated Product` : 'Legal Regulated Product'}
-        </span>
-        {!compact && (
-          <span
-            style={{
-              fontFamily: fontFamilies.body,
-              fontSize: typography.body.xs.fontSize,
-              color: colors.text.lowEmphasis.onLight,
-            }}
-          >
-            {config.agencyName}
-          </span>
-        )}
-      </div>
-
-      <ShieldCheckIcon size={compact ? 16 : 20} color={colors.brand.default} />
-    </div>
+    />
   )
 }
 
@@ -402,6 +354,8 @@ function ConsumerEssentials({ product }: { product: ProductData }) {
   const items = [
     { label: 'THC / Serving', value: product.thcPerServing },
     { label: 'THC / Package', value: product.thcPerPackage },
+    { label: 'CBD / Serving', value: product.cbdPercent },
+    { label: 'Terpenes', value: product.terpenes },
     { label: 'Serving Size', value: product.servingSize.split('(')[0].trim() },
     { label: 'Servings', value: String(product.servingsPerPackage) },
   ]
@@ -451,65 +405,6 @@ function ConsumerEssentials({ product }: { product: ProductData }) {
           </span>
         </div>
       ))}
-    </div>
-  )
-}
-
-// =============================================================================
-// POTENCY BARS — matches qr-verify exactly
-// =============================================================================
-
-function PotencyBar({ label, value, maxValue, color }: { label: string; value: string; maxValue: number; color: string }) {
-  const numericValue = parseFloat(value)
-  const percentage = Math.min((numericValue / maxValue) * 100, 100)
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['2xs'] }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <span
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.label.sm.fontSize,
-            fontWeight: fontWeights.medium,
-            color: colors.text.lowEmphasis.onLight,
-          }}
-        >
-          {label}
-        </span>
-        <span
-          style={{
-            fontFamily: fontFamilies.display,
-            fontSize: typography.heading.h5.fontSize,
-            fontWeight: fontWeights.bold,
-            color: colors.text.highEmphasis.onLight,
-          }}
-        >
-          {value}
-        </span>
-      </div>
-      <div
-        role="progressbar"
-        aria-valuenow={numericValue}
-        aria-valuemin={0}
-        aria-valuemax={maxValue}
-        aria-label={`${label}: ${value}`}
-        style={{
-          width: '100%',
-          height: '8px',
-          backgroundColor: colors.surface.lightDarker,
-          borderRadius: borderRadius.full,
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            width: `${percentage}%`,
-            height: '100%',
-            backgroundColor: color,
-            borderRadius: borderRadius.full,
-            transition: 'width 600ms ease-out',
-          }}
-        />
-      </div>
     </div>
   )
 }
@@ -811,9 +706,7 @@ function GlossaryLink() {
 function ComplianceFirstView({ product, config }: { product: ProductData; config: StateConfig }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <StateHeader config={config} />
-      <CampaignBanner config={config} />
-      <TestStatusBanner product={product} />
+      <ComplianceBanner />
 
       {/* Product identity — compact, no image */}
       <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
@@ -836,14 +729,11 @@ function ComplianceFirstView({ product, config }: { product: ProductData; config
             color: colors.text.lowEmphasis.onLight,
           }}
         >
-          {product.brand} &middot; {product.category} &middot; {product.weight}
+          {product.brand}
         </span>
-        <LicenseeBadges badges={config.badges} />
-      </div>
-
-      {/* Warnings */}
-      <div style={{ padding: `0 ${spacing.md}` }}>
-        <WarningMessages messages={config.warningMessages} />
+        <div style={{ marginTop: spacing.xs }}>
+          <LicenseeBadges badges={config.badges} />
+        </div>
       </div>
 
       {/* Consumer essentials */}
@@ -851,28 +741,20 @@ function ComplianceFirstView({ product, config }: { product: ProductData; config
         <ConsumerEssentials product={product} />
       </div>
 
-      <Divider spacing="none" />
-
       {/* Lab results */}
       <div style={{ padding: spacing.md }}>
         <LabResults product={product} />
       </div>
-
-      <Divider spacing="none" />
 
       {/* Retailer */}
       <div style={{ padding: spacing.md }}>
         <RetailerInfo product={product} />
       </div>
 
-      <Divider spacing="none" />
-
       {/* Package details */}
       <div style={{ padding: spacing.md }}>
         <PackageDetails product={product} />
       </div>
-
-      <Divider spacing="none" />
 
       {/* Resources */}
       <div style={{ padding: spacing.md }}>
@@ -887,50 +769,29 @@ function ComplianceFirstView({ product, config }: { product: ProductData; config
 function CompliancePlusBrandView({ product, config }: { product: ProductData; config: StateConfig }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <StateHeader config={config} compact />
-      <TestStatusBanner product={product} />
+      <ComplianceBanner />
 
       <ProductIdentity product={product} showImage />
-
-      {/* Warnings */}
-      <div style={{ padding: `0 ${spacing.md}` }}>
-        <WarningMessages messages={config.warningMessages} />
-      </div>
 
       {/* Consumer essentials */}
       <div style={{ padding: spacing.md }}>
         <ConsumerEssentials product={product} />
       </div>
 
-      {/* Potency */}
-      <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-        <SectionHeader>Potency</SectionHeader>
-        <PotencyBar label="THC" value={product.thcPercent} maxValue={35} color={colors.brand.default} />
-        <PotencyBar label="CBD" value={product.cbdPercent} maxValue={25} color={colors.brand.default} />
-      </div>
-
-      <Divider spacing="none" />
-
       {/* Lab results */}
       <div style={{ padding: spacing.md }}>
         <LabResults product={product} />
       </div>
-
-      <Divider spacing="none" />
 
       {/* Retailer */}
       <div style={{ padding: spacing.md }}>
         <RetailerInfo product={product} />
       </div>
 
-      <Divider spacing="none" />
-
       {/* Package details */}
       <div style={{ padding: spacing.md }}>
         <PackageDetails product={product} />
       </div>
-
-      <Divider spacing="none" />
 
       {/* State information */}
       <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
@@ -949,8 +810,6 @@ function CompliancePlusBrandView({ product, config }: { product: ProductData; co
         <LicenseeBadges badges={config.badges} />
       </div>
 
-      <Divider spacing="none" />
-
       {/* Resources */}
       <div style={{ padding: spacing.md }}>
         <StateLinks config={config} />
@@ -960,133 +819,300 @@ function CompliancePlusBrandView({ product, config }: { product: ProductData; co
   )
 }
 
-/** UC3: Brand-Forward — Non-mandated market, lightweight compliance */
-function BrandForwardView({ product, config }: { product: ProductData; config: StateConfig }) {
+/** UC3: Brand-Forward — Non-mandated / voluntary market, lightweight compliance */
+function BrandForwardView({ product }: { product: ProductData }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <MinimalHeader label="Metrc Verified" />
 
       <ProductIdentity product={product} showImage />
 
-      <Divider spacing="none" />
-
-      {/* Potency */}
-      <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-        <SectionHeader>Potency</SectionHeader>
-        <PotencyBar label="THC" value={product.thcPercent} maxValue={35} color={colors.brand.default} />
-        <PotencyBar label="CBD" value={product.cbdPercent} maxValue={25} color={colors.brand.default} />
-        <PotencyBar label="Terpenes" value={product.terpenes} maxValue={10} color={colors.brand.default} />
-      </div>
-
       {/* Consumer essentials */}
       <div style={{ padding: spacing.md }}>
         <ConsumerEssentials product={product} />
       </div>
-
-      <Divider spacing="none" />
 
       {/* Lab results */}
       <div style={{ padding: spacing.md }}>
         <LabResults product={product} />
       </div>
 
-      <Divider spacing="none" />
-
       {/* Package details */}
       <div style={{ padding: spacing.md }}>
         <PackageDetails product={product} />
-      </div>
-
-      <Divider spacing="none" />
-
-      {/* Lightweight compliance — just regulator link */}
-      <div
-        style={{
-          padding: `${spacing.xs} ${spacing.md}`,
-          display: 'flex',
-          alignItems: 'center',
-          gap: spacing.xs,
-        }}
-      >
-        <div
-          style={{
-            width: '24px',
-            height: '24px',
-            borderRadius: '50%',
-            backgroundColor: colors.surface.lightDarker,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-          }}
-        >
-          <span
-            style={{
-              fontFamily: fontFamilies.display,
-              fontSize: '8px',
-              fontWeight: fontWeights.bold,
-              color: colors.text.highEmphasis.onLight,
-            }}
-          >
-            {config.abbreviation}
-          </span>
-        </div>
-        <a
-          href={config.agencyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.body.sm.fontSize,
-            fontWeight: fontWeights.medium,
-            color: colors.brand.default,
-            textDecoration: 'none',
-          }}
-        >
-          {config.agencyName}
-        </a>
       </div>
     </div>
   )
 }
 
-/** UC4: Brand-Only — Voluntary adoption, no state features */
-function BrandOnlyView({ product }: { product: ProductData }) {
+// =============================================================================
+// v2 — TABBED PRODUCT + BRAND VIEW
+// =============================================================================
+
+function BrandHero() {
+  return (
+    <div
+      style={{
+        margin: spacing.md,
+        height: '200px',
+        borderRadius: borderRadiusSemantics.card,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <img
+        src="/prototypes/rid-landing-page/brand-image.jpg"
+        alt="Commonwealth Edibles Co. product showcase"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
+      />
+      {/* Dot indicators */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: spacing.sm,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: spacing['2xs'],
+        }}
+      >
+        {[0, 1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              backgroundColor: i === 0 ? colors.text.highEmphasis.onDark : 'rgba(255,255,255,0.5)',
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function BrandAboutSection({ brand }: { brand: BrandData }) {
+  const allFaqs = [
+    { id: 'about', question: "What's in a Commonwealth gummy?", answer: brand.extendedDescription || brand.description },
+    ...brand.faqs.map((faq, i) => ({ ...faq, id: `faq-${i}` })),
+  ]
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <MinimalHeader label="Retail ID" />
-
-      <ProductIdentity product={product} showImage />
-
-      <Divider spacing="none" />
-
-      {/* Potency */}
-      <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-        <SectionHeader>Potency</SectionHeader>
-        <PotencyBar label="THC" value={product.thcPercent} maxValue={35} color={colors.brand.default} />
-        <PotencyBar label="CBD" value={product.cbdPercent} maxValue={25} color={colors.brand.default} />
-        <PotencyBar label="Terpenes" value={product.terpenes} maxValue={10} color={colors.brand.default} />
+      {/* Brand identity — below image */}
+      <div
+        style={{
+          padding: spacing.md,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '2px',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: fontFamilies.display,
+            fontSize: typography.heading.h6.fontSize,
+            fontWeight: fontWeights.bold,
+            color: colors.text.highEmphasis.onLight,
+          }}
+        >
+          About {brand.name.replace(' Co.', '')}
+        </span>
+        <span
+          style={{
+            fontFamily: fontFamilies.body,
+            fontSize: typography.body.sm.fontSize,
+            color: colors.text.lowEmphasis.onLight,
+          }}
+        >
+          {brand.tagline}
+        </span>
       </div>
 
-      {/* Consumer essentials */}
+      {/* Description */}
+      <div style={{ padding: `0 ${spacing.md} ${spacing.md}` }}>
+        <p
+          style={{
+            fontFamily: fontFamilies.body,
+            fontSize: typography.body.sm.fontSize,
+            color: colors.text.lowEmphasis.onLight,
+            margin: 0,
+            lineHeight: '22px',
+          }}
+        >
+          {brand.description}
+        </p>
+      </div>
+
+      {/* FAQ accordion — DS component, edge-to-edge */}
+      <style>{`.brand-accordion h3 { font-size: ${typography.body.md.fontSize} !important; }`}</style>
+      <Accordion allowMultiple={false} defaultExpandedIds={['about']} className="brand-accordion">
+        {allFaqs.map((faq) => (
+          <AccordionItem key={faq.id} id={faq.id} title={faq.question}>
+            <p
+              style={{
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.lowEmphasis.onLight,
+                margin: 0,
+                lineHeight: '22px',
+              }}
+            >
+              {faq.answer}
+            </p>
+          </AccordionItem>
+        ))}
+      </Accordion>
+
+      {/* Brand website link */}
       <div style={{ padding: spacing.md }}>
-        <ConsumerEssentials product={product} />
+        <Link href={brand.website} external size="md">
+          Brand Website
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+const BRAND_TABS: TabItem[] = [
+  { id: 'product', label: 'Product Details' },
+  { id: 'brand', label: 'About Brand' },
+]
+
+/** v2: Wraps any use case with Product + Brand tabs */
+function TabbedWrapper({
+  productContent,
+  brand,
+}: {
+  productContent: React.ReactNode
+  brand: BrandData
+}) {
+  const [activeTab, setActiveTab] = useState('product')
+
+  return (
+    <>
+      <div style={{ padding: `0 ${spacing.md}` }}>
+        <TabBar
+          tabs={BRAND_TABS}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          stretched
+          hasDivider={false}
+        />
       </div>
 
-      <Divider spacing="none" />
+      <div style={{ height: spacing.xs }} />
 
-      {/* Lab results */}
-      <div style={{ padding: spacing.md }}>
-        <LabResults product={product} />
-      </div>
+      {activeTab === 'product' ? (
+        <>{productContent}</>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <BrandHero />
+          <BrandAboutSection brand={brand} />
+        </div>
+      )}
+    </>
+  )
+}
 
-      <Divider spacing="none" />
+/** UC1 v2: Compliance-First with Product + Brand tabs */
+function ComplianceFirstViewV2({ product, config, brand }: { product: ProductData; config: StateConfig; brand: BrandData }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <ComplianceBanner />
+      <TabbedWrapper
+        brand={brand}
+        productContent={
+          <>
+            {/* Product identity — compact, no image */}
+            <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <h1
+                style={{
+                  fontFamily: fontFamilies.display,
+                  fontSize: typography.heading.h5.fontSize,
+                  fontWeight: fontWeights.semibold,
+                  color: colors.text.highEmphasis.onLight,
+                  margin: 0,
+                  lineHeight: '1.2',
+                }}
+              >
+                {product.name}
+              </h1>
+              <span
+                style={{
+                  fontFamily: fontFamilies.body,
+                  fontSize: typography.body.sm.fontSize,
+                  color: colors.text.lowEmphasis.onLight,
+                }}
+              >
+                {product.brand}
+              </span>
+              <div style={{ marginTop: spacing.xs }}>
+                <LicenseeBadges badges={config.badges} />
+              </div>
+            </div>
+            <div style={{ padding: spacing.md }}><ConsumerEssentials product={product} /></div>
+            <div style={{ padding: spacing.md }}><LabResults product={product} /></div>
+            <div style={{ padding: spacing.md }}><RetailerInfo product={product} /></div>
+            <div style={{ padding: spacing.md }}><PackageDetails product={product} /></div>
+            <div style={{ padding: spacing.md }}><StateLinks config={config} /></div>
+          </>
+        }
+      />
+    </div>
+  )
+}
 
-      {/* Package details */}
-      <div style={{ padding: spacing.md }}>
-        <PackageDetails product={product} />
-      </div>
+/** UC2 v2: Compliance + Brand with Product + Brand tabs */
+function CompliancePlusBrandViewV2({ product, config, brand }: { product: ProductData; config: StateConfig; brand: BrandData }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <ComplianceBanner />
+      <TabbedWrapper
+        brand={brand}
+        productContent={
+          <>
+            <ProductIdentity product={product} showImage />
+            <div style={{ padding: spacing.md }}><ConsumerEssentials product={product} /></div>
+            <div style={{ padding: spacing.md }}><LabResults product={product} /></div>
+            <div style={{ padding: spacing.md }}><RetailerInfo product={product} /></div>
+            <div style={{ padding: spacing.md }}><PackageDetails product={product} /></div>
+            <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+              <SectionHeader>State Information</SectionHeader>
+              <p style={{ fontFamily: fontFamilies.body, fontSize: typography.body.sm.fontSize, color: colors.text.lowEmphasis.onLight, margin: 0, lineHeight: '20px' }}>
+                {config.legalMessage}
+              </p>
+              <LicenseeBadges badges={config.badges} />
+            </div>
+            <div style={{ padding: spacing.md }}><StateLinks config={config} /></div>
+          </>
+        }
+      />
+    </div>
+  )
+}
+
+/** UC3 v2: Brand-Forward with Product + Brand tabs */
+function BrandForwardViewV2({ product, brand }: { product: ProductData; brand: BrandData }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <MinimalHeader label="Metrc Verified" />
+      <TabbedWrapper
+        brand={brand}
+        productContent={
+          <>
+            <ProductIdentity product={product} showImage />
+            <div style={{ padding: spacing.md }}><ConsumerEssentials product={product} /></div>
+            <div style={{ padding: spacing.md }}><LabResults product={product} /></div>
+            <div style={{ padding: spacing.md }}><PackageDetails product={product} /></div>
+          </>
+        }
+      />
     </div>
   )
 }
@@ -1132,8 +1158,14 @@ function LoadingState() {
 // =============================================================================
 
 export default function RIDLandingPage() {
+  const [activeVersion, setActiveVersion] = useState(0)
   const [viewState, setViewState] = useState<ViewState>('default')
   const [activeUseCase, setActiveUseCase] = useState(0)
+
+  const handleVersionChange = (index: number) => {
+    setActiveVersion(index)
+    setViewState('default')
+  }
 
   return (
     <>
@@ -1175,22 +1207,34 @@ export default function RIDLandingPage() {
         />
       )}
 
-      {viewState === 'default' && activeUseCase === 0 && (
+      {/* v1 — Product Only */}
+      {viewState === 'default' && activeVersion === 0 && activeUseCase === 0 && (
         <ComplianceFirstView product={sampleProduct} config={massachusettsConfig} />
       )}
-      {viewState === 'default' && activeUseCase === 1 && (
+      {viewState === 'default' && activeVersion === 0 && activeUseCase === 1 && (
         <CompliancePlusBrandView product={sampleProduct} config={massachusettsConfig} />
       )}
-      {viewState === 'default' && activeUseCase === 2 && (
-        <BrandForwardView product={sampleProduct} config={massachusettsConfig} />
+      {viewState === 'default' && activeVersion === 0 && activeUseCase === 2 && (
+        <BrandForwardView product={sampleProduct} />
       )}
-      {viewState === 'default' && activeUseCase === 3 && (
-        <BrandOnlyView product={sampleProduct} />
+
+      {/* v2 — Product + Brand (tabbed) */}
+      {viewState === 'default' && activeVersion === 1 && activeUseCase === 0 && (
+        <ComplianceFirstViewV2 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
+      )}
+      {viewState === 'default' && activeVersion === 1 && activeUseCase === 1 && (
+        <CompliancePlusBrandViewV2 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
+      )}
+      {viewState === 'default' && activeVersion === 1 && activeUseCase === 2 && (
+        <BrandForwardViewV2 product={sampleProduct} brand={sampleBrand} />
       )}
 
       <PrototypeToolbar
         viewState={viewState}
         onViewStateChange={setViewState}
+        versions={VERSIONS}
+        activeVersion={activeVersion}
+        onVersionChange={handleVersionChange}
         useCases={USE_CASES}
         activeUseCase={activeUseCase}
         onUseCaseChange={setActiveUseCase}

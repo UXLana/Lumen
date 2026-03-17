@@ -7,7 +7,7 @@
 - **Device**: Mobile (375px)
 - **Fidelity**: High-fi
 - **Created**: 2026-03-11
-- **Last updated**: 2026-03-11
+- **Last updated**: 2026-03-17
 
 ## Sources
 - [Confluence: Mobile Landing Page Discussion with Urban + Consultants](https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants)
@@ -51,6 +51,7 @@
 - 2026-03-11: Campaign banner is a featured MA "Know What You're Buying" campaign per consultant feedback about MA public awareness
 - 2026-03-11: Consumer glossary link included per consultant recommendation for terminology education
 - 2026-03-11: Licensee badges (Social Equity, Locally Grown) controlled by state, not self-claimed per consultant requirement
+- 2026-03-17: Replaced StateHeader ("Legal Regulated Product") with unified ComplianceBanner showing CCC logo, Compliance Passed seal, and Metrc Retail ID branding on olive green background — applies to UC1 and UC2
 
 ## Open Questions
 - How does the state seal/logo get uploaded? (State Regulator Management Portal handles this)
@@ -66,3 +67,4 @@
 ## Prompts
 1. [2026-03-11] "Create another version of qr-verify prototype taking Urban Consultants Confluence context into consideration. Keep current version, add new version to utility list. Need brand-primary, brand-secondary, no-compliance/brand-only options. Research if some states don't need compliance. Use MA, generate fictitious product image."
    - Links: [Confluence: Mobile Landing Page Discussion with Urban + Consultants](https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants)
+2. [2026-03-17] "Replace the legal banners on top of the page with a CCC + Compliance Passed + Metrc Retail ID branded banner image."
