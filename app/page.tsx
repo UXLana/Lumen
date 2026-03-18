@@ -4,29 +4,29 @@ import Link from 'next/link'
 import { colors, typography, spacing, borderRadius, shadows, fontFamilies, fontWeights } from '@/styles/design-tokens'
 
 // =============================================================================
+// LAYOUT CONSTANTS
+// =============================================================================
+
+const CONTENT_MAX_WIDTH = '720px'
+
+// =============================================================================
 // INLINE ICONS
 // =============================================================================
 
 const IconArrowRight = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
     <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
 
 const IconGitHub = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
     <path d="M10 2C5.58 2 2 5.58 2 10c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0018 10c0-4.42-3.58-8-8-8z" fill="currentColor"/>
   </svg>
 )
 
-const IconExternal = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M6 3H3.5A1.5 1.5 0 002 4.5v8A1.5 1.5 0 003.5 14h8a1.5 1.5 0 001.5-1.5V10M10 2h4v4M7 9l7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-)
-
 const IconComingSoon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
     <path d="M10 6v4l2.5 1.5M17 10a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
@@ -37,7 +37,7 @@ const IconComingSoon = () => (
 
 const sectionIcons: Record<string, JSX.Element> = {
   foundations: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
       <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
       <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
@@ -45,32 +45,32 @@ const sectionIcons: Record<string, JSX.Element> = {
     </svg>
   ),
   components: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
   prototypes: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 3L3 8l9 5 9-5-9-5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M3 12l9 5 9-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M3 16l9 5 9-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
   themes: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5"/>
       <path d="M12 3v18" stroke="currentColor" strokeWidth="1.5"/>
       <path d="M12 3a9 9 0 010 18" fill="currentColor" fillOpacity="0.1"/>
     </svg>
   ),
   accessibility: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="4.5" r="2" stroke="currentColor" strokeWidth="1.5"/>
       <path d="M7 8.5l5 1 5-1M12 9.5v4M9 20l3-6.5 3 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
   playground: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M8 9l3 3-3 3M13 15h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.5"/>
     </svg>
@@ -126,11 +126,6 @@ const links = [
     href: 'https://github.com/UXLana/mtr-design-system',
     icon: <IconGitHub />,
   },
-  {
-    label: 'Vercel',
-    href: 'https://mtr-design-system.vercel.app',
-    icon: <IconExternal />,
-  },
 ]
 
 // =============================================================================
@@ -150,11 +145,12 @@ export default function Home() {
         display: 'flex',
         justifyContent: 'center',
       }}>
-        <div style={{ maxWidth: '720px', width: '100%' }}>
+        <div style={{ maxWidth: CONTENT_MAX_WIDTH, width: '100%' }}>
           <p style={{
             ...typography.label.lg,
             color: colors.text.lowEmphasis.onDark,
             marginBottom: spacing.xs,
+            // Overline style — no matching token preset yet
             letterSpacing: '1.5px',
             textTransform: 'uppercase' as const,
             fontSize: '13px',
@@ -196,7 +192,7 @@ export default function Home() {
                 borderRadius: borderRadius.lg,
                 textDecoration: 'none',
                 fontWeight: fontWeights.semibold,
-                fontSize: '15px',
+                fontSize: typography.body.md.fontSize,
                 fontFamily: fontFamilies.body,
                 boxShadow: shadows.brand,
                 border: 'none',
@@ -215,16 +211,16 @@ export default function Home() {
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: spacing['2xs'],
                   padding: `${spacing.sm} ${spacing.lg}`,
-                  background: 'rgba(255,255,255,0.12)',
+                  background: colors.surface.disabled.onDark,
                   color: colors.text.highEmphasis.onDark,
                   borderRadius: borderRadius.lg,
                   textDecoration: 'none',
                   fontWeight: fontWeights.medium,
-                  fontSize: '15px',
+                  fontSize: typography.body.md.fontSize,
                   fontFamily: fontFamilies.body,
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  border: `1px solid ${colors.border.midEmphasis.onDark}`,
                 }}
               >
                 {link.icon}
@@ -241,7 +237,7 @@ export default function Home() {
         display: 'flex',
         justifyContent: 'center',
       }}>
-        <div style={{ maxWidth: '720px', width: '100%' }}>
+        <div style={{ maxWidth: CONTENT_MAX_WIDTH, width: '100%' }}>
           <h2 style={{
             ...typography.heading.h2,
             color: colors.text.highEmphasis.onLight,
@@ -293,8 +289,8 @@ export default function Home() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: borderRadius.md,
-                  background: colors.brand.primaryLight,
-                  color: colors.brand.primary,
+                  background: colors.brand.primary,
+                  color: colors.text.highEmphasis.onDark,
                 }}>
                   {sectionIcons[section.key]}
                 </div>
@@ -327,7 +323,7 @@ export default function Home() {
         justifyContent: 'center',
       }}>
         <div style={{
-          maxWidth: '720px',
+          maxWidth: CONTENT_MAX_WIDTH,
           width: '100%',
           display: 'flex',
           alignItems: 'center',
@@ -347,7 +343,7 @@ export default function Home() {
             <p style={{
               ...typography.label.md,
               color: colors.text.highEmphasis.onLight,
-              marginBottom: '2px',
+              marginBottom: spacing['2xs'],
             }}>
               How to Use
             </p>
@@ -370,7 +366,7 @@ export default function Home() {
         borderTop: `1px solid ${colors.border.lowEmphasis.onLight}`,
       }}>
         <div style={{
-          maxWidth: '720px',
+          maxWidth: CONTENT_MAX_WIDTH,
           width: '100%',
           display: 'flex',
           justifyContent: 'space-between',
