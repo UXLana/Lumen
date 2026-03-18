@@ -7,7 +7,7 @@
 - **Device**: Mobile (375px)
 - **Fidelity**: High-fi
 - **Created**: 2026-03-11
-- **Last updated**: 2026-03-17
+- **Last updated**: 2026-03-18
 
 ## Sources
 - [Confluence: Mobile Landing Page Discussion with Urban + Consultants](https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants)
@@ -52,6 +52,9 @@
 - 2026-03-11: Consumer glossary link included per consultant recommendation for terminology education
 - 2026-03-11: Licensee badges (Social Equity, Locally Grown) controlled by state, not self-claimed per consultant requirement
 - 2026-03-17: Replaced StateHeader ("Legal Regulated Product") with unified ComplianceBanner showing CCC logo, Compliance Passed seal, and Metrc Retail ID branding on olive green background — applies to UC1 and UC2
+- 2026-03-18: Removed old V1 (Product Only), promoted V2 (Tabbed) to V1. Added new V2 (Accordion) — product sections (Lab Results, Retailer, Package Details, etc.) collapsed into accordions like the About Brand page. V2 defaults to UC2.
+- 2026-03-18: Added full-width "View Full COA" high-emphasis button — in V1 it appears inside Lab Results section, in V2 it appears above the accordion
+- 2026-03-18: View Full COA button placed outside accordion in V2 for immediate visibility
 
 ## Open Questions
 - How does the state seal/logo get uploaded? (State Regulator Management Portal handles this)
@@ -68,3 +71,4 @@
 1. [2026-03-11] "Create another version of qr-verify prototype taking Urban Consultants Confluence context into consideration. Keep current version, add new version to utility list. Need brand-primary, brand-secondary, no-compliance/brand-only options. Research if some states don't need compliance. Use MA, generate fictitious product image."
    - Links: [Confluence: Mobile Landing Page Discussion with Urban + Consultants](https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants)
 2. [2026-03-17] "Replace the legal banners on top of the page with a CCC + Compliance Passed + Metrc Retail ID branded banner image."
+3. [2026-03-18] "Remove V1 and replace with V2. Add new V2 with accordion sections (like About Brand). Start V2 on UC2. Add full-width View Full COA button above the accordion. All Tests Passed badge inline under accordion title."

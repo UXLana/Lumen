@@ -23,25 +23,34 @@
   },
   {
     "id": "rid-label-prototype",
-    "name": "RID",
-    "description": "Retail ID Version 2 redesign prototype.",
+    "name": "RID Label Wizard",
+    "description": "Barcode generation and label printing workflow for cannabis package compliance. Generate-first flow with template/reel configuration and multi-format download.",
     "owner": "Lana Holston",
-    "status": "draft",
+    "status": "in-review",
     "device": "desktop",
     "fidelity": "high-fi",
     "created": "2026-03-10",
-    "updated": "2026-03-10",
+    "updated": "2026-03-18",
     "href": "https://label-prototype.vercel.app",
-    "devUrl": "http://localhost:3001",
+    "devUrl": "http://localhost:4000",
     "localPath": "/Users/lanaholston/Desktop/CodeWork/RID/label-prototype",
-    "screens": 1,
-    "tags": ["rid", "external"],
-    "dsComponents": [],
-    "openQuestions": [],
+    "screens": 3,
+    "tags": ["rid", "barcode", "label", "printing", "compliance", "external"],
+    "dsComponents": ["Button", "LinearStepper", "FullScreenModal", "Badge", "Tabs"],
+    "openQuestions": [
+      "V3: How should inline field overrides surface corrections upstream?",
+      "Should operators be able to regenerate barcodes after initial generation?",
+      "Large batch threshold — is 5,000 the right cutoff for phased progress?"
+    ],
     "lastReviewedBy": null,
     "lastReviewedDate": null,
     "prompts": [],
-    "context": null
+    "context": null,
+    "versions": [
+      { "id": "v1", "label": "V1 — Original", "description": "Configure everything, then save" },
+      { "id": "v2", "label": "V2 — Generate First", "description": "Generate barcodes first, then configure print" },
+      { "id": "v3", "label": "V3 — Override Flow", "description": "V2 + inline field overrides for upstream corrections (planned)" }
+    ]
   },
   {
     "id": "qr-verify",
@@ -98,7 +107,7 @@
     "device": "mobile",
     "fidelity": "high-fi",
     "created": "2026-03-11",
-    "updated": "2026-03-11",
+    "updated": "2026-03-18",
     "href": "/prototypes/rid-landing-page",
     "screens": 1,
     "tags": ["rid", "consumer-facing", "compliance", "gtm"],
@@ -121,6 +130,10 @@
       {
         "date": "2026-03-17",
         "text": "Replace the legal banners on top of the page with a CCC + Compliance Passed + Metrc Retail ID branded banner image."
+      },
+      {
+        "date": "2026-03-18",
+        "text": "Remove V1 and replace with V2. Add new V2 with accordion sections (like About Brand). Start V2 on UC2. Add full-width View Full COA button above the accordion. All Tests Passed badge inline under accordion title."
       }
     ],
     "context": {

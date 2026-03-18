@@ -21,22 +21,18 @@ import type { ProductData, BrandData, StateConfig, LabResult } from './data'
 // =============================================================================
 
 const VERSIONS: Version[] = [
-  { label: 'v1 — Product Only', description: 'Product details page. Single-view layout.' },
-  { label: 'v2 — Product + Brand', description: 'Tabbed view with Product Details and About Brand.' },
+  { label: 'v1 — Tabbed', description: 'Tabbed view with Product Details and About Brand.' },
+  { label: 'v2 — Accordion', description: 'Sections collapsed into accordions. Starts on UC1.' },
 ]
 
 const USE_CASES: UseCase[] = [
   {
-    label: 'UC1 — Compliance-First',
-    description: 'Mandated market (MA). State header prominent, brand suppressed.',
-  },
-  {
-    label: 'UC2 — Compliance + Brand',
+    label: 'UC1 — Compliance + Brand',
     description: 'Mandated market that allows brand content. State seal + brand hero balanced.',
   },
   {
-    label: 'UC3 — Brand-Forward',
-    description: 'Non-mandated / voluntary market. Brand primary, lightweight compliance.',
+    label: 'UC2 — Compliance-First',
+    description: 'Mandated market (MA). State header prominent, brand suppressed.',
   },
 ]
 
@@ -413,27 +409,36 @@ function ConsumerEssentials({ product }: { product: ProductData }) {
 // LAB RESULTS — matches qr-verify expandable pattern
 // =============================================================================
 
-function LabResults({ product }: { product: ProductData }) {
+function LabResults({ product, hideCOAButton, hideHeader }: { product: ProductData; hideCOAButton?: boolean; hideHeader?: boolean }) {
   const [expanded, setExpanded] = useState(false)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <SectionHeader>Lab Results</SectionHeader>
-        <Badge
-          variant="subtle"
-          color={product.testStatus === 'passed' ? 'success' : product.testStatus === 'failed' ? 'error' : 'warning'}
-          size="sm"
-        >
-          {product.testStatus === 'passed' ? 'All Tests Passed' : product.testStatus === 'failed' ? 'Failed' : 'Pending'}
-        </Badge>
-      </div>
+      {!hideHeader && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <SectionHeader>Lab Results</SectionHeader>
+          <Badge
+            variant="subtle"
+            color={product.testStatus === 'passed' ? 'success' : product.testStatus === 'failed' ? 'error' : 'warning'}
+            size="sm"
+          >
+            {product.testStatus === 'passed' ? 'All Tests Passed' : product.testStatus === 'failed' ? 'Failed' : 'Pending'}
+          </Badge>
+        </div>
+      )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
         <DetailField label="Tested by" value={product.labName} />
         <DetailField label="Test date" value={product.testDate} />
         <DetailField label="License" value={product.labLicense} mono />
       </div>
+
+      {/* View Full COA — high emphasis, full width */}
+      {!hideCOAButton && (
+        <Button emphasis="high" size="md" fullWidth onClick={() => window.open(product.coaUrl, '_blank')}>
+          View Full COA
+        </Button>
+      )}
 
       <button
         onClick={() => setExpanded(!expanded)}
@@ -512,10 +517,6 @@ function LabResults({ product }: { product: ProductData }) {
           ))}
         </div>
       )}
-
-      <Link href={product.coaUrl} external size="md" style={{ marginTop: `calc(${spacing.md} - ${spacing.sm})` }}>
-        Certificate of Analysis (CoA)
-      </Link>
     </div>
   )
 }
@@ -524,10 +525,10 @@ function LabResults({ product }: { product: ProductData }) {
 // STATE LINKS
 // =============================================================================
 
-function StateLinks({ config }: { config: StateConfig }) {
+function StateLinks({ config, hideHeader }: { config: StateConfig; hideHeader?: boolean }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-      <SectionHeader>Resources</SectionHeader>
+      {!hideHeader && <SectionHeader>Resources</SectionHeader>}
       {config.links.map((link) => (
         <Link key={link.label} href={link.url} external size="md">
           {link.label}
@@ -622,10 +623,10 @@ function ProductIdentity({ product, showImage }: { product: ProductData; showIma
 // PACKAGE DETAILS — matches qr-verify
 // =============================================================================
 
-function PackageDetails({ product }: { product: ProductData }) {
+function PackageDetails({ product, hideHeader }: { product: ProductData; hideHeader?: boolean }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-      <SectionHeader>Package Details</SectionHeader>
+      {!hideHeader && <SectionHeader>Package Details</SectionHeader>}
       <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, marginTop: spacing['2xs'] }}>
         <DetailField label="Package Tag" value={product.packageTag} mono />
         <DetailField label="Batch ID" value={product.batchId} mono />
@@ -642,10 +643,10 @@ function PackageDetails({ product }: { product: ProductData }) {
 // RETAILER INFO
 // =============================================================================
 
-function RetailerInfo({ product }: { product: ProductData }) {
+function RetailerInfo({ product, hideHeader }: { product: ProductData; hideHeader?: boolean }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-      <SectionHeader>Retailer</SectionHeader>
+      {!hideHeader && <SectionHeader>Retailer</SectionHeader>}
       <DetailField label="Purchased at" value={product.retailer.name} />
       <DetailField label="Location" value={product.retailer.location} />
       <DetailField label="Purchase date" value={product.retailer.purchaseDate} />
@@ -699,154 +700,7 @@ function GlossaryLink() {
 }
 
 // =============================================================================
-// USE CASE VIEWS
-// =============================================================================
-
-/** UC1: Compliance-First — Mandated market, brand suppressed */
-function ComplianceFirstView({ product, config }: { product: ProductData; config: StateConfig }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <ComplianceBanner />
-
-      {/* Product identity — compact, no image */}
-      <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-        <h1
-          style={{
-            fontFamily: fontFamilies.display,
-            fontSize: typography.heading.h5.fontSize,
-            fontWeight: fontWeights.semibold,
-            color: colors.text.highEmphasis.onLight,
-            margin: 0,
-            lineHeight: '1.2',
-          }}
-        >
-          {product.name}
-        </h1>
-        <span
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.body.sm.fontSize,
-            color: colors.text.lowEmphasis.onLight,
-          }}
-        >
-          {product.brand}
-        </span>
-        <div style={{ marginTop: spacing.xs }}>
-          <LicenseeBadges badges={config.badges} />
-        </div>
-      </div>
-
-      {/* Consumer essentials */}
-      <div style={{ padding: spacing.md }}>
-        <ConsumerEssentials product={product} />
-      </div>
-
-      {/* Lab results */}
-      <div style={{ padding: spacing.md }}>
-        <LabResults product={product} />
-      </div>
-
-      {/* Retailer */}
-      <div style={{ padding: spacing.md }}>
-        <RetailerInfo product={product} />
-      </div>
-
-      {/* Package details */}
-      <div style={{ padding: spacing.md }}>
-        <PackageDetails product={product} />
-      </div>
-
-      {/* Resources */}
-      <div style={{ padding: spacing.md }}>
-        <StateLinks config={config} />
-      </div>
-
-    </div>
-  )
-}
-
-/** UC2: Compliance + Brand — Mandated market, brand allowed */
-function CompliancePlusBrandView({ product, config }: { product: ProductData; config: StateConfig }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <ComplianceBanner />
-
-      <ProductIdentity product={product} showImage />
-
-      {/* Consumer essentials */}
-      <div style={{ padding: spacing.md }}>
-        <ConsumerEssentials product={product} />
-      </div>
-
-      {/* Lab results */}
-      <div style={{ padding: spacing.md }}>
-        <LabResults product={product} />
-      </div>
-
-      {/* Retailer */}
-      <div style={{ padding: spacing.md }}>
-        <RetailerInfo product={product} />
-      </div>
-
-      {/* Package details */}
-      <div style={{ padding: spacing.md }}>
-        <PackageDetails product={product} />
-      </div>
-
-      {/* State information */}
-      <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-        <SectionHeader>State Information</SectionHeader>
-        <p
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.body.sm.fontSize,
-            color: colors.text.lowEmphasis.onLight,
-            margin: 0,
-            lineHeight: '20px',
-          }}
-        >
-          {config.legalMessage}
-        </p>
-        <LicenseeBadges badges={config.badges} />
-      </div>
-
-      {/* Resources */}
-      <div style={{ padding: spacing.md }}>
-        <StateLinks config={config} />
-      </div>
-
-    </div>
-  )
-}
-
-/** UC3: Brand-Forward — Non-mandated / voluntary market, lightweight compliance */
-function BrandForwardView({ product }: { product: ProductData }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <MinimalHeader label="Metrc Verified" />
-
-      <ProductIdentity product={product} showImage />
-
-      {/* Consumer essentials */}
-      <div style={{ padding: spacing.md }}>
-        <ConsumerEssentials product={product} />
-      </div>
-
-      {/* Lab results */}
-      <div style={{ padding: spacing.md }}>
-        <LabResults product={product} />
-      </div>
-
-      {/* Package details */}
-      <div style={{ padding: spacing.md }}>
-        <PackageDetails product={product} />
-      </div>
-    </div>
-  )
-}
-
-// =============================================================================
-// v2 — TABBED PRODUCT + BRAND VIEW
+// v1 — TABBED PRODUCT + BRAND VIEW
 // =============================================================================
 
 function BrandHero() {
@@ -1118,6 +972,152 @@ function BrandForwardViewV2({ product, brand }: { product: ProductData; brand: B
 }
 
 // =============================================================================
+// v3 — ACCORDION PRODUCT DETAILS (new V2 in toolbar)
+// =============================================================================
+
+/** Product details with sections collapsed into accordions */
+function AccordionProductContent({
+  product,
+  config,
+  showRetailer = true,
+  showStateInfo = false,
+  showResources = false,
+}: {
+  product: ProductData
+  config?: StateConfig
+  showRetailer?: boolean
+  showStateInfo?: boolean
+  showResources?: boolean
+}) {
+  const defaultOpen = ['lab-results']
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      {/* Consumer essentials stay above the fold — not in accordion */}
+      <div style={{ padding: spacing.md }}>
+        <ConsumerEssentials product={product} />
+      </div>
+
+      {/* View Full COA — above the accordion, edge to edge */}
+      <div style={{ padding: `0 ${spacing.md} ${spacing.sm}` }}>
+        <Button emphasis="high" size="md" fullWidth onClick={() => window.open(product.coaUrl, '_blank')}>
+          View Full COA
+        </Button>
+      </div>
+
+      {/* Accordion sections */}
+      <style>{`.product-accordion h3 { font-size: ${typography.body.md.fontSize} !important; }`}</style>
+      <Accordion allowMultiple={false} defaultExpandedIds={defaultOpen} className="product-accordion">
+        <AccordionItem id="lab-results" title="Lab Results">
+          <div style={{ marginBottom: spacing.sm }}>
+            <Badge
+              variant="subtle"
+              color={product.testStatus === 'passed' ? 'success' : product.testStatus === 'failed' ? 'error' : 'warning'}
+              size="sm"
+            >
+              {product.testStatus === 'passed' ? 'All Tests Passed' : product.testStatus === 'failed' ? 'Failed' : 'Pending'}
+            </Badge>
+          </div>
+          <LabResults product={product} hideCOAButton hideHeader />
+        </AccordionItem>
+
+        {showStateInfo && config && (
+          <AccordionItem id="state-info" title="State Information">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+              <p style={{ fontFamily: fontFamilies.body, fontSize: typography.body.sm.fontSize, color: colors.text.lowEmphasis.onLight, margin: 0, lineHeight: '20px' }}>
+                {config.legalMessage}
+              </p>
+              <LicenseeBadges badges={config.badges} />
+              <Link href={config.agencyUrl} external size="md">
+                {config.agencyName}
+              </Link>
+            </div>
+          </AccordionItem>
+        )}
+
+        <AccordionItem id="package-details" title="Package Details">
+          <PackageDetails product={product} hideHeader />
+        </AccordionItem>
+
+        {showRetailer && (
+          <AccordionItem id="retailer" title="Retailer">
+            <RetailerInfo product={product} hideHeader />
+          </AccordionItem>
+        )}
+
+        {showResources && config && (
+          <AccordionItem id="resources" title="Resources">
+            <StateLinks config={config} hideHeader />
+          </AccordionItem>
+        )}
+      </Accordion>
+    </div>
+  )
+}
+
+/** UC1 v3: Compliance-First with accordion product sections */
+function ComplianceFirstViewV3({ product, config, brand }: { product: ProductData; config: StateConfig; brand: BrandData }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <ComplianceBanner />
+      <TabbedWrapper
+        brand={brand}
+        productContent={
+          <>
+            {/* Product identity — compact, no image */}
+            <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <h1
+                style={{
+                  fontFamily: fontFamilies.display,
+                  fontSize: typography.heading.h5.fontSize,
+                  fontWeight: fontWeights.semibold,
+                  color: colors.text.highEmphasis.onLight,
+                  margin: 0,
+                  lineHeight: '1.2',
+                }}
+              >
+                {product.name}
+              </h1>
+              <span
+                style={{
+                  fontFamily: fontFamilies.body,
+                  fontSize: typography.body.sm.fontSize,
+                  color: colors.text.lowEmphasis.onLight,
+                }}
+              >
+                {product.brand}
+              </span>
+              <div style={{ marginTop: spacing.xs }}>
+                <LicenseeBadges badges={config.badges} />
+              </div>
+            </div>
+            <AccordionProductContent product={product} config={config} showRetailer showResources />
+          </>
+        }
+      />
+    </div>
+  )
+}
+
+/** UC2 v3: Compliance + Brand with accordion product sections */
+function CompliancePlusBrandViewV3({ product, config, brand }: { product: ProductData; config: StateConfig; brand: BrandData }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <ComplianceBanner />
+      <TabbedWrapper
+        brand={brand}
+        productContent={
+          <>
+            <ProductIdentity product={product} showImage />
+            <AccordionProductContent product={product} config={config} showRetailer showStateInfo showResources />
+          </>
+        }
+      />
+    </div>
+  )
+}
+
+// =============================================================================
 // LOADING STATE
 // =============================================================================
 
@@ -1158,13 +1158,15 @@ function LoadingState() {
 // =============================================================================
 
 export default function RIDLandingPage() {
-  const [activeVersion, setActiveVersion] = useState(0)
+  const [activeVersion, setActiveVersion] = useState(1)
   const [viewState, setViewState] = useState<ViewState>('default')
   const [activeUseCase, setActiveUseCase] = useState(0)
 
   const handleVersionChange = (index: number) => {
     setActiveVersion(index)
     setViewState('default')
+    // V2 (Accordion) defaults to UC1 — Compliance + Brand
+    setActiveUseCase(0)
   }
 
   return (
@@ -1207,26 +1209,23 @@ export default function RIDLandingPage() {
         />
       )}
 
-      {/* v1 — Product Only */}
+      {/* v1 — Tabbed (Product + Brand tabs, scrolling sections) */}
       {viewState === 'default' && activeVersion === 0 && activeUseCase === 0 && (
-        <ComplianceFirstView product={sampleProduct} config={massachusettsConfig} />
-      )}
-      {viewState === 'default' && activeVersion === 0 && activeUseCase === 1 && (
-        <CompliancePlusBrandView product={sampleProduct} config={massachusettsConfig} />
-      )}
-      {viewState === 'default' && activeVersion === 0 && activeUseCase === 2 && (
-        <BrandForwardView product={sampleProduct} />
-      )}
-
-      {/* v2 — Product + Brand (tabbed) */}
-      {viewState === 'default' && activeVersion === 1 && activeUseCase === 0 && (
         <ComplianceFirstViewV2 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
       )}
-      {viewState === 'default' && activeVersion === 1 && activeUseCase === 1 && (
+      {viewState === 'default' && activeVersion === 0 && activeUseCase === 1 && (
         <CompliancePlusBrandViewV2 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
       )}
-      {viewState === 'default' && activeVersion === 1 && activeUseCase === 2 && (
+      {viewState === 'default' && activeVersion === 0 && activeUseCase === 2 && (
         <BrandForwardViewV2 product={sampleProduct} brand={sampleBrand} />
+      )}
+
+      {/* v2 — Accordion (Product sections in accordions, defaults to UC1) */}
+      {viewState === 'default' && activeVersion === 1 && activeUseCase === 0 && (
+        <CompliancePlusBrandViewV3 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
+      )}
+      {viewState === 'default' && activeVersion === 1 && activeUseCase === 1 && (
+        <ComplianceFirstViewV3 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
       )}
 
       <PrototypeToolbar

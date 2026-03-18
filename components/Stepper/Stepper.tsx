@@ -566,13 +566,19 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
       pointerEvents: 'none',
     }
 
-    const handleClick = () => {
+    const handleClick = (e: React.MouseEvent) => {
+      // Don't toggle step when clicking inside form controls
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || tag === 'BUTTON' || tag === 'LABEL') return
       if (isClickable && onClick) {
         onClick()
       }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
+      // Only handle when the step container itself is focused, not child inputs/selects
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return
       if (isClickable && onClick && (e.key === 'Enter' || e.key === ' ')) {
         e.preventDefault()
         onClick()
@@ -698,8 +704,8 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
             {metadata && <p style={metadataStyles}>{metadata}</p>}
           </div>
 
-          {/* Active step content */}
-          {isActive && children && (
+          {/* Step content — active steps get full content, completed steps get summary */}
+          {(isActive || isCompleted) && children && (
             <div style={contentAreaStyles}>{children}</div>
           )}
 

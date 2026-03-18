@@ -223,7 +223,7 @@ function PrototypeCard({ prototype, onOpenDrawer, currentOwner }: { prototype: P
   const questionCount = prototype.openQuestions.length
   const componentCount = prototype.dsComponents.length
 
-  const cardHref = prototype.href || prototype.devUrl
+  const cardHref = prototype.devUrl || prototype.href
   const isExternalUrl = cardHref?.startsWith('http')
 
   return (

@@ -12,6 +12,7 @@ import {
   shadowSemantics,
 } from '@/styles/design-tokens'
 import { useThemeSwitcher, availableThemes } from '@/styles/themes'
+import { Button } from '@/components'
 
 // =============================================================================
 // TYPES
@@ -50,6 +51,11 @@ interface PrototypeToolbarProps {
   activeUseCase?: number
   /** Callback when use case changes */
   onUseCaseChange?: (index: number) => void
+  /** Keyboard shortcut to toggle visibility. Default: Cmd+. (Mac) / Ctrl+. (Windows).
+   *  Set to false to disable. Useful for hiding during user testing. */
+  hotkey?: string | false
+  /** Start hidden (e.g. for user testing). Toggle with hotkey. */
+  initiallyHidden?: boolean
 }
 
 const VIEW_STATES: ViewState[] = ['default', 'loading', 'empty', 'error']
@@ -97,11 +103,37 @@ export function PrototypeToolbar({
   useCases,
   activeUseCase,
   onUseCaseChange,
+  hotkey,
+  initiallyHidden = false,
 }: PrototypeToolbarProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isVisible, setIsVisible] = useState(!initiallyHidden)
   const { themeName, setThemeName } = useThemeSwitcher()
+  const [showAllPrototypes, setShowAllPrototypes] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+
+  // Show "All Prototypes" link on non-index pages
+  useEffect(() => {
+    setShowAllPrototypes(window.location.pathname !== '/prototypes')
+  }, [])
+
+  // Keyboard shortcut to toggle visibility (default: Cmd/Ctrl + .)
+  useEffect(() => {
+    if (hotkey === false) return
+    function handleKey(e: KeyboardEvent) {
+      const isMod = e.metaKey || e.ctrlKey
+      if (isMod && e.key === '.') {
+        e.preventDefault()
+        setIsVisible(v => {
+          if (v) setIsOpen(false) // close panel when hiding
+          return !v
+        })
+      }
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [hotkey])
 
   // Close on click outside
   useEffect(() => {
@@ -127,6 +159,9 @@ export function PrototypeToolbar({
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
   }, [isOpen])
+
+  // Hidden — render nothing (hotkey still active)
+  if (!isVisible) return null
 
   const allStates = extraStates ? [...VIEW_STATES, ...extraStates] : VIEW_STATES
   const hasVersions = versions && versions.length > 1 && onVersionChange
@@ -284,6 +319,16 @@ export function PrototypeToolbar({
               ))}
             </select>
           </div>
+
+          {/* All Prototypes link */}
+          {showAllPrototypes && (
+            <div style={{ borderTop: `1px solid ${colors.border.lowEmphasis.onLight}`, marginTop: spacing['2xs'], paddingTop: spacing.sm }}>
+              <Button emphasis="low" size="md" onClick={() => { window.location.href = '/prototypes' }}>
+                All Prototypes
+              </Button>
+            </div>
+          )}
+
         </div>
       )}
     </>
