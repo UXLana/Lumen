@@ -211,7 +211,7 @@ export function PrototypeToolbar({
             bottom: '74px',
             left: spacing.xl,
             zIndex: zIndex.modal,
-            width: '220px',
+            width: '280px',
             backgroundColor: colors.surface.light,
             border: `1px solid ${colors.border.lowEmphasis.onLight}`,
             borderRadius: borderRadiusSemantics.card,

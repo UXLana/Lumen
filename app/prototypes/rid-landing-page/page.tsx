@@ -9,8 +9,9 @@ import {
   fontWeights,
   typography,
   borderRadiusSemantics,
+  shadowSemantics,
 } from '@/styles/design-tokens'
-import { Accordion, AccordionItem, TabBar, Badge, Banner, DetailField, Divider, Skeleton, EmptyState, Button, Link, IconCheckCircle, IconStar, IconHeart, IconBadge } from '@/components'
+import { Accordion, AccordionItem, TabBar, Badge, Banner, DetailField, Divider, Skeleton, EmptyState, Button, Link, IconCheckCircle, IconStar, IconHeart, IconBadge, ComplianceBanner } from '@/components'
 import type { TabItem } from '@/components'
 import type { IconProps } from '@/components'
 import { sampleProduct, sampleBrand, massachusettsConfig } from './data'
@@ -31,8 +32,8 @@ const USE_CASES: UseCase[] = [
     description: 'Mandated market that allows brand content. State seal + brand hero balanced.',
   },
   {
-    label: 'UC2 — Compliance-First',
-    description: 'Mandated market (MA). State header prominent, brand suppressed.',
+    label: 'UC2 — Light Header',
+    description: 'White/light background with full-color state seal. Neutral header for all states.',
   },
 ]
 
@@ -118,6 +119,169 @@ const linkIconMap = {
 }
 
 // =============================================================================
+// COA BOTTOM SHEET — slides up from bottom with list of COA documents
+// =============================================================================
+
+function COABottomSheet({ product, open, onClose }: { product: ProductData; open: boolean; onClose: () => void }) {
+  const docs = product.coaDocuments || [{ label: 'Full Panel COA', url: product.coaUrl, date: product.testDate, lab: product.labName }]
+
+  // Close on Escape key
+  React.useEffect(() => {
+    if (!open) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [open, onClose])
+
+  return (
+    <>
+      {/* Scrim overlay */}
+      {open && (
+        <div
+          onClick={onClose}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: colors.scrim,
+            zIndex: 99,
+            transition: 'opacity 200ms ease-out',
+          }}
+        />
+      )}
+      {/* Sheet */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Certificate of Analysis documents"
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          backgroundColor: colors.surface.light,
+          borderRadius: `${borderRadiusSemantics.modal} ${borderRadiusSemantics.modal} 0 0`,
+          boxShadow: shadowSemantics.modal,
+          transform: open ? 'translateY(0)' : 'translateY(100%)',
+          transition: 'transform 300ms ease-out',
+          maxHeight: '70vh',
+          overflow: 'auto',
+        }}
+      >
+        {/* Drag handle */}
+        <div style={{ display: 'flex', justifyContent: 'center', padding: `${spacing.xs} 0` }}>
+          <div style={{
+            width: 36,
+            height: 4,
+            borderRadius: borderRadiusSemantics.pill,
+            backgroundColor: colors.border.lowEmphasis.onLight,
+          }} />
+        </div>
+
+        {/* Header */}
+        <div style={{
+          padding: `0 ${spacing.md} ${spacing.sm}`,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <span style={{
+            fontFamily: fontFamilies.display,
+            fontSize: typography.heading.h6.fontSize,
+            fontWeight: fontWeights.semibold,
+            color: colors.text.highEmphasis.onLight,
+          }}>
+            Certificates of Analysis
+          </span>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: spacing['2xs'],
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: borderRadiusSemantics.interactive,
+              color: colors.text.lowEmphasis.onLight,
+            }}
+          >
+            <svg width={20} height={20} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        {/* COA list */}
+        <div style={{ padding: `0 ${spacing.md} ${spacing.lg}`, display: 'flex', flexDirection: 'column' }}>
+          {docs.map((doc, index) => (
+            <React.Fragment key={doc.label}>
+              <button
+                onClick={() => window.open(doc.url, '_blank')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: `${spacing.sm} 0`,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  width: '100%',
+                  textAlign: 'left',
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['2xs'] }}>
+                  <span style={{
+                    fontFamily: fontFamilies.body,
+                    fontSize: typography.body.md.fontSize,
+                    fontWeight: fontWeights.medium,
+                    color: colors.text.highEmphasis.onLight,
+                  }}>
+                    {doc.label}
+                  </span>
+                  <span style={{
+                    fontFamily: fontFamilies.body,
+                    fontSize: typography.body.sm.fontSize,
+                    color: colors.text.lowEmphasis.onLight,
+                  }}>
+                    {doc.lab} · {doc.date}
+                  </span>
+                </div>
+                <ExternalLinkIcon size={16} color={colors.text.lowEmphasis.onLight} />
+              </button>
+              {index < docs.length - 1 && <Divider spacing="none" />}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+function COAButton({ product }: { product: ProductData }) {
+  const [sheetOpen, setSheetOpen] = useState(false)
+
+  return (
+    <>
+      <Button
+        emphasis="high"
+        size="md"
+        fullWidth
+        onClick={() => setSheetOpen(true)}
+        rightIcon={<ChevronDownIcon size={14} color={colors.text.highEmphasis.onDark} />}
+      >
+        View Full COA
+      </Button>
+      <COABottomSheet product={product} open={sheetOpen} onClose={() => setSheetOpen(false)} />
+    </>
+  )
+}
+
+// =============================================================================
 // SECTION HEADER — matches qr-verify pattern
 // =============================================================================
 
@@ -145,7 +309,7 @@ function ProductImage() {
   return (
     <div
       style={{
-        margin: spacing.md,
+        margin: `0 ${spacing.md}`,
         padding: `${spacing.lg} ${spacing.md}`,
         backgroundColor: colors.surface.lightDarker,
         borderRadius: borderRadiusSemantics.card,
@@ -194,26 +358,8 @@ function ImagePlaceholder() {
 }
 
 // =============================================================================
-// COMPLIANCE BANNER — CCC + Compliance Passed + Metrc RID (single image)
+// COMPLIANCE BANNER — now uses reusable ComplianceBanner component from @/components
 // =============================================================================
-
-function ComplianceBanner({ variant = 'default' }: { variant?: 'default' | 'large' }) {
-  const src = variant === 'large'
-    ? '/prototypes/rid-landing-page/ccc-large.png'
-    : '/prototypes/rid-landing-page/compliance-banner.png'
-  return (
-    <img
-      src={src}
-      alt="Cannabis Control Commission — Compliance Passed — Metrc Retail ID"
-      role="banner"
-      style={{
-        width: '100%',
-        height: 'auto',
-        display: 'block',
-      }}
-    />
-  )
-}
 
 // =============================================================================
 // MINIMAL HEADER (Brand modes — matches qr-verify "Metrc Verified" header)
@@ -433,29 +579,24 @@ function LabResults({ product, hideCOAButton, hideHeader }: { product: ProductDa
         <DetailField label="License" value={product.labLicense} mono />
       </div>
 
-      {/* View Full COA — high emphasis, full width */}
-      {!hideCOAButton && (
-        <Button emphasis="high" size="md" fullWidth onClick={() => window.open(product.coaUrl, '_blank')}>
-          View Full COA
-        </Button>
-      )}
-
       <button
-        onClick={() => setExpanded(!expanded)}
+        type="button"
+        onClick={(e) => { setExpanded(!expanded); e.currentTarget.blur() }}
         aria-expanded={expanded}
         style={{
-          display: 'flex',
+          display: 'inline-flex',
           alignItems: 'center',
           gap: spacing['2xs'],
           background: 'none',
           border: 'none',
           padding: 0,
+          margin: 0,
           cursor: 'pointer',
           fontFamily: fontFamilies.body,
-          fontSize: typography.body.sm.fontSize,
+          fontSize: typography.label.md.fontSize,
           fontWeight: fontWeights.medium,
           color: colors.text.action.enabled,
-          textDecoration: 'none',
+          outline: 'none',
         }}
       >
         {expanded ? 'Hide results' : `All (${product.labResults.length})`}
@@ -572,11 +713,27 @@ function LicenseeBadges({ badges }: { badges: StateConfig['badges'] }) {
 // PRODUCT IDENTITY — matches qr-verify product detail layout
 // =============================================================================
 
-function ProductIdentity({ product, showImage }: { product: ProductData; showImage?: boolean }) {
+function ProductIdentity({ product, showImage, coaAboveTitle }: { product: ProductData; showImage?: boolean; coaAboveTitle?: boolean }) {
+  const [showMore, setShowMore] = useState(false)
+  const readMoreRef = React.useRef<HTMLDivElement>(null)
+  const hasExtended = !!product.extendedDescription
+
+  const handleToggle = () => {
+    const willExpand = !showMore
+    setShowMore(willExpand)
+    if (willExpand) {
+      // Scroll down slightly after expanding to reveal "Read less"
+      setTimeout(() => {
+        readMoreRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }, 50)
+    }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       {showImage && <ProductImage />}
-      <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+      <div style={{ padding: `${spacing.lg} ${spacing.md} ${spacing.md}`, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+        {coaAboveTitle && <COAButton product={product} />}
         <h1
           style={{
             fontFamily: fontFamilies.display,
@@ -603,17 +760,66 @@ function ProductIdentity({ product, showImage }: { product: ProductData; showIma
           <Badge variant="subtle" color="neutral">{product.strainType}</Badge>
           <Badge variant="subtle" color="neutral">{product.strain}</Badge>
         </div>
-        <p
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.body.sm.fontSize,
-            color: colors.text.lowEmphasis.onLight,
-            margin: `${spacing.xs} 0 0`,
-            lineHeight: '20px',
-          }}
-        >
-          {product.description}
-        </p>
+        <div style={{ display: 'flex', gap: spacing.md, marginTop: spacing.xs }}>
+          <div style={{ flex: 1 }}>
+            <p
+              style={{
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.lowEmphasis.onLight,
+                margin: 0,
+                lineHeight: '20px',
+                ...(!showMore ? {
+                  display: '-webkit-box',
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: 'vertical' as const,
+                  overflow: 'hidden',
+                  lineClamp: 4,
+                } as React.CSSProperties : {}),
+              }}
+            >
+              {product.description}
+              {product.extendedDescription && ` ${product.extendedDescription}`}
+            </p>
+            {hasExtended && (
+              <div ref={readMoreRef} style={{ marginTop: spacing['2xs'] }}>
+                <button
+                  type="button"
+                  onClick={(e) => { handleToggle(); e.currentTarget.blur() }}
+                  aria-expanded={showMore}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: spacing['2xs'],
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    margin: 0,
+                    cursor: 'pointer',
+                    fontFamily: fontFamilies.body,
+                    fontSize: typography.label.md.fontSize,
+                    fontWeight: fontWeights.medium,
+                    color: colors.text.action.enabled,
+                    outline: 'none',
+                  }}
+                >
+                  {showMore ? 'Read less' : 'Read more'}
+                  <ChevronDownIcon size={14} color={colors.text.action.enabled} rotated={showMore} />
+                </button>
+              </div>
+            )}
+          </div>
+          {/* Verified by Metrc badge */}
+          <div style={{ flexShrink: 0, display: 'flex', alignItems: 'flex-start', paddingTop: spacing['2xs'] }}>
+            <img
+              src="/images/rid/metrc-verified.png"
+              alt="Verified by Metrc — Passed"
+              style={{ width: 80, height: 80, objectFit: 'contain' }}
+            />
+          </div>
+        </div>
+        {/* View Full COA — just under description, above consumer essentials */}
+        {!coaAboveTitle && <div style={{ marginTop: spacing.sm }}><COAButton product={product} /></div>}
       </div>
     </div>
   )
@@ -842,15 +1048,21 @@ const BRAND_TABS: TabItem[] = [
 function TabbedWrapper({
   productContent,
   brand,
+  tabMarginTop,
+  tabMarginBottom,
 }: {
   productContent: React.ReactNode
   brand: BrandData
+  /** Extra margin above the tab bar */
+  tabMarginTop?: string
+  /** Spacing between tabs and content below */
+  tabMarginBottom?: string
 }) {
   const [activeTab, setActiveTab] = useState('product')
 
   return (
     <>
-      <div style={{ padding: `0 ${spacing.md}` }}>
+      <div style={{ padding: `0 ${spacing.md}`, marginTop: tabMarginTop }}>
         <TabBar
           tabs={BRAND_TABS}
           activeTab={activeTab}
@@ -860,7 +1072,7 @@ function TabbedWrapper({
         />
       </div>
 
-      <div style={{ height: spacing.xs }} />
+      <div style={{ height: tabMarginBottom || spacing.xs }} />
 
       {activeTab === 'product' ? (
         <>{productContent}</>
@@ -881,6 +1093,8 @@ function ComplianceFirstViewV2({ product, config, brand }: { product: ProductDat
       <ComplianceBanner />
       <TabbedWrapper
         brand={brand}
+        tabMarginTop={spacing.xl}
+        tabMarginBottom={spacing.xs}
         productContent={
           <>
             {/* Product identity — compact, no image */}
@@ -929,6 +1143,8 @@ function CompliancePlusBrandViewV2({ product, config, brand }: { product: Produc
       <ComplianceBanner />
       <TabbedWrapper
         brand={brand}
+        tabMarginTop={spacing.xl}
+        tabMarginBottom={spacing.xs}
         productContent={
           <>
             <ProductIdentity product={product} showImage />
@@ -982,14 +1198,27 @@ function AccordionProductContent({
   showRetailer = true,
   showStateInfo = false,
   showResources = false,
+  expandedIds,
+  onExpandedChange,
 }: {
   product: ProductData
   config?: StateConfig
   showRetailer?: boolean
   showStateInfo?: boolean
   showResources?: boolean
+  expandedIds?: string[]
+  onExpandedChange?: (ids: string[]) => void
 }) {
-  const defaultOpen = ['lab-results']
+  const stateInfoRef = React.useRef<HTMLDivElement>(null)
+
+  // Scroll to state-info when it gets expanded
+  React.useEffect(() => {
+    if (expandedIds?.includes('state-info') && stateInfoRef.current) {
+      setTimeout(() => {
+        stateInfoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }, [expandedIds])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -998,16 +1227,13 @@ function AccordionProductContent({
         <ConsumerEssentials product={product} />
       </div>
 
-      {/* View Full COA — above the accordion, edge to edge */}
-      <div style={{ padding: `0 ${spacing.md} ${spacing.sm}` }}>
-        <Button emphasis="high" size="md" fullWidth onClick={() => window.open(product.coaUrl, '_blank')}>
-          View Full COA
-        </Button>
-      </div>
-
       {/* Accordion sections */}
       <style>{`.product-accordion h3 { font-size: ${typography.body.md.fontSize} !important; }`}</style>
-      <Accordion allowMultiple={false} defaultExpandedIds={defaultOpen} className="product-accordion">
+      <Accordion
+        allowMultiple={false}
+        {...(expandedIds ? { expandedIds, onExpandedChange } : { defaultExpandedIds: ['lab-results'] })}
+        className="product-accordion"
+      >
         <AccordionItem id="lab-results" title="Lab Results">
           <div style={{ marginBottom: spacing.sm }}>
             <Badge
@@ -1022,6 +1248,7 @@ function AccordionProductContent({
         </AccordionItem>
 
         {showStateInfo && config && (
+          <div ref={stateInfoRef}>
           <AccordionItem id="state-info" title="State Information">
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
               <p style={{ fontFamily: fontFamilies.body, fontSize: typography.body.sm.fontSize, color: colors.text.lowEmphasis.onLight, margin: 0, lineHeight: '20px' }}>
@@ -1033,6 +1260,7 @@ function AccordionProductContent({
               </Link>
             </div>
           </AccordionItem>
+          </div>
         )}
 
         <AccordionItem id="package-details" title="Package Details">
@@ -1055,43 +1283,25 @@ function AccordionProductContent({
   )
 }
 
-/** UC1 v3: Compliance-First with accordion product sections */
-function ComplianceFirstViewV3({ product, config, brand }: { product: ProductData; config: StateConfig; brand: BrandData }) {
+/** UC1 v2: Compliance + Brand with accordion product sections */
+function CompliancePlusBrandViewV3({ product, config, brand }: { product: ProductData; config: StateConfig; brand: BrandData }) {
+  const [accordionIds, setAccordionIds] = useState<string[]>(['lab-results'])
+
+  const handleVendorLogoClick = () => {
+    setAccordionIds(['state-info'])
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <ComplianceBanner />
+      <ComplianceBanner onVendorLogoClick={handleVendorLogoClick} />
       <TabbedWrapper
         brand={brand}
+        tabMarginTop={spacing.xl}
+        tabMarginBottom={spacing.xs}
         productContent={
           <>
-            {/* Product identity — compact, no image */}
-            <div style={{ padding: spacing.md, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-              <h1
-                style={{
-                  fontFamily: fontFamilies.display,
-                  fontSize: typography.heading.h5.fontSize,
-                  fontWeight: fontWeights.semibold,
-                  color: colors.text.highEmphasis.onLight,
-                  margin: 0,
-                  lineHeight: '1.2',
-                }}
-              >
-                {product.name}
-              </h1>
-              <span
-                style={{
-                  fontFamily: fontFamilies.body,
-                  fontSize: typography.body.sm.fontSize,
-                  color: colors.text.lowEmphasis.onLight,
-                }}
-              >
-                {product.brand}
-              </span>
-              <div style={{ marginTop: spacing.xs }}>
-                <LicenseeBadges badges={config.badges} />
-              </div>
-            </div>
-            <AccordionProductContent product={product} config={config} showRetailer showResources />
+            <ProductIdentity product={product} showImage />
+            <AccordionProductContent product={product} config={config} showRetailer showStateInfo showResources expandedIds={accordionIds} onExpandedChange={setAccordionIds} />
           </>
         }
       />
@@ -1099,17 +1309,35 @@ function ComplianceFirstViewV3({ product, config, brand }: { product: ProductDat
   )
 }
 
-/** UC2 v3: Compliance + Brand with accordion product sections */
-function CompliancePlusBrandViewV3({ product, config, brand }: { product: ProductData; config: StateConfig; brand: BrandData }) {
+// =============================================================================
+// UC2 — LIGHT HEADER (white bg, full-color logos)
+// =============================================================================
+
+const LIGHT_HEADER_PROPS = {
+  variant: 'light' as const,
+  vendorLogo: {
+    src: '/images/rid/nevada-seal-color.png',
+    alt: 'State of Nevada',
+    width: 50,
+    height: 50,
+  },
+}
+
+/** UC2 v2: Light header with accordion layout */
+function LightHeaderViewV3({ product, config, brand }: { product: ProductData; config: StateConfig; brand: BrandData }) {
+  const [accordionIds, setAccordionIds] = useState<string[]>(['lab-results'])
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <ComplianceBanner />
+      <ComplianceBanner {...LIGHT_HEADER_PROPS} onVendorLogoClick={() => setAccordionIds(['state-info'])} />
       <TabbedWrapper
         brand={brand}
+        tabMarginTop={spacing.xl}
+        tabMarginBottom={spacing.xs}
         productContent={
           <>
             <ProductIdentity product={product} showImage />
-            <AccordionProductContent product={product} config={config} showRetailer showStateInfo showResources />
+            <AccordionProductContent product={product} config={config} showRetailer showStateInfo showResources expandedIds={accordionIds} onExpandedChange={setAccordionIds} />
           </>
         }
       />
@@ -1170,7 +1398,7 @@ export default function RIDLandingPage() {
   }
 
   return (
-    <>
+    <div style={{ width: '100%', maxWidth: 500, margin: '0 auto', minHeight: '100vh', backgroundColor: colors.surface.light }}>
       {viewState === 'loading' && <LoadingState />}
 
       {viewState === 'empty' && (
@@ -1225,8 +1453,9 @@ export default function RIDLandingPage() {
         <CompliancePlusBrandViewV3 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
       )}
       {viewState === 'default' && activeVersion === 1 && activeUseCase === 1 && (
-        <ComplianceFirstViewV3 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
+        <LightHeaderViewV3 product={sampleProduct} config={massachusettsConfig} brand={sampleBrand} />
       )}
+
 
       <PrototypeToolbar
         viewState={viewState}
@@ -1238,6 +1467,6 @@ export default function RIDLandingPage() {
         activeUseCase={activeUseCase}
         onUseCaseChange={setActiveUseCase}
       />
-    </>
+    </div>
   )
 }

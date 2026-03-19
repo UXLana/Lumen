@@ -53,30 +53,6 @@
     ]
   },
   {
-    "id": "qr-verify",
-    "name": "QR Product Verify",
-    "description": "Consumer-facing product verification page accessed via QR code scan.",
-    "owner": "Lana Holston",
-    "status": "draft",
-    "device": "mobile",
-    "fidelity": "high-fi",
-    "created": "2026-03-10",
-    "updated": "2026-03-10",
-    "href": "/prototypes/qr-verify",
-    "screens": 3,
-    "tags": ["consumer-facing", "compliance"],
-    "dsComponents": ["Badge", "DetailField", "Divider", "Skeleton", "EmptyState", "Button"],
-    "openQuestions": [
-      "Should the CoA link open a real PDF viewer or redirect to the lab's website?",
-      "Should there be a 'Report a problem' link for suspected counterfeit products?",
-      "How does the QR URL schema work? (e.g., verify.metrc.com/p/{packageTag})"
-    ],
-    "lastReviewedBy": null,
-    "lastReviewedDate": null,
-    "prompts": [],
-    "context": null
-  },
-  {
     "id": "product-search",
     "name": "Product Search",
     "description": "Interactive product search flow with results, selection, and detail view.",
@@ -107,7 +83,7 @@
     "device": "mobile",
     "fidelity": "high-fi",
     "created": "2026-03-11",
-    "updated": "2026-03-18",
+    "updated": "2026-03-19",
     "href": "/prototypes/rid-landing-page",
     "screens": 1,
     "tags": ["rid", "consumer-facing", "compliance", "gtm"],
@@ -134,6 +110,18 @@
       {
         "date": "2026-03-18",
         "text": "Remove V1 and replace with V2. Add new V2 with accordion sections (like About Brand). Start V2 on UC2. Add full-width View Full COA button above the accordion. All Tests Passed badge inline under accordion title."
+      },
+      {
+        "date": "2026-03-19",
+        "text": "Make the top compliance banner sticky so it stays visible while scrolling."
+      },
+      {
+        "date": "2026-03-19",
+        "text": "Move the View Full COA button above the datatable; put a read more under product description to show longer text."
+      },
+      {
+        "date": "2026-03-19",
+        "text": "The View Full COA button should have a caret and trigger a bottom sheet for multiple COAs."
       }
     ],
     "context": {

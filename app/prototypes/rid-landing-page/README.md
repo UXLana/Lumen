@@ -7,7 +7,7 @@
 - **Device**: Mobile (375px)
 - **Fidelity**: High-fi
 - **Created**: 2026-03-11
-- **Last updated**: 2026-03-18
+- **Last updated**: 2026-03-19
 
 ## Sources
 - [Confluence: Mobile Landing Page Discussion with Urban + Consultants](https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants)
@@ -55,6 +55,9 @@
 - 2026-03-18: Removed old V1 (Product Only), promoted V2 (Tabbed) to V1. Added new V2 (Accordion) — product sections (Lab Results, Retailer, Package Details, etc.) collapsed into accordions like the About Brand page. V2 defaults to UC2.
 - 2026-03-18: Added full-width "View Full COA" high-emphasis button — in V1 it appears inside Lab Results section, in V2 it appears above the accordion
 - 2026-03-18: View Full COA button placed outside accordion in V2 for immediate visibility
+- 2026-03-19: Moved View Full COA button above DetailFields in Lab Results section (V1) — CTA is now the first action after the header
+- 2026-03-19: Added "Read more" / "Read less" toggle to product description — short description shows by default, extended description expands inline
+- 2026-03-19: View Full COA button now shows upward caret and triggers a bottom sheet listing multiple COA documents (Full Panel, Potency Retest, Terpene Profile) with lab name, date, and external link per row
 
 ## Open Questions
 - How does the state seal/logo get uploaded? (State Regulator Management Portal handles this)
@@ -72,3 +75,5 @@
    - Links: [Confluence: Mobile Landing Page Discussion with Urban + Consultants](https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants)
 2. [2026-03-17] "Replace the legal banners on top of the page with a CCC + Compliance Passed + Metrc Retail ID branded banner image."
 3. [2026-03-18] "Remove V1 and replace with V2. Add new V2 with accordion sections (like About Brand). Start V2 on UC2. Add full-width View Full COA button above the accordion. All Tests Passed badge inline under accordion title."
+4. [2026-03-19] "Move the View Full COA button above the datatable; put a read more under product description to show longer text"
+5. [2026-03-19] "The View Full COA button should have a caret and trigger a bottom sheet for multiple COAs"

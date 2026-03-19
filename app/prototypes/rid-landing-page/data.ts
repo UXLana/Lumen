@@ -47,11 +47,18 @@ export interface ProductData {
   packageDate: string
   expirationDate: string
   description: string
+  extendedDescription?: string
   labName: string
   labLicense: string
   testDate: string
   testStatus: 'passed' | 'failed' | 'pending'
   coaUrl: string
+  coaDocuments?: {
+    label: string
+    url: string
+    date: string
+    lab: string
+  }[]
   labResults: LabResult[]
   retailer: {
     name: string
@@ -182,11 +189,18 @@ export const sampleProduct: ProductData = {
   expirationDate: 'Aug 24, 2026',
   description:
     'Hand-crafted blueberry gummies infused with full-spectrum Blue Dream extract. Each gummy delivers a consistent 10mg THC dose with natural blueberry flavor and no artificial colors.',
+  extendedDescription:
+    'Made with real blueberry puree and natural flavors, these gummies are crafted in small batches at our Northampton, MA facility using full-spectrum Blue Dream extract. Our proprietary low-heat infusion process preserves the full terpene profile for a balanced, consistent experience. Each batch is third-party lab tested for potency, pesticides, heavy metals, and microbials. Vegan, gluten-free, and made without high-fructose corn syrup. Store in a cool, dry place away from direct sunlight. Keep out of reach of children. Not for use by persons under 21 years of age.',
   labName: 'Bay State Testing Associates',
   labLicense: 'ML-000042',
   testDate: 'Feb 20, 2026',
   testStatus: 'passed',
   coaUrl: '#',
+  coaDocuments: [
+    { label: 'Full Panel COA', url: '#', date: 'Feb 20, 2026', lab: 'Bay State Testing Associates' },
+    { label: 'Potency Retest COA', url: '#', date: 'Feb 25, 2026', lab: 'Bay State Testing Associates' },
+    { label: 'Terpene Profile COA', url: '#', date: 'Feb 20, 2026', lab: 'Emerald Analytics Testing' },
+  ],
   labResults: [
     { testType: 'Potency', result: 'passed', value: '10.0', unit: 'mg/serving' },
     { testType: 'Pesticides', result: 'passed' },

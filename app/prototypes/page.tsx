@@ -111,6 +111,37 @@ const deviceLabels: Record<string, string> = {
   desktop: '1440px',
 }
 
+type SortOption = 'updated' | 'created' | 'name' | 'status'
+
+const sortLabels: Record<SortOption, string> = {
+  updated: 'Last Updated',
+  created: 'Date Created',
+  name: 'Name',
+  status: 'Status',
+}
+
+const statusOrder: Record<PrototypeStatus, number> = {
+  'in-review': 0,
+  draft: 1,
+  approved: 2,
+  archived: 3,
+}
+
+function sortPrototypes(list: PrototypeEntry[], sort: SortOption): PrototypeEntry[] {
+  return [...list].sort((a, b) => {
+    switch (sort) {
+      case 'updated':
+        return new Date(b.updated).getTime() - new Date(a.updated).getTime()
+      case 'created':
+        return new Date(b.created).getTime() - new Date(a.created).getTime()
+      case 'name':
+        return a.name.localeCompare(b.name)
+      case 'status':
+        return (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99)
+    }
+  })
+}
+
 const allStatuses: PrototypeStatus[] = ['draft', 'in-review', 'approved', 'archived']
 const fidelityLevels = ['wireframe', 'high-fi'] as const
 
@@ -223,7 +254,7 @@ function PrototypeCard({ prototype, onOpenDrawer, currentOwner }: { prototype: P
   const questionCount = prototype.openQuestions.length
   const componentCount = prototype.dsComponents.length
 
-  const cardHref = prototype.devUrl || prototype.href
+  const cardHref = prototype.href || prototype.devUrl
   const isExternalUrl = cardHref?.startsWith('http')
 
   return (
@@ -562,6 +593,7 @@ export default function PrototypesIndexPage() {
   const [activeStatusFilter, setActiveStatusFilter] = useState<PrototypeStatus | 'all'>('all')
   const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null)
   const [showMoreFilters, setShowMoreFilters] = useState(false)
+  const [sortBy, setSortBy] = useState<SortOption>('updated')
   const [drawerPrototype, setDrawerPrototype] = useState<PrototypeEntry | null>(null)
   const [drawerTab, setDrawerTab] = useState<DrawerTab>('prompts')
 
@@ -570,9 +602,12 @@ export default function PrototypesIndexPage() {
   )
 
   // Hide snapshots unless explicitly filtering by "archived" status
-  const filtered = ownershipFiltered
-    .filter((p) => activeStatusFilter === 'all' ? !p.isSnapshot : p.status === activeStatusFilter)
-    .filter((p) => !activeTagFilter || p.tags.includes(activeTagFilter))
+  const filtered = sortPrototypes(
+    ownershipFiltered
+      .filter((p) => activeStatusFilter === 'all' ? !p.isSnapshot : p.status === activeStatusFilter)
+      .filter((p) => !activeTagFilter || p.tags.includes(activeTagFilter)),
+    sortBy
+  )
 
   const counts: Record<string, number> = {
     all: ownershipFiltered.filter((p) => !p.isSnapshot).length,
@@ -674,8 +709,8 @@ export default function PrototypesIndexPage() {
           })}
         </div>
 
-        {/* Status filter chips */}
-        <div style={{ marginBottom: spacing.lg }}>
+        {/* Status filter chips + sort */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg, gap: spacing.md }}>
           <ChipGroup aria-label="Filter prototypes by status">
             {(['all', ...allStatuses] as const).map((filter) => {
               const isActive = activeStatusFilter === filter
@@ -700,6 +735,39 @@ export default function PrototypesIndexPage() {
               {showMoreFilters ? '−' : '+'}
             </Chip>
           </ChipGroup>
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexShrink: 0 }}>
+            <label
+              htmlFor="sort-select"
+              style={{
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.xs.fontSize,
+                color: colors.text.lowEmphasis.onLight,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Sort by
+            </label>
+            <select
+              id="sort-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              style={{
+                fontFamily: fontFamilies.body,
+                fontSize: typography.body.sm.fontSize,
+                color: colors.text.highEmphasis.onLight,
+                backgroundColor: colors.surface.light,
+                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                borderRadius: borderRadiusSemantics.input,
+                padding: `${spacing['2xs']} ${spacing.sm}`,
+                cursor: 'pointer',
+                outline: 'none',
+              }}
+            >
+              {(Object.entries(sortLabels) as [SortOption, string][]).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Tag filters — collapsible */}

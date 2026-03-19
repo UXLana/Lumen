@@ -22,7 +22,7 @@ function RIDShell({ children }: { children: React.ReactNode }) {
       <div
         style={{
           width: '100%',
-          maxWidth: '375px',
+          maxWidth: '500px',
           minHeight: '100vh',
           backgroundColor: colors.surface.light,
           display: 'flex',

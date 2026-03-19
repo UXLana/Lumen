@@ -193,3 +193,7 @@ export type {
   UseComboboxOptions,
   UseComboboxReturn,
 } from './Combobox'
+
+// ComplianceBanner
+export { ComplianceBanner } from './ComplianceBanner'
+export type { ComplianceBannerProps, VendorLogo } from './ComplianceBanner'
