@@ -175,7 +175,7 @@ function COABottomSheet({ product, open, onClose }: { product: ProductData; open
           <div style={{
             width: 36,
             height: 4,
-            borderRadius: borderRadiusSemantics.pill,
+            borderRadius: borderRadiusSemantics.badge,
             backgroundColor: colors.border.lowEmphasis.onLight,
           }} />
         </div>
@@ -206,7 +206,7 @@ function COABottomSheet({ product, open, onClose }: { product: ProductData; open
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              borderRadius: borderRadiusSemantics.interactive,
+              borderRadius: borderRadiusSemantics.button,
               color: colors.text.lowEmphasis.onLight,
             }}
           >
