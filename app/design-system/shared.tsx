@@ -168,8 +168,8 @@ export const sharedStyles = {
     left: 0,
     width: `${SIDEBAR_WIDTH}px`,
     height: '100vh',
-    background: 'rgba(0, 0, 0, 0.07)',
-    borderRight: '1px solid rgba(0, 0, 0, 0.06)',
+    background: colors.surface.lightDarker,
+    borderRight: `1px solid ${colors.border.lowEmphasis.onLight}`,
     padding: '24px 0',
     display: 'flex',
     flexDirection: 'column' as const,
@@ -221,7 +221,7 @@ export const sharedStyles = {
   },
 
   sidebarToggleHover: {
-    background: 'rgba(0, 0, 0, 0.06)',
+    background: colors.hover.onLight,
     color: colors.text.highEmphasis.onLight,
   },
 
@@ -248,12 +248,12 @@ export const sharedStyles = {
   },
 
   sidebarNavItemHover: {
-    background: 'rgba(0, 0, 0, 0.04)',
+    background: colors.hover.onLight,
     color: colors.text.highEmphasis.onLight,
   },
 
   sidebarNavItemActive: {
-    background: 'rgba(0, 0, 0, 0.08)',
+    background: colors.selected.onLight,
     color: colors.text.highEmphasis.onLight,
   },
 
@@ -292,7 +292,7 @@ export const sharedStyles = {
 
   sidebarHeader: {
     padding: '0 20px 20px',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+    borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
     marginBottom: '16px',
   },
 
@@ -322,6 +322,7 @@ export const sharedStyles = {
     borderRadius: '0',
     transition: transitionPresets.default,
     userSelect: 'none' as const,
+    color: colors.text.highEmphasis.onLight,
   },
 
   navSectionTitle: {
@@ -353,12 +354,12 @@ export const sharedStyles = {
   },
 
   navLinkActive: {
-    background: 'rgba(0, 0, 0, 0.08)',
+    background: colors.selected.onLight,
     color: colors.text.highEmphasis.onLight,
   },
 
   navLinkHover: {
-    background: 'rgba(0, 0, 0, 0.04)',
+    background: colors.hover.onLight,
     color: colors.text.highEmphasis.onLight,
   },
 
@@ -385,7 +386,7 @@ export const sharedStyles = {
   },
 
   header: {
-    background: 'linear-gradient(135deg, #13352C 0%, #1A5C4A 50%, #3B9B7E 100%)',
+    background: `linear-gradient(135deg, ${colors.brand.darker} 0%, ${colors.brand.default} 50%, ${colors.brand.lighter} 100%)`,
     padding: '24px',
     borderRadius: borderRadius.lg,
   },
@@ -473,6 +474,7 @@ export const sharedStyles = {
     width: '100%',
     borderCollapse: 'collapse' as const,
     ...typography.body.sm,
+    color: colors.text.highEmphasis.onLight,
   },
 
   th: {
@@ -480,11 +482,13 @@ export const sharedStyles = {
     textAlign: 'left' as const,
     background: colors.surface.lightDarker,
     fontWeight: 600,
+    color: colors.text.highEmphasis.onLight,
     borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
   },
 
   td: {
     padding: '12px 16px',
+    color: colors.text.lowEmphasis.onLight,
     borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
   },
   
@@ -580,7 +584,7 @@ function NavSection({
       <div
         style={{
           ...sharedStyles.navSectionHeader,
-          background: isHeaderHovered ? 'rgba(0, 0, 0, 0.03)' : 'transparent',
+          background: isHeaderHovered ? colors.hover.onLight : 'transparent',
         }}
         onClick={onToggle}
         onMouseEnter={() => setIsHeaderHovered(true)}
@@ -599,7 +603,7 @@ function NavSection({
               width: '20px',
               height: '20px',
               flexShrink: 0,
-              opacity: 0.7,
+              color: colors.icon.enabled.onLight,
             }}>
               <SectionIcon />
             </span>
@@ -780,16 +784,19 @@ export function StyleguideLayout({
     s.items.some((item) => item.id === activeId)
   )?.id
 
-  // Track expanded sections - default both open, or just the active one's section
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    foundations: true,
-    components: true,
-    prototypes: true,
-    tools: true,
+  // Track expanded sections - restore from localStorage, default all open
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('ds-nav-expanded')
+        if (stored) return JSON.parse(stored)
+      } catch {}
+    }
+    return { foundations: true, components: true, prototypes: true, tools: true }
   })
 
-  // Sidebar collapsed state - persisted to localStorage
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  // Sidebar collapsed state - default collapsed on first visit
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
   const [toggleHovered, setToggleHovered] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
@@ -844,17 +851,32 @@ export function StyleguideLayout({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isMobile, sidebarCollapsed])
 
+  const sidebarRef = React.useRef<HTMLElement>(null)
+
+  // Restore sidebar scroll position on mount
+  useEffect(() => {
+    const el = sidebarRef.current
+    if (!el) return
+    const stored = sessionStorage.getItem('ds-sidebar-scroll')
+    if (stored) el.scrollTop = parseInt(stored, 10)
+
+    // Save scroll position on every scroll
+    const onScroll = () => {
+      sessionStorage.setItem('ds-sidebar-scroll', String(el.scrollTop))
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
+
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed((prev) => !prev)
   }, [])
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) => {
-      const nextValue = !prev[sectionId]
-      return {
-        ...prev,
-        [sectionId]: nextValue,
-      }
+      const next = { ...prev, [sectionId]: !prev[sectionId] }
+      try { localStorage.setItem('ds-nav-expanded', JSON.stringify(next)) } catch {}
+      return next
     })
   }
 
@@ -874,6 +896,7 @@ export function StyleguideLayout({
 
       {/* Sidebar */}
       <aside
+        ref={sidebarRef}
         style={{
           ...sharedStyles.sidebar,
           ...(sidebarCollapsed && !isMobile ? sharedStyles.sidebarCollapsed : {}),
@@ -896,7 +919,18 @@ export function StyleguideLayout({
           }}>
             {!sidebarCollapsed && (
               <div>
-                <Link href="/design-system" style={sharedStyles.sidebarTitle}>
+                <p style={{
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  letterSpacing: '0.8px',
+                  textTransform: 'uppercase' as const,
+                  color: colors.text.lowEmphasis.onLight,
+                  margin: '0 0 2px 0',
+                  fontFamily: fontFamilies.body,
+                }}>
+                  Prism
+                </p>
+                <Link href="/" style={sharedStyles.sidebarTitle}>
                   Design System
                 </Link>
                 <p style={sharedStyles.sidebarSubtitle}>v1.0.0</p>
@@ -924,48 +958,31 @@ export function StyleguideLayout({
 
           {/* Theme switcher */}
           {!sidebarCollapsed && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}>
-              <label
-                htmlFor="ds-theme-select"
-                style={{
-                  color: colors.text.lowEmphasis.onLight,
-                  fontWeight: 500,
-                  whiteSpace: 'nowrap' as const,
-                  fontSize: '12px',
-                  fontFamily: fontFamilies.body,
-                }}
-              >
-                Theme
-              </label>
-              <select
-                id="ds-theme-select"
-                value={themeName}
-                onChange={(e) => setThemeName(e.target.value)}
-                style={{
-                  flex: 1,
-                  padding: '5px 8px',
-                  borderRadius: borderRadius.sm,
-                  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                  background: colors.hover.onLight,
-                  color: colors.text.highEmphasis.onLight,
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  fontFamily: fontFamilies.body,
-                  cursor: 'pointer',
-                  appearance: 'auto' as const,
-                }}
-              >
-                {availableThemes.map((t) => (
-                  <option key={t.name} value={t.name}>
-                    {t.name.charAt(0).toUpperCase() + t.name.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <select
+              id="ds-theme-select"
+              aria-label="Theme"
+              value={themeName}
+              onChange={(e) => setThemeName(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '6px 10px',
+                borderRadius: borderRadius.sm,
+                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                background: 'transparent',
+                color: colors.text.lowEmphasis.onLight,
+                fontSize: '12px',
+                fontWeight: 500,
+                fontFamily: fontFamilies.body,
+                cursor: 'pointer',
+                appearance: 'auto' as const,
+              }}
+            >
+              {availableThemes.map((t) => (
+                <option key={t.name} value={t.name}>
+                  {t.name.charAt(0).toUpperCase() + t.name.slice(1)}
+                </option>
+              ))}
+            </select>
           )}
         </div>
 
@@ -1347,7 +1364,7 @@ export function StyledCheckbox({ checked, onChange, label, disabled = false }: S
           width="16"
           height="16"
           rx="4"
-          stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.default : 'rgba(0, 0, 0, 0.6)'}
+          stroke={disabled ? colors.text.disabled.onLight : checked ? colors.brand.default : colors.border.highEmphasis.onLight}
           strokeWidth="2"
           fill={checked ? colors.brand.default : 'transparent'}
         />
@@ -2027,7 +2044,7 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
                 position: 'absolute',
                 top: '10px',
                 right: '10px',
-                background: copiedImport ? colors.status.success : 'rgba(0,0,0,0.06)',
+                background: copiedImport ? colors.status.success : colors.hover.onLight,
                 border: 'none',
                 borderRadius: borderRadius.sm,
                 padding: '4px 10px',

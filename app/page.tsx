@@ -1,7 +1,9 @@
 'use client'
 
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { colors, typography, spacing, borderRadius, shadows, fontFamilies, fontWeights } from '@/styles/design-tokens'
+import { useThemeSwitcher, availableThemes } from '@/styles/themes'
 
 // =============================================================================
 // LAYOUT CONSTANTS
@@ -132,12 +134,150 @@ const links = [
 // LANDING PAGE
 // =============================================================================
 
+// =============================================================================
+// THEME SWITCHER BUTTON
+// =============================================================================
+
+function ThemeSwitcherButton({
+  themeName,
+  setThemeName,
+  open,
+  setOpen,
+}: {
+  themeName: string
+  setThemeName: (name: string) => void
+  open: boolean
+  setOpen: (open: boolean) => void
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [open, setOpen])
+
+  const displayName = themeName.charAt(0).toUpperCase() + themeName.slice(1)
+
+  return (
+    <div ref={ref} style={{ position: 'fixed', top: spacing.md, right: spacing.md, zIndex: 100 }}>
+      <button
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-label={`Theme: ${displayName}`}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '6px 12px',
+          borderRadius: borderRadius.lg,
+          border: `1px solid ${colors.border.midEmphasis.onDark}`,
+          background: 'transparent',
+          color: colors.text.lowEmphasis.onDark,
+          fontSize: '12px',
+          fontWeight: 500,
+          fontFamily: fontFamilies.body,
+          cursor: 'pointer',
+          transition: 'background 150ms ease, border-color 150ms ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'
+          e.currentTarget.style.borderColor = colors.border.highEmphasis.onDark
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent'
+          e.currentTarget.style.borderColor = colors.border.midEmphasis.onDark
+        }}
+      >
+        {displayName}
+        <IconChevronDown />
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          aria-label="Select theme"
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            right: 0,
+            minWidth: '140px',
+            background: colors.surface.default,
+            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+            borderRadius: borderRadius.md,
+            boxShadow: shadows.lg,
+            padding: '4px 0',
+            overflow: 'hidden',
+          }}
+        >
+          {availableThemes.map((t) => {
+            const isActive = t.name === themeName
+            const label = t.name.charAt(0).toUpperCase() + t.name.slice(1)
+            return (
+              <button
+                key={t.name}
+                role="option"
+                aria-selected={isActive}
+                onClick={() => { setThemeName(t.name); setOpen(false) }}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  padding: '8px 14px',
+                  border: 'none',
+                  background: isActive ? colors.selected.onLight : 'transparent',
+                  color: isActive ? colors.text.highEmphasis.onLight : colors.text.lowEmphasis.onLight,
+                  fontSize: '12px',
+                  fontWeight: isActive ? 600 : 400,
+                  fontFamily: fontFamilies.body,
+                  textAlign: 'left' as const,
+                  cursor: 'pointer',
+                  transition: 'background 100ms ease',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) e.currentTarget.style.background = colors.hover.onLight
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) e.currentTarget.style.background = 'transparent'
+                }}
+              >
+                {label}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const IconChevronDown = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <polyline points="6 9 12 15 18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
 export default function Home() {
+  const { themeName, setThemeName } = useThemeSwitcher()
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false)
+
   return (
     <main style={{
       minHeight: '100vh',
       background: colors.surface.default,
     }}>
+      {/* ── Theme Switcher ─────────────────────────────────────────── */}
+      <ThemeSwitcherButton
+        themeName={themeName}
+        setThemeName={setThemeName}
+        open={themeMenuOpen}
+        setOpen={setThemeMenuOpen}
+      />
+
       {/* ── Hero ────────────────────────────────────────────────────── */}
       <section style={{
         background: `linear-gradient(135deg, ${colors.brand.primary} 0%, ${colors.brand.primaryLight} 100%)`,
@@ -188,14 +328,14 @@ export default function Home() {
                 gap: spacing.xs,
                 padding: `${spacing.sm} ${spacing.xl}`,
                 background: colors.surface.default,
-                color: colors.brand.primary,
+                color: colors.text.highEmphasis.onLight,
                 borderRadius: borderRadius.lg,
                 textDecoration: 'none',
                 fontWeight: fontWeights.semibold,
                 fontSize: typography.body.md.fontSize,
                 fontFamily: fontFamilies.body,
                 boxShadow: shadows.brand,
-                border: 'none',
+                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
               }}
             >
               Explore the system

@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../shared'
 import { colors, typography, fontFamilies, fontWeights } from '@/styles/design-tokens'
+import { useTheme } from '@/styles/themes'
 
 // =============================================================================
 // TYPOGRAPHY SAMPLE COMPONENT
@@ -18,14 +19,14 @@ function TypographySample({
   sampleText?: string
 }) {
   return (
-    <div style={{ marginBottom: '24px', paddingBottom: '24px', borderBottom: `1px solid ${colors.stroke.light}` }}>
+    <div style={{ marginBottom: '24px', paddingBottom: '24px', borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}` }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
         <span style={{ ...typography.label.sm, color: colors.text.lowEmphasis.onLight }}>{name}</span>
         <span style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight }}>
           {style.fontSize} / {style.lineHeight}
         </span>
       </div>
-      <p style={{ ...style, margin: 0 }}>
+      <p style={{ ...style, color: colors.text.highEmphasis.onLight, margin: 0 }}>
         {sampleText || 'The quick brown fox jumps over the lazy dog'}
       </p>
     </div>
@@ -38,11 +39,43 @@ function TypographySample({
 
 export default function TypographyPage() {
   const [activeTab, setActiveTab] = useState('overview')
+  const theme = useTheme()
+
+  // Extract human-readable font info from the theme's raw font stacks.
+  // Theme values may contain CSS var() references (e.g. "var(--font-inter), sans-serif")
+  // so we resolve those to friendly names for display.
+  const resolveVarName = (stack: string) => {
+    // "var(--font-inter), sans-serif" → "Inter"
+    // '"DM Sans", sans-serif' → "DM Sans"
+    // '"Segoe UI", var(--font-inter), ...' → "Segoe UI"
+    const varMatch = stack.match(/var\(--font-([^)]+)\)/)
+    const quotedMatch = stack.match(/^"([^"]+)"/)
+    if (quotedMatch) return quotedMatch[1]
+    if (varMatch) {
+      // --font-inter → Inter, --font-dm-sans → DM Sans
+      return varMatch[1]
+        .split('-')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ')
+    }
+    return stack.split(',')[0].replace(/"/g, '').trim()
+  }
+
+  const displayFontName = resolveVarName(theme.typography.fontFamilies.display)
+  const bodyFontName = resolveVarName(theme.typography.fontFamilies.body)
+  // For spec table "Value" column, show the friendly name + fallbacks (not raw var())
+  const friendlyStack = (name: string, stack: string) => {
+    const fallbacks = stack.split(',').slice(1).map(s => s.trim()).join(', ')
+    return fallbacks ? `"${name}", ${fallbacks}` : `"${name}"`
+  }
+  const displayFontStack = friendlyStack(displayFontName, theme.typography.fontFamilies.display)
+  const bodyFontStack = friendlyStack(bodyFontName, theme.typography.fontFamilies.body)
+  const monoFontStack = theme.typography.fontFamilies.mono
 
   return (
     <StyleguideLayout
       title="Typography"
-      description="Typography system using DM Sans for UI text and system monospace for code. Designed for clarity and readability."
+      description={`Typography system using ${displayFontName} for UI text and system monospace for code. Designed for clarity and readability.`}
       activeId="typography"
       activeTab={activeTab}
       onTabChange={setActiveTab}
@@ -54,18 +87,18 @@ export default function TypographyPage() {
       <section style={sharedStyles.section}>
         <h2 style={sharedStyles.sectionTitle}>Font Families</h2>
         <p style={sharedStyles.sectionDescription}>
-          The design system uses DM Sans for UI text and system monospace for code.
+          The design system uses {displayFontName} for UI text and system monospace for code.
         </p>
 
         <div style={sharedStyles.card}>
-          <h3 style={sharedStyles.cardTitle}>DM Sans</h3>
-          <p style={{ ...typography.body.md, marginBottom: '16px' }}>
+          <h3 style={sharedStyles.cardTitle}>{displayFontName}</h3>
+          <p style={{ ...typography.body.md, marginBottom: '16px', color: colors.text.lowEmphasis.onLight }}>
             Primary typeface for display, heading, body, and label text.
           </p>
-          <p style={{ fontFamily: fontFamilies.display, fontSize: '32px', fontWeight: 600 }}>
+          <p style={{ fontFamily: fontFamilies.display, fontSize: '32px', fontWeight: 600, color: colors.text.highEmphasis.onLight }}>
             Aa Bb Cc Dd Ee
           </p>
-          <p style={{ fontFamily: fontFamilies.display, fontSize: '18px', marginTop: '8px' }}>
+          <p style={{ fontFamily: fontFamilies.display, fontSize: '18px', marginTop: '8px', color: colors.text.highEmphasis.onLight }}>
             ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>
             abcdefghijklmnopqrstuvwxyz<br/>
             0123456789
@@ -74,13 +107,13 @@ export default function TypographyPage() {
 
         <div style={{ ...sharedStyles.card, marginTop: '24px' }}>
           <h3 style={sharedStyles.cardTitle}>System Monospace</h3>
-          <p style={{ ...typography.body.md, marginBottom: '16px' }}>
+          <p style={{ ...typography.body.md, marginBottom: '16px', color: colors.text.lowEmphasis.onLight }}>
             System monospace typeface for code blocks and technical content.
           </p>
-          <code style={{ display: 'block', fontSize: '32px', background: 'transparent', fontFamily: fontFamilies.mono }}>
+          <code style={{ display: 'block', fontSize: '32px', background: 'transparent', fontFamily: fontFamilies.mono, color: colors.text.highEmphasis.onLight }}>
             Aa Bb Cc Dd Ee
           </code>
-          <code style={{ display: 'block', fontSize: '18px', marginTop: '8px', background: 'transparent', fontFamily: fontFamilies.mono }}>
+          <code style={{ display: 'block', fontSize: '18px', marginTop: '8px', background: 'transparent', fontFamily: fontFamilies.mono, color: colors.text.highEmphasis.onLight }}>
             ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>
             abcdefghijklmnopqrstuvwxyz<br/>
             0123456789
@@ -92,9 +125,9 @@ export default function TypographyPage() {
           <SpecTable
             headers={['Token', 'Value', 'Usage']}
             rows={[
-              [<code>fontFamilies.display</code>, '"DM Sans", sans-serif', 'Display, headings'],
-              [<code>fontFamilies.body</code>, '"DM Sans", sans-serif', 'Body text, labels'],
-              [<code>fontFamilies.mono</code>, 'ui-monospace, system', 'Code, technical content'],
+              [<code>fontFamilies.display</code>, displayFontStack, 'Display, headings'],
+              [<code>fontFamilies.body</code>, bodyFontStack, 'Body text, labels'],
+              [<code>fontFamilies.mono</code>, monoFontStack, 'Code, technical content'],
             ]}
           />
         </div>
@@ -108,7 +141,7 @@ export default function TypographyPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
             {Object.entries(fontWeights).map(([name, value]) => (
               <div key={name}>
-                <p style={{ fontFamily: fontFamilies.display, fontSize: '24px', fontWeight: value, marginBottom: '8px' }}>
+                <p style={{ fontFamily: fontFamilies.display, fontSize: '24px', fontWeight: value, marginBottom: '8px', color: colors.text.highEmphasis.onLight }}>
                   Ag
                 </p>
                 <p style={{ ...typography.label.sm, color: colors.text.highEmphasis.onLight, textTransform: 'capitalize' }}>
@@ -263,9 +296,9 @@ export default function TypographyPage() {
             <SpecTable
               headers={['Token', 'Value', 'Usage']}
               rows={[
-                [<code key="fd">fontFamilies.display</code>, '"DM Sans", sans-serif', 'Display, headings'],
-                [<code key="fb">fontFamilies.body</code>, '"DM Sans", sans-serif', 'Body text, labels'],
-                [<code key="fm">fontFamilies.mono</code>, 'ui-monospace, system', 'Code, technical content'],
+                [<code key="fd">fontFamilies.display</code>, displayFontStack, 'Display, headings'],
+                [<code key="fb">fontFamilies.body</code>, bodyFontStack, 'Body text, labels'],
+                [<code key="fm">fontFamilies.mono</code>, monoFontStack, 'Code, technical content'],
               ]}
             />
           </div>
