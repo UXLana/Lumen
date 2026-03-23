@@ -24,14 +24,15 @@ export type BannerVariant = 'info' | 'success' | 'warning' | 'error'
 
 /**
  * Banner size options
+ * - sm: Compact banner with smaller text
  * - md: Standard banner size
  * - lg: Larger banner for more prominent messages
  */
-export type BannerSize = 'md' | 'lg'
+export type BannerSize = 'sm' | 'md' | 'lg'
 
 /**
  * Banner style options
- * - inline: Rounded corners (16px border radius) with 2px outline
+ * - inline: Rounded corners (16px border radius) with 1px outline
  */
 export type BannerStyle = 'inline'
 
@@ -301,8 +302,10 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
     const isSideAlignment = buttonAlignment === 'side'
     const isBelow = buttonAlignment === 'below'
 
-    // Icon container size (40px with 8px padding = 24px icon)
-    const iconContainerSize = 40
+    // Icon container size based on banner size
+    const iconContainerSize = size === 'sm' ? 32 : 40
+    const containerHeight = size === 'sm' ? '44px' : '56px'
+    const belowMinHeight = size === 'sm' ? '80px' : '100px'
 
     // Base container styles - matching Figma exactly
     // Side alignment: 56px height, row layout, full width
@@ -313,14 +316,14 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       flexDirection: isBelow ? 'column' : 'row',
       alignItems: isBelow ? 'flex-start' : 'center',
       width: '100%',
-      height: isBelow ? 'auto' : '56px',
-      minHeight: isBelow ? '100px' : '56px',
+      height: isBelow ? 'auto' : containerHeight,
+      minHeight: isBelow ? belowMinHeight : containerHeight,
       padding: '0',
-      paddingLeft: `${6 + iconContainerSize + 8}px`, // 6px left (8-2 for border) + icon (40px) + 8px gap = 54px
-      paddingRight: '6px', // 8px - 2px border
+      paddingLeft: `${7 + iconContainerSize + 8}px`, // 7px left (8-1 for border) + icon (40px) + 8px gap = 55px
+      paddingRight: '7px', // 8px - 1px border
       background: variantStyle.surface,
       borderRadius: banner.border.radius.inline,
-      border: `2px solid ${variantStyle.divider}`,
+      border: `1px solid ${variantStyle.divider}`,
       opacity: 1,
       fontFamily: fontFamilies.body,
       transition: banner.transition,
@@ -331,8 +334,8 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
     // Icon container styles (positioned absolutely, vertically centered for side, top for below)
     const iconContainerStyles: React.CSSProperties = {
       position: 'absolute',
-      left: '6px', // 8px - 2px border
-      top: isBelow ? '6px' : '50%', // 8px - 2px border for below alignment
+      left: '7px', // 8px - 1px border
+      top: isBelow ? '7px' : '50%', // 8px - 1px border for below alignment
       transform: isBelow ? 'none' : 'translateY(-50%)',
       flexShrink: 0,
       display: 'flex',
@@ -396,10 +399,10 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
           {title && (
             <div
               style={{
-                fontSize: '16px',
-                fontWeight: 400,
-                lineHeight: '24px',
-                letterSpacing: '0.15px',
+                fontSize: banner.typography[size].title.fontSize,
+                fontWeight: banner.typography[size].title.fontWeight,
+                lineHeight: banner.typography[size].title.lineHeight,
+                letterSpacing: banner.typography[size].title.letterSpacing,
                 color: onDark ? banner.text.primaryOnDark : banner.text.primary,
                 marginBottom: children ? banner.spacing.titleMarginBottom : 0,
               }}
@@ -410,10 +413,10 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
           {children && (
             <div
               style={{
-                fontSize: '16px',
-                fontWeight: 400,
-                lineHeight: '24px',
-                letterSpacing: '0.15px',
+                fontSize: banner.typography[size].description.fontSize,
+                fontWeight: banner.typography[size].description.fontWeight,
+                lineHeight: banner.typography[size].description.lineHeight,
+                letterSpacing: banner.typography[size].description.letterSpacing,
                 color: onDark ? banner.text.primaryOnDark : banner.text.primary,
               }}
             >

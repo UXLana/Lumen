@@ -1122,6 +1122,12 @@ export const bannerIcon = {
 export const banner = {
   // Banner sizes (from Figma)
   sizes: {
+    sm: {
+      paddingX: '12px',
+      paddingY: '8px',
+      gap: '8px',
+      iconSize: '16px',
+    },
     md: {
       paddingX: '16px',
       paddingY: '12px',
@@ -1138,6 +1144,20 @@ export const banner = {
 
   // Typography per size (from Figma - DM Sans)
   typography: {
+    sm: {
+      title: {
+        fontSize: '12px',
+        fontWeight: 500,
+        lineHeight: '16px',
+        letterSpacing: '0.1px',
+      },
+      description: {
+        fontSize: '14px',
+        fontWeight: 400,
+        lineHeight: '20px',
+        letterSpacing: '0.1px',
+      },
+    },
     md: {
       title: {
         fontSize: '14px',

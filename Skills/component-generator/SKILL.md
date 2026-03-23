@@ -82,25 +82,106 @@ If a primitive is missing, add it to the design system:
 Before creating any component, check existing primitives:
 
 ### Atoms (Available)
-- **Button** - Primary, secondary, ghost variants with emphasis levels
+- **Accordion** - Expandable content sections with AccordionItem children
+- **AssistiveMessage** - Helper/error text for form fields
 - **Avatar** - User/entity representation with sizes and fallback
-- **Tab** - Individual tab with active/inactive states
-- **Banner** - Info, success, warning, error notifications
 - **Badge** - Status labels with filled/outlined/subtle variants and semantic colors
+- **Banner** - Info, success, warning, error notifications
+- **Button** - Primary, secondary, ghost variants with emphasis levels
+- **Checkbox** - With CheckboxGroup for multi-select
+- **Divider** - Visual separator (horizontal/vertical)
 - **Icons** - 30+ icons (see `/components/Icons/Icons.tsx`)
+- **Input** - Text input with size variants, error states, icons
+- **Link** - Navigation links with variant styles
+- **Radio** - With RadioGroup for single-select
 - **SegmentedControl** - Tab-style selection control
+- **Switch** - Toggle on/off control
+- **Tab** - Individual tab with active/inactive states (also TabBar, TabIcon)
+- **Textarea** - Multi-line text input
 
 ### Molecules (Available)
-- **TabGroup** - Container for Tab components
+- **Chip** - With ChipGroup for tag/filter sets
+- **ComplianceBanner** - Regulatory compliance notification
+- **DetailField** - Label + value display pair
+- **EmptyState** - Placeholder for empty content areas
+- **ImageCarousel** - Touch-friendly image slideshow with thumbnails/dots
+- **ListItem** - With List container for structured lists
+- **Pagination** - Page navigation controls
+- **ProgressBar** - Visual progress indicator
+- **Skeleton** - Loading placeholder
 
 ### Organisms (Available)
+- **Combobox** - Searchable dropdown with useCombobox hook
+- **ConfirmDialog** - Confirmation modal with actions
+- **DataTable** - Sortable, filterable data grid
+- **FullScreenModal** - With FullScreenModalPanel for complex flows
+- **Header** - App header with SearchInput, IconButton, OrgDropdown
+- **LeftNav** - Side navigation panel
 - **MarketplaceCard** - App store card (default/compact/horizontal variants)
+- **ProductCard** - Product display card
+- **Select** - Dropdown selection
+- **StatsCard** - Metric display with StatsCardGroup
+- **Stepper** - Multi-step flow (LinearStepper, NonLinearStepper)
+- **Toast** - Notification toast with useToast hook
+- **Upload** - File upload with DropZone, progress, useUpload hook
 
-### To Be Created
+### Still Needed
 If you need these, create them as atoms first:
-- Input, Label, Checkbox, Radio, Toggle
-- Select, Textarea, FormField
-- Card, Modal, Dropdown, Tooltip, Popover
+- Label, Toggle
+- FormField (compose from Label + Input/Select + AssistiveMessage)
+- Card (generic — ProductCard, StatsCard, MarketplaceCard exist as specialized)
+- Tooltip, Popover, Dropdown (generic)
+
+## Token Naming Convention
+
+Colors follow the pattern: `colors.<group>.<level>.<surface>`
+
+Where `<surface>` is `.onLight` or `.onDark`:
+
+```tsx
+// Text
+colors.text.highEmphasis.onLight   // Primary text on light backgrounds
+colors.text.highEmphasis.onDark    // Primary text on dark backgrounds
+colors.text.lowEmphasis.onLight    // Secondary text
+colors.text.disabled.onLight       // Disabled text
+colors.text.action.enabled         // Interactive text (links, buttons)
+
+// Borders
+colors.border.lowEmphasis.onLight  // Subtle borders
+colors.border.midEmphasis.onLight  // Default borders
+colors.border.highEmphasis.onLight // Strong borders
+
+// Surfaces
+colors.surface.light               // Default background
+colors.surface.lightDarker         // Slightly darker background
+colors.surface.disabled.onLight    // Disabled background
+
+// Brand
+colors.brand.default               // Primary brand color
+colors.brand.lighter               // Lighter brand variant
+colors.brand.darker                // Darker brand variant
+
+// Interactive states
+colors.hover.onLight               // Hover background on light
+colors.hover.onDark                // Hover background on dark
+colors.focusBorder.onLight         // Focus ring color
+colors.selectedHighlight           // Selected state highlight
+
+// Scrim
+colors.scrim                       // Overlay/backdrop
+```
+
+### Spacing uses named keys (NOT numeric indices)
+
+```tsx
+spacing.xs    // 8px
+spacing.sm    // 12px
+spacing.md    // 16px
+spacing.lg    // 20px
+spacing.xl    // 24px
+spacing['2xl'] // 32px
+spacing['3xl'] // 40px
+```
 
 ## Composition Example
 
@@ -126,7 +207,7 @@ export interface SearchFieldProps {
 export const SearchField = forwardRef<HTMLDivElement, SearchFieldProps>(
   ({ value, onChange, onSearch, onClear, placeholder = 'Search...' }, ref) => {
     return (
-      <div ref={ref} style={{ display: 'flex', gap: spacing[2] }}>
+      <div ref={ref} style={{ display: 'flex', gap: spacing.xs }}>
         {/* Compose from existing atoms */}
         <Input
           value={value}
@@ -209,17 +290,17 @@ export interface ComponentNameProps extends React.HTMLAttributes<HTMLDivElement>
 const sizeConfig = {
   sm: {
     height: '32px',
-    padding: `${spacing[2]} ${spacing[3]}`,
+    padding: `${spacing.xs} ${spacing.sm}`,
     fontSize: typography.body.sm.fontSize,
   },
   md: {
     height: '40px',
-    padding: `${spacing[3]} ${spacing[4]}`,
+    padding: `${spacing.sm} ${spacing.md}`,
     fontSize: typography.body.md.fontSize,
   },
   lg: {
     height: '48px',
-    padding: `${spacing[4]} ${spacing[5]}`,
+    padding: `${spacing.md} ${spacing.lg}`,
     fontSize: typography.body.lg.fontSize,
   },
 }
@@ -261,22 +342,22 @@ export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
     const getColors = () => {
       if (disabled) {
         return {
-          background: colors.neutral[200],
-          text: colors.text.disabled,
-          border: colors.border.light,
+          background: colors.surface.disabled.onLight,
+          text: colors.text.disabled.onLight,
+          border: colors.border.lowEmphasis.onLight,
         }
       }
       if (onDark) {
         return {
           background: isHovered ? 'rgba(255,255,255,0.1)' : 'transparent',
-          text: colors.text.highEmphasisOnDark,
-          border: colors.border.light,
+          text: colors.text.highEmphasis.onDark,
+          border: colors.border.lowEmphasis.onDark,
         }
       }
       return {
-        background: isHovered ? colors.neutral[100] : colors.background.default,
-        text: colors.text.highEmphasis,
-        border: colors.border.light,
+        background: isHovered ? colors.hover.onLight : colors.surface.light,
+        text: colors.text.highEmphasis.onLight,
+        border: colors.border.lowEmphasis.onLight,
       }
     }
 
@@ -362,11 +443,12 @@ export default ComponentName
 
 ```tsx
 // ✅ Correct
-backgroundColor: colors.brand.primary
-padding: spacing[4]
+backgroundColor: colors.brand.default
+padding: spacing.md
 borderRadius: borderRadius.md
 fontSize: typography.body.md.fontSize
 transition: transitionPresets.default
+border: `1px solid ${colors.border.lowEmphasis.onLight}`
 
 // ❌ Wrong - never hardcode values
 backgroundColor: '#13352C'
@@ -374,6 +456,25 @@ padding: '16px'
 borderRadius: '8px'
 fontSize: '16px'
 transition: '200ms ease-out'
+border: '1px solid #E0E0E0'
+```
+
+### Common Token Mistakes
+
+```tsx
+// ❌ OLD / BROKEN                    → ✅ CORRECT
+colors.brand.primary                 → colors.brand.default
+colors.neutral[100]                  → colors.hover.onLight
+colors.neutral[200]                  → colors.surface.disabled.onLight
+colors.text.disabled                 → colors.text.disabled.onLight
+colors.text.highEmphasis             → colors.text.highEmphasis.onLight
+colors.text.highEmphasisOnDark       → colors.text.highEmphasis.onDark
+colors.border.light                  → colors.border.lowEmphasis.onLight
+colors.background.default            → colors.surface.light
+colors.stroke.*                      → colors.border.*
+colors.overlay                       → colors.scrim
+spacing[2]                           → spacing.xs
+spacing[4]                           → spacing.md
 ```
 
 ### Import from design-tokens
@@ -482,7 +583,7 @@ role="tabpanel"
 
 ### Focus Ring
 
-Use the standard focus color:
+Use the focus token — never hardcode the color:
 
 ```tsx
 // Focus ring styles
@@ -490,7 +591,7 @@ const focusRingStyles: React.CSSProperties = {
   position: 'absolute',
   inset: '-3px',
   borderRadius: borderRadius.md,
-  border: '3px solid #3086BF',  // Standard focus color
+  border: `3px solid ${colors.focusBorder.onLight}`,
   pointerEvents: 'none',
 }
 
@@ -538,6 +639,14 @@ After creating the component:
 3. **Create documentation page** at `/app/components/component-name/page.tsx`
    - Use `StyleguideLayout` from `design-system-builder`
    - Include Overview, Specs, and Code tabs
+
+## Reference Components
+
+When in doubt, look at these well-implemented components for patterns:
+
+- **Button** (`/components/Button/Button.tsx`) - Complete state handling, emphasis variants, onDark support
+- **Input** (`/components/Input/Input.tsx`) - Focus management, error states, icon slots, size variants
+- **Switch** (`/components/Switch/Switch.tsx`) - Theme-aware colors, hover/disabled states, accessibility
 
 ## Reference Files
 

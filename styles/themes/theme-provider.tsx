@@ -61,10 +61,11 @@ export function ThemeProvider({ theme = traceTheme, children }: ThemeProviderPro
 
 interface SwitchableThemeProviderProps {
   children: ReactNode;
+  defaultTheme?: string;
 }
 
-export function SwitchableThemeProvider({ children }: SwitchableThemeProviderProps) {
-  const [themeName, setThemeNameRaw] = useState('trace');
+export function SwitchableThemeProvider({ children, defaultTheme = 'trace' }: SwitchableThemeProviderProps) {
+  const [themeName, setThemeNameRaw] = useState(defaultTheme);
   const [hydrated, setHydrated] = useState(false);
 
   // Restore from localStorage on mount

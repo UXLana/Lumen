@@ -51,13 +51,6 @@ const sectionIcons: Record<string, JSX.Element> = {
       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ),
-  prototypes: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 3L3 8l9 5 9-5-9-5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M3 12l9 5 9-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M3 16l9 5 9-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  ),
   themes: (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5"/>
@@ -95,12 +88,6 @@ const sections = [
     title: 'Components',
     description: '25+ production-ready React components with interactive documentation and specs.',
     href: '/design-system/colors', // components section in sidebar
-  },
-  {
-    key: 'prototypes',
-    title: 'Prototypes',
-    description: 'Rapid UI prototypes with ownership tracking, fidelity levels, and stakeholder feedback.',
-    href: '/prototypes',
   },
   {
     key: 'themes',
@@ -390,7 +377,7 @@ export default function Home() {
             color: colors.text.lowEmphasis.onLight,
             marginBottom: spacing['2xl'],
           }}>
-            Everything a product team needs to design, build, and ship — from raw tokens to interactive prototypes.
+            Everything a product team needs to design, build, and ship — from raw tokens to production-ready components.
           </p>
 
           <div style={{

@@ -197,3 +197,7 @@ export type {
 // ComplianceBanner
 export { ComplianceBanner } from './ComplianceBanner'
 export type { ComplianceBannerProps, VendorLogo } from './ComplianceBanner'
+
+// ImageCarousel
+export { ImageCarousel } from './ImageCarousel'
+export type { ImageCarouselProps, NavigationStyle } from './ImageCarousel'

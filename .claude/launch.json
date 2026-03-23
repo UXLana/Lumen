@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "/Users/lanaholston/Desktop/Code/node_modules/.bin/next",
-      "runtimeArgs": ["dev", "-p", "3333"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "dev", "-p", "3333"],
       "port": 3333,
       "autoPort": false,
       "cwd": "/Users/lanaholston/Desktop/Code"

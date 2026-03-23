@@ -59,3 +59,5 @@ Screenshot*.png
 Thumbs.db
 data/
 *.tgz
+.claude/docs/
+Skills/.DS_Store
