@@ -89,7 +89,7 @@ const statusConfig: Record<PrototypeStatus, { label: string; color: 'warning' | 
   archived: { label: 'Archived', color: 'warning' },
 }
 
-const GITHUB_REPO = 'UXLana/lumen-design-system'
+const GITHUB_REPO = 'MetrcID/vercel.ux'
 
 function getDiscussUrl(prototype: PrototypeEntry): string {
   if (prototype.prUrl) return prototype.prUrl
@@ -514,7 +514,7 @@ function PrototypeCard({ prototype, onOpenDrawer, currentOwner }: { prototype: P
                       e.preventDefault()
                       e.stopPropagation()
                       setMenuOpen(false)
-                      const path = prototype.localPath || `/Users/lanaholston/Desktop/Code/app/prototypes/${prototype.id}`
+                      const path = prototype.localPath || `/app/prototypes/${prototype.id}`
                       window.open(`cursor://file${path}`, '_self')
                     }}
                   />

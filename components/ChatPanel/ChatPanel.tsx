@@ -326,7 +326,7 @@ export const ChatPanel = forwardRef<HTMLDivElement, ChatPanelProps>(
                   justifyContent: 'center',
                   border: 'none',
                   cursor: message.trim() && !isTyping ? 'pointer' : 'default',
-                  backgroundColor: message.trim() ? accentColor : `rgba(0, 0, 0, 0.06)`, // TODO: map to design token — disabled button bg
+                  backgroundColor: message.trim() ? accentColor : colors.surface.disabled.onLight,
                   color: message.trim() ? colors.text.highEmphasis.onDark : colors.text.disabled.onLight,
                   opacity: isTyping ? 0.5 : 1,
                   transition: 'background-color 150ms ease',

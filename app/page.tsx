@@ -112,7 +112,7 @@ const sections = [
 const links = [
   {
     label: 'GitHub',
-    href: 'https://github.com/UXLana/mtr-design-system',
+    href: 'https://github.com/MetrcID/vercel.ux',
     icon: <IconGitHub />,
   },
 ]

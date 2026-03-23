@@ -7,7 +7,7 @@
       "runtimeArgs": ["next", "dev", "-p", "3333"],
       "port": 3333,
       "autoPort": false,
-      "cwd": "/Users/lanaholston/Desktop/Code"
+      "cwd": "."
     },
     {
       "name": "rid-label",

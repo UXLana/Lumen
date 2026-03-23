@@ -4,12 +4,11 @@ import React from 'react'
 import { colors, typography, spacing, borderRadiusSemantics } from '@/styles/design-tokens'
 import type { BannerProps } from './types'
 
-// TODO: map to design token — banner variant backgrounds are 8% opacity tints of accent colors
 const VARIANT_CONFIG: Record<string, { accent: string; bg: string; icon: string }> = {
-  warning: { accent: colors.text.warning, bg: 'rgba(245, 158, 11, 0.08)', icon: '\u26A0' },
-  error: { accent: colors.text.important, bg: 'rgba(239, 68, 68, 0.08)', icon: '\u2716' },
-  success: { accent: colors.text.success, bg: 'rgba(16, 185, 129, 0.08)', icon: '\u2714' },
-  info: { accent: colors.brand.default, bg: 'rgba(59, 130, 246, 0.08)', icon: '\u2139' },
+  warning: { accent: colors.text.warning, bg: colors.surface.warning, icon: '\u26A0' },
+  error: { accent: colors.text.important, bg: colors.surface.important, icon: '\u2716' },
+  success: { accent: colors.text.success, bg: colors.surface.success, icon: '\u2714' },
+  info: { accent: colors.brand.default, bg: colors.surface.info, icon: '\u2139' },
 }
 
 export function BannerRenderer({ props }: { props: BannerProps }) {
