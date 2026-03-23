@@ -91,6 +91,8 @@ export const colors = {
   },
 };
 
+export const dataVizColors = _themed.dataViz;
+
 // =============================================================================
 // TYPOGRAPHY TOKENS — CSS-variable-backed, auto-themed via SwitchableThemeProvider
 // =============================================================================

@@ -1,7 +1,7 @@
 'use client'
 
-import React, { forwardRef } from 'react'
-import { fontFamilies, banner, bannerIcon } from '../../styles/design-tokens'
+import React, { forwardRef, useState } from 'react'
+import { fontFamilies, typography, banner, bannerIcon } from '@/styles/design-tokens'
 import {
   IconInfoFilled,
   IconSuccessFilled,
@@ -24,11 +24,10 @@ export type BannerVariant = 'info' | 'success' | 'warning' | 'error'
 
 /**
  * Banner size options
- * - sm: Compact banner with smaller text
  * - md: Standard banner size
  * - lg: Larger banner for more prominent messages
  */
-export type BannerSize = 'sm' | 'md' | 'lg'
+export type BannerSize = 'md' | 'lg'
 
 /**
  * Banner style options
@@ -105,6 +104,7 @@ export function CloseIcon({ size = 20, color = 'currentColor' }: { size?: number
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
       style={{ flexShrink: 0 }}
     >
       <path
@@ -159,7 +159,7 @@ const getVariantStyle = (variant: BannerVariant, surface: BannerSurface): Varian
   }
 }
 
-// Dark mode variant styles
+// Dark mode variant colors — hardcoded rgba pending dark mode token support
 const variantStylesOnDark: Record<BannerVariant, VariantStyle> = {
   info: {
     surface: 'rgba(122, 145, 255, 0.15)',
@@ -202,6 +202,8 @@ interface ActionButtonProps {
 }
 
 function ActionButton({ label, onClick, onDark = false }: ActionButtonProps) {
+  const [isFocusVisible, setIsFocusVisible] = useState(false)
+
   return (
     <button
       type="button"
@@ -222,6 +224,8 @@ function ActionButton({ label, onClick, onDark = false }: ActionButtonProps) {
         letterSpacing: banner.button.typography.letterSpacing,
         color: onDark ? banner.text.actionOnDark : banner.text.action,
         transition: banner.transition,
+        outline: isFocusVisible ? '2px solid currentColor' : 'none',
+        outlineOffset: '2px',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.background = onDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.04)'
@@ -229,6 +233,10 @@ function ActionButton({ label, onClick, onDark = false }: ActionButtonProps) {
       onMouseLeave={(e) => {
         e.currentTarget.style.background = 'transparent'
       }}
+      onFocus={(e) => {
+        if (e.target.matches(':focus-visible')) setIsFocusVisible(true)
+      }}
+      onBlur={() => setIsFocusVisible(false)}
     >
       {label}
     </button>
@@ -288,6 +296,7 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
     const IconComponent = variantStyle.iconComponent
 
     const [dismissed, setDismissed] = React.useState(false)
+    const [isDismissFocusVisible, setIsDismissFocusVisible] = useState(false)
 
     const handleDismiss = () => {
       setDismissed(true)
@@ -302,10 +311,8 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
     const isSideAlignment = buttonAlignment === 'side'
     const isBelow = buttonAlignment === 'below'
 
-    // Icon container size based on banner size
-    const iconContainerSize = size === 'sm' ? 32 : 40
-    const containerHeight = size === 'sm' ? '44px' : '56px'
-    const belowMinHeight = size === 'sm' ? '80px' : '100px'
+    // Icon container size (40px with 8px padding = 24px icon)
+    const iconContainerSize = 40
 
     // Base container styles - matching Figma exactly
     // Side alignment: 56px height, row layout, full width
@@ -316,8 +323,8 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       flexDirection: isBelow ? 'column' : 'row',
       alignItems: isBelow ? 'flex-start' : 'center',
       width: '100%',
-      height: isBelow ? 'auto' : containerHeight,
-      minHeight: isBelow ? belowMinHeight : containerHeight,
+      height: isBelow ? 'auto' : '56px',
+      minHeight: isBelow ? '100px' : '56px',
       padding: '0',
       paddingLeft: `${7 + iconContainerSize + 8}px`, // 7px left (8-1 for border) + icon (40px) + 8px gap = 55px
       paddingRight: '7px', // 8px - 1px border
@@ -399,10 +406,10 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
           {title && (
             <div
               style={{
-                fontSize: banner.typography[size].title.fontSize,
-                fontWeight: banner.typography[size].title.fontWeight,
-                lineHeight: banner.typography[size].title.lineHeight,
-                letterSpacing: banner.typography[size].title.letterSpacing,
+                fontSize: typography.body.md.fontSize,
+                fontWeight: typography.body.md.fontWeight,
+                lineHeight: typography.body.md.lineHeight,
+                letterSpacing: typography.body.md.letterSpacing,
                 color: onDark ? banner.text.primaryOnDark : banner.text.primary,
                 marginBottom: children ? banner.spacing.titleMarginBottom : 0,
               }}
@@ -413,10 +420,10 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
           {children && (
             <div
               style={{
-                fontSize: banner.typography[size].description.fontSize,
-                fontWeight: banner.typography[size].description.fontWeight,
-                lineHeight: banner.typography[size].description.lineHeight,
-                letterSpacing: banner.typography[size].description.letterSpacing,
+                fontSize: typography.body.md.fontSize,
+                fontWeight: typography.body.md.fontWeight,
+                lineHeight: typography.body.md.lineHeight,
+                letterSpacing: typography.body.md.letterSpacing,
                 color: onDark ? banner.text.primaryOnDark : banner.text.primary,
               }}
             >
@@ -469,6 +476,8 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
               transition: banner.transition,
               opacity: banner.dismiss.opacity.default,
               marginLeft: hasActions ? '8px' : '0',
+              outline: isDismissFocusVisible ? '2px solid currentColor' : 'none',
+              outlineOffset: '2px',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.opacity = banner.dismiss.opacity.hover.toString()
@@ -478,6 +487,10 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
               e.currentTarget.style.opacity = banner.dismiss.opacity.default.toString()
               e.currentTarget.style.background = banner.dismiss.background.default
             }}
+            onFocus={(e) => {
+              if (e.target.matches(':focus-visible')) setIsDismissFocusVisible(true)
+            }}
+            onBlur={() => setIsDismissFocusVisible(false)}
           >
             <CloseIcon size={parseInt(banner.dismiss.iconSize)} color={variantStyle.icon} />
           </button>

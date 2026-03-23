@@ -146,12 +146,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       cursor: disabled ? 'not-allowed' : 'text',
     }
 
+    // Extract horizontal padding from config (format: "0 Xpx")
+    const horizontalPadding = config.padding.split(' ')[1] || config.padding
+
     const inputStyles: React.CSSProperties = {
       flex: 1,
       height: '100%',
-      padding: config.padding,
-      paddingLeft: startAdornment ? spacing['2xs'] : undefined,
-      paddingRight: endAdornment ? spacing['2xs'] : undefined,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingLeft: startAdornment ? spacing['2xs'] : horizontalPadding,
+      paddingRight: endAdornment ? spacing['2xs'] : horizontalPadding,
       border: 'none',
       outline: 'none',
       background: 'transparent',

@@ -11,14 +11,43 @@
     "updated": "2026-03-10",
     "href": "https://canopy-registry.vercel.app",
     "devUrl": "http://localhost:5173",
-    "localPath": "/Users/lanaholston/Registry Gemini proto/Gemini-Prototype-Metrc",
+    "localPath": "/Users/lanaholston/canopy-registry",
     "screens": 1,
     "tags": ["canopy", "registry", "external"],
-    "dsComponents": [],
+    "dsComponents": ["ChatPanel", "ChatFab", "ChatSearchTrigger", "DotGrid", "CollectionToolbar"],
     "openQuestions": [],
     "lastReviewedBy": null,
     "lastReviewedDate": null,
     "prompts": [],
+    "context": null
+  },
+  {
+    "id": "product-registry",
+    "name": "Product Registry (Internal)",
+    "description": "Internal Canopy product catalog prototype with version switching. V1: stats cards + DataTable. V2: category chip tabs, stat pills, streamlined product rows.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "desktop",
+    "fidelity": "high-fi",
+    "created": "2026-03-10",
+    "updated": "2026-03-23",
+    "href": "/prototypes/product-registry",
+    "screens": 4,
+    "tags": ["canopy", "registry", "internal"],
+    "dsComponents": ["Header", "DataTable", "Badge", "Button", "Input", "Select", "ProductCard", "Skeleton", "EmptyState", "PrototypeToolbar"],
+    "openQuestions": [],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": [
+      {
+        "date": "2026-03-23",
+        "text": "Create version 2 of the canopy-registry catalog with category chip tabs, inline stat pills, streamlined product rows, and PrototypeToolbar version switching with all themes accessible."
+      }
+    ],
+    "versions": [
+      { "id": "v1", "label": "V1 — Original", "description": "Stats cards, inline select filters, DataTable with table/card toggle" },
+      { "id": "v2", "label": "V2 — Category Chips", "description": "Category chip tabs, compact stat pills, streamlined product rows, status toggle buttons" }
+    ],
     "context": null
   },
   {
@@ -197,6 +226,79 @@
       "summary": "Guided step-by-step wizard for RID tag generation. Operators select templates, configure quantity and reels, generate QR codes with unique IDs, and download CSV (always) + PDF (optional). Regulators get a separate order review view.",
       "documents": [],
       "notes": "Ryan Andrews excited about guided step-by-step approach. Grant Kemp noted Learn more link environment issue. Changed print to download per Lana's decision. Migrated template banner planned for eventual removal."
+    }
+  },
+  {
+    "id": "canopy-payments",
+    "name": "CanoPay",
+    "description": "B2B payment facilitation for cannabis product movement through the supply chain. Invoicing, payment processing, and financial reconciliation across organizations.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "desktop",
+    "fidelity": "high-fi",
+    "created": "2026-03-21",
+    "updated": "2026-03-22",
+    "href": "/prototypes/canopy-payments",
+    "screens": 6,
+    "tags": ["canopy", "payments", "b2b", "invoicing"],
+    "dsComponents": ["Header", "DataTable", "Badge", "BrandBanner", "Button", "Input", "Select", "LinearStepper", "TabBar", "DetailField", "Divider", "EmptyState", "Skeleton", "ConfirmDialog", "Toast", "Banner", "Textarea"],
+    "openQuestions": [
+      "How should declined/failed payments surface to the user?",
+      "Should partial payments auto-calculate remaining balance?",
+      "What payment methods will be supported at launch (ACH only, or also wire/check)?",
+      "How does CanoPay integrate with existing Metrc Compliance transfer manifests?"
+    ],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": [
+      {
+        "date": "2026-03-21",
+        "text": "Create CanoPay prototype based on Canopy ecosystem architecture and Confluence Payments specs. MVP scope, high-fi, RID default theme, responsive desktop, following exact DS patterns from Canopy Registry prototype.",
+        "links": [
+          { "label": "Confluence: Payments Canopy Overview", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701650" },
+          { "label": "Confluence: Payments UX Considerations", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701621" },
+          { "label": "Notion: Canopy Repository Architecture", "url": "https://www.notion.so/32957fbfbd0d811db377e29baf424df7" }
+        ]
+      },
+      {
+        "date": "2026-03-21",
+        "text": "Add a brand banner on the dashboard: Hello [Name], see what's going on in CanoPay today!"
+      },
+      {
+        "date": "2026-03-21",
+        "text": "Add cash flow data visualization chart to dashboard — income vs expenses area chart with smooth curves, tooltips, summary cards, and avg monthly stats"
+      },
+      {
+        "date": "2026-03-22",
+        "text": "Create coming soon pages for purchases and transactions"
+      },
+      {
+        "date": "2026-03-21",
+        "text": "Left nav must go all the way down; remove the heading CANOPY on the left nav"
+      }
+    ],
+    "context": {
+      "summary": "B2B payment facilitation for cannabis product movement. Handles invoicing, payment processing, and financial reconciliation across organizations in the Canopy ecosystem. Phase 2 in the Canopy MVP scope.",
+      "documents": [
+        { "label": "Confluence: Payments Canopy (Space Home)", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701524", "type": "confluence" },
+        { "label": "Confluence: Payments Canopy Overview", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701650", "type": "confluence" },
+        { "label": "Confluence: Payments UX Considerations", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701621", "type": "confluence" },
+        { "label": "Confluence: Payments Key Concepts", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701568", "type": "confluence" },
+        { "label": "Confluence: User Access Use Cases", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701585", "type": "confluence" },
+        { "label": "Confluence: User Access Visualization", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701597", "type": "confluence" },
+        { "label": "Confluence: Payments Canopy Relationships", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701608", "type": "confluence" },
+        { "label": "Confluence: Payments Initial Thoughts", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701554", "type": "confluence" },
+        { "label": "Confluence: Transfer Invoices - Research (PM)", "url": "https://metrc-tech.atlassian.net/wiki/spaces/PM/pages/427360257/Transfer+Invoices+-+Research", "type": "confluence" },
+        { "label": "Confluence: Payments Space (Home)", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Payments/overview", "type": "confluence" },
+        { "label": "Confluence: Payments Concept Docs", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701636", "type": "confluence" },
+        { "label": "Jira: PR-84 — Transfer Invoices", "url": "https://metrc-tech.atlassian.net/browse/PR-84", "type": "jira" },
+        { "label": "Notion: Canopy Repository Architecture", "url": "https://www.notion.so/32957fbfbd0d811db377e29baf424df7", "type": "notion" },
+        { "label": "Figma: Canopy Entity Relationships", "url": "https://www.figma.com/board/kJhyUtAzk1wYV81VNXFes4/Canopy", "type": "figma" },
+        { "label": "Figma: Canopy Future Vision - Navigation", "url": "https://www.figma.com/board/nutUCspeocycMXk2MDGrgK/Canopy-Future-Vision?node-id=121-2191", "type": "figma" },
+        { "label": "Figma: Canopy Future Vision - Onboarding", "url": "https://www.figma.com/board/nutUCspeocycMXk2MDGrgK/Canopy-Future-Vision?node-id=123-2876", "type": "figma" },
+        { "label": "Figma Make: Canopy Prototype MVP", "url": "https://www.figma.com/make/en9VAfnNhRa3vhEHMhUvtg/Canopy-Prototype--MVP-", "type": "figma" }
+      ],
+      "notes": "CanoPay is Phase 2 in the Canopy MVP scope. Payments = global payments facilitator for cannabis product movement through the supply chain. Permission-scoped per org/brand/facility/market. David Eagleson authored Canopy ecosystem specs. Kristin Kilroy (PM) authored the detailed Transfer Invoices spec with invoice model, phasing (Crawl/Walk/Run), NY OCM regulatory requirements, credit memos, and COD enforcement. Key rule: 1 Transfer Invoice = 1 Manifest (1:1). Jira: PR-84. Payments space exists but is empty shell. Architecture decision: separate repos per app, DS consumed as file: dependency."
     }
   }
 ]

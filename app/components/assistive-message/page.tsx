@@ -92,7 +92,7 @@ export default function AssistiveMessagePage() {
   return (
     <StyleguideLayout
       title="Assistive Message"
-      description="Small helper / validation messages shown beneath form fields. Supports 7 visual types from the Trace Design System v2.0 with optional character counters and contextual icons."
+      description="Small helper / validation messages shown beneath form fields. Supports 7 visual types from the Lumen Design System v2.0 with optional character counters and contextual icons."
       activeId="assistive-message"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -129,15 +129,15 @@ import { AssistiveMessage } from '@/components'`}</CodeBlock>
                       <div style={{ width: '100%', maxWidth: '320px' }}>
                         <div style={{
                           height: '40px',
-                          border: `1px solid ${demoType === 'error' || demoType === 'error-overflow' ? '#DC0C22' : 'rgba(0,0,0,0.15)'}`,
+                          border: `1px solid ${demoType === 'error' || demoType === 'error-overflow' ? colors.status.important : colors.border.midEmphasis.onLight}`,
                           borderRadius: '8px',
                           marginBottom: '6px',
-                          background: demoType === 'disabled' ? '#F5F5F5' : '#FFF',
+                          background: demoType === 'disabled' ? colors.surface.lightDarker : colors.surface.light,
                           display: 'flex',
                           alignItems: 'center',
                           padding: '0 12px',
                           fontSize: '14px',
-                          color: demoType === 'disabled' ? 'rgba(0,0,0,0.30)' : 'rgba(0,0,0,0.95)',
+                          color: demoType === 'disabled' ? colors.text.disabled.onLight : colors.text.highEmphasis.onLight,
                         }}>
                           {demoType === 'error-overflow' ? 'Lorem ipsum dolor sit amet conse...' : 'John Doe'}
                         </div>
@@ -207,7 +207,7 @@ import { AssistiveMessage } from '@/components'`}</CodeBlock>
                       fontWeight: 600,
                       textTransform: 'uppercase' as const,
                       letterSpacing: '0.5px',
-                      color: 'rgba(0,0,0,0.45)',
+                      color: colors.text.lowEmphasis.onLight,
                       marginBottom: '6px',
                     }}>
                       {TYPE_LABELS[t]}
@@ -405,7 +405,7 @@ import type { AssistiveMessageProps, AssistiveMessageType } from '@/components'`
                 headers={['Property', 'Value']}
                 rows={[
                   ['Component', 'Assistive message'],
-                  ['File', 'Trace Design System v2.0 (wip)'],
+                  ['File', 'Lumen Design System v2.0 (wip)'],
                   ['Node ID', '2068-39659'],
                   ['Figma Properties', <span key="fp"><code>type</code> (variant), <code>Assistive text</code> (text), <code>Counter</code> (boolean)</span>],
                 ]}

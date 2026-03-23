@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState, useRef, useLayoutEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { useTheme } from '@/styles/themes'
 import { applyAllThemeVars } from '@/styles/themes/css-vars'
-import { Header, CanopyLogo } from '@/components'
+import { Header, CanopyLogo, Avatar } from '@/components'
 import {
   colors,
   spacing,
@@ -34,8 +35,10 @@ function useMediaQuery(query: string): boolean {
 function RegistryNav({ children }: { children: React.ReactNode }) {
   const [activeBrand, setActiveBrand] = useState(brands[0])
   const [brandDropdownOpen, setBrandDropdownOpen] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const isMobile = useMediaQuery(`(max-width: ${parseInt(breakpoints.md) - 1}px)`)
   const containerRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
   const theme = useTheme()
 
   // Apply active theme CSS vars to the scoped container
@@ -48,14 +51,15 @@ function RegistryNav({ children }: { children: React.ReactNode }) {
   return (
     <div ref={containerRef} style={{ minHeight: '100vh', backgroundColor: colors.surface.lightDarker }}>
       <Header
-        logo={<CanopyLogo size="sm" />}
-        appName="Registry"
-        appDescription="Global Product Registry"
+        userAvatar={<Avatar name="Jane Doe" size="xs" />}
+        userName="Jane Doe"
+        userOrg={activeBrand.orgName}
         searchPlaceholder="Search products, SKUs, or brands..."
         showSearch={true}
-        orgName={activeBrand.name}
-        orgLabel={activeBrand.orgName}
-        onOrgClick={() => setBrandDropdownOpen(!brandDropdownOpen)}
+        onThemeToggle={() => setIsDarkMode(!isDarkMode)}
+        isDarkMode={isDarkMode}
+        brandLogo={<CanopyLogo size="sm" showText={false} />}
+        brandName="Canopy"
         sticky
       />
 
@@ -215,7 +219,7 @@ function RegistryNav({ children }: { children: React.ReactNode }) {
           { label: 'Products', href: '/prototypes/product-registry/catalog' },
           { label: 'Brand Management', href: '/prototypes/product-registry/brand-mgmt' },
         ].map((item) => {
-          const isActive = typeof window !== 'undefined' && window.location.pathname.includes(
+          const isActive = pathname.includes(
             item.href.replace('/prototypes/product-registry/', '')
           )
           return (

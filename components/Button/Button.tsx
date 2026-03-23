@@ -3,9 +3,7 @@
 import React, { forwardRef } from 'react'
 import {
   button,
-  colors,
   fontFamilies,
-  transitionPresets,
 } from '@/styles/design-tokens'
 
 // =============================================================================
@@ -89,6 +87,8 @@ export function DropdownIcon({ size = 20, color = 'currentColor' }: { size?: num
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
       style={{ flexShrink: 0 }}
     >
       <path
@@ -113,6 +113,8 @@ function LoadingSpinner({ size = 20, color = 'currentColor' }: { size?: number; 
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
       style={{
         flexShrink: 0,
         animation: 'spin 1s linear infinite',
@@ -147,7 +149,7 @@ function LoadingSpinner({ size = 20, color = 'currentColor' }: { size?: number; 
  * Button Component
  *
  * A flexible button component supporting multiple sizes, emphasis levels,
- * icons, and states. Follows the Metrc Design System specifications.
+ * icons, and states. Follows the Lumen Design System specifications.
  *
  * @example
  * // High emphasis (primary) button

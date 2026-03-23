@@ -65,6 +65,10 @@ export type {
   BannerButtonAlignment,
 } from './Banner'
 
+// BrandBanner
+export { BrandBanner } from './BrandBanner'
+export type { BrandBannerProps, BrandBannerBackground } from './BrandBanner'
+
 // SegmentedControl
 export { SegmentedControl } from './SegmentedControl'
 export type { SegmentedControlProps, SegmentedControlSize, SegmentItem } from './SegmentedControl'
@@ -105,8 +109,11 @@ export { Sidebar } from './Sidebar'
 export type { SidebarProps, NavItem, NavSection } from './Sidebar'
 
 // Header
-export { Header, SearchInput, IconButton, OrgDropdown, CanopyLogo } from './Header'
+export { Header, IconButton, CanopyLogo } from './Header'
 export type { HeaderProps, CanopyLogoProps } from './Header'
+
+// ImageCarousel
+export { ImageCarousel } from './ImageCarousel'
 
 // Toast
 export { Toast, useToast } from './Toast'
@@ -198,6 +205,24 @@ export type {
 export { ComplianceBanner } from './ComplianceBanner'
 export type { ComplianceBannerProps, VendorLogo } from './ComplianceBanner'
 
-// ImageCarousel
-export { ImageCarousel } from './ImageCarousel'
-export type { ImageCarouselProps, NavigationStyle } from './ImageCarousel'
+// ChatPanel
+export { ChatPanel, ChatFab, ChatSearchTrigger, DotGrid, ComponentRenderer } from './ChatPanel'
+export type {
+  ChatPanelProps,
+  ChatFabProps,
+  ChatSearchTriggerProps,
+  DotGridProps,
+  ChatMessage,
+  ChatAction,
+  AssistantPayload,
+  UIComponent,
+  DotAnimation,
+} from './ChatPanel'
+
+// CollectionToolbar
+export { CollectionToolbar } from './CollectionToolbar'
+export type {
+  CollectionToolbarProps,
+  CollectionToolbarTab,
+  CollectionToolbarAction,
+} from './CollectionToolbar'

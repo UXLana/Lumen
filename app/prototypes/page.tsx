@@ -89,7 +89,7 @@ const statusConfig: Record<PrototypeStatus, { label: string; color: 'warning' | 
   archived: { label: 'Archived', color: 'warning' },
 }
 
-const GITHUB_REPO = 'UXLana/mtr-design-system'
+const GITHUB_REPO = 'UXLana/lumen-design-system'
 
 function getDiscussUrl(prototype: PrototypeEntry): string {
   if (prototype.prUrl) return prototype.prUrl
@@ -622,7 +622,7 @@ export default function PrototypesIndexPage() {
     <StyleguideLayout
       activeId="prototypes-index"
       title="Prototypes"
-      description="Browse all prototypes built with the MTR Design System."
+      description="Browse all prototypes built with the Lumen Design System."
       tabs={[]}
       headerAction={allOwners.length > 1 ? (
         <div style={{

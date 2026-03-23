@@ -17,7 +17,7 @@
  *   <IconSearch size="md" />
  *
  * The above pattern uses the outlined icon with themed strokeWidth from
- * the CSS var --mtr-icon-style-strokeWidth.
+ * the CSS var --lumen-icon-style-strokeWidth.
  */
 
 import React from 'react';

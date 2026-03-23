@@ -5,16 +5,19 @@ import Link from 'next/link'
 import {
   colors,
   fontFamilies,
+  typography,
   sidebar,
   transitionPresets,
   zIndex,
   shadows,
   button,
   breakpoints,
+  borderRadius,
   getSidebarColors,
   type SidebarColors,
 } from '@/styles/design-tokens'
 import { useColors } from '@/styles/themes/theme-provider'
+import { usePrefersReducedMotion, useIsMobile } from '@/hooks'
 
 // =============================================================================
 // FOCUS STYLES (WCAG 2.4.7, 2.4.11 compliant)
@@ -25,27 +28,7 @@ const focusRingStyle: React.CSSProperties = {
   outlineOffset: '2px',
 }
 
-// =============================================================================
-// REDUCED MOTION HOOK (WCAG 2.3.3)
-// =============================================================================
-
-function usePrefersReducedMotion(): boolean {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setPrefersReducedMotion(mediaQuery.matches)
-
-    const handler = (event: MediaQueryListEvent) => {
-      setPrefersReducedMotion(event.matches)
-    }
-
-    mediaQuery.addEventListener('change', handler)
-    return () => mediaQuery.removeEventListener('change', handler)
-  }, [])
-
-  return prefersReducedMotion
-}
+// usePrefersReducedMotion — imported from @/hooks
 
 // =============================================================================
 // SIDEBAR COLORS CONTEXT (theme-aware)
@@ -57,25 +40,7 @@ function useSidebarColors(): SidebarColors {
   return useContext(SidebarColorsContext)
 }
 
-// =============================================================================
-// MOBILE DETECTION HOOK
-// =============================================================================
-
-function useIsMobile(breakpoint: number = 768): boolean {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < breakpoint)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [breakpoint])
-
-  return isMobile
-}
+// useIsMobile — imported from @/hooks
 
 import {
   IconChevronDown,
@@ -234,10 +199,10 @@ function Tooltip({ content, children, visible, position, id }: TooltipProps) {
     backgroundColor: colors.surface.dark,
     color: colors.text.highEmphasis.onDark,
     padding: '6px 12px',
-    borderRadius: '6px',
-    fontSize: '13px',
+    borderRadius: borderRadius.sm,
+    fontSize: typography.label.sm.fontSize,
     fontFamily: fontFamilies.body,
-    fontWeight: 500,
+    fontWeight: typography.label.sm.fontWeight,
     whiteSpace: 'nowrap',
     zIndex: zIndex.tooltip,
     boxShadow: shadows.md,
@@ -347,7 +312,7 @@ function PopoverMenu({
     left: position.left,
     backgroundColor: colors.surface.default,
     border: `1px solid ${sidebarColors.border}`,
-    borderRadius: '8px',
+    borderRadius: borderRadius.sm,
     padding: '8px',
     minWidth: '180px',
     zIndex: zIndex.popover,
@@ -425,12 +390,12 @@ function PopoverMenuItem({ item, isActive, onClick }: PopoverMenuItemProps) {
     alignItems: 'center',
     gap: '10px',
     padding: '8px 12px',
-    borderRadius: '6px',
+    borderRadius: borderRadius.sm,
     backgroundColor: itemColors.background,
     color: itemColors.text,
     fontFamily: fontFamilies.body,
-    fontSize: '14px',
-    fontWeight: 500,
+    fontSize: typography.label.md.fontSize,
+    fontWeight: typography.label.md.fontWeight,
     cursor: item.disabled ? 'not-allowed' : 'pointer',
     opacity: item.disabled ? 0.5 : 1,
     textDecoration: 'none',
@@ -554,25 +519,23 @@ function LeftNavItemComponent({
   const pillStyle: React.CSSProperties = collapsed
     ? {
         position: 'absolute',
-        // For collapsed: extend beyond padding to create centered square pill
-        // Item has 24px paddingX, so use negative values to extend outward
-        top: '4px',
-        bottom: '4px',
-        left: '-10px',
-        right: '-10px',
+        top: '2px',
+        bottom: '2px',
+        left: '4px',
+        right: '4px',
         backgroundColor: isActive ? sidebarColors.item.active.background : (isHovered ? sidebarColors.item.hover.background : 'transparent'),
-        borderRadius: sidebar.collapsedIconButton?.borderRadius || '14.4px',
+        borderRadius: borderRadius.md,
         zIndex: 0,
         transition: `all ${transitionPresets.fast}`,
       }
     : {
         position: 'absolute',
-        top: '4px',
-        bottom: '4px',
-        left: '-12px',
-        right: '-12px',
+        top: '0px',
+        bottom: '0px',
+        left: '4px',
+        right: '4px',
         backgroundColor: isActive ? sidebarColors.item.active.background : (isHovered ? sidebarColors.item.hover.background : 'transparent'),
-        borderRadius: sidebar.navItem.borderRadius,
+        borderRadius: borderRadius.md,
         zIndex: 0,
         transition: `all ${transitionPresets.fast}`,
       }
@@ -893,7 +856,7 @@ function LeftNavSectionComponent({
     color: sidebarColors.sectionLabel,
     cursor: isCollapsible ? 'pointer' : 'default',
     userSelect: 'none',
-    borderRadius: '4px',
+    borderRadius: borderRadius.xs,
     outline: 'none',
     backgroundColor: isHeaderHovered && isCollapsible ? sidebarColors.subtleHover : 'transparent',
     transition: `background-color ${transitionPresets.fast}`,
@@ -912,7 +875,8 @@ function LeftNavSectionComponent({
     display: 'flex',
     flexDirection: 'column',
     gap: '2px',
-    overflow: 'hidden',
+    overflowX: 'visible',
+    overflowY: 'hidden',
     maxHeight: !collapsed && isCollapsible && !isExpanded ? '0' : '2000px',
     opacity: !collapsed && isCollapsible && !isExpanded ? 0 : 1,
     transition: `max-height ${transitionPresets.slow}, opacity ${transitionPresets.default}`,
@@ -1052,7 +1016,7 @@ function MobileHeader({ logo, onClose }: MobileHeaderProps) {
     justifyContent: 'center',
     width: '40px',
     height: '40px',
-    borderRadius: '8px',
+    borderRadius: borderRadius.sm,
     border: 'none',
     backgroundColor: isCloseHovered ? sidebarColors.controlHover : 'transparent',
     color: sidebarColors.item.default.icon,
@@ -1198,10 +1162,10 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
     const hasLogoContent = logo || collapsedLogo || showCollapseToggle
     const logoContainerStyle: React.CSSProperties = {
       display: hasLogoContent ? 'flex' : 'none',
-      alignItems: 'center',
+      alignItems: collapsed ? 'center' : 'flex-start',
       justifyContent: collapsed ? 'center' : 'space-between',
-      height: sidebar.logo.height,
-      marginBottom: '16px',
+      minHeight: (sidebar.logo.height as string) === 'auto' ? undefined : sidebar.logo.height,
+      marginBottom: '12px',
       padding: collapsed ? '0' : `0 ${sidebar.navItem.paddingX}`,
       flexShrink: 0,
     }
@@ -1219,7 +1183,7 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
       justifyContent: 'center',
       width: '28px',
       height: '28px',
-      borderRadius: '6px',
+      borderRadius: borderRadius.sm,
       border: 'none',
       backgroundColor: isToggleHovered ? sidebarColors.controlHover : 'transparent',
       color: sidebarColors.item.default.icon,

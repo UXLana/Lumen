@@ -11,6 +11,7 @@ import {
   transitionPresets,
   fontFamilies,
   breakpoints,
+  sidebar,
 } from '@/styles/design-tokens'
 import { SegmentedControl } from '@/components'
 import {
@@ -20,55 +21,49 @@ import {
   IconSidebarOpen,
   IconSidebarClose,
 } from '@/components/Icons'
+import { LeftNav, type LeftNavSection, type LeftNavItem } from '@/components/LeftNav'
 import { useThemeSwitcher, availableThemes } from '@/styles/themes'
 
 // =============================================================================
 // CONSTANTS
 // =============================================================================
 
-const SIDEBAR_WIDTH = 260
-const SIDEBAR_COLLAPSED_WIDTH = 56
+const SIDEBAR_WIDTH = parseInt(sidebar.width) // 278px
+const SIDEBAR_COLLAPSED_WIDTH = parseInt(sidebar.collapsedWidth) // 73px
 const MOBILE_BREAKPOINT = parseInt(breakpoints.md) // 768px
 
 // =============================================================================
 // CUSTOM ICONS (Not in the main library)
 // =============================================================================
 
-// Animated chevron for nav sections
-const IconChevron = ({ expanded }: { expanded: boolean }) => (
-  <span style={{
-    display: 'flex',
-    transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
-    transition: 'transform 0.2s ease',
-  }}>
-    <IconChevronRight size="sm" />
-  </span>
-)
-
-// Icon mapping - first-level section icons only
-// Using size 20 (md) for crisp rendering at all states
 // Shield/checkmark icon for Tools section
-const IconTools = ({ size = 'md' }: { size?: string }) => (
-  <svg width={size === 'sm' ? 16 : 20} height={size === 'sm' ? 16 : 20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+const IconTools = () => (
+  <svg aria-hidden="true" width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M10 1L3 5v4.5c0 4.42 2.98 8.56 7 9.5 4.02-.94 7-5.08 7-9.5V5l-7-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M7.5 10l2 2 3.5-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
-const iconMap: Record<string, React.FC> = {
-  foundations: () => <IconFoundations size="md" />,
-  components: () => <IconComponents size="md" />,
-  tools: () => <IconTools size="md" />,
-}
+// Layers icon for Prototypes section
+const IconPrototypes = () => (
+  <svg aria-hidden="true" width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 2L2 6.5l8 4.5 8-4.5L10 2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 10l8 4.5L18 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 13.5l8 4.5 8-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
 
 // =============================================================================
 // NAVIGATION DATA
+// Sections and items are configurable per app — pass your own to StyleguideLayout
 // =============================================================================
 
-export const navSections = [
+export const navSections: LeftNavSection[] = [
   {
     id: 'foundations',
     title: 'Foundations',
+    icon: <IconFoundations size="md" />,
+    defaultExpanded: true,
     items: [
       { id: 'colors', label: 'Colors', href: '/design-system/colors' },
       { id: 'typography', label: 'Typography', href: '/design-system/typography' },
@@ -82,15 +77,20 @@ export const navSections = [
   {
     id: 'components',
     title: 'Components',
+    icon: <IconComponents size="md" />,
+    defaultExpanded: true,
     items: [
       { id: 'accordion', label: 'Accordion', href: '/components/accordion' },
       { id: 'assistive-message', label: 'Assistive Message', href: '/components/assistive-message' },
       { id: 'avatar', label: 'Avatar', href: '/components/avatar' },
       { id: 'badge', label: 'Badge', href: '/components/badge' },
       { id: 'banner', label: 'Banner', href: '/components/banner' },
+      { id: 'brand-banner', label: 'Brand Banner', href: '/components/brand-banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
+      { id: 'chat-panel', label: 'Chat Panel', href: '/components/chat-panel' },
       { id: 'checkbox', label: 'Checkbox', href: '/components/checkbox' },
       { id: 'chip', label: 'Chip', href: '/components/chip' },
+      { id: 'collection-toolbar', label: 'Collection Toolbar', href: '/components/collection-toolbar' },
       { id: 'combobox', label: 'Combobox', href: '/components/combobox' },
       { id: 'data-table', label: 'Data Table', href: '/components/data-table' },
       { id: 'divider', label: 'Divider', href: '/components/divider' },
@@ -108,14 +108,15 @@ export const navSections = [
       { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'stepper', label: 'Stepper', href: '/components/stepper' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
-      { id: 'progress-bar', label: 'Progress Bar', href: '/components/progress-bar' },
-      { id: 'upload', label: 'Upload', href: '/components/upload' },
     ],
   },
   {
     id: 'tools',
     title: 'Tools',
+    icon: <IconTools />,
+    defaultExpanded: true,
     items: [
+      { id: 'theme-playground', label: 'Theme Playground', href: '/design-system/theme-playground' },
       { id: 'compliance', label: 'Compliance Dashboard', href: '/design-system/compliance' },
     ],
   },
@@ -140,212 +141,11 @@ export const sharedStyles = {
     position: 'relative' as const,
   },
 
-  sidebar: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    width: `${SIDEBAR_WIDTH}px`,
-    height: '100vh',
-    background: colors.surface.lightDarker,
-    borderRight: `1px solid ${colors.border.lowEmphasis.onLight}`,
-    padding: '24px 0',
-    display: 'flex',
-    flexDirection: 'column' as const,
-    zIndex: zIndex.header,
-    overflowY: 'auto' as const,
-    overflowX: 'visible' as const,
-    transition: 'width 0.3s ease, transform 0.3s ease, opacity 0.2s ease',
-  },
-
-  sidebarCollapsed: {
-    width: `${SIDEBAR_COLLAPSED_WIDTH}px`,
-  },
-
-  sidebarHidden: {
-    transform: `translateX(-${SIDEBAR_WIDTH}px)`,
-    opacity: 0,
-    pointerEvents: 'none' as const,
-  },
-
-  sidebarOverlay: {
-    position: 'fixed' as const,
-    inset: 0,
-    background: colors.scrim,
-    zIndex: zIndex.header - 1,
-    opacity: 0,
-    pointerEvents: 'none' as const,
-    transition: 'opacity 0.3s ease',
-  },
-
-  sidebarOverlayVisible: {
-    opacity: 1,
-    pointerEvents: 'auto' as const,
-  },
-
-  sidebarToggle: {
-    width: '32px',
-    height: '32px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'transparent',
-    border: 'none',
-    borderRadius: borderRadius.sm,
-    cursor: 'pointer',
-    transition: transitionPresets.default,
-    color: colors.text.lowEmphasis.onLight,
-    padding: 0,
-    marginLeft: 'auto',
-  },
-
-  sidebarToggleHover: {
-    background: colors.hover.onLight,
-    color: colors.text.highEmphasis.onLight,
-  },
-
-  sidebarNav: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '4px',
-    padding: '0 8px',
-  },
-
-  sidebarNavItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    padding: '10px 12px',
-    borderRadius: borderRadius.md,
-    color: colors.text.lowEmphasis.onLight,
-    textDecoration: 'none',
-    fontSize: '14px',
-    fontWeight: 500,
-    transition: transitionPresets.default,
-    cursor: 'pointer',
-    position: 'relative' as const,
-  },
-
-  sidebarNavItemHover: {
-    background: colors.hover.onLight,
-    color: colors.text.highEmphasis.onLight,
-  },
-
-  sidebarNavItemActive: {
-    background: colors.selected.onLight,
-    color: colors.text.highEmphasis.onLight,
-  },
-
-  popover: {
-    position: 'fixed' as const,
-    left: `${SIDEBAR_COLLAPSED_WIDTH + 8}px`,
-    background: colors.surface.light,
-    borderRadius: borderRadius.lg,
-    boxShadow: shadows.lg,
-    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-    padding: '8px 0',
-    minWidth: '200px',
-    zIndex: zIndex.modal,
-  },
-
-  popoverItem: {
-    display: 'block',
-    padding: '10px 16px',
-    color: colors.text.lowEmphasis.onLight,
-    textDecoration: 'none',
-    ...typography.body.sm,
-    fontWeight: 500,
-    transition: transitionPresets.default,
-  },
-
-  popoverItemHover: {
-    background: colors.surface.lightDarker,
-    color: colors.text.highEmphasis.onLight,
-  },
-
-  popoverItemActive: {
-    background: colors.surface.lightDarker,
-    color: colors.brand.default,
-    fontWeight: 600,
-  },
-
-  sidebarHeader: {
-    padding: '0 20px 20px',
-    borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
-    marginBottom: '16px',
-  },
-
-  sidebarTitle: {
-    ...typography.heading.h5,
-    color: colors.text.highEmphasis.onLight,
-    marginBottom: '4px',
-    textDecoration: 'none',
-    display: 'block',
-  },
-
-  sidebarSubtitle: {
-    ...typography.body.sm,
-    color: colors.text.lowEmphasis.onLight,
-  },
-
-  navSection: {
-    marginBottom: '8px',
-  },
-
-  navSectionHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px 20px',
-    cursor: 'pointer',
-    borderRadius: '0',
-    transition: transitionPresets.default,
-    userSelect: 'none' as const,
-    color: colors.text.highEmphasis.onLight,
-  },
-
-  navSectionTitle: {
-    fontSize: '13px',
-    fontWeight: 600,
-    color: colors.text.highEmphasis.onLight,
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.5px',
-  },
-
-  nav: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '2px',
-    padding: '4px 12px 8px',
-    overflow: 'hidden',
-    transition: 'max-height 0.3s ease, opacity 0.2s ease',
-  },
-
-  navLink: {
-    padding: '10px 12px',
-    borderRadius: borderRadius.md,
-    color: colors.text.lowEmphasis.onLight,
-    textDecoration: 'none',
-    fontSize: '14px',
-    fontWeight: 500,
-    transition: transitionPresets.default,
-    display: 'block',
-  },
-
-  navLinkActive: {
-    background: colors.selected.onLight,
-    color: colors.text.highEmphasis.onLight,
-  },
-
-  navLinkHover: {
-    background: colors.hover.onLight,
-    color: colors.text.highEmphasis.onLight,
-  },
-
   content: {
     marginLeft: `${SIDEBAR_WIDTH}px`,
     flex: 1,
     maxWidth: `calc(100% - ${SIDEBAR_WIDTH}px)`,
-    padding: '24px',
+    padding: '24px 48px',
     transition: 'margin-left 0.3s ease, max-width 0.3s ease',
   },
 
@@ -412,7 +212,8 @@ export const sharedStyles = {
 
   main: {
     padding: '40px 0',
-    maxWidth: '1400px',
+    maxWidth: '960px',
+    margin: '0 auto',
   },
   
   section: {
@@ -495,240 +296,6 @@ export const sharedStyles = {
 }
 
 // =============================================================================
-// NAV ITEM COMPONENT (with hover state)
-// =============================================================================
-
-function NavItem({
-  item,
-  isActive,
-}: {
-  item: { id: string; label: string; href: string }
-  isActive: boolean
-}) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  const getLinkStyle = () => {
-    if (isActive) {
-      return { ...sharedStyles.navLink, ...sharedStyles.navLinkActive }
-    }
-    if (isHovered) {
-      return { ...sharedStyles.navLink, ...sharedStyles.navLinkHover }
-    }
-    return sharedStyles.navLink
-  }
-
-  return (
-    <Link
-      href={item.href}
-      style={getLinkStyle()}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {item.label}
-    </Link>
-  )
-}
-
-// =============================================================================
-// COLLAPSIBLE NAV SECTION COMPONENT
-// =============================================================================
-
-function NavSection({
-  section,
-  activeId,
-  expanded,
-  onToggle,
-}: {
-  section: typeof navSections[0]
-  activeId: string
-  expanded: boolean
-  onToggle: () => void
-}) {
-  const [isHeaderHovered, setIsHeaderHovered] = useState(false)
-  const SectionIcon = iconMap[section.id]
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const isSpace = e.key === ' ' || e.key === 'Spacebar'
-    const willToggle = e.key === 'Enter' || isSpace
-    if (willToggle) {
-      if (isSpace) {
-        e.preventDefault()
-      }
-      onToggle()
-    }
-  }
-
-  return (
-    <div style={sharedStyles.navSection}>
-      <div
-        style={{
-          ...sharedStyles.navSectionHeader,
-          background: isHeaderHovered ? colors.hover.onLight : 'transparent',
-        }}
-        onClick={onToggle}
-        onMouseEnter={() => setIsHeaderHovered(true)}
-        onMouseLeave={() => setIsHeaderHovered(false)}
-        role="button"
-        tabIndex={0}
-        aria-expanded={expanded}
-        onKeyDown={handleKeyDown}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {SectionIcon && (
-            <span style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '20px',
-              height: '20px',
-              flexShrink: 0,
-              color: colors.icon.enabled.onLight,
-            }}>
-              <SectionIcon />
-            </span>
-          )}
-          <span style={sharedStyles.navSectionTitle}>{section.title}</span>
-        </div>
-        <IconChevron expanded={expanded} />
-      </div>
-
-      <nav
-        style={{
-          ...sharedStyles.nav,
-          maxHeight: expanded ? '2000px' : '0px',
-          opacity: expanded ? 1 : 0,
-          padding: expanded ? '4px 12px 8px' : '0 12px',
-        }}
-      >
-        {section.items.map((item) => (
-          <NavItem
-            key={item.id}
-            item={item}
-            isActive={activeId === item.id}
-          />
-        ))}
-      </nav>
-    </div>
-  )
-}
-
-// =============================================================================
-// NAV RAIL ITEM (for collapsed sidebar with popover)
-// =============================================================================
-
-function NavRailItem({
-  section,
-  activeId,
-}: {
-  section: typeof navSections[0]
-  activeId: string
-}) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [popoverItemHovered, setPopoverItemHovered] = useState<string | null>(null)
-  const [popoverTop, setPopoverTop] = useState(0)
-  const itemRef = React.useRef<HTMLDivElement>(null)
-  const hideTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
-  const SectionIcon = iconMap[section.id]
-  const isActive = section.items.some((item) => item.id === activeId)
-
-  const showPopover = () => {
-    // Clear any pending hide timeout
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current)
-      hideTimeoutRef.current = null
-    }
-    setIsHovered(true)
-    if (itemRef.current) {
-      const rect = itemRef.current.getBoundingClientRect()
-      setPopoverTop(rect.top)
-    }
-  }
-
-  const hidePopover = () => {
-    // Delay hiding to allow mouse to move to popover
-    hideTimeoutRef.current = setTimeout(() => {
-      setIsHovered(false)
-      setPopoverItemHovered(null)
-    }, 100)
-  }
-
-  // Cleanup timeout on unmount
-  React.useEffect(() => {
-    return () => {
-      if (hideTimeoutRef.current) {
-        clearTimeout(hideTimeoutRef.current)
-      }
-    }
-  }, [])
-
-  return (
-    <div
-      ref={itemRef}
-      style={{
-        ...sharedStyles.sidebarNavItem,
-        ...(isHovered ? sharedStyles.sidebarNavItemHover : {}),
-        ...(isActive ? sharedStyles.sidebarNavItemActive : {}),
-        justifyContent: 'center',
-        padding: '12px',
-      }}
-      onMouseEnter={showPopover}
-      onMouseLeave={hidePopover}
-    >
-      {SectionIcon && (
-        <span style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '20px',
-          height: '20px',
-          flexShrink: 0,
-        }}>
-          <SectionIcon />
-        </span>
-      )}
-
-      {/* Popover */}
-      {isHovered && (
-        <div
-          style={{
-            ...sharedStyles.popover,
-            top: `${popoverTop}px`,
-          }}
-          onMouseEnter={showPopover}
-          onMouseLeave={hidePopover}
-        >
-          <div style={{
-            padding: '8px 16px 6px',
-            ...typography.label.sm,
-            fontSize: '11px',
-            fontWeight: 600,
-            color: colors.text.lowEmphasis.onLight,
-            textTransform: 'uppercase' as const,
-            letterSpacing: '0.5px',
-          }}>
-            {section.title}
-          </div>
-          {section.items.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              style={{
-                ...sharedStyles.popoverItem,
-                ...(popoverItemHovered === item.id ? sharedStyles.popoverItemHover : {}),
-                ...(activeId === item.id ? sharedStyles.popoverItemActive : {}),
-              }}
-              onMouseEnter={() => setPopoverItemHovered(item.id)}
-              onMouseLeave={() => setPopoverItemHovered(null)}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// =============================================================================
 // LAYOUT COMPONENT
 // =============================================================================
 
@@ -737,6 +304,8 @@ interface StyleguideLayoutProps {
   title: string
   description: string
   activeId: string
+  /** Override default navSections — pass custom sections for different apps */
+  sections?: LeftNavSection[]
   tabs?: { id: string; label: string }[]
   activeTab?: string
   onTabChange?: (tabId: string) => void
@@ -748,6 +317,7 @@ export function StyleguideLayout({
   title,
   description,
   activeId,
+  sections = navSections,
   tabs,
   activeTab,
   onTabChange,
@@ -757,26 +327,9 @@ export function StyleguideLayout({
   const displayTabs = tabs || innerPageTabs
   const currentTab = activeTab || 'overview'
 
-  // Find which section contains the active item
-  const activeSectionId = navSections.find((s) =>
-    s.items.some((item) => item.id === activeId)
-  )?.id
-
-  // Track expanded sections - restore from localStorage, default all open
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('ds-nav-expanded')
-        if (stored) return JSON.parse(stored)
-      } catch {}
-    }
-    return { foundations: true, components: true, tools: true }
-  })
-
-  // Sidebar collapsed state - default collapsed on first visit
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true)
+  // Sidebar collapsed state - default expanded on first visit
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [toggleHovered, setToggleHovered] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
 
   // Theme selection — managed by SwitchableThemeProvider, controlled here
@@ -803,191 +356,102 @@ export function StyleguideLayout({
     const checkMobile = () => {
       const mobile = window.innerWidth < MOBILE_BREAKPOINT
       setIsMobile(mobile)
-      // Auto-collapse on mobile (only if not already hydrated with user preference)
       if (mobile && !isHydrated) {
         setSidebarCollapsed(true)
       }
     }
-
-    // Initial check
     checkMobile()
-
-    // Listen for resize
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [isHydrated])
 
-  // Handle escape key to close sidebar on mobile
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMobile && !sidebarCollapsed) {
-        setSidebarCollapsed(true)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isMobile, sidebarCollapsed])
-
-  const sidebarRef = React.useRef<HTMLElement>(null)
-
-  // Restore sidebar scroll position on mount
-  useEffect(() => {
-    const el = sidebarRef.current
-    if (!el) return
-    const stored = sessionStorage.getItem('ds-sidebar-scroll')
-    if (stored) el.scrollTop = parseInt(stored, 10)
-
-    // Save scroll position on every scroll
-    const onScroll = () => {
-      sessionStorage.setItem('ds-sidebar-scroll', String(el.scrollTop))
-    }
-    el.addEventListener('scroll', onScroll, { passive: true })
-    return () => el.removeEventListener('scroll', onScroll)
+  const handleCollapseChange = useCallback((collapsed: boolean) => {
+    setSidebarCollapsed(collapsed)
   }, [])
 
-  const toggleSidebar = useCallback(() => {
-    setSidebarCollapsed((prev) => !prev)
+  const handleItemClick = useCallback((item: LeftNavItem) => {
+    window.location.href = item.href
   }, [])
 
-  const toggleSection = (sectionId: string) => {
-    setExpandedSections((prev) => {
-      const next = { ...prev, [sectionId]: !prev[sectionId] }
-      try { localStorage.setItem('ds-nav-expanded', JSON.stringify(next)) } catch {}
-      return next
-    })
-  }
+  // Logo with theme switcher (shown when sidebar is expanded)
+  const logoElement = (
+    <div>
+      <p style={{
+        fontSize: '10px',
+        fontWeight: 600,
+        letterSpacing: '0.8px',
+        textTransform: 'uppercase' as const,
+        color: colors.text.lowEmphasis.onLight,
+        margin: '0 0 2px 0',
+        fontFamily: fontFamilies.body,
+      }}>
+        Prism
+      </p>
+      <Link href="/" style={{
+        ...typography.heading.h5,
+        color: colors.text.highEmphasis.onLight,
+        marginBottom: '4px',
+        textDecoration: 'none',
+        display: 'block',
+      }}>
+        Design System
+      </Link>
+      <p style={{
+        ...typography.body.sm,
+        color: colors.text.lowEmphasis.onLight,
+        margin: '0 0 12px 0',
+      }}>v1.0.0</p>
+      <select
+        id="ds-theme-select"
+        aria-label="Theme"
+        value={themeName}
+        onChange={(e) => setThemeName(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '6px 10px',
+          borderRadius: borderRadius.sm,
+          border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+          background: 'transparent',
+          color: colors.text.lowEmphasis.onLight,
+          fontSize: '12px',
+          fontWeight: 500,
+          fontFamily: fontFamilies.body,
+          cursor: 'pointer',
+          appearance: 'auto' as const,
+        }}
+      >
+        {availableThemes.map((t) => (
+          <option key={t.name} value={t.name}>
+            {t.name.charAt(0).toUpperCase() + t.name.slice(1)}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
 
   return (
     <div style={sharedStyles.page}>
-      {/* Mobile overlay */}
-      {isMobile && !sidebarCollapsed && (
-        <div
-          style={{
-            ...sharedStyles.sidebarOverlay,
-            ...sharedStyles.sidebarOverlayVisible,
-          }}
-          onClick={() => setSidebarCollapsed(true)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside
-        ref={sidebarRef}
+      {/* LeftNav replaces the inline sidebar */}
+      <LeftNav
+        logo={logoElement}
+        sections={sections}
+        activeItemId={activeId}
+        collapsed={sidebarCollapsed}
+        onCollapseChange={handleCollapseChange}
+        showCollapseToggle
+        variant="default"
+        mobileBehavior="drawer"
+        mobileOpen={isMobile && !sidebarCollapsed}
+        onMobileClose={() => setSidebarCollapsed(true)}
+        onItemClick={handleItemClick}
         style={{
-          ...sharedStyles.sidebar,
-          ...(sidebarCollapsed && !isMobile ? sharedStyles.sidebarCollapsed : {}),
-          ...(isMobile && sidebarCollapsed ? sharedStyles.sidebarHidden : {}),
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          height: '100vh',
+          zIndex: zIndex.header,
         }}
-        data-sidebar
-      >
-        {/* Header with toggle */}
-        <div style={{
-          ...sharedStyles.sidebarHeader,
-          display: 'flex',
-          flexDirection: 'column' as const,
-          gap: sidebarCollapsed ? '0' : '12px',
-          padding: sidebarCollapsed ? '0 12px 20px' : '0 20px 20px',
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: sidebarCollapsed ? 'center' : 'space-between',
-          }}>
-            {!sidebarCollapsed && (
-              <div>
-                <p style={{
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  letterSpacing: '0.8px',
-                  textTransform: 'uppercase' as const,
-                  color: colors.text.lowEmphasis.onLight,
-                  margin: '0 0 2px 0',
-                  fontFamily: fontFamilies.body,
-                }}>
-                  Prism
-                </p>
-                <Link href="/" style={sharedStyles.sidebarTitle}>
-                  Design System
-                </Link>
-                <p style={sharedStyles.sidebarSubtitle}>v1.0.0</p>
-              </div>
-            )}
-            <button
-              style={{
-                ...sharedStyles.sidebarToggle,
-                ...(toggleHovered ? sharedStyles.sidebarToggleHover : {}),
-                marginLeft: sidebarCollapsed ? 0 : 'auto',
-              }}
-              onClick={toggleSidebar}
-              onMouseEnter={() => setToggleHovered(true)}
-              onMouseLeave={() => setToggleHovered(false)}
-              aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              aria-expanded={!sidebarCollapsed}
-            >
-              {sidebarCollapsed ? (
-                <IconSidebarOpen size="sm" />
-              ) : (
-                <IconSidebarClose size="sm" />
-              )}
-            </button>
-          </div>
-
-          {/* Theme switcher */}
-          {!sidebarCollapsed && (
-            <select
-              id="ds-theme-select"
-              aria-label="Theme"
-              value={themeName}
-              onChange={(e) => setThemeName(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '6px 10px',
-                borderRadius: borderRadius.sm,
-                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                background: 'transparent',
-                color: colors.text.lowEmphasis.onLight,
-                fontSize: '12px',
-                fontWeight: 500,
-                fontFamily: fontFamilies.body,
-                cursor: 'pointer',
-                appearance: 'auto' as const,
-              }}
-            >
-              {availableThemes.map((t) => (
-                <option key={t.name} value={t.name}>
-                  {t.name.charAt(0).toUpperCase() + t.name.slice(1)}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-
-        {/* Full nav when expanded */}
-        {!sidebarCollapsed && navSections.map((section) => (
-          <NavSection
-            key={section.id}
-            section={section}
-            activeId={activeId}
-            expanded={expandedSections[section.id] ?? true}
-            onToggle={() => toggleSection(section.id)}
-          />
-        ))}
-
-        {/* Icon rail when collapsed */}
-        {sidebarCollapsed && !isMobile && (
-          <div style={sharedStyles.sidebarNav}>
-            {navSections.map((section) => (
-              <NavRailItem
-                key={section.id}
-                section={section}
-                activeId={activeId}
-              />
-            ))}
-          </div>
-        )}
-      </aside>
+      />
 
       {/* Content */}
       <div
@@ -998,7 +462,7 @@ export function StyleguideLayout({
         }}
         data-content
       >
-        {/* Header Banner — gradient uses CSS-variable-backed brand tokens */}
+        {/* Header Banner */}
         <div style={sharedStyles.headerWrapper}>
           <header style={{
             ...sharedStyles.header,
@@ -1011,7 +475,7 @@ export function StyleguideLayout({
             <p style={sharedStyles.headerDescription}>{description}</p>
           </header>
 
-          {/* Tabs - Outside the header */}
+          {/* Tabs */}
           {displayTabs.length > 0 && (
             <nav role="tablist" style={sharedStyles.tabsContainer}>
               {displayTabs.map((tab) => (

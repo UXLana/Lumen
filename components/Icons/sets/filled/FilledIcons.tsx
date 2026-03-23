@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * Filled icon variants for the MTR Design System.
+ * Filled icon variants for the Lumen Design System.
  *
  * These are solid/filled versions of the most-used outlined icons.
  * They share the same 24×24 viewBox and size tokens as the outlined set
@@ -66,7 +66,7 @@ const FilledBaseIcon: React.FC<FilledBaseIconProps> = ({
 export const IconHomeFilled: React.FC<IconProps> = (props) => (
   <FilledBaseIcon {...props}>
     <path d="M3 9.5L12 2l9 7.5V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9.5z" />
-    <path d="M9 22V12h6v10" fill="var(--mtr-surface-light, #fff)" />
+    <path d="M9 22V12h6v10" fill="var(--lumen-surface-light, #fff)" />
   </FilledBaseIcon>
 )
 IconHomeFilled.displayName = 'IconHomeFilled'
