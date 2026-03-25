@@ -87,7 +87,6 @@ export const navSections: LeftNavSection[] = [
       { id: 'banner', label: 'Banner', href: '/components/banner' },
       { id: 'brand-banner', label: 'Brand Banner', href: '/components/brand-banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
-      { id: 'chat-panel', label: 'Chat Panel', href: '/components/chat-panel' },
       { id: 'checkbox', label: 'Checkbox', href: '/components/checkbox' },
       { id: 'chip', label: 'Chip', href: '/components/chip' },
       { id: 'collection-toolbar', label: 'Collection Toolbar', href: '/components/collection-toolbar' },
