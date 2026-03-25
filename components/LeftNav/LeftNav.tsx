@@ -780,7 +780,20 @@ function LeftNavSectionComponent({
   isFirst,
 }: LeftNavSectionComponentProps) {
   const sidebarColors = useSidebarColors()
-  const [isExpanded, setIsExpanded] = useState(section.defaultExpanded !== false)
+  // Persist section expand state to localStorage so it survives page navigations
+  const storageKey = `ds-nav-section-${section.id}`
+  const [isExpanded, setIsExpanded] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(storageKey)
+      if (stored !== null) return stored === 'true'
+    }
+    return section.defaultExpanded !== false
+  })
+
+  useEffect(() => {
+    localStorage.setItem(storageKey, String(isExpanded))
+  }, [isExpanded, storageKey])
+
   const [showPopover, setShowPopover] = useState(false)
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 })
   const [isHeaderFocused, setIsHeaderFocused] = useState(false)
