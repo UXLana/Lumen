@@ -24,6 +24,7 @@ This is the MTR Design System - a React/Next.js component library with design to
 - `/ux-brief-generator` - Research-first UX brief compiler with gap analysis and completeness scoring
 - `/component-documenter` - Generate dual-format (human + LLM) component documentation with YAML frontmatter, prop tables, token maps, and accessibility specs
 - `/theme-generator` - Generate a complete product theme from a single brand color with intelligent color recommendations
+- `/package-validator` - Pre-publish validation: barrel exports, token resolution, theme completeness, CLAUDE.md accuracy, package.json sanity
 
 ## Skill Ownership
 - Files in `.claude/commands/`, `Skills/`, and `.claude/docs/` are owned by Lana Holston (@UXLana)
