@@ -1,140 +1,87 @@
-# Metrc Design System
+# MTR Design System
 
-A comprehensive design system built from the Figma Design System, featuring design tokens, reusable components, typography scales, colors, spacing, and more.
+The official component library and design token system for Metrc products. Built with React, TypeScript, and Next.js.
 
-## Getting Started
-
-### Installation
+## Quick Start
 
 ```bash
+git clone https://github.com/MetrcID/vercel.ux.git
+cd vercel.ux
 npm install
-```
-
-### Development
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the home page.
+Open [http://localhost:3333](http://localhost:3333) to view the documentation site.
 
-### Style Guide
+## What's Inside
 
-Visit [http://localhost:3000/design-system](http://localhost:3000/design-system) to view the complete design system documentation.
+### Components (42+)
 
-### Component Documentation
+Accordion, AssistiveMessage, Avatar, Badge, Banner, BrandBanner, Button, ChatPanel, Checkbox, Chip, CollectionToolbar, Combobox, ComplianceBanner, ConfirmDialog, DataTable, DetailField, Divider, EmptyState, FullScreenModal, Header, Icons, ImageCarousel, Input, LeftNav, Link, ListItem, MarketplaceCard, Pagination, ProductCard, ProgressBar, Radio, SegmentedControl, Select, Sidebar, Skeleton, StatsCard, Stepper, Switch, Tab, Textarea, Toast, Upload
 
-Each component has its own specification page:
-- **Avatar**: [http://localhost:3000/components/avatar](http://localhost:3000/components/avatar)
+### Design Tokens
 
-## Components
+All tokens are in `styles/design-tokens.ts`:
 
-Reusable UI components built with design tokens. Import from `@/components`:
+- **Colors** — Brand, semantic, text, surface, border (CSS-variable-backed, themeable)
+- **Typography** — DM Sans (display, heading, body, label) + JetBrains Mono (code)
+- **Spacing** — 4px-based scale with semantic aliases
+- **Border Radius** — Scale from none to full
+- **Shadows** — Elevation levels for depth
+- **Breakpoints** — Responsive breakpoints
+- **Z-Index** — Layer management
 
-### Avatar
+### Themes
 
-Displays a user avatar as either an image or initials with a colored background.
+The system supports multiple product themes via `SwitchableThemeProvider`:
+
+- **Trace** (default) — Core Metrc regulatory platform
+- **University** — Training and education
+- **Earth** — Environmental/sustainability
+- **RID** — Retail ID (light + dark)
+
+## Usage in Your Project
+
+### Import Components
 
 ```tsx
-import { Avatar, AvatarGroup } from '@/components'
-
-// Image avatar
-<Avatar src="/profile.jpg" name="John Doe" size="md" />
-
-// Text avatar (initials)
-<Avatar name="Jane Smith" size="lg" color={3} />
-
-// Avatar group
-<AvatarGroup
-  avatars={[
-    { name: "User 1", src: "/user1.jpg" },
-    { name: "User 2" },
-  ]}
-  max={5}
-  compact
-/>
+import { Button, Input, DataTable } from 'mtr-design-system/components'
 ```
 
-**Props:**
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `src` | `string` | - | Image source URL |
-| `name` | `string` | `''` | User's name (for initials) |
-| `size` | `'xl' \| 'lg' \| 'md' \| 'sm' \| 'xs'` | `'md'` | Avatar size |
-| `color` | `1-8` | auto | Color variant for initials |
-| `focused` | `boolean` | `false` | Show focus ring |
-| `onDark` | `boolean` | `false` | Border for dark surfaces |
+### Import Tokens
 
-## Design Tokens
+```tsx
+import { colors, spacing, typography, borderRadius, shadows } from 'mtr-design-system/styles/design-tokens'
+```
 
-All design tokens are located in `styles/design-tokens.ts` and include:
+### Import Themes
 
-- **Colors**: Brand, primary, secondary, neutral, semantic, text, background, and border colors
-- **Typography**: Display, heading, body, label, and code styles with DM Sans and JetBrains Mono
-- **Spacing**: 4px-based spacing scale with semantic aliases
-- **Border Radius**: Scale from none to full with semantic mappings
-- **Shadows**: Elevation shadows for depth and visual hierarchy
-- **Breakpoints**: Responsive breakpoints for adaptive layouts
-- **Z-Index**: Layer management for stacking context
-- **Transitions**: Duration and timing presets
-- **Avatar**: Component-specific tokens (sizes, colors, typography)
-
-### Usage
-
-```typescript
-import {
-  colors,
-  typography,
-  spacing,
-  borderRadius,
-  shadows,
-  breakpoints,
-  avatar,
-  theme,
-} from '@/styles/design-tokens'
-
-function MyComponent() {
-  return (
-    <div style={{
-      background: colors.background.default,
-      padding: spacing[6],
-      borderRadius: borderRadius.lg,
-      boxShadow: shadows.sm,
-      ...typography.body.md,
-    }}>
-      Content
-    </div>
-  )
-}
+```tsx
+import { SwitchableThemeProvider, useColors, useTheme } from 'mtr-design-system/styles/themes'
 ```
 
 ## Project Structure
 
 ```
-├── app/
-│   ├── layout.tsx           # Root layout with font imports
-│   ├── page.tsx             # Home page
-│   ├── globals.css          # Global styles
-│   ├── design-system/
-│   │   └── page.tsx         # Design system documentation
-│   └── components/
-│       └── avatar/
-│           └── page.tsx     # Avatar specification page
-├── components/
-│   ├── index.ts             # Component exports
-│   └── Avatar/
-│       ├── Avatar.tsx       # Avatar & AvatarGroup components
-│       └── index.ts         # Avatar exports
+├── app/                    # Next.js pages and component documentation
+│   ├── design-system/      # Token documentation
+│   └── components/         # Component spec pages
+├── components/             # React components
+│   ├── index.ts            # All component exports
+│   └── {Name}/             # One folder per component
+│       ├── {Name}.tsx      # Component implementation
+│       └── index.ts        # Component exports
 ├── styles/
-│   └── design-tokens.ts     # All design tokens
-├── package.json
-├── tsconfig.json
-└── next.config.js
+│   ├── design-tokens.ts    # All design tokens
+│   └── themes/             # Product themes + provider
+├── hooks/                  # Shared hooks (useMediaQuery, etc.)
+└── public/                 # Static assets
 ```
 
-## Font Stack
+## For Claude Code Users
 
-- **Display & Body**: DM Sans (Google Fonts)
-- **Code**: JetBrains Mono (Google Fonts)
+This repo includes a `CLAUDE.md` file that teaches Claude Code how to use the design system correctly — components, tokens, layout patterns, and accessibility requirements. Clone the repo and start building.
 
+## License
 
+Copyright (c) 2026 Metrc LLC. All rights reserved. See [LICENSE](./LICENSE).
