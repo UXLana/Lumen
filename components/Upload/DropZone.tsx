@@ -9,8 +9,8 @@ import {
   fontFamilies,
   fontWeights,
   transitionPresets,
-} from '@/styles/design-tokens'
-import { IconUpload, IconPaperclip, IconImport } from '@/components/Icons'
+} from '../../styles/design-tokens'
+import { IconUpload, IconPaperclip, IconImport } from '../Icons'
 
 // =============================================================================
 // TYPES & CONTRACTS

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { colors, typography, spacing, borderRadiusSemantics } from '@/styles/design-tokens'
+import { colors, typography, spacing, borderRadiusSemantics } from '../../styles/design-tokens'
 import type { EntityCardProps } from './types'
 
 export function EntityCardRenderer({ props }: { props: EntityCardProps }) {

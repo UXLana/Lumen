@@ -37,7 +37,7 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 - **Upload** — File upload with drag-and-drop, progress, file list
 
 ### Actions
-- **Button** / **ButtonGroup** — Primary, secondary, tertiary, destructive. Sizes: sm, md, lg
+- **Button** / **ButtonGroup** — emphasis: `"high"` (filled) | `"mid"` (teal) | `"low"` (text). Add `destructive` prop for danger actions. Sizes: `"md"` | `"lg"`
 - **Link** — Styled anchor with icon support
 - **SegmentedControl** — Toggle between 2-5 options
 
@@ -59,7 +59,7 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 - **Stepper** — Linear and non-linear step indicators
 
 ### Feedback
-- **Banner** — Info, success, warning, error banners with actions
+- **Banner** — variant: `"info"` | `"success"` | `"warning"` | `"error"`. Content goes as `children` (not `description`). Optional `title`, `dismissible`, `onDismiss`
 - **Toast** — Temporary notifications (use `useToast()` hook)
 - **ConfirmDialog** — Confirmation modal with cancel/confirm actions
 - **AssistiveMessage** — Inline helper/error text for form fields
@@ -82,26 +82,26 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 
 ## Design Token Reference
 
-### Spacing (use `spacing[n]`)
+### Spacing (use `spacing.{key}`)
 | Token | Value | Use for |
 |-------|-------|---------|
-| `spacing[1]` | 4px | Tight inner padding, icon gaps |
-| `spacing[2]` | 8px | Default inner padding, form field gaps |
-| `spacing[3]` | 12px | Compact section padding |
-| `spacing[4]` | 16px | Standard section padding, card padding |
-| `spacing[6]` | 24px | Section gaps, generous padding |
-| `spacing[8]` | 32px | Page section spacing |
-| `spacing[10]` | 40px | Large section spacing |
-| `spacing[12]` | 48px | Page-level spacing |
+| `spacing['2xs']` | 4px | Tight inner padding, icon gaps |
+| `spacing.xs` | 8px | Default inner padding, form field gaps |
+| `spacing.sm` | 12px | Compact section padding |
+| `spacing.md` | 16px | Standard section padding |
+| `spacing.xl` | 24px | Card padding, generous padding |
+| `spacing['2xl']` | 32px | Page section spacing |
+| `spacing['3xl']` | 40px | Large section spacing |
+| `spacing['4xl']` | 48px | Page-level spacing |
 
-### Typography (use `typography.{category}.{size}`)
-- **Display**: `typography.display.lg`, `md`, `sm` — Page heroes, marketing
-- **Heading**: `typography.heading.xl` through `xs` — Section headings
-- **Body**: `typography.body.lg`, `md`, `sm` — Content text
-- **Label**: `typography.label.lg`, `md`, `sm` — Form labels, UI labels
+### Typography (use `typography.{category}.{key}`)
+- **Display**: `typography.display['2xl']`, `xl`, `lg`, `md`, `sm`, `xs` — Page heroes
+- **Heading**: `typography.heading.h1` through `h6` — Section headings (h1=32px → h6=16px)
+- **Body**: `typography.body.xl`, `lg`, `md`, `sm`, `xs` — Content text
+- **Label**: `typography.label.lg`, `md`, `sm`, `xs` — Form labels, UI labels
 - **Code**: `typography.code.md`, `sm` — Code blocks, technical values
 
-Apply with spread: `style={{ ...typography.heading.md }}`
+Apply with spread: `style={{ ...typography.heading.h2 }}`
 
 ### Colors (use `colors.{category}.{variant}`)
 - `colors.brand.default` — Primary brand color
@@ -132,9 +132,9 @@ When building pages, follow these patterns:
 ```tsx
 <div style={{ display: 'flex', minHeight: '100vh' }}>
   <LeftNav items={navItems} />
-  <div style={{ flex: 1, padding: spacing[8] }}>
+  <div style={{ flex: 1, padding: spacing['2xl'] }}>
     <Header title="Page Title" />
-    <main style={{ marginTop: spacing[6] }}>
+    <main style={{ marginTop: spacing.xl }}>
       {/* Page content */}
     </main>
   </div>
@@ -143,12 +143,12 @@ When building pages, follow these patterns:
 
 ### Form Layout
 ```tsx
-<div style={{ display: 'flex', flexDirection: 'column', gap: spacing[4] }}>
+<div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
   <Input label="Name" required />
   <Select label="Category" options={options} />
-  <div style={{ display: 'flex', gap: spacing[3], justifyContent: 'flex-end' }}>
-    <Button emphasis="tertiary">Cancel</Button>
-    <Button emphasis="primary">Save</Button>
+  <div style={{ display: 'flex', gap: spacing.sm, justifyContent: 'flex-end' }}>
+    <Button emphasis="low">Cancel</Button>
+    <Button emphasis="high">Save</Button>
   </div>
 </div>
 ```

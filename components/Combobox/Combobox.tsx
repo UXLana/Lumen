@@ -12,7 +12,7 @@ import {
   fontWeights,
   shadows,
   transitionPresets,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 // Per SKILL.md Audit: "Prefer existing icon library over inline SVGs"
 import {
   IconChevronDown,
@@ -20,7 +20,7 @@ import {
   IconLoader,
   IconSearch,
   IconCheck,
-} from '@/components/Icons'
+} from '../Icons'
 import { useCombobox } from './useCombobox'
 import { getOptionId } from './helpers'
 import type { ComboboxStatus, UseComboboxReturn } from './useCombobox'
