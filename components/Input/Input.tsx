@@ -9,7 +9,7 @@ import {
   borderRadiusSemantics,
   fontFamilies,
   fontWeights,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS

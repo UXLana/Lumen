@@ -6,7 +6,7 @@ import {
   spacing,
   typography,
   borderRadiusSemantics,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 import type { ChatMessage, ChatAction } from './types'
 import { ComponentRenderer } from './ComponentRenderer'
 

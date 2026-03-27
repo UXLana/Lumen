@@ -6,7 +6,7 @@ import {
   spacing,
   typography,
   borderRadiusSemantics,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 export interface ChatSearchTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   accentColor?: string

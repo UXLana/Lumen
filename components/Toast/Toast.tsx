@@ -14,8 +14,8 @@ import {
   shadows,
   transitionPresets,
   zIndex,
-} from '@/styles/design-tokens'
-import { useColors } from '@/styles/themes'
+} from '../../styles/design-tokens'
+import { useColors } from '../../styles/themes'
 
 // =============================================================================
 // REDUCED MOTION HOOK

@@ -6,13 +6,13 @@ import {
   colors,
   fontFamilies,
   button,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 import {
   IconStatusComplete,
   IconStatusInProgress,
   IconStatusNotStarted,
   IconStatusDisabled,
-} from '@/components/Icons/Icons'
+} from '../Icons/Icons'
 
 // =============================================================================
 // TYPES & CONTRACTS

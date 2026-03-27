@@ -15,9 +15,9 @@ import {
   borderRadius,
   getSidebarColors,
   type SidebarColors,
-} from '@/styles/design-tokens'
-import { useColors } from '@/styles/themes/theme-provider'
-import { usePrefersReducedMotion, useIsMobile } from '@/hooks'
+} from '../../styles/design-tokens'
+import { useColors } from '../../styles/themes/theme-provider'
+import { usePrefersReducedMotion, useIsMobile } from '../../hooks'
 
 // =============================================================================
 // FOCUS STYLES (WCAG 2.4.7, 2.4.11 compliant)
@@ -47,7 +47,7 @@ import {
   IconSidebarOpen,
   IconSidebarClose,
   IconX,
-} from '@/components/Icons'
+} from '../Icons'
 
 // =============================================================================
 // TYPES

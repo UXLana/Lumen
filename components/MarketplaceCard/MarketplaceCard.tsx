@@ -10,10 +10,10 @@ import {
   fontWeights,
   shadows,
   transitionPresets,
-} from '@/styles/design-tokens'
-import { Badge } from '@/components/Badge'
-import { Avatar } from '@/components/Avatar'
-import { IconStar, IconCheck } from '@/components/Icons'
+} from '../../styles/design-tokens'
+import { Badge } from '../Badge'
+import { Avatar } from '../Avatar'
+import { IconStar, IconCheck } from '../Icons'
 
 // =============================================================================
 // TYPES & CONTRACTS

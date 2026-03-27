@@ -6,7 +6,7 @@ import {
   typography,
   borderRadius,
   transitionPresets,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS

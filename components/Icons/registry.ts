@@ -12,7 +12,7 @@
 
 import type { ComponentType } from 'react';
 import type { IconProps } from './Icons';
-import type { IconSetName } from '@/styles/themes/theme-interface';
+import type { IconSetName } from '../../styles/themes/theme-interface';
 
 export type { IconSetName };
 

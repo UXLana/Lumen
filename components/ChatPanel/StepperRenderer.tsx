@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { colors, typography, spacing } from '@/styles/design-tokens'
+import { colors, typography, spacing } from '../../styles/design-tokens'
 import type { StepperProps } from './types'
 
 export interface ChatStepperRendererProps {

@@ -8,8 +8,8 @@ import {
   borderRadius,
   transitionPresets,
   avatar,
-} from '@/styles/design-tokens'
-import { Avatar, type AvatarProps } from '@/components/Avatar/Avatar'
+} from '../../styles/design-tokens'
+import { Avatar, type AvatarProps } from '../Avatar/Avatar'
 
 // =============================================================================
 // TYPES & CONTRACTS

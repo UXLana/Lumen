@@ -1,7 +1,7 @@
 'use client'
 
 import React, { forwardRef } from 'react'
-import { colors, shadowSemantics, zIndex } from '@/styles/design-tokens'
+import { colors, shadowSemantics, zIndex } from '../../styles/design-tokens'
 
 const FAB_FOCUS_STYLE = `
   .chat-fab:focus-visible {
