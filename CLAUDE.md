@@ -11,6 +11,19 @@ components or hardcode design values — use what the system provides.
 3. **Accessibility is non-negotiable.** This is a government compliance platform — WCAG 2.2 AA minimum. Every interactive element needs keyboard support, focus indicators, and ARIA attributes.
 4. **Use the theme system.** Colors come from CSS variables set by the theme provider. Use `useColors()` hook for dynamic theming — never import raw hex values.
 
+## Active Skills
+- `/design-system-builder` - Main orchestrator
+- `/component-generator` - Create components
+- `/icon-generator` - Create SVG icons
+- `/figma-token-extractor` - Extract tokens from Figma files
+- `/design-accessibility` - Accessibility audits
+- `/confluence-to-prototype-spec` - Compile Confluence pages into structured prototype specs
+- `/prototype-builder` - Build prototypes from specs, Confluence, or verbal descriptions
+- `/ux-brief-generator` - Research-first UX brief compiler with gap analysis and completeness scoring
+- `/component-documenter` - Generate dual-format (human + LLM) component documentation with YAML frontmatter, prop tables, token maps, and accessibility specs
+- `/theme-generator` - Generate a complete product theme from a single brand color with intelligent color recommendations
+- `/package-validator` - Pre-publish validation: barrel exports, token resolution, theme completeness, CLAUDE.md accuracy, package.json sanity
+
 ## How to Import
 
 ```tsx
@@ -39,7 +52,7 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 ### Actions
 - **Button** / **ButtonGroup** — emphasis: `"high"` (filled) | `"mid"` (teal) | `"low"` (text). Add `destructive` prop for danger actions. Sizes: `"md"` | `"lg"`
 - **Link** — Styled anchor with icon support
-- **SegmentedControl** — Toggle between 2-5 options
+- **SegmentedControl** — Toggle between 2-5 options. Use `segments` prop (not `items`): `segments={[{ id, label }]}`. `onChange` receives the segment ID string as first arg.
 
 ### Data Display
 - **DataTable** — Full-featured table with sorting, filtering, pagination, row selection, card view toggle
