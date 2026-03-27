@@ -7,7 +7,7 @@ import {
   borderRadius,
   typography,
   fontFamilies,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 import { DropZone } from './DropZone'
 import { UploadFileList } from './UploadFile'
 import type { DropZoneIcon } from './DropZone'

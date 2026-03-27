@@ -1,7 +1,7 @@
 'use client'
 
 import React, { forwardRef, Children, isValidElement, cloneElement } from 'react'
-import { spacing } from '@/styles/design-tokens'
+import { spacing } from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS

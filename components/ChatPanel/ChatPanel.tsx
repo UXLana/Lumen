@@ -7,7 +7,7 @@ import {
   typography,
   fontWeights,
   borderRadiusSemantics,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 import type { ChatMessage, DotAnimation, ChatAction } from './types'
 import { DotGrid } from './DotGrid'
 import { MessageList } from './MessageList'

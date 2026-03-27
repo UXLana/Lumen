@@ -979,7 +979,7 @@ IconStatusDisabled.displayName = 'IconStatusDisabled'
 // BANNER ICONS (Contextual/Status Icons with Background)
 // =============================================================================
 
-import { bannerIcon } from '@/styles/design-tokens'
+import { bannerIcon } from '../../styles/design-tokens'
 import { IconInfoFilled } from './IconInfoFilled'
 import { IconSuccessFilled } from './IconSuccessFilled'
 import { IconWarningFilled } from './IconWarningFilled'

@@ -4,7 +4,7 @@ import React, { forwardRef } from 'react'
 import {
   colors,
   borderRadiusSemantics,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Width — number (px) or string (e.g., '100%') */

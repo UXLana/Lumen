@@ -4,7 +4,7 @@ import React, { forwardRef } from 'react'
 import {
   button,
   fontFamilies,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS

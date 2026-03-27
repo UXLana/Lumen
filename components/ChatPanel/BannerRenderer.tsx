@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { colors, typography, spacing, borderRadiusSemantics } from '@/styles/design-tokens'
+import { colors, typography, spacing, borderRadiusSemantics } from '../../styles/design-tokens'
 import type { BannerProps } from './types'
 
 const VARIANT_CONFIG: Record<string, { accent: string; bg: string; icon: string }> = {

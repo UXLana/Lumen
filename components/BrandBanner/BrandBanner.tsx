@@ -9,7 +9,7 @@ import {
   fontFamilies,
   fontWeights,
   shadows,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS
