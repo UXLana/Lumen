@@ -5,7 +5,7 @@ import {
   colors,
   fontFamilies,
   statsCard,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES

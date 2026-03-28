@@ -9,7 +9,7 @@ import {
   fontWeights,
   borderRadiusSemantics,
   transitionPresets,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 export interface TextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'style'> {
   label?: string

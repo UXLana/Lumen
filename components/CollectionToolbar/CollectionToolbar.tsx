@@ -1,9 +1,9 @@
 'use client'
 
 import React, { forwardRef } from 'react'
-import { TabBar, DataTable, Button } from '@/components'
-import type { TabItem } from '@/components'
-import { spacing } from '@/styles/design-tokens'
+import { TabBar, DataTable, Button } from '../../components'
+import type { TabItem } from '../../components'
+import { spacing } from '../../styles/design-tokens'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types

@@ -7,7 +7,7 @@ import {
   typography,
   fontFamilies,
   fontWeights,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Icon or illustration to display */

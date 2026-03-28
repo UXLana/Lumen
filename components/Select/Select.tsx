@@ -12,7 +12,7 @@ import {
   transitionPresets,
   zIndex,
   shadows,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 export interface SelectOption {
   value: string

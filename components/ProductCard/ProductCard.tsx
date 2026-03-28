@@ -10,9 +10,9 @@ import {
   fontWeights,
   shadows,
   transitionPresets,
-} from '@/styles/design-tokens'
-import { Badge } from '@/components/Badge/Badge'
-import { CloseIcon as DSCloseIcon } from '@/components/Banner/Banner'
+} from '../../styles/design-tokens'
+import { Badge } from '../Badge/Badge'
+import { CloseIcon as DSCloseIcon } from '../Banner/Banner'
 
 // =============================================================================
 // TYPES

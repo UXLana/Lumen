@@ -1604,7 +1604,7 @@ export const statsCard = {
     size: '48px',
     containerSize: '48px',
     borderRadius: borderRadius.lg,
-    background: '#F5F5F5',
+    background: colors.surface.lightDarker,
   },
 
   // Typography
@@ -1613,13 +1613,13 @@ export const statsCard = {
       fontSize: '14px',
       fontWeight: 400,
       lineHeight: '20px',
-      color: 'rgba(0, 0, 0, 0.60)',
+      color: colors.text.lowEmphasis.onLight,
     },
     value: {
       fontSize: '28px',
       fontWeight: 600,
       lineHeight: '36px',
-      color: 'rgba(0, 0, 0, 0.95)',
+      color: colors.text.highEmphasis.onLight,
     },
   },
 
@@ -1629,8 +1629,8 @@ export const statsCard = {
 
   // Colors
   colors: {
-    background: '#F5F5F5',
-    border: 'rgba(0, 0, 0, 0.08)',
+    background: colors.surface.lightDarker,
+    border: colors.border.lowEmphasis.onLight,
   },
 
   // Border

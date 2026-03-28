@@ -7,7 +7,7 @@ import {
   borderRadius,
   typography,
   fontFamilies,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 import type { DataTableDisplay } from './DataTable'
 
 // =============================================================================

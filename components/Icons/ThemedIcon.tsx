@@ -13,7 +13,7 @@
  * 3. Falls back to the 'outlined' set
  *
  * For backward compatibility, existing direct imports still work:
- *   import { IconSearch } from '@/components/Icons'
+ *   import { IconSearch } from '../Icons'
  *   <IconSearch size="md" />
  *
  * The above pattern uses the outlined icon with themed strokeWidth from

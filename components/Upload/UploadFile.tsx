@@ -9,9 +9,9 @@ import {
   fontFamilies,
   fontWeights,
   transitionPresets,
-} from '@/styles/design-tokens'
-import { IconX, IconRefresh, IconAlertCircle } from '@/components/Icons'
-import { ProgressBar } from '@/components/ProgressBar'
+} from '../../styles/design-tokens'
+import { IconX, IconRefresh, IconAlertCircle } from '../Icons'
+import { ProgressBar } from '../ProgressBar'
 import { UploadIcon } from './UploadIcon'
 import type { UploadIconType } from './UploadIcon'
 

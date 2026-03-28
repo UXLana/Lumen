@@ -1,7 +1,7 @@
 'use client'
 
 import React, { forwardRef } from 'react'
-import { fontFamilies } from '@/styles/design-tokens'
+import { fontFamilies } from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES

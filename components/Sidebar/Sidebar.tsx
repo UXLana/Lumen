@@ -7,8 +7,8 @@ import {
   sidebar,
   transitionPresets,
   getSidebarColors,
-} from '@/styles/design-tokens'
-import { useColors } from '@/styles/themes/theme-provider'
+} from '../../styles/design-tokens'
+import { useColors } from '../../styles/themes/theme-provider'
 
 // =============================================================================
 // TYPES
