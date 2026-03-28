@@ -114,7 +114,11 @@ export type { HeaderProps, CanopyLogoProps } from './Header'
 
 // ImageCarousel
 export { ImageCarousel } from './ImageCarousel'
-export type { ImageCarouselProps } from './ImageCarousel'
+export type { ImageCarouselProps, NavigationStyle } from './ImageCarousel'
+
+// Pagination
+export { Pagination } from './Pagination'
+export type { PaginationProps } from './Pagination'
 
 // Toast
 export { Toast, useToast } from './Toast'
@@ -227,7 +231,3 @@ export type {
   CollectionToolbarTab,
   CollectionToolbarAction,
 } from './CollectionToolbar'
-
-// Pagination
-export { Pagination } from './Pagination'
-export type { PaginationProps } from './Pagination'
