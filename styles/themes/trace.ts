@@ -4,7 +4,7 @@
  * https://www.figma.com/design/gc68toINDS8Ovsan5aVPS2/Trace-Design-System-v2.0--wip-
  *
  * Extracted from node 2086-41222 (Color & styles) on 2026-02-10
- * Values match Figma mtr_sys_color_* variables exactly.
+ * Values match Figma prism_sys_color_* variables exactly.
  */
 
 import type { ProductTheme } from './theme-interface';
@@ -179,6 +179,7 @@ export const traceTheme: ProductTheme = {
       success: '#19856B',
       successLight: '#D9EDE6',
       warning: '#AD6200',
+      warningLight: '#FCF6ED',
       important: '#E80D24',
       importantLight: '#FFE3E7',
       aqua: '#167F92',

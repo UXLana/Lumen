@@ -2,8 +2,8 @@
 
 import React, { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { PrototypeToolbar, ViewState } from '@/app/prototypes/PrototypeToolbar'
-import type { UseCase } from '@/app/prototypes/PrototypeToolbar'
+import { PrototypeToolbar, ViewState } from '@/components'
+import type { UseCase } from '@/components'
 import {
   colors,
   spacing,

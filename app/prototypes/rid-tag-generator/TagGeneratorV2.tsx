@@ -23,7 +23,7 @@ import { Select } from '@/components/Select'
 import { ProgressBar } from '@/components/ProgressBar'
 import { LinearStepper } from '@/components/Stepper'
 import type { StepItem } from '@/components/Stepper'
-import { type ViewState, type UseCase } from '@/app/prototypes/PrototypeToolbar'
+import { type ViewState, type UseCase } from '@/components'
 import {
   templates,
   sampleOrders,

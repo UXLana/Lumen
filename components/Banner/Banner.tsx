@@ -159,7 +159,7 @@ const getVariantStyle = (variant: BannerVariant, surface: BannerSurface): Varian
   }
 }
 
-// Dark mode variant colors — hardcoded rgba pending dark mode token support
+// Dark mode variant styles
 const variantStylesOnDark: Record<BannerVariant, VariantStyle> = {
   info: {
     surface: 'rgba(122, 145, 255, 0.15)',

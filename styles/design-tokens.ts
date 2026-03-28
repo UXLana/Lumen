@@ -1,17 +1,17 @@
 /**
- * MTR Design System - Design Tokens
+ * Prism Design System - Design Tokens
  * Source: Trace Design System v2.0 (Figma)
  * https://www.figma.com/design/gc68toINDS8Ovsan5aVPS2/Trace-Design-System-v2.0--wip-
  *
- * Color taxonomy: mtr_sys_color_* (matches Figma variable naming exactly)
+ * Color taxonomy: prism_sys_color_* (matches Figma variable naming exactly)
  * Typography: DM Sans
  *
  * Last updated: 2026-02-10
  *
  * THEMING:
- * - Colors use CSS custom properties (--mtr-*) so they respond to theme changes
+ * - Colors use CSS custom properties (--prism-*) so they respond to theme changes
  *   automatically — no component code changes needed.
- * - The SwitchableThemeProvider sets --mtr-* vars on :root at runtime.
+ * - The SwitchableThemeProvider sets --prism-* vars on :root at runtime.
  * - Default (Trace) values live in globals.css for flash-free first paint.
  * - Typography, spacing, radius, shadows, breakpoints are shared across all themes.
  *
@@ -91,13 +91,49 @@ export const colors = {
   },
 };
 
-export const dataVizColors = _themed.dataViz;
+// =============================================================================
+// DATA VISUALIZATION TOKENS — CSS-variable-backed, auto-themed
+// =============================================================================
+
+const _themedDataViz = tokensToVarRefs(
+  traceTheme.colors.dataViz as unknown as Record<string, any>,
+  '--prism-dataviz',
+) as unknown as Record<string, string>;
+
+/**
+ * Data visualization color palette — 15 sequential series colors + border.
+ * Theme-responsive via CSS variables. Use for charts, graphs, and data displays.
+ *
+ * Usage:
+ *   dataVizColors.border   — axis lines, tick marks
+ *   dataVizColors['01']    — primary series (darkest)
+ *   dataVizColors['02']    — secondary series
+ *   ...through ['15']      — 15th series (lightest/warmest)
+ */
+export const dataVizColors = _themedDataViz as {
+  border: string;
+  '01': string;
+  '02': string;
+  '03': string;
+  '04': string;
+  '05': string;
+  '06': string;
+  '07': string;
+  '08': string;
+  '09': string;
+  '10': string;
+  '11': string;
+  '12': string;
+  '13': string;
+  '14': string;
+  '15': string;
+};
 
 // =============================================================================
 // TYPOGRAPHY TOKENS — CSS-variable-backed, auto-themed via SwitchableThemeProvider
 // =============================================================================
 
-const _themedTypo = tokensToVarRefs(traceTheme.typography as unknown as Record<string, any>, '--mtr-typo') as unknown as ThemeTypography;
+const _themedTypo = tokensToVarRefs(traceTheme.typography as unknown as Record<string, any>, '--prism-typo') as unknown as ThemeTypography;
 
 export const fontFamilies = {
   display: _themedTypo.fontFamilies.display,
@@ -315,7 +351,7 @@ export const spacing = {
 } as const;
 
 // Component-specific themed spacing — CSS-variable-backed
-const _themedSpacing = tokensToVarRefs(traceTheme.spacing as unknown as Record<string, any>, '--mtr-space') as unknown as ThemeSpacing;
+const _themedSpacing = tokensToVarRefs(traceTheme.spacing as unknown as Record<string, any>, '--prism-space') as unknown as ThemeSpacing;
 
 export const spacingTokens = {
   inputPadding: _themedSpacing.inputPadding,
@@ -336,7 +372,7 @@ export const spacingSemantics = spacingTokens;
 // BORDER RADIUS TOKENS — CSS-variable-backed, auto-themed
 // =============================================================================
 
-const _themedRadius = tokensToVarRefs(traceTheme.borderRadius as unknown as Record<string, any>, '--mtr-radius') as unknown as ThemeBorderRadius;
+const _themedRadius = tokensToVarRefs(traceTheme.borderRadius as unknown as Record<string, any>, '--prism-radius') as unknown as ThemeBorderRadius;
 
 export const borderRadius = {
   none: _themedRadius.none,
@@ -354,13 +390,13 @@ export const borderRadius = {
 // These cascade from the theme's base via buildComponentRadius(), with per-theme
 // overrides. Changing the base updates every component radius automatically.
 export const borderRadiusSemantics = {
-  button: 'var(--mtr-comp-radius-button)',
-  input:  'var(--mtr-comp-radius-input)',
-  card:   'var(--mtr-comp-radius-card)',
-  modal:  'var(--mtr-comp-radius-modal)',
-  badge:  'var(--mtr-comp-radius-badge)',
-  chip:   'var(--mtr-comp-radius-chip)',
-  avatar: 'var(--mtr-comp-radius-avatar)',
+  button: 'var(--prism-comp-radius-button)',
+  input:  'var(--prism-comp-radius-input)',
+  card:   'var(--prism-comp-radius-card)',
+  modal:  'var(--prism-comp-radius-modal)',
+  badge:  'var(--prism-comp-radius-badge)',
+  chip:   'var(--prism-comp-radius-chip)',
+  avatar: 'var(--prism-comp-radius-avatar)',
 } as const;
 
 // =============================================================================
@@ -374,7 +410,7 @@ export const borderRadiusSemantics = {
 // SHADOW TOKENS — CSS-variable-backed, auto-themed
 // =============================================================================
 
-const _themedElevation = tokensToVarRefs(traceTheme.elevation as unknown as Record<string, any>, '--mtr-elevation') as unknown as ThemeElevation;
+const _themedElevation = tokensToVarRefs(traceTheme.elevation as unknown as Record<string, any>, '--prism-elevation') as unknown as ThemeElevation;
 
 export const shadows = {
   none: _themedElevation.none,
@@ -492,56 +528,56 @@ export const transitionPresets = {
 } as const;
 
 // =============================================================================
-// COMPONENT TOKENS (MTR System Tokens)
+// COMPONENT TOKENS (Prism System Tokens)
 // =============================================================================
 
-export const mtrComponents = {
+export const prismComponents = {
   // Typography component tokens
   text: {
     display: {
-      xl: 'mtr_sys_text_display_xl',
-      lg: 'mtr_sys_text_display_lg',
-      md: 'mtr_sys_text_display_md',
-      sm: 'mtr_sys_text_display_sm',
-      xs: 'mtr_sys_text_display_xs',
-      xlOnDark: 'mtr_sys_text_display_xl_onDark',
-      lgOnDark: 'mtr_sys_text_display_lg_onDark',
-      mdOnDark: 'mtr_sys_text_display_md_onDark',
-      smOnDark: 'mtr_sys_text_display_sm_onDark',
-      xsOnDark: 'mtr_sys_text_display_xs_onDark',
+      xl: 'prism_sys_text_display_xl',
+      lg: 'prism_sys_text_display_lg',
+      md: 'prism_sys_text_display_md',
+      sm: 'prism_sys_text_display_sm',
+      xs: 'prism_sys_text_display_xs',
+      xlOnDark: 'prism_sys_text_display_xl_onDark',
+      lgOnDark: 'prism_sys_text_display_lg_onDark',
+      mdOnDark: 'prism_sys_text_display_md_onDark',
+      smOnDark: 'prism_sys_text_display_sm_onDark',
+      xsOnDark: 'prism_sys_text_display_xs_onDark',
     },
     heading: {
-      h1: 'mtr_sys_text_heading_h1',
-      h2: 'mtr_sys_text_heading_h2',
-      h3: 'mtr_sys_text_heading_h3',
-      h4: 'mtr_sys_text_heading_h4',
-      h5: 'mtr_sys_text_heading_h5',
-      h6: 'mtr_sys_text_heading_h6',
+      h1: 'prism_sys_text_heading_h1',
+      h2: 'prism_sys_text_heading_h2',
+      h3: 'prism_sys_text_heading_h3',
+      h4: 'prism_sys_text_heading_h4',
+      h5: 'prism_sys_text_heading_h5',
+      h6: 'prism_sys_text_heading_h6',
     },
     body: {
-      xl: 'mtr_sys_text_body_xl',
-      lg: 'mtr_sys_text_body_lg',
-      md: 'mtr_sys_text_body_md',
-      sm: 'mtr_sys_text_body_sm',
-      xs: 'mtr_sys_text_body_xs',
+      xl: 'prism_sys_text_body_xl',
+      lg: 'prism_sys_text_body_lg',
+      md: 'prism_sys_text_body_md',
+      sm: 'prism_sys_text_body_sm',
+      xs: 'prism_sys_text_body_xs',
     },
     label: {
-      lg: 'mtr_sys_text_label_lg',
-      md: 'mtr_sys_text_label_md',
-      sm: 'mtr_sys_text_label_sm',
+      lg: 'prism_sys_text_label_lg',
+      md: 'prism_sys_text_label_md',
+      sm: 'prism_sys_text_label_sm',
     },
   },
   
   // Color component tokens
   color: {
-    brand: 'mtr_sys_color_brand',
-    brandLight: 'mtr_sys_color_brand_light',
-    brandDark: 'mtr_sys_color_brand_dark',
-    surface: 'mtr_sys_color_surface',
-    surfaceElevated: 'mtr_sys_color_surface_elevated',
-    textPrimary: 'mtr_sys_color_text_primary',
-    textSecondary: 'mtr_sys_color_text_secondary',
-    textDisabled: 'mtr_sys_color_text_disabled',
+    brand: 'prism_sys_color_brand',
+    brandLight: 'prism_sys_color_brand_light',
+    brandDark: 'prism_sys_color_brand_dark',
+    surface: 'prism_sys_color_surface',
+    surfaceElevated: 'prism_sys_color_surface_elevated',
+    textPrimary: 'prism_sys_color_text_primary',
+    textSecondary: 'prism_sys_color_text_secondary',
+    textDisabled: 'prism_sys_color_text_disabled',
   },
 } as const;
 
@@ -885,7 +921,7 @@ export const button = {
   },
 
   // Border radius — per-theme via componentRadius.button CSS var
-  borderRadius: 'var(--mtr-comp-radius-button)',
+  borderRadius: 'var(--prism-comp-radius-button)',
 
   // Transition
   transition: '200ms ease-out',
@@ -1124,12 +1160,6 @@ export const bannerIcon = {
 export const banner = {
   // Banner sizes (from Figma)
   sizes: {
-    sm: {
-      paddingX: '12px',
-      paddingY: '8px',
-      gap: '8px',
-      iconSize: '16px',
-    },
     md: {
       paddingX: '16px',
       paddingY: '12px',
@@ -1146,20 +1176,6 @@ export const banner = {
 
   // Typography per size (from Figma - DM Sans)
   typography: {
-    sm: {
-      title: {
-        fontSize: '12px',
-        fontWeight: 500,
-        lineHeight: '16px',
-        letterSpacing: '0.1px',
-      },
-      description: {
-        fontSize: '14px',
-        fontWeight: 400,
-        lineHeight: '20px',
-        letterSpacing: '0.1px',
-      },
-    },
     md: {
       title: {
         fontSize: '14px',
@@ -1361,36 +1377,36 @@ export const sidebar = {
 
   // Logo section
   logo: {
-    height: '48px',
+    height: 'auto',
     gap: '12px',
   },
 
   // Navigation item (from Figma)
   navItem: {
-    height: '48px',
-    paddingX: '24px',
-    paddingY: '12px',
-    gap: '12px',
-    borderRadius: '14.4px',
-    iconSize: '24px',
+    height: '36px',
+    paddingX: '16px',
+    paddingY: '6px',
+    gap: '10px',
+    borderRadius: borderRadius.sm,
+    iconSize: '20px',
     typography: {
-      fontSize: '16px',
+      fontSize: '14px',
       fontWeight: 400,
-      lineHeight: '24px',
-      letterSpacing: '-0.5px',
+      lineHeight: '20px',
+      letterSpacing: '-0.2px',
     },
     typographyActive: {
-      fontSize: '16px',
+      fontSize: '14px',
       fontWeight: 600,
-      lineHeight: '24px',
-      letterSpacing: '-0.9px',
+      lineHeight: '20px',
+      letterSpacing: '-0.4px',
     },
   },
 
   // Section
   section: {
-    marginTop: '24px',
-    labelMarginBottom: '8px',
+    marginTop: '16px',
+    labelMarginBottom: '6px',
     labelTypography: {
       fontSize: '12px',
       fontWeight: 600,
@@ -1435,7 +1451,7 @@ export const sidebar = {
   // Collapsed state icon button (from Figma)
   collapsedIconButton: {
     size: '48px',
-    borderRadius: '14.4px',
+    borderRadius: borderRadius.sm,
   },
 
   // Transition
@@ -1604,7 +1620,7 @@ export const statsCard = {
     size: '48px',
     containerSize: '48px',
     borderRadius: borderRadius.lg,
-    background: colors.surface.lightDarker,
+    background: '#F5F5F5',
   },
 
   // Typography
@@ -1613,13 +1629,13 @@ export const statsCard = {
       fontSize: '14px',
       fontWeight: 400,
       lineHeight: '20px',
-      color: colors.text.lowEmphasis.onLight,
+      color: 'rgba(0, 0, 0, 0.60)',
     },
     value: {
       fontSize: '28px',
       fontWeight: 600,
       lineHeight: '36px',
-      color: colors.text.highEmphasis.onLight,
+      color: 'rgba(0, 0, 0, 0.95)',
     },
   },
 
@@ -1629,8 +1645,8 @@ export const statsCard = {
 
   // Colors
   colors: {
-    background: colors.surface.lightDarker,
-    border: colors.border.lowEmphasis.onLight,
+    background: '#F5F5F5',
+    border: 'rgba(0, 0, 0, 0.08)',
   },
 
   // Border
@@ -2007,7 +2023,7 @@ export const theme = {
   zIndex,
   transitions,
   transitionPresets,
-  mtrComponents,
+  prismComponents,
   avatar,
   button,
   tab,

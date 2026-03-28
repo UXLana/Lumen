@@ -70,22 +70,16 @@ function darkenHex(hex: string, amount: number): string {
 }
 
 /**
- * Determine readable text color (white or dark) for a given background.
- * Returns both the token color and whether the background is light,
- * so callers can branch on the boolean instead of comparing color strings.
+ * Determine readable text color (white or dark) for a given background
  */
-function contrastTextColor(hex: string): { color: string; isLightBg: boolean } {
+function contrastTextColor(hex: string): string {
   const cleaned = hex.replace('#', '')
   const r = parseInt(cleaned.substring(0, 2), 16)
   const g = parseInt(cleaned.substring(2, 4), 16)
   const b = parseInt(cleaned.substring(4, 6), 16)
   // Relative luminance (WCAG formula simplified)
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-  const isLightBg = luminance > 0.5
-  return {
-    color: isLightBg ? colors.text.highEmphasis.onLight : colors.text.highEmphasis.onDark,
-    isLightBg,
-  }
+  return luminance > 0.5 ? '#1A1A1A' : '#FFFFFF'
 }
 
 // =============================================================================
@@ -149,12 +143,12 @@ export const BrandBanner = forwardRef<HTMLDivElement, BrandBannerProps>(
         : resolvedBrand
 
     // Text color — auto-contrast when a hex brandColor is provided
-    const { color: textColor, isLightBg } =
+    const textColor =
       brandColor && brandColor.startsWith('#')
         ? contrastTextColor(brandColor)
-        : { color: colors.text.highEmphasis.onDark, isLightBg: false }
+        : '#FFFFFF'
 
-    const subtitleOpacity = isLightBg ? 0.7 : 0.8
+    const subtitleOpacity = textColor === '#FFFFFF' ? 0.8 : 0.7
 
     return (
       <div

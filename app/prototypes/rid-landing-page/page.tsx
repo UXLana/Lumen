@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { PrototypeToolbar, ViewState, UseCase, Version } from '@/app/prototypes/PrototypeToolbar'
 import {
   colors,
   spacing,
@@ -11,7 +10,7 @@ import {
   borderRadiusSemantics,
   shadowSemantics,
 } from '@/styles/design-tokens'
-import { Accordion, AccordionItem, TabBar, Badge, Banner, DetailField, Divider, Skeleton, EmptyState, Button, Link, IconCheckCircle, IconStar, IconHeart, IconBadge, ComplianceBanner } from '@/components'
+import { Accordion, AccordionItem, TabBar, Badge, Banner, DetailField, Divider, Skeleton, EmptyState, Button, Link, IconCheckCircle, IconStar, IconHeart, IconBadge, ComplianceBanner, PrototypeToolbar, ViewState, UseCase, Version } from '@/components'
 import type { TabItem } from '@/components'
 import type { IconProps } from '@/components'
 import { sampleProduct, sampleBrand, massachusettsConfig } from './data'

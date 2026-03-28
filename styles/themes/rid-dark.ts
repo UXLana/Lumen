@@ -190,6 +190,7 @@ export const ridDarkTheme: ProductTheme = {
       success: '#5AAC90',
       successLight: 'rgba(90, 172, 144, 0.18)',
       warning: '#E89D3E',
+      warningLight: 'rgba(232, 157, 62, 0.18)',
       important: '#F06E7A',
       importantLight: 'rgba(240, 110, 122, 0.18)',
       aqua: '#3BB8CC',

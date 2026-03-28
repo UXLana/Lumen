@@ -8,13 +8,14 @@ import { earthTheme } from './earth';
 import { ridTheme } from './rid';
 import { ridDarkTheme } from './rid-dark';
 import { claudeLightTheme } from './claude-light';
+import { edenTheme } from './eden';
 import { applyAllThemeVars } from './css-vars';
 
 // ---------------------------------------------------------------------------
 // Theme registry
 // ---------------------------------------------------------------------------
 
-const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme, ridTheme, ridDarkTheme, claudeLightTheme];
+const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme, ridTheme, ridDarkTheme, claudeLightTheme, edenTheme];
 const themeMap: Record<string, ProductTheme> = Object.fromEntries(
   availableThemes.map((t) => [t.name, t]),
 );
@@ -61,11 +62,10 @@ export function ThemeProvider({ theme = traceTheme, children }: ThemeProviderPro
 
 interface SwitchableThemeProviderProps {
   children: ReactNode;
-  defaultTheme?: string;
 }
 
-export function SwitchableThemeProvider({ children, defaultTheme = 'trace' }: SwitchableThemeProviderProps) {
-  const [themeName, setThemeNameRaw] = useState(defaultTheme);
+export function SwitchableThemeProvider({ children }: SwitchableThemeProviderProps) {
+  const [themeName, setThemeNameRaw] = useState('trace');
   const [hydrated, setHydrated] = useState(false);
 
   // Restore from localStorage on mount

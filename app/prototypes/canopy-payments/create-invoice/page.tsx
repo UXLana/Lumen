@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { PrototypeToolbar, ViewState } from '@/app/prototypes/PrototypeToolbar'
-import type { UseCase } from '@/app/prototypes/PrototypeToolbar'
+import { PrototypeToolbar, ViewState } from '@/components'
+import type { UseCase } from '@/components'
 import {
   colors,
   spacing,

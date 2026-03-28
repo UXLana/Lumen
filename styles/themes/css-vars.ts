@@ -2,11 +2,11 @@
  * CSS Custom Property utilities for the theme system.
  *
  * flattenTokens     – turns a nested string record into a flat
- *                     Record<'--mtr-brand-default', '#005151'> map
+ *                     Record<'--prism-brand-default', '#005151'> map
  *                     (used by the provider to set vars on :root).
  *
  * tokensToVarRefs   – mirrors the record shape but every leaf value
- *                     is `var(--mtr-brand-default)` etc.
+ *                     is `var(--prism-brand-default)` etc.
  *                     (used by design-tokens.ts so components get
  *                     live CSS variable references).
  *
@@ -25,7 +25,7 @@ type NestedRecord = { [key: string]: string | NestedRecord };
 
 export function flattenTokens(
   obj: NestedRecord,
-  prefix = '--mtr',
+  prefix = '--prism',
 ): Record<string, string> {
   const result: Record<string, string> = {};
 
@@ -44,7 +44,7 @@ export function flattenTokens(
 
 export function tokensToVarRefs(
   obj: NestedRecord,
-  prefix = '--mtr',
+  prefix = '--prism',
 ): NestedRecord {
   const result: NestedRecord = {};
 
@@ -78,7 +78,7 @@ export const themeColorsToVarRefs = tokensToVarRefs;
 export function applyThemeVars(
   tokens: NestedRecord,
   target: HTMLElement,
-  prefix = '--mtr',
+  prefix = '--prism',
 ): void {
   const vars = flattenTokens(tokens, prefix);
   for (const [name, value] of Object.entries(vars)) {
@@ -89,36 +89,39 @@ export function applyThemeVars(
 /**
  * Apply ALL theme token categories to a target element.
  * Each category gets its own CSS custom property prefix:
- *   colors     → --mtr-*
- *   typography  → --mtr-typo-*
- *   borderRadius → --mtr-radius-*
- *   elevation   → --mtr-elevation-*
- *   spacing     → --mtr-space-*
- *   iconStyle   → --mtr-icon-style-*
+ *   colors     → --prism-*
+ *   typography  → --prism-typo-*
+ *   borderRadius → --prism-radius-*
+ *   elevation   → --prism-elevation-*
+ *   spacing     → --prism-space-*
+ *   iconStyle   → --prism-icon-style-*
  */
 export function applyAllThemeVars(
   theme: ProductTheme,
   target: HTMLElement,
 ): void {
   // Colors (existing prefix)
-  applyThemeVars(theme.colors as unknown as NestedRecord, target, '--mtr');
+  applyThemeVars(theme.colors as unknown as NestedRecord, target, '--prism');
 
   // Typography
-  applyThemeVars(theme.typography as unknown as NestedRecord, target, '--mtr-typo');
+  applyThemeVars(theme.typography as unknown as NestedRecord, target, '--prism-typo');
 
   // Border Radius
-  applyThemeVars(theme.borderRadius as unknown as NestedRecord, target, '--mtr-radius');
+  applyThemeVars(theme.borderRadius as unknown as NestedRecord, target, '--prism-radius');
 
   // Elevation (Shadows)
-  applyThemeVars(theme.elevation as unknown as NestedRecord, target, '--mtr-elevation');
+  applyThemeVars(theme.elevation as unknown as NestedRecord, target, '--prism-elevation');
 
   // Spacing
-  applyThemeVars(theme.spacing as unknown as NestedRecord, target, '--mtr-space');
+  applyThemeVars(theme.spacing as unknown as NestedRecord, target, '--prism-space');
 
   // Icon Style (skip `overrides` — it's an object with non-string-leaf values for runtime use)
   const { overrides: _overrides, ...iconStyleVars } = theme.iconStyle;
-  applyThemeVars(iconStyleVars as unknown as NestedRecord, target, '--mtr-icon-style');
+  applyThemeVars(iconStyleVars as unknown as NestedRecord, target, '--prism-icon-style');
 
   // Component Radius (per-theme semantic radius overrides)
-  applyThemeVars(theme.componentRadius as unknown as NestedRecord, target, '--mtr-comp-radius');
+  applyThemeVars(theme.componentRadius as unknown as NestedRecord, target, '--prism-comp-radius');
+
+  // Data Visualization palette
+  applyThemeVars(theme.colors.dataViz as unknown as NestedRecord, target, '--prism-dataviz');
 }

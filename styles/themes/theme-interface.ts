@@ -1,11 +1,11 @@
 /**
- * MTR Design System - Theme Interface
+ * Prism Design System - Theme Interface
  *
  * Every product theme must implement this interface.
- * Color structure matches Figma mtr_sys_color_* taxonomy exactly.
+ * Color structure matches Figma prism_sys_color_* taxonomy exactly.
  *
  * Non-color tokens (typography, radius, elevation, spacing, iconStyle)
- * follow the same CSS custom property pattern — each produces --mtr-<category>-*
+ * follow the same CSS custom property pattern — each produces --prism-<category>-*
  * vars at runtime so themes look visually distinct beyond just color.
  *
  * To create a new theme:
@@ -181,6 +181,7 @@ export interface ThemeColors {
     success: string;
     successLight: string;
     warning: string;
+    warningLight: string;
     important: string;
     importantLight: string;
     aqua: string;
@@ -431,6 +432,63 @@ export function buildComponentRadius(
     modal:  `${base * 8}px`,
     chip:   '9999px',
     avatar: '9999px',
+    ...overrides,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Elevation (Shadows) Builder
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse a hex color into its r, g, b components.
+ */
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  let cleaned = hex.replace('#', '');
+  if (cleaned.length === 3) {
+    cleaned = cleaned.split('').map((c) => c + c).join('');
+  }
+  const num = parseInt(cleaned, 16);
+  return {
+    r: (num >> 16) & 0xff,
+    g: (num >> 8) & 0xff,
+    b: num & 0xff,
+  };
+}
+
+/**
+ * Build a complete elevation scale from a single brand hex color.
+ *
+ * All shadow tints cascade from the brand color — changing the color updates
+ * every shadow token consistently. The alpha/offset values mirror the
+ * hand-authored theme shadows already in use.
+ *
+ * @param brandHex - Primary brand color as hex, e.g. '#005151'
+ * @param overrides - Optional per-token overrides
+ *
+ * @example
+ * ```ts
+ * elevation: buildElevation('#005151'),
+ * ```
+ */
+export function buildElevation(
+  brandHex: string,
+  overrides?: Partial<ThemeElevation>,
+): ThemeElevation {
+  const { r, g, b } = hexToRgb(brandHex);
+  const rgba = (a: number) => `rgba(${r}, ${g}, ${b}, ${a})`;
+
+  return {
+    none: 'none',
+    xs:   `0px 1px 2px ${rgba(0.06)}`,
+    sm:   `0px 1px 3px ${rgba(0.10)}, 0px 1px 2px ${rgba(0.07)}`,
+    md:   `0px 4px 6px -1px ${rgba(0.10)}, 0px 2px 4px -1px ${rgba(0.07)}`,
+    lg:   `0px 10px 15px -3px ${rgba(0.10)}, 0px 4px 6px -2px ${rgba(0.06)}`,
+    xl:   `0px 20px 25px -5px ${rgba(0.12)}, 0px 10px 10px -5px ${rgba(0.06)}`,
+    '2xl': `0px 25px 50px -12px ${rgba(0.28)}`,
+    inner: `inset 0px 2px 4px ${rgba(0.08)}`,
+    brand: `0px 4px 14px ${rgba(0.25)}`,
+    brandLg: `0px 10px 25px ${rgba(0.30)}`,
     ...overrides,
   };
 }

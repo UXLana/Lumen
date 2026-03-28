@@ -185,6 +185,7 @@ export const claudeLightTheme: ProductTheme = {
       success: '#19856B',
       successLight: '#D3EDE3',
       warning: '#AD6200',
+      warningLight: '#FDF6ED',
       important: '#D4102A',
       importantLight: '#FFE3E5',
       aqua: '#167F92',

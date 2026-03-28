@@ -65,7 +65,7 @@ const nunitoSans = Nunito_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'MTR Design System',
+  title: 'Prism Design System',
   description: 'Design system style guide and documentation',
 }
 
