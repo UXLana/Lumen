@@ -37,34 +37,6 @@ export type { BrandBannerProps, BrandBannerBackground } from './BrandBanner'
 export { Button, ButtonGroup, DropdownIcon } from './Button'
 export type { ButtonProps, ButtonGroupProps, ButtonSize, ButtonEmphasis, ButtonState } from './Button'
 
-// ChatPanel
-export {
-  ChatPanel,
-  ChatFab,
-  ChatSearchTrigger,
-  DotGrid,
-  ComponentRenderer,
-  MessageList,
-  DataTableRenderer,
-  EntityCardRenderer,
-  StatCardsRenderer,
-  BannerRenderer,
-  StepperRenderer,
-} from './ChatPanel'
-export type {
-  ChatPanelProps,
-  ChatFabProps,
-  ChatSearchTriggerProps,
-  DotGridProps,
-  ComponentRendererProps,
-  MessageListProps,
-  ChatMessage,
-  ChatAction,
-  AssistantPayload,
-  UIComponent,
-  DotAnimation,
-} from './ChatPanel'
-
 // Checkbox
 export { Checkbox, CheckboxGroup } from './Checkbox'
 export type { CheckboxProps, CheckboxGroupProps, CheckboxState } from './Checkbox'
