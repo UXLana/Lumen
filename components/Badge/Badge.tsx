@@ -203,7 +203,7 @@ const sizeConfig: Record<BadgeSize, {
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
   (
     {
-      variant = 'filled',
+      variant = 'subtle',
       color = 'neutral',
       size = 'sm',
       icon,
