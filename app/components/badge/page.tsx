@@ -386,7 +386,7 @@ import { Badge } from '@/components'`}</CodeBlock>
   Label
 </Badge>`}
                     previewPadding="56px 24px"
-                    previewBackground={colors.surface.paper}
+                    previewBackground={colors.surface.lightDarker}
                     sourceCode={componentSource || undefined}
                     componentPath={BADGE_COMPONENT_PATH}
                     onSourceSaved={() => setSourceVersion(v => v + 1)}

@@ -114,6 +114,7 @@ export type { HeaderProps, CanopyLogoProps } from './Header'
 
 // ImageCarousel
 export { ImageCarousel } from './ImageCarousel'
+export type { ImageCarouselProps, NavigationStyle } from './ImageCarousel'
 
 // Toast
 export { Toast, useToast } from './Toast'
@@ -218,6 +219,10 @@ export type {
   UIComponent,
   DotAnimation,
 } from './ChatPanel'
+
+// Pagination
+export { Pagination } from './Pagination'
+export type { PaginationProps } from './Pagination'
 
 // CollectionToolbar
 export { CollectionToolbar } from './CollectionToolbar'

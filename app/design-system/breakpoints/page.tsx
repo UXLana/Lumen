@@ -101,7 +101,7 @@ export default function BreakpointsPage() {
               <div key={name} style={{
                 width: '80px',
                 height: `${30 + (index * 20)}px`,
-                background: colors.brand.primary,
+                background: colors.brand.default,
                 borderRadius: borderRadius.sm,
                 display: 'flex',
                 alignItems: 'center',
@@ -156,7 +156,7 @@ export default function BreakpointsPage() {
                   style={{
                     width: '60px',
                     height: '60px',
-                    background: colors.brand.primary,
+                    background: colors.brand.default,
                     borderRadius: borderRadius.md,
                     margin: '0 auto 8px',
                     transition: `transform ${value} ease`,

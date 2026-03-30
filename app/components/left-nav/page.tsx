@@ -201,7 +201,7 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
                           <div style={{
                             width: demoCollapsed ? '73px' : '278px',
                             height: '400px',
-                            border: `1px solid ${colors.stroke.light}`,
+                            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                             borderRadius: borderRadius.lg,
                             overflow: 'hidden',
                             transition: 'width 0.3s ease',

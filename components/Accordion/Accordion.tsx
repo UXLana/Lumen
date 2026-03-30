@@ -145,14 +145,14 @@ const styles = {
 
   // Filled variant: gray background panels on white surface
   itemFilled: {
-    background: colors.surface.paper,
+    background: colors.surface.lightDarker,
     borderRadius: borderRadius.md,
     marginBottom: spacing.xs,
   },
 
   // Inverted variant: white background panels on gray surface
   itemInverted: {
-    background: colors.surface.default,
+    background: colors.surface.light,
     borderRadius: borderRadius.md,
     marginBottom: spacing.xs,
   },
@@ -289,7 +289,7 @@ const styles = {
 
   divider: {
     height: '1px',
-    background: colors.stroke.light,
+    background: colors.border.lowEmphasis.onLight,
     margin: 0,
   },
 }

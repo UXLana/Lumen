@@ -81,12 +81,12 @@ export const UploadFile = forwardRef<HTMLDivElement, UploadFileProps>(
     const isDone = status === 'done'
 
     const textColor = isDisabled
-      ? colors.text?.disabled?.onLight ?? colors.disabled?.text
-      : colors.text?.highEmphasis?.onLight ?? '#333'
+      ? colors.text?.disabled?.onLight
+      : colors.text?.highEmphasis?.onLight
 
     const secondaryTextColor = isDisabled
-      ? colors.text?.disabled?.onLight ?? colors.disabled?.text
-      : colors.text?.lowEmphasis?.onLight ?? '#666'
+      ? colors.text?.disabled?.onLight
+      : colors.text?.lowEmphasis?.onLight
 
     const errorColor = colors.status?.important ?? '#DC0C22'
 
@@ -98,7 +98,7 @@ export const UploadFile = forwardRef<HTMLDivElement, UploadFileProps>(
           flexDirection: 'column',
           gap: spacing.xs,
           padding: `${spacing.sm} 0`,
-          borderTop: divider ? `1px solid ${colors.border?.lowEmphasis?.onLight ?? colors.stroke?.light}` : 'none',
+          borderTop: divider ? `1px solid ${colors.border?.lowEmphasis?.onLight}` : 'none',
           opacity: isDisabled ? 0.6 : 1,
           ...style,
         }}

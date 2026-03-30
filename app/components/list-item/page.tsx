@@ -207,7 +207,7 @@ import { ListItem, List } from '@/components'`}</CodeBlock>
   />
 </List>`}
                     previewPadding="24px"
-                    previewBackground={colors.surface.paper}
+                    previewBackground={colors.surface.lightDarker}
                     previewMinHeight="120px"
                   />
                 </div>
@@ -335,7 +335,7 @@ import { ListItem, List } from '@/components'`}</CodeBlock>
                 {/* Checkbox List */}
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Multiple Selection (Checkbox)</h3>
-                  <div style={{ background: colors.surface.paper, borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ background: colors.surface.lightDarker, borderRadius: '12px', padding: '16px' }}>
                     <div style={{ background: 'white', borderRadius: '8px' }}>
                       <List selectionMode="multiple" roundedCorners aria-label="Notification settings">
                         <ListItem
@@ -370,7 +370,7 @@ import { ListItem, List } from '@/components'`}</CodeBlock>
                 {/* Radio List */}
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Single Selection (Radio)</h3>
-                  <div style={{ background: colors.surface.paper, borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ background: colors.surface.lightDarker, borderRadius: '12px', padding: '16px' }}>
                     <div style={{ background: 'white', borderRadius: '8px' }}>
                       <List selectionMode="single" roundedCorners aria-label="Theme selection">
                         <ListItem
@@ -443,9 +443,9 @@ import { ListItem, List } from '@/components'`}</CodeBlock>
                 headers={['State', 'Background Token', 'Value']}
                 rows={[
                   ['Default', '-', <PixelValue key="dv" value="transparent" />],
-                  ['Hover', <CopyableToken key="hb" token="colors.surface.paper" />, <PixelValue key="hbv" value="#FAFAFA" />],
+                  ['Hover', <CopyableToken key="hb" token="colors.surface.lightDarker" />, <PixelValue key="hbv" value="#FAFAFA" />],
                   ['Pressed', <CopyableToken key="pb" token="#F5F5F5" />, <PixelValue key="pbv" value="#F5F5F5" />],
-                  ['Selected', <CopyableToken key="sb" token="colors.brand.primaryLight" />, <PixelValue key="sbv" value="#E6F0ED" />],
+                  ['Selected', <CopyableToken key="sb" token="colors.brand.lighter" />, <PixelValue key="sbv" value="#E6F0ED" />],
                 ]}
               />
             </div>

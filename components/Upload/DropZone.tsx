@@ -152,20 +152,20 @@ export const DropZone = forwardRef<HTMLDivElement, DropZoneProps>(
     const borderColor = isActive
       ? colors.brand.default
       : isDisabled
-        ? colors.border?.lowEmphasis?.onLight ?? colors.stroke?.light
-        : colors.border?.midEmphasis?.onLight ?? colors.stroke?.default
+        ? colors.border?.lowEmphasis?.onLight
+        : colors.border?.midEmphasis?.onLight
 
     const bgColor = isActive
       ? colors.selectedHighlight
-      : colors.surface?.light ?? colors.surface?.default
+      : colors.surface?.light
 
     const textColor = isDisabled
-      ? colors.text?.disabled?.onLight ?? colors.disabled?.text
-      : colors.text?.highEmphasis?.onLight ?? '#333'
+      ? colors.text?.disabled?.onLight
+      : colors.text?.highEmphasis?.onLight
 
     const secondaryTextColor = isDisabled
-      ? colors.text?.disabled?.onLight ?? colors.disabled?.text
-      : colors.text?.lowEmphasis?.onLight ?? '#666'
+      ? colors.text?.disabled?.onLight
+      : colors.text?.lowEmphasis?.onLight
 
     return (
       <>

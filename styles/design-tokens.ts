@@ -31,64 +31,6 @@ const _themed = themeColorsToVarRefs(traceTheme.colors as Record<string, any>) a
 
 export const colors = {
   ..._themed,
-
-  brand: {
-    ..._themed.brand,
-    /** @deprecated Use brand.default */
-    primary: _themed.brand.default,
-    /** @deprecated Use brand.lighter */
-    primaryLight: _themed.brand.lighter,
-    /** @deprecated Use brand.darker */
-    primaryDark: _themed.brand.darker,
-  },
-
-  surface: {
-    ..._themed.surface,
-    /** @deprecated Use surface.light */
-    default: _themed.surface.light,
-    /** @deprecated Use surface.lightDarker */
-    paper: _themed.surface.lightDarker,
-    /** @deprecated Use surface.lightDarker */
-    elevated: _themed.surface.lightDarker,
-    /** @deprecated Use surface.darkDarker */
-    darkest: _themed.surface.darkDarker,
-  },
-
-  /** @deprecated Use brand.default */
-  kelp: _themed.brand.default,
-  /** @deprecated Use scrim */
-  overlay: _themed.scrim,
-  stroke: {
-    /** @deprecated Use border.lowEmphasis.onLight */
-    light: _themed.border.lowEmphasis.onLight,
-    /** @deprecated Use border.midEmphasis.onLight */
-    default: _themed.border.midEmphasis.onLight,
-    /** @deprecated Use border.highEmphasis.onLight */
-    dark: _themed.border.highEmphasis.onLight,
-  },
-  disabled: {
-    /** @deprecated Use surface.disabled.onLight */
-    surface: _themed.surface.disabled.onLight,
-    /** @deprecated Use text.disabled.onLight */
-    text: _themed.text.disabled.onLight,
-    /** @deprecated Use surface.disabled.onDark */
-    surfaceOnDark: _themed.surface.disabled.onDark,
-    /** @deprecated Use text.disabled.onDark */
-    textOnDark: _themed.text.disabled.onDark,
-  },
-  interactive: {
-    /** @deprecated Use selectedHighlight + focusBorder */
-    selectedInput: {
-      background: _themed.selectedHighlight,
-      border: _themed.brand.default,
-    },
-    selectedOutput: {
-      background: _themed.brand.default,
-      text: _themed.text.highEmphasis.onDark,
-    },
-    /** @deprecated Use focusBorder.onLight */
-    focus: _themed.focusBorder.onLight,
-  },
 };
 
 export const dataVizColors = _themed.dataViz;

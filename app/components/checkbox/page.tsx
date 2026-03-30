@@ -162,7 +162,7 @@ import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
   onChange={(checked) => setChecked(checked)}
 />`}
                     previewPadding={spacing.xl}
-                    previewBackground={colors.surface.paper}
+                    previewBackground={colors.surface.lightDarker}
                   />
                 </div>
 

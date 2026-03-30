@@ -185,8 +185,8 @@ const listItem = {
     focus: avatar.focus.color,
     toggle: {
       track: 'rgba(0, 0, 0, 0.38)',
-      trackActive: colors.brand.primary,
-      thumb: colors.surface.default,
+      trackActive: colors.brand.default,
+      thumb: colors.surface.light,
     },
   },
 
@@ -239,9 +239,9 @@ const CheckboxIcon = ({ checked, disabled }: { checked: boolean; disabled?: bool
       width="16"
       height="16"
       rx="4"
-      stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.primary : 'rgba(0, 0, 0, 0.6)'}
+      stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.default : 'rgba(0, 0, 0, 0.6)'}
       strokeWidth="2"
-      fill={checked ? colors.brand.primary : 'transparent'}
+      fill={checked ? colors.brand.default : 'transparent'}
     />
     {checked && (
       <path
@@ -261,12 +261,12 @@ const RadioIcon = ({ checked, disabled }: { checked: boolean; disabled?: boolean
       cx="10"
       cy="10"
       r="8"
-      stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.primary : 'rgba(0, 0, 0, 0.6)'}
+      stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.default : 'rgba(0, 0, 0, 0.6)'}
       strokeWidth="2"
       fill="transparent"
     />
     {checked && (
-      <circle cx="10" cy="10" r="5" fill={colors.brand.primary} />
+      <circle cx="10" cy="10" r="5" fill={colors.brand.default} />
     )}
   </svg>
 )

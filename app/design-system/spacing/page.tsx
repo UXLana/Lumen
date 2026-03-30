@@ -17,7 +17,7 @@ function SpacingBar({ name, value }: { name: string; value: string }) {
           height: '24px',
           width: `${Math.min(numValue, 200)}px`,
           minWidth: numValue > 0 ? '4px' : '0',
-          background: colors.brand.primary,
+          background: colors.brand.default,
           borderRadius: borderRadius.xs,
         }}
       />
@@ -103,7 +103,7 @@ export default function SpacingPage() {
                       marginBottom: '8px',
                     }}>
                       <div style={{
-                        background: colors.brand.primary,
+                        background: colors.brand.default,
                         width: '40px',
                         height: '40px',
                         borderRadius: borderRadius.sm,
@@ -128,7 +128,7 @@ export default function SpacingPage() {
                         <div key={i} style={{
                           width: '48px',
                           height: '32px',
-                          background: colors.brand.primary,
+                          background: colors.brand.default,
                           borderRadius: borderRadius.sm,
                         }} />
                       ))}

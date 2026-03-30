@@ -272,9 +272,9 @@ import { MarketplaceCard } from '@/components'`}</CodeBlock>
                 headers={['Property', 'Token', 'Value']}
                 rows={[
                   ['Border Radius', <CopyableToken key="br" token="borderRadius.lg" />, <PixelValue key="brv" value="12px" />],
-                  ['Border Color', <CopyableToken key="bc" token="colors.stroke.light" />, <PixelValue key="bcv" value={colors.stroke.light} />],
+                  ['Border Color', <CopyableToken key="bc" token="colors.border.lowEmphasis.onLight" />, <PixelValue key="bcv" value={colors.border.lowEmphasis.onLight} />],
                   ['Shadow (hover)', <CopyableToken key="sh" token="shadows.md" />, <PixelValue key="shv" value="0 4px 6px rgba(0,0,0,0.1)" />],
-                  ['Selected Border', <CopyableToken key="sb" token="colors.brand.primary" />, <PixelValue key="sbv" value={colors.brand.primary} />],
+                  ['Selected Border', <CopyableToken key="sb" token="colors.brand.default" />, <PixelValue key="sbv" value={colors.brand.default} />],
                 ]}
               />
             </div>

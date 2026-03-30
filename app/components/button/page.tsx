@@ -165,7 +165,7 @@ import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
   emphasis="${demoEmphasis}"${demoDestructive ? '\n  destructive' : ''}${demoLoading ? '\n  loading' : ''}${demoDisabled ? '\n  disabled' : ''}${demoOnDark ? '\n  onDark' : ''}${demoFullWidth ? '\n  fullWidth' : ''}${demoIconOnly ? '\n  iconOnly\n  leftIcon={<IconPlus />}\n  aria-label="Add item"' : ''}${demoLeftIcon && !demoIconOnly ? '\n  leftIcon={<IconPlus />}' : ''}${demoRightIcon && !demoIconOnly ? '\n  rightIcon={<DropdownIcon />}' : ''}
 >${demoIconOnly ? '' : '\n  Button\n'}</Button>`}
                     previewPadding="56px 24px"
-                    previewBackground={demoOnDark ? colors.brand.primary : colors.surface.paper}
+                    previewBackground={demoOnDark ? colors.brand.default : colors.surface.lightDarker}
                   />
                 </div>
 
@@ -429,7 +429,7 @@ import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
                 <div style={{
                   width: '100px',
                   height: '48px',
-                  background: colors.brand.primary,
+                  background: colors.brand.default,
                   borderRadius: button.borderRadius,
                 }} />
                 <div>

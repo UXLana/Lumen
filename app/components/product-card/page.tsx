@@ -194,7 +194,7 @@ import { ProductCard } from '@/components'`}</CodeBlock>
   onClick={handleClick}
 />`}
                     previewPadding="24px"
-                    previewBackground={colors.surface.paper}
+                    previewBackground={colors.surface.lightDarker}
                   />
                 </div>
 

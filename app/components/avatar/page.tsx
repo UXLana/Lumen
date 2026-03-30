@@ -192,7 +192,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
   compact
 />`}
                     previewPadding="56px 24px"
-                    previewBackground={demoOnDark && avatarCount === 1 ? colors.brand.primary : colors.surface.paper}
+                    previewBackground={demoOnDark && avatarCount === 1 ? colors.brand.default : colors.surface.lightDarker}
                   />
                 </div>
 
@@ -232,7 +232,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                             style={{
                               width: '32px',
                               height: '32px',
-                              border: `1px solid ${colors.stroke.light}`,
+                              border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                               borderRadius: borderRadius.md,
                               background: 'white',
                               cursor: avatarCount <= 1 ? 'not-allowed' : 'pointer',
@@ -255,7 +255,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                             style={{
                               width: '32px',
                               height: '32px',
-                              border: `1px solid ${colors.stroke.light}`,
+                              border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                               borderRadius: borderRadius.md,
                               background: 'white',
                               cursor: avatarCount >= 8 ? 'not-allowed' : 'pointer',
@@ -285,7 +285,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                               style={{
                                 width: '32px',
                                 height: '32px',
-                                border: `1px solid ${colors.stroke.light}`,
+                                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                                 borderRadius: borderRadius.md,
                                 background: 'white',
                                 cursor: maxVisible <= 1 ? 'not-allowed' : 'pointer',
@@ -308,7 +308,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                               style={{
                                 width: '32px',
                                 height: '32px',
-                                border: `1px solid ${colors.stroke.light}`,
+                                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                                 borderRadius: borderRadius.md,
                                 background: 'white',
                                 cursor: maxVisible >= avatarCount ? 'not-allowed' : 'pointer',
@@ -370,7 +370,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                           style={{
                             width: '100%',
                             padding: '8px 12px',
-                            border: `1px solid ${colors.stroke.light}`,
+                            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                             borderRadius: borderRadius.md,
                             fontSize: '14px',
                             outline: 'none',
@@ -393,7 +393,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                               style={{
                                 width: '32px',
                                 height: '32px',
-                                border: `2px solid ${demoColor === c ? colors.brand.primary : 'transparent'}`,
+                                border: `2px solid ${demoColor === c ? colors.brand.default : 'transparent'}`,
                                 borderRadius: '9999px',
                                 background: avatar.colors[c],
                                 cursor: 'pointer',
@@ -462,7 +462,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                 rows={colorVariants.map(color => [
                   `Color ${color}`,
                   <div key={color} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '24px', height: '24px', background: avatar.colors[color], borderRadius: '4px', border: `1px solid ${colors.stroke.light}` }} />
+                    <div style={{ width: '24px', height: '24px', background: avatar.colors[color], borderRadius: '4px', border: `1px solid ${colors.border.lowEmphasis.onLight}` }} />
                   </div>,
                   <CopyableToken key={`token-${color}`} token={`avatar.colors[${color}]`} />,
                   <PixelValue key={`value-${color}`} value={avatar.colors[color]} />,

@@ -232,8 +232,8 @@ function IconCard({
         alignItems: 'center',
         padding: '16px 8px',
         borderRadius: borderRadius.md,
-        border: `1px solid ${hovered ? colors.brand.primary : colors.stroke.light}`,
-        background: hovered ? '#F5F5F5' : colors.surface.default,
+        border: `1px solid ${hovered ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
+        background: hovered ? '#F5F5F5' : colors.surface.light,
         transition: 'all 0.15s ease',
         position: 'relative',
       }}
@@ -246,7 +246,7 @@ function IconCard({
           width: '48px',
           height: '48px',
           marginBottom: '8px',
-          color: hovered ? colors.brand.primary : colors.text.highEmphasis.onLight,
+          color: hovered ? colors.brand.default : colors.text.highEmphasis.onLight,
           transition: 'color 0.15s ease',
         }}
       >
@@ -287,22 +287,22 @@ function IconCard({
               justifyContent: 'center',
               width: '28px',
               height: '28px',
-              border: `1px solid ${colors.stroke.light}`,
+              border: `1px solid ${colors.border.lowEmphasis.onLight}`,
               borderRadius: borderRadius.sm,
-              background: colors.surface.default,
+              background: colors.surface.light,
               cursor: 'pointer',
               color: colors.text.lowEmphasis.onLight,
               transition: 'all 0.15s ease',
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = colors.brand.primary
+              e.currentTarget.style.background = colors.brand.default
               e.currentTarget.style.color = 'white'
-              e.currentTarget.style.borderColor = colors.brand.primary
+              e.currentTarget.style.borderColor = colors.brand.default
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = colors.surface.default
+              e.currentTarget.style.background = colors.surface.light
               e.currentTarget.style.color = colors.text.lowEmphasis.onLight
-              e.currentTarget.style.borderColor = colors.stroke.light
+              e.currentTarget.style.borderColor = colors.border.lowEmphasis.onLight
             }}
           >
             <Icons.IconCopy size="sm" />
@@ -316,22 +316,22 @@ function IconCard({
               justifyContent: 'center',
               width: '28px',
               height: '28px',
-              border: `1px solid ${colors.stroke.light}`,
+              border: `1px solid ${colors.border.lowEmphasis.onLight}`,
               borderRadius: borderRadius.sm,
-              background: colors.surface.default,
+              background: colors.surface.light,
               cursor: 'pointer',
               color: colors.text.lowEmphasis.onLight,
               transition: 'all 0.15s ease',
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = colors.brand.primary
+              e.currentTarget.style.background = colors.brand.default
               e.currentTarget.style.color = 'white'
-              e.currentTarget.style.borderColor = colors.brand.primary
+              e.currentTarget.style.borderColor = colors.brand.default
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = colors.surface.default
+              e.currentTarget.style.background = colors.surface.light
               e.currentTarget.style.color = colors.text.lowEmphasis.onLight
-              e.currentTarget.style.borderColor = colors.stroke.light
+              e.currentTarget.style.borderColor = colors.border.lowEmphasis.onLight
             }}
           >
             <Icons.IconImage size="sm" />
@@ -348,7 +348,7 @@ function IconCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: colors.brand.primary,
+            background: colors.brand.default,
             color: 'white',
             fontSize: '11px',
             fontWeight: 600,
@@ -510,8 +510,8 @@ export default function IconsPage() {
                 alignItems: 'center',
                 gap: '12px',
                 padding: '12px 16px',
-                background: colors.surface.default,
-                border: `1px solid ${colors.stroke.light}`,
+                background: colors.surface.light,
+                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                 borderRadius: borderRadius.md,
                 marginBottom: '24px',
               }}
@@ -733,7 +733,7 @@ import type { IconProps, IconSize } from '@/components/Icons'`}</CodeBlock>
                   alignItems: 'center',
                   flexWrap: 'wrap',
                   padding: '24px',
-                  background: colors.brand.primary,
+                  background: colors.brand.default,
                   borderRadius: borderRadius.md,
                 }}
               >
