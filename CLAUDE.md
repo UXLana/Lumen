@@ -47,7 +47,6 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 - **Checkbox** / **CheckboxGroup** — Single or grouped checkboxes with indeterminate state
 - **Radio** / **RadioGroup** — Single or grouped radio buttons
 - **Switch** — Toggle switch with label
-- **Upload** — File upload with drag-and-drop, progress, file list
 
 ### Actions
 - **Button** / **ButtonGroup** — emphasis: `"high"` (filled) | `"mid"` (teal) | `"low"` (text). Add `destructive` prop for danger actions. Sizes: `"md"` | `"lg"`
