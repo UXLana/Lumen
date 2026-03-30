@@ -115,7 +115,7 @@ export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(
           height: trackHeight,
           overflow: 'hidden',
           borderRadius: borderRadius.full,
-          backgroundColor: colors.surface?.lightDarker ?? colors.surface?.paper,
+          backgroundColor: colors.surface?.lightDarker,
           ...style,
         }}
         {...rest}

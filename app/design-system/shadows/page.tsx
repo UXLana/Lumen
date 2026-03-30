@@ -36,7 +36,7 @@ export default function ShadowsPage() {
                 <div style={{
                   width: '100px',
                   height: '100px',
-                  background: colors.surface.default,
+                  background: colors.surface.light,
                   borderRadius: borderRadius.lg,
                   boxShadow: value,
                   margin: '16px auto',
@@ -72,7 +72,7 @@ export default function ShadowsPage() {
               <div style={{
                 width: '120px',
                 height: '80px',
-                background: colors.surface.default,
+                background: colors.surface.light,
                 borderRadius: borderRadius.md,
                 boxShadow: shadows.inner,
                 margin: '16px auto',
@@ -87,7 +87,7 @@ export default function ShadowsPage() {
               <div style={{
                 width: '120px',
                 height: '80px',
-                background: colors.brand.primary,
+                background: colors.brand.default,
                 borderRadius: borderRadius.md,
                 boxShadow: shadows.brand,
                 margin: '16px auto',
@@ -102,7 +102,7 @@ export default function ShadowsPage() {
               <div style={{
                 width: '120px',
                 height: '80px',
-                background: colors.brand.primary,
+                background: colors.brand.default,
                 borderRadius: borderRadius.md,
                 boxShadow: shadows.brandLg,
                 margin: '16px auto',
@@ -130,7 +130,7 @@ export default function ShadowsPage() {
                 <div style={{
                   width: '100%',
                   height: '70px',
-                  background: colors.surface.default,
+                  background: colors.surface.light,
                   borderRadius: borderRadius.md,
                   boxShadow: value,
                   display: 'flex',
@@ -177,7 +177,7 @@ export default function ShadowsPage() {
                 key={i}
                 style={{
                   padding: '24px',
-                  background: colors.surface.default,
+                  background: colors.surface.light,
                   borderRadius: borderRadius.lg,
                   boxShadow: shadows.sm,
                   transition: 'box-shadow 0.2s ease, transform 0.2s ease',

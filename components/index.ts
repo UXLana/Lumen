@@ -53,6 +53,20 @@ export type {
   CollectionToolbarAction,
 } from './CollectionToolbar'
 
+// ChatPanel
+export { ChatPanel, ChatFab, ChatSearchTrigger, DotGrid, ComponentRenderer } from './ChatPanel'
+export type {
+  ChatPanelProps,
+  ChatFabProps,
+  ChatSearchTriggerProps,
+  DotGridProps,
+  ChatMessage,
+  ChatAction,
+  AssistantPayload,
+  UIComponent,
+  DotAnimation,
+} from './ChatPanel'
+
 // Combobox
 export { Combobox, useCombobox } from './Combobox'
 export type { ComboboxProps, ComboboxOption, UseComboboxOptions, UseComboboxReturn, ComboboxStatus } from './Combobox'

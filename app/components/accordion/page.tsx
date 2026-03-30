@@ -99,8 +99,8 @@ export default function AccordionPage() {
 
   // Dynamic background based on variant
   const getPlaygroundBackground = () => {
-    if (demoVariant === 'inverted') return colors.surface.paper
-    return colors.surface.default
+    if (demoVariant === 'inverted') return colors.surface.lightDarker
+    return colors.surface.light
   }
 
   return (

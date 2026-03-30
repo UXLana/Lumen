@@ -47,7 +47,6 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 - **Checkbox** / **CheckboxGroup** — Single or grouped checkboxes with indeterminate state
 - **Radio** / **RadioGroup** — Single or grouped radio buttons
 - **Switch** — Toggle switch with label
-- **Upload** — File upload with drag-and-drop, progress, file list
 
 ### Actions
 - **Button** / **ButtonGroup** — emphasis: `"high"` (filled) | `"mid"` (teal) | `"low"` (text). Add `destructive` prop for danger actions. Sizes: `"md"` | `"lg"`
@@ -213,3 +212,15 @@ Before considering any UI complete, verify:
 - One component per folder with its own `index.ts`
 - New pages go in `app/` following Next.js App Router conventions
 - Prototype pages go in `app/prototypes/{name}/`
+
+## Detailed Prop Reference
+
+Key callback signatures and prop types for AI agent code generation:
+
+- **Input** `onChange`: `(value: string, event: ChangeEvent) => void` — value-first, NOT event-first
+- **Checkbox** `onChange`: `(checked: boolean, event: ChangeEvent) => void` — checked-first
+- **Select** `onChange`: `(value: string) => void`
+- **SegmentedControl**: `segments={[{ id, label, disabled? }]}`, `onChange: (segmentId: string) => void`
+- **TabBar**: `tabs={[{ id, label, icon?, badge?, disabled? }]}`, `onTabChange: (tabId: string) => void`
+- **DataTable**: `rowKey: (row, i) => string`, `onSelectionChange?: (keys: Set<string>) => void`
+- **Toast**: use `useToast()` hook → `addToast({ message, variant, duration, action? })`

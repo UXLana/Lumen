@@ -266,7 +266,7 @@ import type { DataTableColumn, SortState } from '@/components'`}</CodeBlock>
                 <div style={{ minWidth: 0 }}>
                   <Playground
                     code={playgroundCode}
-                    previewBackground={colors.surface.paper}
+                    previewBackground={colors.surface.lightDarker}
                     previewPadding="16px"
                     previewStretch
                     preview={

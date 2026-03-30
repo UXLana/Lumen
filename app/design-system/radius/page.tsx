@@ -36,7 +36,7 @@ export default function RadiusPage() {
                 <div style={{
                   width: '80px',
                   height: '80px',
-                  background: colors.brand.primary,
+                  background: colors.brand.default,
                   borderRadius: value,
                   margin: '0 auto 12px',
                 }} />
@@ -85,10 +85,10 @@ export default function RadiusPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: `1px solid ${colors.stroke.light}`,
+                  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                   marginBottom: '8px',
                 }}>
-                  <span style={{ ...typography.label.sm, color: colors.brand.primary }}>{name}</span>
+                  <span style={{ ...typography.label.sm, color: colors.brand.default }}>{name}</span>
                 </div>
                 <div style={{ ...typography.code.sm, color: colors.text.lowEmphasis.onLight, textAlign: 'center' }}>
                   {value}
@@ -121,7 +121,7 @@ export default function RadiusPage() {
             {['none', 'sm', 'md', 'lg', 'full'].map((r) => (
               <button key={r} style={{
                 padding: '12px 24px',
-                background: colors.brand.primary,
+                background: colors.brand.default,
                 color: 'white',
                 border: 'none',
                 borderRadius: (borderRadius as any)[r],
@@ -141,7 +141,7 @@ export default function RadiusPage() {
               <div key={r} style={{
                 width: '120px',
                 height: '100px',
-                background: colors.surface.default,
+                background: colors.surface.light,
                 borderRadius: (borderRadius as any)[r],
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 display: 'flex',

@@ -241,7 +241,7 @@ import { Tab, TabBar } from '@/components'`}</CodeBlock>
   iconPosition="${demoIconPosition}"
   align="${demoAlign}"${demoStretched ? '\n  stretched' : ''}${demoOnDark ? '\n  onDark' : ''}${demoInverted ? '\n  inverted' : ''}${!demoDivider ? '\n  hasDivider={false}' : ''}${demoScrollable ? '\n  scrollable' : ''}
 />`}
-                    previewBackground={demoOnDark ? colors.brand.primary : colors.surface.paper}
+                    previewBackground={demoOnDark ? colors.brand.default : colors.surface.lightDarker}
                     previewPadding="56px 24px"
                     previewMinHeight="120px"
                   />

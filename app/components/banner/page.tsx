@@ -189,7 +189,7 @@ import { Banner } from '@/components'`}</CodeBlock>
                       <div style={{
                         width: '100%',
                         padding: demoOnDark ? spacing.md : '0',
-                        background: demoOnDark ? colors.brand.primary : 'transparent',
+                        background: demoOnDark ? colors.brand.default : 'transparent',
                         borderRadius: demoOnDark ? borderRadius.md : undefined,
                         boxSizing: 'border-box',
                       }}>
@@ -300,7 +300,7 @@ import { Banner } from '@/components'`}</CodeBlock>
                         style={{
                           width: '100%',
                           padding: spacing.xs,
-                          border: `1px solid ${colors.stroke.light}`,
+                          border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                           borderRadius: borderRadius.sm,
                           boxSizing: 'border-box',
                           ...typography.body.sm,
@@ -321,7 +321,7 @@ import { Banner } from '@/components'`}</CodeBlock>
                         style={{
                           width: '100%',
                           padding: spacing.xs,
-                          border: `1px solid ${colors.stroke.light}`,
+                          border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                           borderRadius: borderRadius.sm,
                           boxSizing: 'border-box',
                           ...typography.body.sm,

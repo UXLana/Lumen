@@ -194,7 +194,7 @@ function ThemeSwitcherButton({
             top: 'calc(100% + 4px)',
             right: 0,
             minWidth: '140px',
-            background: colors.surface.default,
+            background: colors.surface.light,
             border: `1px solid ${colors.border.lowEmphasis.onLight}`,
             borderRadius: borderRadius.md,
             boxShadow: shadows.lg,
@@ -255,7 +255,7 @@ export default function Home() {
   return (
     <main style={{
       minHeight: '100vh',
-      background: colors.surface.default,
+      background: colors.surface.light,
     }}>
       {/* ── Theme Switcher ─────────────────────────────────────────── */}
       <ThemeSwitcherButton
@@ -267,7 +267,7 @@ export default function Home() {
 
       {/* ── Hero ────────────────────────────────────────────────────── */}
       <section style={{
-        background: `linear-gradient(135deg, ${colors.brand.primary} 0%, ${colors.brand.primaryLight} 100%)`,
+        background: `linear-gradient(135deg, ${colors.brand.default} 0%, ${colors.brand.lighter} 100%)`,
         padding: `${spacing['6xl']} ${spacing.xl}`,
         display: 'flex',
         justifyContent: 'center',
@@ -314,7 +314,7 @@ export default function Home() {
                 alignItems: 'center',
                 gap: spacing.xs,
                 padding: `${spacing.sm} ${spacing.xl}`,
-                background: colors.surface.default,
+                background: colors.surface.light,
                 color: colors.text.highEmphasis.onLight,
                 borderRadius: borderRadius.lg,
                 textDecoration: 'none',
@@ -393,7 +393,7 @@ export default function Home() {
                   display: 'flex',
                   gap: spacing.md,
                   padding: spacing.lg,
-                  background: colors.surface.default,
+                  background: colors.surface.light,
                   border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                   borderRadius: borderRadius.lg,
                   textDecoration: 'none',
@@ -401,7 +401,7 @@ export default function Home() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.boxShadow = shadows.md
-                  e.currentTarget.style.borderColor = colors.brand.primary
+                  e.currentTarget.style.borderColor = colors.brand.default
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.boxShadow = 'none'
@@ -416,7 +416,7 @@ export default function Home() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: borderRadius.md,
-                  background: colors.brand.primary,
+                  background: colors.brand.default,
                   color: colors.text.highEmphasis.onDark,
                 }}>
                   {sectionIcons[section.key]}
@@ -456,7 +456,7 @@ export default function Home() {
           alignItems: 'center',
           gap: spacing.md,
           padding: spacing.lg,
-          background: colors.surface.paper,
+          background: colors.surface.lightDarker,
           borderRadius: borderRadius.lg,
           border: `1px dashed ${colors.border.lowEmphasis.onLight}`,
         }}>

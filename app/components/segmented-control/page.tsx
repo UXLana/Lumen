@@ -154,7 +154,7 @@ import { SegmentedControl } from '@/components'`}</CodeBlock>
   onChange={setSelected}
   size="${demoSize}"${demoFullWidth ? '\n  fullWidth' : ''}${demoOnDark ? '\n  onDark' : ''}
 />`}
-                    previewBackground={demoOnDark ? colors.brand.primary : colors.surface.paper}
+                    previewBackground={demoOnDark ? colors.brand.default : colors.surface.lightDarker}
                     previewPadding="56px 24px"
                     previewMinHeight="100px"
                   />
@@ -226,7 +226,7 @@ import { SegmentedControl } from '@/components'`}</CodeBlock>
                 headers={['Element', 'Token', 'Value']}
                 rows={[
                   ['Container Background', <CopyableToken key="cb" token="#F5F5F5" />, <PixelValue key="cbv" value="#F5F5F5" />],
-                  ['Selected Segment BG', <CopyableToken key="sb" token="colors.surface.default" />, <PixelValue key="sbv" value="#FFFFFF" />],
+                  ['Selected Segment BG', <CopyableToken key="sb" token="colors.surface.light" />, <PixelValue key="sbv" value="#FFFFFF" />],
                   ['Selected Text', <CopyableToken key="st" token="colors.text.highEmphasis.onLight" />, <PixelValue key="stv" value={colors.text.highEmphasis.onLight} />],
                   ['Unselected Text', <CopyableToken key="ut" token="colors.text.lowEmphasis.onLight" />, <PixelValue key="utv" value={colors.text.lowEmphasis.onLight} />],
                   ['Segment Shadow', <CopyableToken key="ss" token="shadows.sm" />, <PixelValue key="ssv" value="0 1px 3px rgba(0,0,0,0.08)" />],

@@ -1,6 +1,6 @@
 {
   "name": "@metrcid/design.system",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "MTR Design System — React components, design tokens, and theme provider",
   "repository": {
     "type": "git",
@@ -11,21 +11,36 @@
     "access": "restricted"
   },
   "files": [
-    "components/",
-    "styles/design-tokens.ts",
-    "styles/themes/",
-    "hooks/",
+    "dist/",
     "public/icons/",
     "public/images/"
   ],
   "exports": {
-    "./components": "./components/index.ts",
-    "./styles/themes": "./styles/themes/index.ts",
-    "./styles/themes/*": "./styles/themes/*",
-    "./styles/design-tokens": "./styles/design-tokens.ts"
+    "./components": {
+      "types": "./dist/components.d.ts",
+      "import": "./dist/components.mjs",
+      "require": "./dist/components.js"
+    },
+    "./styles/themes": {
+      "types": "./dist/styles/themes.d.ts",
+      "import": "./dist/styles/themes.mjs",
+      "require": "./dist/styles/themes.js"
+    },
+    "./styles/design-tokens": {
+      "types": "./dist/styles/design-tokens.d.ts",
+      "import": "./dist/styles/design-tokens.mjs",
+      "require": "./dist/styles/design-tokens.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.mjs",
+      "require": "./dist/hooks/index.js"
+    }
   },
   "scripts": {
     "dev": "next dev -p 3333",
+    "build:pkg": "tsup",
+    "prepublishOnly": "tsup",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -33,10 +48,6 @@
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
-  },
-  "dependencies": {
-    "recharts": "^3.8.0",
-    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
@@ -47,6 +58,9 @@
     "openai": "^6.27.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "typescript": "^5.4.5"
+    "recharts": "^3.8.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.4.5",
+    "uuid": "^13.0.0"
   }
 }

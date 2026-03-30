@@ -156,7 +156,7 @@ import { AssistiveMessage } from '@/components'`}</CodeBlock>
   ${DEMO_TEXT[demoType]}
 </AssistiveMessage>`}
                     previewPadding="40px 24px"
-                    previewBackground={colors.surface.paper}
+                    previewBackground={colors.surface.lightDarker}
                     componentPath={COMPONENT_PATH}
                   />
                 </div>
