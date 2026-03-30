@@ -9,7 +9,7 @@ import {
   fontFamilies,
   fontWeights,
   shadows,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS
@@ -79,7 +79,7 @@ function contrastTextColor(hex: string): string {
   const b = parseInt(cleaned.substring(4, 6), 16)
   // Relative luminance (WCAG formula simplified)
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-  return luminance > 0.5 ? colors.text.highEmphasis.onLight : colors.text.highEmphasis.onDark
+  return luminance > 0.5 ? '#1A1A1A' : '#FFFFFF'
 }
 
 // =============================================================================
@@ -146,9 +146,9 @@ export const BrandBanner = forwardRef<HTMLDivElement, BrandBannerProps>(
     const textColor =
       brandColor && brandColor.startsWith('#')
         ? contrastTextColor(brandColor)
-        : colors.text.highEmphasis.onDark
+        : '#FFFFFF'
 
-    const subtitleOpacity = textColor === colors.text.highEmphasis.onDark ? 0.8 : 0.7
+    const subtitleOpacity = textColor === '#FFFFFF' ? 0.8 : 0.7
 
     return (
       <div

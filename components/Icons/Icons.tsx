@@ -55,7 +55,7 @@ const BaseIcon: React.FC<BaseIconProps> = ({
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={strokeWidth ?? 'var(--lumen-icon-style-strokeWidth, 1.5)'}
+      strokeWidth={strokeWidth ?? 'var(--prism-icon-style-strokeWidth, 1.5)'}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-label={label}
@@ -979,7 +979,7 @@ IconStatusDisabled.displayName = 'IconStatusDisabled'
 // BANNER ICONS (Contextual/Status Icons with Background)
 // =============================================================================
 
-import { bannerIcon } from '@/styles/design-tokens'
+import { bannerIcon } from '../../styles/design-tokens'
 import { IconInfoFilled } from './IconInfoFilled'
 import { IconSuccessFilled } from './IconSuccessFilled'
 import { IconWarningFilled } from './IconWarningFilled'

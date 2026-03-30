@@ -1,18 +1,19 @@
 'use client'
 
 import React, { useState } from 'react'
-import { PrototypeToolbar, ViewState, UseCase } from '@/app/prototypes/PrototypeToolbar'
+import { PrototypeToolbar, ViewState, UseCase } from '@/components'
 import {
   colors,
   spacing,
   typography,
   fontFamilies,
   fontWeights,
+  borderRadius,
   borderRadiusSemantics,
   transitionPresets,
   breakpoints,
 } from '@/styles/design-tokens'
-import { Badge, BrandBanner, Button, DataTable, Skeleton, EmptyState, TabBar } from '@/components'
+import { Badge, BrandBanner, Button, DataTable, Input, Skeleton, EmptyState, TabBar } from '@/components'
 import type { BadgeProps } from '@/components/Badge/Badge'
 import type { DataTableColumn } from '@/components'
 import { transactions, invoices, organizations, monthlyFinancials, financialSummary } from '../data'
@@ -574,8 +575,50 @@ export default function DashboardPage() {
               </div>
             </div>
 
+            {/* Toolbar */}
+            <div style={{ marginTop: spacing.sm }}>
+              <DataTable.Toolbar>
+                <DataTable.Toolbar.Left>
+                  <DataTable.SelectionInfo
+                    count={selectedKeys.size}
+                    onClear={() => setSelectedKeys(new Set())}
+                  >
+                    <DataTable.IconButton title="Archive selected">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <rect x="1" y="2" width="14" height="4" rx="1" stroke="currentColor" strokeWidth="1.3" />
+                        <path d="M2 6v7a1 1 0 001 1h10a1 1 0 001-1V6" stroke="currentColor" strokeWidth="1.3" />
+                        <path d="M6 9h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                      </svg>
+                    </DataTable.IconButton>
+                  </DataTable.SelectionInfo>
+                </DataTable.Toolbar.Left>
+                <DataTable.Toolbar.Right>
+                  <Input
+                    size="sm"
+                    placeholder="Search..."
+                    style={{ width: 200, marginBottom: 0, marginRight: spacing.sm }}
+                    startAdornment={
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.3" />
+                        <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                      </svg>
+                    }
+                  />
+                  <DataTable.FilterButton />
+                  <DataTable.SortButton />
+                  <DataTable.IconButton title="Manage columns">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <rect x="1.5" y="1.5" width="4" height="13" rx="1" stroke="currentColor" strokeWidth="1.3" />
+                      <rect x="6.5" y="1.5" width="4" height="13" rx="1" stroke="currentColor" strokeWidth="1.3" />
+                      <rect x="11.5" y="1.5" width="3" height="13" rx="1" stroke="currentColor" strokeWidth="1.3" />
+                    </svg>
+                  </DataTable.IconButton>
+                </DataTable.Toolbar.Right>
+              </DataTable.Toolbar>
+            </div>
+
             {/* Tab content */}
-            <div style={{ marginTop: spacing.md }}>
+            <div style={{ marginTop: spacing.sm }}>
               {activeTab === 'recent-pos' && (
                 <DataTable
                   columns={[

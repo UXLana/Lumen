@@ -1,7 +1,7 @@
 'use client'
 
 import React, { forwardRef } from 'react'
-import { colors, spacing } from '@/styles/design-tokens'
+import { colors, spacing } from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS

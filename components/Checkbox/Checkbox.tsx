@@ -9,7 +9,7 @@ import {
   fontFamilies,
   fontWeights,
   transitionPresets,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS

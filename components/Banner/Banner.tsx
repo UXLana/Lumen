@@ -1,7 +1,7 @@
 'use client'
 
 import React, { forwardRef, useState } from 'react'
-import { fontFamilies, typography, banner, bannerIcon } from '@/styles/design-tokens'
+import { fontFamilies, typography, banner, bannerIcon } from '../../styles/design-tokens'
 import {
   IconInfoFilled,
   IconSuccessFilled,
@@ -119,10 +119,10 @@ export function CloseIcon({ size = 20, color = 'currentColor' }: { size?: number
 }
 
 // Legacy icon exports for backwards compatibility
-export { IconInfoFilled as InfoIcon } from '@/components/Icons'
-export { IconSuccessFilled as SuccessIcon } from '@/components/Icons'
-export { IconWarningFilled as WarningIcon } from '@/components/Icons'
-export { IconErrorFilled as ErrorIcon } from '@/components/Icons'
+export { IconInfoFilled as InfoIcon } from '../Icons'
+export { IconSuccessFilled as SuccessIcon } from '../Icons'
+export { IconWarningFilled as WarningIcon } from '../Icons'
+export { IconErrorFilled as ErrorIcon } from '../Icons'
 
 // =============================================================================
 // VARIANT STYLES
@@ -159,7 +159,7 @@ const getVariantStyle = (variant: BannerVariant, surface: BannerSurface): Varian
   }
 }
 
-// Dark mode variant colors — hardcoded rgba pending dark mode token support
+// Dark mode variant styles
 const variantStylesOnDark: Record<BannerVariant, VariantStyle> = {
   info: {
     surface: 'rgba(122, 145, 255, 0.15)',

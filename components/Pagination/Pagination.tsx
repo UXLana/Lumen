@@ -5,7 +5,7 @@ import {
   fontFamilies,
   pagination,
   transitionPresets,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES

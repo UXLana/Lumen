@@ -695,7 +695,6 @@ export function CanopyLogo({ size = 'md', showText = true }: CanopyLogoProps) {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: s.gap }}>
-      {/* Brand illustration colors — intentionally static, not tokenized */}
       <svg
         style={{ width: s.logo, height: s.logo, flexShrink: 0 }}
         viewBox="0 0 48 48"

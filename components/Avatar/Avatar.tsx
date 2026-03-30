@@ -6,7 +6,7 @@ import {
   colors, 
   fontFamilies, 
   transitionPresets 
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS

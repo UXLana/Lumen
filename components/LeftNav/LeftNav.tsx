@@ -15,9 +15,9 @@ import {
   borderRadius,
   getSidebarColors,
   type SidebarColors,
-} from '@/styles/design-tokens'
-import { useColors } from '@/styles/themes/theme-provider'
-import { usePrefersReducedMotion, useIsMobile } from '@/hooks'
+} from '../../styles/design-tokens'
+import { useColors } from '../../styles/themes/theme-provider'
+import { usePrefersReducedMotion, useIsMobile } from '../../hooks'
 
 // =============================================================================
 // FOCUS STYLES (WCAG 2.4.7, 2.4.11 compliant)
@@ -47,7 +47,7 @@ import {
   IconSidebarOpen,
   IconSidebarClose,
   IconX,
-} from '@/components/Icons'
+} from '../Icons'
 
 // =============================================================================
 // TYPES
@@ -1164,7 +1164,7 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
       display: hasLogoContent ? 'flex' : 'none',
       alignItems: collapsed ? 'center' : 'flex-start',
       justifyContent: collapsed ? 'center' : 'space-between',
-      minHeight: (sidebar.logo.height as string) === 'auto' ? undefined : sidebar.logo.height,
+      minHeight: sidebar.logo.height === 'auto' ? undefined : sidebar.logo.height,
       marginBottom: '12px',
       padding: collapsed ? '0' : `0 ${sidebar.navItem.paddingX}`,
       flexShrink: 0,

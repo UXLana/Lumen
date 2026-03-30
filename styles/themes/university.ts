@@ -183,6 +183,7 @@ export const universityTheme: ProductTheme = {
       success: '#19856B',
       successLight: '#D9EDE6',
       warning: '#AD6200',
+      warningLight: '#FCF6ED',
       important: '#E80D24',
       importantLight: '#FFE3E7',
       aqua: '#167F92',

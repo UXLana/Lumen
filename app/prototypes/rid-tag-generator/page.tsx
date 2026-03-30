@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { PrototypeToolbar, type ViewState, type Version } from '@/app/prototypes/PrototypeToolbar'
+import { PrototypeToolbar, type ViewState, type Version } from '@/components'
 import TagGeneratorV1, { USE_CASES } from './TagGeneratorV1'
 import TagGeneratorV2, { V2_USE_CASES } from './TagGeneratorV2'
 

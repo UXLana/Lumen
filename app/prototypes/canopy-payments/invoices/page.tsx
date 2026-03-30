@@ -1,22 +1,22 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
-import { PrototypeToolbar, ViewState } from '@/app/prototypes/PrototypeToolbar'
-import type { UseCase } from '@/app/prototypes/PrototypeToolbar'
+import React, { useState } from 'react'
+import { PrototypeToolbar, ViewState, UseCase } from '@/components'
 import {
   colors,
   spacing,
   typography,
   fontFamilies,
   fontWeights,
+  borderRadius,
   borderRadiusSemantics,
+  transitionPresets,
   breakpoints,
 } from '@/styles/design-tokens'
-import { Badge, Button, Input, DataTable, Skeleton, EmptyState, TabBar } from '@/components'
+import { Badge, Button, DataTable, Input, Skeleton, EmptyState, TabBar } from '@/components'
 import type { BadgeProps } from '@/components/Badge/Badge'
 import type { DataTableColumn } from '@/components'
-import { Select } from '@/components/Select'
-import { invoices, organizations, invoiceStatusOptions, marketOptions } from '../data'
+import { invoices, organizations } from '../data'
 import type { Invoice } from '../data'
 
 function useMediaQuery(query: string): boolean {
@@ -37,401 +37,310 @@ const USE_CASES: UseCase[] = [
   { label: 'UC3 — Multi-org consultant', description: 'Tom: supply chain across 2 orgs, write access in Payments' },
 ]
 
+const getOrgName = (id: string) => organizations.find(o => o.id === id)?.name ?? id
+
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
 
-const getOrgName = (id: string) => organizations.find((o) => o.id === id)?.name ?? id
-
-const formatTerms = (terms: Invoice['paymentTerms']) => {
-  const map: Record<string, string> = {
-    'net-15': 'Net 15',
-    'net-30': 'Net 30',
-    'net-45': 'Net 45',
-    'net-60': 'Net 60',
-    'due-on-receipt': 'Due on Receipt',
-  }
-  return map[terms] ?? terms
-}
-
-const statusColorMap: Record<Invoice['status'], BadgeProps['color']> = {
-  paid: 'success',
-  partial: 'warning',
-  sent: 'info',
-  viewed: 'info',
-  overdue: 'error',
-  draft: 'neutral',
-  voided: 'neutral',
-}
-
-function StatCard({ label, value, accent }: { label: string; value: string | number; accent?: boolean }) {
+// Stats card component
+function StatCard({ label, value, subtitle, icon, iconColor, iconBg }: { label: string; value: string | number; subtitle?: string; icon?: React.ReactNode; iconColor?: string; iconBg?: string }) {
   return (
     <div
       style={{
         flex: 1,
-        minWidth: '140px',
-        padding: spacing.lg,
-        backgroundColor: accent ? colors.brand.default : colors.surface.light,
+        minWidth: '160px',
+        padding: spacing.md,
+        backgroundColor: colors.surface.light,
         borderRadius: borderRadiusSemantics.card,
-        border: accent ? 'none' : `1px solid ${colors.border.lowEmphasis.onLight}`,
+        border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: spacing.md,
       }}
     >
-      <div
-        style={{
-          fontFamily: fontFamilies.display,
-          fontSize: typography.display.sm.fontSize,
-          fontWeight: fontWeights.bold,
-          lineHeight: '1',
-          color: accent ? colors.text.highEmphasis.onDark : colors.text.highEmphasis.onLight,
-        }}
-      >
-        {value}
-      </div>
-      <div
-        style={{
-          fontFamily: fontFamilies.body,
-          fontSize: typography.label.sm.fontSize,
-          fontWeight: fontWeights.medium,
-          color: accent ? 'rgba(255,255,255,0.75)' : colors.text.lowEmphasis.onLight,
-          marginTop: spacing['2xs'],
-          textTransform: 'uppercase' as const,
-          letterSpacing: '0.5px',
-        }}
-      >
-        {label}
+      {icon && (
+        <div
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: borderRadiusSemantics.card,
+            backgroundColor: iconBg || colors.brand.default,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: iconColor || colors.text.highEmphasis.onDark,
+            flexShrink: 0,
+          }}
+          aria-hidden="true"
+        >
+          {icon}
+        </div>
+      )}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['2xs'], minWidth: 0 }}>
+        <div
+          style={{
+            fontFamily: fontFamilies.body,
+            fontSize: typography.label.sm.fontSize,
+            fontWeight: fontWeights.medium,
+            color: colors.text.lowEmphasis.onLight,
+          }}
+        >
+          {label}
+        </div>
+        <div
+          style={{
+            fontFamily: fontFamilies.display,
+            fontSize: typography.heading.h3.fontSize,
+            fontWeight: fontWeights.bold,
+            lineHeight: '1',
+            color: colors.text.highEmphasis.onLight,
+          }}
+        >
+          {value}
+        </div>
+        {subtitle && (
+          <div
+            style={{
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.xs.fontSize,
+              color: colors.text.lowEmphasis.onLight,
+            }}
+          >
+            {subtitle}
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
+// Inline SVG icons for stat cards
+const InvoiceIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
+  </svg>
+)
+const DollarIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </svg>
+)
+const AlertIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
+)
+const CheckIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+)
+
 export default function InvoicesPage() {
   const [viewState, setViewState] = useState<ViewState>('default')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [marketFilter, setMarketFilter] = useState('all')
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set())
+  const [activeTab, setActiveTab] = useState('all')
+  const [activeUseCase, setActiveUseCase] = useState(0)
   const isMobile = useMediaQuery(`(max-width: ${parseInt(breakpoints.md) - 1}px)`)
 
-  const allMarketOptions = useMemo(
-    () => [{ value: 'all', label: 'All Markets' }, ...marketOptions],
-    []
-  )
+  // Compute stats
+  const totalInvoices = invoices.length
+  const outstandingInvoices = invoices.filter(inv => inv.status === 'sent' || inv.status === 'overdue' || inv.status === 'partial')
+  const outstandingBalance = outstandingInvoices.reduce((sum, inv) => sum + inv.amountDue, 0)
+  const overdueInvoices = invoices.filter(inv => inv.status === 'overdue')
+  const overdueAmount = overdueInvoices.reduce((sum, inv) => sum + inv.amountDue, 0)
+  const paidInvoices = invoices.filter(inv => inv.status === 'paid')
+  const paidAmount = paidInvoices.reduce((sum, inv) => sum + inv.total, 0)
 
-  const filteredInvoices = useMemo(() => {
-    return invoices.filter((inv) => {
-      const matchesSearch =
-        !searchQuery ||
-        inv.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        getOrgName(inv.senderOrgId).toLowerCase().includes(searchQuery.toLowerCase()) ||
-        getOrgName(inv.receiverOrgId).toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesStatus = statusFilter === 'all' || inv.status === statusFilter
-      const matchesMarket = marketFilter === 'all' || inv.market === marketFilter
-      return matchesSearch && matchesStatus && matchesMarket
-    })
-  }, [searchQuery, statusFilter, marketFilter])
+  // Filter invoices by tab
+  const filteredInvoices = activeTab === 'all'
+    ? invoices
+    : activeTab === 'outstanding'
+      ? invoices.filter(inv => inv.status === 'sent' || inv.status === 'overdue' || inv.status === 'partial' || inv.status === 'viewed')
+      : invoices.filter(inv => inv.status === 'voided') // archived
 
-  const activeFilterCount = [searchQuery, statusFilter !== 'all', marketFilter !== 'all'].filter(Boolean).length
-
-  const totalOutstanding = invoices
-    .filter((inv) => inv.status !== 'paid' && inv.status !== 'voided')
-    .reduce((sum, inv) => sum + inv.amountDue, 0)
-
-  const totalOverdue = invoices
-    .filter((inv) => inv.status === 'overdue')
-    .reduce((sum, inv) => sum + inv.amountDue, 0)
-
-  const paidThisMonth = invoices
-    .filter((inv) => {
-      if (inv.status !== 'paid' || !inv.paidAt) return false
-      const paidDate = new Date(inv.paidAt)
-      const now = new Date()
-      return paidDate.getMonth() === now.getMonth() && paidDate.getFullYear() === now.getFullYear()
-    })
-    .reduce((sum, inv) => sum + inv.amountPaid, 0)
-
-  const columns: DataTableColumn<Invoice>[] = [
-    {
-      key: 'invoiceNumber',
-      header: 'Invoice #',
-      sortable: true,
-      render: (row) => (
-        <a
-          href={`/prototypes/canopy-payments/invoice-detail?id=${row.id}`}
-          style={{
-            fontFamily: fontFamilies.mono,
-            fontSize: typography.body.sm.fontSize,
-            fontWeight: fontWeights.semibold,
-            color: colors.text.action.enabled,
-            textDecoration: 'none',
-          }}
-        >
-          {row.invoiceNumber}
-        </a>
-      ),
-    },
-    {
-      key: 'senderOrgId' as any,
-      header: 'From',
-      sortable: true,
-      render: (row) => (
-        <span
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.body.sm.fontSize,
-            color: colors.text.highEmphasis.onLight,
-          }}
-        >
-          {getOrgName(row.senderOrgId)}
-        </span>
-      ),
-    },
-    {
-      key: 'receiverOrgId' as any,
-      header: 'To',
-      sortable: true,
-      render: (row) => (
-        <span
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.body.sm.fontSize,
-            color: colors.text.highEmphasis.onLight,
-          }}
-        >
-          {getOrgName(row.receiverOrgId)}
-        </span>
-      ),
-    },
-    {
-      key: 'market',
-      header: 'Market',
-      render: (row) => (
-        <Badge color="brand" variant="subtle" size="sm">
-          {row.market}
-        </Badge>
-      ),
-    },
-    {
-      key: 'total',
-      header: 'Amount',
-      sortable: true,
-      render: (row) => (
-        <span
-          style={{
-            fontFamily: fontFamilies.mono,
-            fontSize: typography.body.sm.fontSize,
-            fontWeight: fontWeights.semibold,
-            color: colors.text.highEmphasis.onLight,
-            textAlign: 'right',
-            display: 'block',
-          }}
-        >
-          {formatCurrency(row.total)}
-        </span>
-      ),
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      sortable: true,
-      render: (row) => (
-        <Badge color={statusColorMap[row.status]} variant="filled" size="sm">
-          {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-        </Badge>
-      ),
-    },
-    {
-      key: 'dueDate',
-      header: 'Due Date',
-      sortable: true,
-      render: (row) => (
-        <span
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.body.sm.fontSize,
-            color: colors.text.lowEmphasis.onLight,
-          }}
-        >
-          {new Date(row.dueDate).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-          })}
-        </span>
-      ),
-    },
-    {
-      key: 'paymentTerms',
-      header: 'Terms',
-      render: (row) => (
-        <span
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: typography.body.sm.fontSize,
-            color: colors.text.lowEmphasis.onLight,
-          }}
-        >
-          {formatTerms(row.paymentTerms)}
-        </span>
-      ),
-    },
+  const invoiceColumns: DataTableColumn<Invoice>[] = [
+    { key: 'invoiceNumber', header: 'Invoice #', sortable: true, render: (row) => (
+      <a href={`/prototypes/canopy-payments/invoice-detail?id=${row.id}`} style={{ fontFamily: fontFamilies.mono, fontSize: typography.body.sm.fontSize, fontWeight: fontWeights.semibold, color: colors.text.action.enabled, textDecoration: 'none' }}>{row.invoiceNumber}</a>
+    )},
+    { key: 'senderOrgId', header: 'From', sortable: true, render: (row) => (
+      <span style={{ fontFamily: fontFamilies.body, fontSize: typography.body.sm.fontSize }}>{getOrgName(row.senderOrgId)}</span>
+    )},
+    { key: 'receiverOrgId', header: 'To', sortable: true, render: (row) => (
+      <span style={{ fontFamily: fontFamilies.body, fontSize: typography.body.sm.fontSize }}>{getOrgName(row.receiverOrgId)}</span>
+    )},
+    { key: 'total', header: 'Amount', sortable: true, render: (row) => (
+      <span style={{ fontFamily: fontFamilies.mono, fontSize: typography.body.sm.fontSize, fontWeight: fontWeights.semibold }}>{formatCurrency(row.total)}</span>
+    )},
+    { key: 'amountDue', header: 'Balance Due', sortable: true, render: (row) => (
+      <span style={{ fontFamily: fontFamilies.mono, fontSize: typography.body.sm.fontSize, fontWeight: fontWeights.semibold, color: row.amountDue > 0 ? colors.text.highEmphasis.onLight : colors.text.lowEmphasis.onLight }}>{formatCurrency(row.amountDue)}</span>
+    )},
+    { key: 'status', header: 'Status', sortable: true, render: (row) => {
+      const statusMap: Record<string, { color: BadgeProps['color']; variant: BadgeProps['variant'] }> = { paid: { color: 'success', variant: 'subtle' }, sent: { color: 'info', variant: 'subtle' }, overdue: { color: 'error', variant: 'subtle' }, draft: { color: 'neutral', variant: 'subtle' }, partial: { color: 'warning', variant: 'subtle' }, viewed: { color: 'info', variant: 'subtle' }, voided: { color: 'neutral', variant: 'subtle' } }
+      const b = statusMap[row.status] || { color: 'neutral' as const, variant: 'subtle' as const }
+      return <Badge color={b.color} variant={b.variant} size="sm">{row.status}</Badge>
+    }},
+    { key: 'createdAt', header: 'Created', sortable: true, render: (row) => (
+      <span style={{ fontFamily: fontFamilies.body, fontSize: typography.body.sm.fontSize, color: colors.text.lowEmphasis.onLight }}>{new Date(row.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+    )},
+    { key: 'dueDate', header: 'Due Date', sortable: true, render: (row) => (
+      <span style={{ fontFamily: fontFamilies.body, fontSize: typography.body.sm.fontSize, color: row.status === 'overdue' ? colors.status.important : colors.text.lowEmphasis.onLight }}>{new Date(row.dueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+    )},
   ]
 
-  const mobileColumns = columns.filter(
-    (c) => c.key === 'invoiceNumber' || c.key === 'total' || c.key === 'status' || c.key === 'dueDate'
-  )
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-      {/* Tabs + Create Invoice */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <TabBar
-          tabs={[
-            { id: 'overview', label: 'Overview' },
-            { id: 'purchase-orders', label: 'Purchase Orders' },
-            { id: 'invoices', label: 'Invoices' },
-            { id: 'transactions', label: 'Transactions' },
-          ]}
-          activeTab="invoices"
-          onTabChange={(tabId) => {
-            if (tabId === 'overview') window.location.href = '/prototypes/canopy-payments/dashboard'
-          }}
-          align="left"
-          hasDivider={false}
-        />
-        <Button
-          emphasis="high"
-          size="md"
-          leftIcon={
-            <svg width={16} height={16} viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M8 2V14M2 8H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          }
-          onClick={() => (window.location.href = '/prototypes/canopy-payments/create-invoice')}
-        >
-          Create Invoice
-        </Button>
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
 
-      {/* Toolbar with filters */}
-      {viewState !== 'empty' && (
-        <DataTable.Toolbar>
-          <DataTable.Toolbar.Left>
-            <Input
-              placeholder="Search invoice #, sender, or receiver..."
-              value={searchQuery}
-              onChange={(val) => setSearchQuery(val)}
-              size="sm"
-              fullWidth
-              style={{ marginBottom: 0, maxWidth: isMobile ? '100%' : '280px' }}
-              startAdornment={
-                <svg width={14} height={14} viewBox="0 0 16 16" fill="none" aria-hidden="true" style={{ color: colors.icon.enabled.onLight }}>
-                  <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M11 11L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              }
-            />
-            <Select
-              options={invoiceStatusOptions}
-              value={statusFilter}
-              onChange={setStatusFilter}
-              size="sm"
-              style={{ minWidth: '140px' }}
-            />
-            <Select
-              options={allMarketOptions}
-              value={marketFilter}
-              onChange={setMarketFilter}
-              size="sm"
-              style={{ minWidth: '140px' }}
-            />
-            {activeFilterCount > 0 && (
-              <DataTable.IconButton
-                onClick={() => {
-                  setSearchQuery('')
-                  setStatusFilter('all')
-                  setMarketFilter('all')
-                }}
-                title="Clear all filters"
-                label="Clear"
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M4 4L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M12 4L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </DataTable.IconButton>
-            )}
-          </DataTable.Toolbar.Left>
-          <DataTable.Toolbar.Right>
-            <span
-              style={{
-                fontFamily: fontFamilies.body,
-                fontSize: typography.body.xs.fontSize,
-                fontWeight: fontWeights.medium,
-                color: colors.text.lowEmphasis.onLight,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {filteredInvoices.length} {filteredInvoices.length === 1 ? 'invoice' : 'invoices'}
-              {activeFilterCount > 0 && ' (filtered)'}
-            </span>
-          </DataTable.Toolbar.Right>
-        </DataTable.Toolbar>
+      {/* Page heading */}
+      {viewState === 'default' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing['2xs'] }}>
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: fontFamilies.display,
+              fontSize: typography.heading.h3.fontSize,
+              fontWeight: fontWeights.bold,
+              color: colors.text.highEmphasis.onLight,
+            }}
+          >
+            Invoices
+          </h1>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: fontFamilies.body,
+              fontSize: typography.body.md.fontSize,
+              color: colors.text.lowEmphasis.onLight,
+            }}
+          >
+            Manage and track all invoices across your organization.
+          </p>
+        </div>
       )}
 
-      {/* Content by state */}
+      {/* Quick Stats */}
+      {viewState === 'default' && (
+        <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+          <StatCard label="Total Invoices" value={totalInvoices} subtitle={`${paidInvoices.length} paid`} icon={<InvoiceIcon />} iconBg={colors.badge.infoLight} iconColor={colors.badge.info} />
+          <StatCard label="Outstanding" value={outstandingInvoices.length} subtitle={`${formatCurrency(outstandingBalance)} balance`} icon={<DollarIcon />} iconBg={colors.badge.yellowLight} iconColor={colors.badge.warning} />
+          <StatCard label="Overdue" value={overdueInvoices.length} subtitle={`${formatCurrency(overdueAmount)} past due`} icon={<AlertIcon />} iconBg={colors.badge.importantLight} iconColor={colors.badge.important} />
+          <StatCard label="Paid" value={paidInvoices.length} subtitle={`${formatCurrency(paidAmount)} collected`} icon={<CheckIcon />} iconBg={colors.badge.successLight} iconColor={colors.badge.success} />
+        </div>
+      )}
+
+      {/* Tabs + Toolbar + Table */}
+      {viewState === 'default' && (
+        <div style={{ display: 'flex', flexDirection: 'column', marginTop: spacing.xs }}>
+          {/* Tabs + button */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <TabBar
+              tabs={[
+                { id: 'all', label: 'All' },
+                { id: 'outstanding', label: 'Outstanding' },
+                { id: 'archived', label: 'Archived' },
+              ]}
+              activeTab={activeTab}
+              onTabChange={(tabId) => {
+                setActiveTab(tabId)
+                setSelectedKeys(new Set())
+              }}
+              align="left"
+              hasDivider={false}
+            />
+            <div style={{ flexShrink: 0 }}>
+              <Button
+                emphasis="high"
+                size="md"
+                leftIcon={
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                }
+                onClick={() => (window.location.href = '/prototypes/canopy-payments/create-invoice')}
+              >
+                Create Invoice
+              </Button>
+            </div>
+          </div>
+
+          {/* Toolbar */}
+          <div style={{ marginTop: spacing.sm }}>
+            <DataTable.Toolbar>
+              <DataTable.Toolbar.Left>
+                <DataTable.SelectionInfo
+                  count={selectedKeys.size}
+                  onClear={() => setSelectedKeys(new Set())}
+                >
+                  <DataTable.IconButton title="Archive selected">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <rect x="1" y="2" width="14" height="4" rx="1" stroke="currentColor" strokeWidth="1.3" />
+                      <path d="M2 6v7a1 1 0 001 1h10a1 1 0 001-1V6" stroke="currentColor" strokeWidth="1.3" />
+                      <path d="M6 9h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                    </svg>
+                  </DataTable.IconButton>
+                </DataTable.SelectionInfo>
+              </DataTable.Toolbar.Left>
+              <DataTable.Toolbar.Right>
+                <Input
+                  size="sm"
+                  placeholder="Search..."
+                  style={{ width: 200, marginBottom: 0, marginRight: spacing.sm }}
+                  startAdornment={
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.3" />
+                      <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+                    </svg>
+                  }
+                />
+                <DataTable.FilterButton />
+                <DataTable.SortButton />
+                <DataTable.IconButton title="Manage columns">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <rect x="1.5" y="1.5" width="4" height="13" rx="1" stroke="currentColor" strokeWidth="1.3" />
+                    <rect x="6.5" y="1.5" width="4" height="13" rx="1" stroke="currentColor" strokeWidth="1.3" />
+                    <rect x="11.5" y="1.5" width="3" height="13" rx="1" stroke="currentColor" strokeWidth="1.3" />
+                  </svg>
+                </DataTable.IconButton>
+              </DataTable.Toolbar.Right>
+            </DataTable.Toolbar>
+          </div>
+
+          {/* Table */}
+          <div style={{ marginTop: spacing.sm }}>
+            <DataTable
+              columns={invoiceColumns}
+              data={filteredInvoices}
+              rowKey={(row) => row.id}
+              density="comfortable"
+              display="table"
+              hoverable
+              selectable
+              selectedKeys={selectedKeys}
+              onSelectionChange={setSelectedKeys}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Loading state */}
       {viewState === 'loading' && (
         <>
-          {/* Skeleton stats */}
           <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
             {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  flex: 1,
-                  minWidth: '140px',
-                  padding: spacing.lg,
-                  backgroundColor: colors.surface.light,
-                  borderRadius: borderRadiusSemantics.card,
-                  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: spacing['2xs'],
-                }}
-              >
+              <div key={i} style={{ flex: 1, minWidth: '140px', padding: spacing.lg, backgroundColor: colors.surface.light, borderRadius: borderRadiusSemantics.card, border: `1px solid ${colors.border.lowEmphasis.onLight}`, display: 'flex', flexDirection: 'column', gap: spacing['2xs'] }}>
                 <Skeleton width="60%" height={28} />
-                <Skeleton width="40%" height={12} />
+                <Skeleton width="80%" height={14} />
               </div>
             ))}
           </div>
-          {/* Skeleton table */}
-          <div
-            style={{
-              backgroundColor: colors.surface.light,
-              borderRadius: borderRadiusSemantics.card,
-              border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-              padding: spacing.lg,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: spacing.sm,
-            }}
-          >
+          <div style={{ backgroundColor: colors.surface.light, borderRadius: borderRadiusSemantics.card, border: `1px solid ${colors.border.lowEmphasis.onLight}`, padding: spacing.lg, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+            <Skeleton width="35%" height={20} />
             {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.md,
-                  padding: `${spacing.sm} 0`,
-                  borderBottom: i < 5 ? `1px solid ${colors.border.lowEmphasis.onLight}` : 'none',
-                }}
-              >
-                <Skeleton width={120} height={16} />
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: spacing['2xs'] }}>
-                  <Skeleton width="45%" height={16} />
-                </div>
-                <Skeleton width={80} height={16} />
-                <Skeleton width={65} height={24} />
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: spacing.md, padding: `${spacing.sm} 0`, borderBottom: i < 5 ? `1px solid ${colors.border.lowEmphasis.onLight}` : 'none' }}>
+                <Skeleton width={110} height={16} />
+                <Skeleton width={110} height={16} />
                 <Skeleton width={90} height={16} />
+                <Skeleton width={75} height={24} />
                 <Skeleton width={85} height={16} />
               </div>
             ))}
@@ -439,28 +348,22 @@ export default function InvoicesPage() {
         </>
       )}
 
+      {/* Empty state */}
       {viewState === 'empty' && (
-        <div
-          style={{
-            backgroundColor: colors.surface.light,
-            borderRadius: borderRadiusSemantics.card,
-            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-            padding: `${spacing['5xl']} ${spacing['2xl']}`,
-          }}
-        >
+        <div style={{ backgroundColor: colors.surface.light, borderRadius: borderRadiusSemantics.card, border: `1px solid ${colors.border.lowEmphasis.onLight}`, padding: `${spacing['5xl']} ${spacing['2xl']}` }}>
           <EmptyState
             aria-label="No invoices"
             icon={
               <svg width={64} height={64} viewBox="0 0 64 64" fill="none" aria-hidden="true">
-                <rect x="12" y="8" width="40" height="48" rx="4" stroke={colors.border.midEmphasis.onLight} strokeWidth="2" />
-                <path d="M22 20H42M22 28H38M22 36H34" stroke={colors.border.midEmphasis.onLight} strokeWidth="2" strokeLinecap="round" />
-                <path d="M22 46H30" stroke={colors.border.midEmphasis.onLight} strokeWidth="2" strokeLinecap="round" />
-                <circle cx="46" cy="46" r="10" fill={colors.brand.default} />
-                <path d="M42 46H50M46 42V50" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M38 6H18a4 4 0 00-4 4v44a4 4 0 004 4h28a4 4 0 004-4V18z" stroke={colors.border.midEmphasis.onLight} strokeWidth="2" />
+                <polyline points="38,6 38,18 50,18" stroke={colors.border.midEmphasis.onLight} strokeWidth="2" fill="none" />
+                <line x1="22" y1="30" x2="42" y2="30" stroke={colors.border.midEmphasis.onLight} strokeWidth="1.5" />
+                <line x1="22" y1="38" x2="42" y2="38" stroke={colors.border.midEmphasis.onLight} strokeWidth="1.5" />
+                <line x1="22" y1="46" x2="34" y2="46" stroke={colors.border.midEmphasis.onLight} strokeWidth="1.5" />
               </svg>
             }
             title="No invoices yet"
-            description="Create your first invoice to start tracking payments across your organizations."
+            description="Create your first invoice to start tracking payments."
           >
             <Button
               emphasis="high"
@@ -472,64 +375,27 @@ export default function InvoicesPage() {
               }
               onClick={() => (window.location.href = '/prototypes/canopy-payments/create-invoice')}
             >
-              Create Invoice
+              Create your first invoice
             </Button>
           </EmptyState>
         </div>
       )}
 
+      {/* Error state */}
       {viewState === 'error' && (
-        <div
-          style={{
-            backgroundColor: colors.surface.important,
-            borderRadius: borderRadiusSemantics.card,
-            border: `1px solid ${colors.surfaceBorder.important}`,
-            padding: `${spacing['3xl']} ${spacing['2xl']}`,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: spacing.lg,
-            textAlign: 'center',
-          }}
-        >
-          <div
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(193, 11, 30, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+        <div style={{ backgroundColor: colors.surface.important, borderRadius: borderRadiusSemantics.card, border: `1px solid ${colors.surfaceBorder.important}`, padding: `${spacing['3xl']} ${spacing['2xl']}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.lg, textAlign: 'center' }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'rgba(193, 11, 30, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width={32} height={32} viewBox="0 0 32 32" fill="none" aria-hidden="true">
               <circle cx="16" cy="16" r="14" stroke={colors.status.important} strokeWidth="2" />
               <path d="M16 9V18M16 21V23" stroke={colors.status.important} strokeWidth="2" strokeLinecap="round" />
             </svg>
           </div>
           <div>
-            <h3
-              style={{
-                fontFamily: fontFamilies.display,
-                fontSize: typography.heading.h4.fontSize,
-                fontWeight: fontWeights.semibold,
-                color: colors.text.important,
-                margin: 0,
-              }}
-            >
+            <h3 style={{ fontFamily: fontFamilies.display, fontSize: typography.heading.h4.fontSize, fontWeight: fontWeights.semibold, color: colors.text.important, margin: 0 }}>
               Failed to load invoices
             </h3>
-            <p
-              style={{
-                fontFamily: fontFamilies.body,
-                fontSize: typography.body.md.fontSize,
-                color: colors.text.lowEmphasis.onLight,
-                margin: `${spacing.xs} 0 0`,
-                maxWidth: '400px',
-              }}
-            >
-              There was an error connecting to the payments service. Please try again or contact support if the issue persists.
+            <p style={{ fontFamily: fontFamilies.body, fontSize: typography.body.md.fontSize, color: colors.text.lowEmphasis.onLight, margin: `${spacing.xs} 0 0`, maxWidth: '400px' }}>
+              There was an error connecting to the invoices service. Please try again.
             </p>
           </div>
           <Button emphasis="high" size="lg" onClick={() => setViewState('default')}>
@@ -538,121 +404,13 @@ export default function InvoicesPage() {
         </div>
       )}
 
-      {viewState === 'default' && (
-        <DataTable
-          columns={isMobile ? mobileColumns : columns}
-          data={filteredInvoices}
-          rowKey={(row) => row.id}
-          density="default"
-          display={isMobile ? 'cards' : 'table'}
-          hoverable
-          selectable
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-          renderCard={(row) => (
-            <div
-              style={{
-                padding: spacing.lg,
-                backgroundColor: colors.surface.light,
-                borderRadius: borderRadiusSemantics.card,
-                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: spacing.sm,
-                cursor: 'pointer',
-              }}
-              onClick={() => (window.location.href = `/prototypes/canopy-payments/invoice-detail?id=${row.id}`)}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span
-                  style={{
-                    fontFamily: fontFamilies.mono,
-                    fontSize: typography.body.sm.fontSize,
-                    fontWeight: fontWeights.semibold,
-                    color: colors.text.action.enabled,
-                  }}
-                >
-                  {row.invoiceNumber}
-                </span>
-                <Badge color={statusColorMap[row.status]} variant="filled" size="sm">
-                  {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-                </Badge>
-              </div>
-              <div
-                style={{
-                  fontFamily: fontFamilies.mono,
-                  fontSize: typography.heading.h4.fontSize,
-                  fontWeight: fontWeights.bold,
-                  color: colors.text.highEmphasis.onLight,
-                }}
-              >
-                {formatCurrency(row.total)}
-              </div>
-              <div
-                style={{
-                  fontFamily: fontFamilies.body,
-                  fontSize: typography.body.xs.fontSize,
-                  color: colors.text.lowEmphasis.onLight,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: spacing['2xs'],
-                }}
-              >
-                <span>From: {getOrgName(row.senderOrgId)}</span>
-                <span>To: {getOrgName(row.receiverOrgId)}</span>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  borderTop: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                  paddingTop: spacing.sm,
-                  marginTop: spacing['2xs'],
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: fontFamilies.body,
-                    fontSize: typography.body.xs.fontSize,
-                    color: colors.text.lowEmphasis.onLight,
-                  }}
-                >
-                  Due{' '}
-                  {new Date(row.dueDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </span>
-                <Badge color="brand" variant="subtle" size="sm">
-                  {row.market}
-                </Badge>
-              </div>
-            </div>
-          )}
-          cardGridColumns="repeat(auto-fill, minmax(280px, 1fr))"
-          emptyState={
-            <p
-              style={{
-                fontFamily: fontFamilies.body,
-                fontSize: typography.body.md.fontSize,
-                color: colors.text.lowEmphasis.onLight,
-                margin: 0,
-              }}
-            >
-              No invoices match your filters. Try adjusting your search or filter criteria.
-            </p>
-          }
-          style={{ boxShadow: 'none' }}
-        />
-      )}
-
       {/* Floating dev toolbar */}
       <PrototypeToolbar
         viewState={viewState}
         onViewStateChange={setViewState}
         useCases={USE_CASES}
+        activeUseCase={activeUseCase}
+        onUseCaseChange={setActiveUseCase}
       />
     </div>
   )

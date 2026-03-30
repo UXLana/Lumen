@@ -5,7 +5,7 @@ import {
   tab,
   colors,
   fontFamilies,
-} from '@/styles/design-tokens'
+} from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS
