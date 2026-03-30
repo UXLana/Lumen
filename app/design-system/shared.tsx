@@ -87,7 +87,6 @@ export const navSections: LeftNavSection[] = [
       { id: 'banner', label: 'Banner', href: '/components/banner' },
       { id: 'brand-banner', label: 'Brand Banner', href: '/components/brand-banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
-      { id: 'chat-panel', label: 'Chat Panel', href: '/components/chat-panel' },
       { id: 'checkbox', label: 'Checkbox', href: '/components/checkbox' },
       { id: 'chip', label: 'Chip', href: '/components/chip' },
       { id: 'collection-toolbar', label: 'Collection Toolbar', href: '/components/collection-toolbar' },
@@ -369,9 +368,13 @@ export function StyleguideLayout({
     setSidebarCollapsed(collapsed)
   }, [])
 
-  const handleItemClick = useCallback((item: LeftNavItem) => {
-    window.location.href = item.href
-  }, [])
+  const handleItemClick = useCallback((_item: LeftNavItem) => {
+    // Let Next.js <Link> handle navigation (client-side, no full reload)
+    // Close mobile drawer on navigation
+    if (isMobile) {
+      setSidebarCollapsed(true)
+    }
+  }, [isMobile])
 
   // Logo with theme switcher (shown when sidebar is expanded)
   const logoElement = (
