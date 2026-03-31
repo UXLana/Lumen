@@ -137,7 +137,7 @@ export type { InputProps } from './Input'
 
 // LeftNav
 export { LeftNav } from './LeftNav'
-export type { LeftNavProps, LeftNavItem, LeftNavSection, LeftNavVariant } from './LeftNav'
+export type { LeftNavProps, LeftNavItem, LeftNavSection, LeftNavVariant, LeftNavSelectorProps, LeftNavSelectorOption } from './LeftNav'
 
 // Link
 export { Link } from './Link'

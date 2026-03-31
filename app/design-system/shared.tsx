@@ -1617,7 +1617,7 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
                 <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0, marginBottom: 0 }}>{example.title}</h3>
                 {example.isDefault && (
                   <span style={{
-                    ...typography.label.xs,
+                    ...typography.label.sm,
                     background: colors.brand.default,
                     color: '#fff',
                     padding: '2px 8px',
