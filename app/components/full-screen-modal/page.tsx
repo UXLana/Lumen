@@ -115,6 +115,22 @@ import type {
     'Set sticky on panels that need independent scrolling, like a preview pane beside a long form.',
     'Pair with ConfirmDialog for unsaved-changes warnings on close.',
   ],
+  whenToUse: [
+    'Full-screen overlay for complex single-step tasks like editing a record, composing a message, or reviewing details.',
+    'Detail views or forms that need maximum screen real estate without step navigation.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Multi-step guided workflow with step indicators', instead: 'TaskModal — full-screen with step navigation, columns, mobile ProgressBar' },
+    { scenario: 'Simple yes/no confirmation', instead: 'ConfirmDialog — lightweight modal with cancel/confirm' },
+  ],
+  usageExamples: [
+    {
+      title: 'Edit record modal',
+      description: 'Full-screen overlay for editing a single record. Use header buttons for cancel/save.',
+      isDefault: true,
+      code: `<FullScreenModal open={open} onClose={handleClose}>\n  <FullScreenModal.Header\n    title="Edit License"\n    buttons={[\n      { label: 'Cancel', emphasis: 'low', onClick: handleClose },\n      { label: 'Save', emphasis: 'high', onClick: handleSave },\n    ]}\n  />\n  <FullScreenModal.Body>\n    {/* Form content */}\n  </FullScreenModal.Body>\n</FullScreenModal>`,
+    },
+  ],
 }
 
 // =============================================================================

@@ -75,6 +75,30 @@ import type { AccordionProps, AccordionItemProps, AccordionVariant } from '@/com
     'Avoid nesting accordions within accordions.',
     'Keep 5-7 accordion items maximum for usability.',
   ],
+  // ── Usage Intelligence ──
+  whenToUse: [
+    'Collapsible content sections where users scan headings and expand on demand (settings, FAQs, detail panels).',
+    'Reducing page length by hiding secondary content behind expandable headers.',
+    'Grouped form sections where each section is independent (e.g., profile settings, notification preferences).',
+  ],
+  whenNotToUse: [
+    { scenario: 'Sequential multi-step form where order matters', instead: 'Stepper — enforces step progression with status indicators' },
+    { scenario: 'Switching between different views of the same content', instead: 'Tab — content panels swap without expand/collapse' },
+    { scenario: 'Full-screen guided workflow', instead: 'TaskModal — full viewport per step with navigation chrome' },
+  ],
+  usageExamples: [
+    {
+      title: 'Settings page with default section open',
+      description: 'Always open the first section by default so users see content immediately. Use defaultExpandedIds to set which sections start expanded.',
+      isDefault: true,
+      code: `<Accordion defaultExpandedIds={['general']}>\n  <AccordionItem id="general" title="General Settings">\n    {/* General settings form */}\n  </AccordionItem>\n  <AccordionItem id="notifications" title="Notifications">\n    {/* Notification preferences */}\n  </AccordionItem>\n  <AccordionItem id="security" title="Security">\n    {/* Security settings */}\n  </AccordionItem>\n</Accordion>`,
+    },
+    {
+      title: 'FAQ with single-expand',
+      description: 'Use allowMultiple={false} so only one answer is visible at a time.',
+      code: `<Accordion allowMultiple={false} variant="filled">\n  <AccordionItem id="q1" title="How do I renew my license?">\n    Navigate to Licenses > Renewals...\n  </AccordionItem>\n  <AccordionItem id="q2" title="What documents are required?">\n    You will need a valid ID...\n  </AccordionItem>\n</Accordion>`,
+    },
+  ],
 }
 
 export default function AccordionPage() {

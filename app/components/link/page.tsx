@@ -46,6 +46,13 @@ const linkDocData: ComponentDocData = {
     'Use subtle variant for secondary or de-emphasized links.',
     'Always indicate external links with the external prop for user awareness.',
   ],
+  whenToUse: [
+    'Inline text navigation within content (e.g., "View details", "Learn more").',
+    'External links that navigate away from the app.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Primary or secondary page actions (submit, save, delete)', instead: 'Button — designed for actions with emphasis levels and states' },
+  ],
 }
 
 export default function LinkPage() {

@@ -143,6 +143,24 @@ const tabDocData: ComponentDocData = {
     'Use scrollable mode when tab count exceeds available width.',
     'Use icon position "top" for navigation tabs, "leading" for content tabs.',
   ],
+  whenToUse: [
+    'Switching between distinct content panels on the same page (e.g., Overview / Details / Settings).',
+    'Navigation tabs with icons and optional badge counts.',
+    '5+ options that won\'t fit in a SegmentedControl.',
+  ],
+  whenNotToUse: [
+    { scenario: '2-5 inline option toggles without content panel switching', instead: 'SegmentedControl — compact toggle, no panel swap' },
+    { scenario: 'Collapsible content sections', instead: 'Accordion — expand/collapse without tab navigation' },
+    { scenario: 'Sequential step progression', instead: 'Stepper — enforces step ordering with status indicators' },
+  ],
+  usageExamples: [
+    {
+      title: 'Content panel tabs',
+      description: 'Standard tab bar controlling content panels. Use onTabChange (receives tab ID string).',
+      isDefault: true,
+      code: `<TabBar\n  tabs={[\n    { id: 'overview', label: 'Overview' },\n    { id: 'details', label: 'Details' },\n    { id: 'settings', label: 'Settings' },\n  ]}\n  activeTab={activeTab}\n  onTabChange={(id) => setActiveTab(id)}\n/>`,
+    },
+  ],
 }
 
 export default function TabPage() {

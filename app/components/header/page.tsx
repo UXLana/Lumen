@@ -84,6 +84,18 @@ const headerDocData: ComponentDocData = {
     'Combine with LeftNav for a full application shell layout.',
     'Pass onThemeToggle to enable the dark/light mode toggle.',
   ],
+  whenToUse: [
+    'Application shell — top bar with logo, navigation, search, user menu.',
+    'Every full-page layout should include Header + LeftNav.',
+  ],
+  usageExamples: [
+    {
+      title: 'App header with nav',
+      description: 'Standard app header. Combine with LeftNav for full application shell.',
+      isDefault: true,
+      code: `<Header\n  title="Metrc"\n  sticky\n  onSearchClick={openSearch}\n  userMenu={{ name: user.name, avatar: user.avatarUrl }}\n/>`,
+    },
+  ],
 }
 
 export default function HeaderPage() {

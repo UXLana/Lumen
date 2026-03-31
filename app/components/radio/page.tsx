@@ -70,6 +70,23 @@ const radioDocData: ComponentDocData = {
     'Prefer Checkbox when multiple selections are needed.',
     'Prefer Segmented Control for 2-4 options that need instant visual feedback.',
   ],
+  whenToUse: [
+    'Single selection from 3-7 visible options where all choices should be visible at once.',
+    'Form fields where the user must pick exactly one option before submitting.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Multiple selections allowed', instead: 'Checkbox / CheckboxGroup — supports multi-select' },
+    { scenario: '2-4 options needing instant visual feedback (no form submit)', instead: 'SegmentedControl — inline toggle, all options visible' },
+    { scenario: 'More than 7 options', instead: 'Select — dropdown keeps the form compact' },
+  ],
+  usageExamples: [
+    {
+      title: 'License type selection',
+      description: 'Standard radio group inside a form. Use RadioGroup for shared state and accessible group semantics.',
+      isDefault: true,
+      code: `<RadioGroup\n  label="License Type"\n  value={licenseType}\n  onChange={setLicenseType}\n>\n  <Radio value="retail" label="Retail Dispensary" />\n  <Radio value="cultivator" label="Cultivator" />\n  <Radio value="processor" label="Processor" />\n</RadioGroup>`,
+    },
+  ],
 }
 
 export default function RadioPage() {

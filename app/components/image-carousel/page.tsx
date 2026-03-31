@@ -82,6 +82,18 @@ const imageCarouselDocData: ComponentDocData = {
     'Dot indicators use a pill shape for the active slide and circles for inactive slides.',
     'Single-image carousels hide all navigation controls.',
   ],
+  whenToUse: [
+    'Image galleries for products, facilities, or documentation photos.',
+    'Multiple images that should be browsable with navigation controls.',
+  ],
+  usageExamples: [
+    {
+      title: 'Product image gallery',
+      description: 'Always provide alt text for each image. Use thumbnails for product detail pages.',
+      isDefault: true,
+      code: `<ImageCarousel\n  images={product.images}\n  alts={product.imageAlts}\n  indicatorStyle="thumbnails"\n/>`,
+    },
+  ],
 }
 
 // =============================================================================

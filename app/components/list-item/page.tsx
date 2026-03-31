@@ -96,6 +96,21 @@ const listItemDocData: ComponentDocData = {
     'Use List container with selectionMode for checkbox/radio selection patterns.',
     'Combine leftType with rightType for rich list item layouts.',
   ],
+  whenToUse: [
+    'Vertical list of items with rich content: avatar, icon, text, trailing badge/switch/chevron.',
+    'Simple data that does not need multi-column sorting or filtering.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Multi-column data with sorting, filtering, or pagination', instead: 'DataTable — full table with column headers and controls' },
+  ],
+  usageExamples: [
+    {
+      title: 'User list with avatars',
+      description: 'Structured list with leading avatar and trailing chevron. Use lines prop for consistent height.',
+      isDefault: true,
+      code: `<List>\n  {users.map(user => (\n    <ListItem\n      key={user.id}\n      leftType="avatar"\n      leftContent={{ name: user.name, src: user.avatar }}\n      primary={user.name}\n      secondary={user.role}\n      rightType="chevron"\n      lines={2}\n    />\n  ))}\n</List>`,
+    },
+  ],
 }
 
 export default function ListItemPage() {

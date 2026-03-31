@@ -58,6 +58,22 @@ const inputDocData: ComponentDocData = {
     'Use errorMessage prop instead of separate error components for consistent error display.',
     'The onChange handler provides the value as the first argument for convenience.',
   ],
+  whenToUse: [
+    'Single-line text entry: names, emails, search queries, short values.',
+    'Any form field that needs a label, placeholder, validation, and assistive text.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Multi-line text (comments, descriptions, notes)', instead: 'Textarea — supports auto-resize and character count' },
+    { scenario: 'Selecting from predefined options', instead: 'Select — dropdown for <15 options, or Combobox for searchable' },
+  ],
+  usageExamples: [
+    {
+      title: 'Form field with validation',
+      description: 'Standard labeled input with error state. onChange provides value as first arg (not event).',
+      isDefault: true,
+      code: `<Input\n  label="Business Name"\n  value={name}\n  onChange={(value) => setName(value)}\n  errorMessage={errors.name}\n  required\n/>`,
+    },
+  ],
 }
 
 export default function InputPage() {

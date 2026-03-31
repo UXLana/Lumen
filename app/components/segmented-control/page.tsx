@@ -50,6 +50,23 @@ const segmentedControlDocData: ComponentDocData = {
     'Each segment should have a concise label (1-2 words).',
     'Use fullWidth to distribute segments evenly across the container.',
   ],
+  whenToUse: [
+    'Inline toggle between 2-5 mutually exclusive options with instant visual feedback (e.g., view mode, time range, density).',
+    'Compact option switcher that fits within a toolbar or card header.',
+  ],
+  whenNotToUse: [
+    { scenario: '6+ options or content panels that swap', instead: 'Tab — supports scrolling, icons, badges, and larger option sets' },
+    { scenario: 'Single selection in a form with many options', instead: 'Radio — standard form control for longer option lists' },
+    { scenario: 'Selecting from a dropdown', instead: 'Select — compact dropdown' },
+  ],
+  usageExamples: [
+    {
+      title: 'View mode toggle',
+      description: 'Inline toggle for switching display modes. Use segments prop (not items). onChange receives segment ID string.',
+      isDefault: true,
+      code: `<SegmentedControl\n  segments={[\n    { id: 'table', label: 'Table' },\n    { id: 'cards', label: 'Cards' },\n  ]}\n  value={viewMode}\n  onChange={(id) => setViewMode(id)}\n/>`,
+    },
+  ],
 }
 
 export default function SegmentedControlPage() {

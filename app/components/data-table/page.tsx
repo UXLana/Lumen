@@ -125,6 +125,36 @@ const dataTableDocData: ComponentDocData = {
     'Selection requires rowKey, selectable, selectedKeys, and onSelectionChange props.',
     'Use renderCard for fully custom card layouts in card display mode.',
   ],
+  // ── Usage Intelligence ──
+  whenToUse: [
+    'Displaying structured, multi-column data that users need to scan, sort, or filter (license lists, product catalogs, compliance reports).',
+    'Data sets with 5+ rows that benefit from pagination, sorting, or selection.',
+    'Admin/back-office views where users need to act on multiple records (bulk select, export).',
+  ],
+  whenNotToUse: [
+    { scenario: 'Simple label-value pairs for a single record', instead: 'DetailField — label/value layout for detail views' },
+    { scenario: 'KPI metrics or summary numbers', instead: 'StatsCard — designed for single metrics with trend indicators' },
+    { scenario: 'Vertical list of items with actions (no columns needed)', instead: 'ListItem — single-column list with leading/trailing content' },
+    { scenario: 'Fewer than 5 items with simple structure', instead: 'ListItem — less visual overhead than a full table' },
+  ],
+  usageExamples: [
+    {
+      title: 'Sortable table with pagination',
+      description: 'Standard data table for list views. Always provide rowKey and caption. Add sortable and paginated for tables with >10 rows.',
+      isDefault: true,
+      code: `<DataTable\n  columns={columns}\n  data={data}\n  rowKey={(row) => row.id}\n  caption="Active licenses"\n  sortable\n  paginated\n  hoverable\n/>`,
+    },
+    {
+      title: 'Selectable with bulk actions',
+      description: 'Use for workflows where users select multiple rows to act on (export, delete, assign).',
+      code: `<DataTable\n  columns={columns}\n  data={data}\n  rowKey={(row) => row.id}\n  caption="Select licenses to export"\n  selectable\n  selectedKeys={selectedKeys}\n  onSelectionChange={setSelectedKeys}\n  sortable\n  paginated\n/>`,
+    },
+    {
+      title: 'Responsive table-to-cards',
+      description: 'Auto-switches to card view on small screens. Provide renderCard for a custom card layout.',
+      code: `<DataTable\n  columns={columns}\n  data={data}\n  rowKey={(row) => row.id}\n  display="auto"\n  breakpoint={768}\n  renderCard={(row) => <ProductCard product={row} />}\n/>`,
+    },
+  ],
 }
 
 export default function DataTablePage() {

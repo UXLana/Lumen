@@ -207,6 +207,21 @@ export type { StepperProps, StepperStepProps, StepItem, StepStatus, StepperVaria
 export { Switch } from './Switch'
 export type { SwitchProps } from './Switch'
 
+// TaskModal
+export { TaskModal, TaskModalPanel } from './TaskModal'
+export type {
+  TaskModalProps,
+  TaskModalPanelProps,
+  TaskStep,
+  TaskStepStatus,
+  TaskModalOrientation,
+  TaskModalColumns,
+  TaskModalMobileProgress,
+  TaskModalHeaderButton,
+  TaskModalPanelBackground,
+  TaskModalPanelBorder,
+} from './TaskModal'
+
 // Tab
 export { Tab, TabBar, TabIcon } from './Tab'
 export type { TabProps, TabBarProps, TabItem, TabIconPosition, TabBarAlign } from './Tab'

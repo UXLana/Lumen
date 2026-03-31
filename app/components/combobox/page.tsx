@@ -111,6 +111,32 @@ const comboboxDocData: ComponentDocData = {
     'Use onQueryChange for async/server-side filtering paired with the loading prop.',
     'The useCombobox hook can be used standalone for custom combobox UIs.',
   ],
+  // ── Usage Intelligence ──
+  whenToUse: [
+    'Dropdown selection with 15+ options where users benefit from typing to search/filter.',
+    'Async or server-side data sources where options load on demand as the user types.',
+    'Selections that allow creating new values not in the existing list (create-new pattern).',
+    'Any dropdown where keyboard-driven typeahead filtering improves efficiency.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Fewer than 15 predefined static options', instead: 'Select — simpler dropdown, no search input needed' },
+    { scenario: 'Free-form text input with no predefined options', instead: 'Input — standard text field without a listbox' },
+    { scenario: '2-5 mutually exclusive options visible at once', instead: 'SegmentedControl — all options visible, no dropdown' },
+    { scenario: 'Boolean yes/no toggle', instead: 'Switch — on/off toggle, no dropdown needed' },
+  ],
+  usageExamples: [
+    {
+      title: 'Searchable state selector',
+      description: 'Standard searchable dropdown for large option lists. Users type to filter. Use for any selection with 15+ options.',
+      isDefault: true,
+      code: `<Combobox\n  label="State"\n  options={usStates}\n  value={selectedState}\n  onChange={setSelectedState}\n  placeholder="Search states..."\n/>`,
+    },
+    {
+      title: 'Async loading with server search',
+      description: 'Use onQueryChange + loading for server-side filtering. Good for large datasets like product catalogs.',
+      code: `<Combobox\n  label="Product"\n  options={results}\n  value={selected}\n  onChange={setSelected}\n  onQueryChange={handleSearch}\n  loading={isLoading}\n  placeholder="Search products..."\n/>`,
+    },
+  ],
 }
 
 // =============================================================================

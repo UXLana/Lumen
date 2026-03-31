@@ -75,6 +75,24 @@ import type { CheckboxProps, CheckboxGroupProps } from '@/components'`,
     'Prefer Radio when only one option can be selected from a group.',
     'Prefer Switch for instant on/off toggles without a form submission.',
   ],
+  whenToUse: [
+    'Multiple selections from a list of options within a form (e.g., select compliance categories, choose notification types).',
+    'Single boolean opt-in that requires form submission (e.g., "I agree to terms").',
+    'Parent/child selection trees using indeterminate state.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Only one option can be selected from a group', instead: 'Radio — enforces single selection' },
+    { scenario: 'Instant on/off toggle without form submission', instead: 'Switch — conveys immediate effect' },
+    { scenario: 'Selecting from a dropdown list', instead: 'Select — compact dropdown for predefined options' },
+  ],
+  usageExamples: [
+    {
+      title: 'Multi-select checkbox group',
+      description: 'Group of checkboxes with shared label and error handling. onChange provides checked boolean as first arg.',
+      isDefault: true,
+      code: `<CheckboxGroup label="Notification preferences">\n  <Checkbox\n    label="Email"\n    checked={prefs.email}\n    onChange={(checked) => setPrefs({ ...prefs, email: checked })}\n  />\n  <Checkbox\n    label="SMS"\n    checked={prefs.sms}\n    onChange={(checked) => setPrefs({ ...prefs, sms: checked })}\n  />\n</CheckboxGroup>`,
+    },
+  ],
 }
 
 export default function CheckboxPage() {

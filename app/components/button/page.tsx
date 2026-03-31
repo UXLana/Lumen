@@ -77,6 +77,35 @@ import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`,
     'Place low-emphasis (cancel) buttons before high-emphasis (submit) buttons in groups.',
     'Use ButtonGroup with spacing="form" for form action rows.',
   ],
+  // ── Usage Intelligence ──
+  whenToUse: [
+    'Primary actions that trigger state changes (submit, save, create, delete).',
+    'Navigation actions that leave the current context (open modal, go to page).',
+    'Toolbar actions paired with icons (filter, export, add new).',
+  ],
+  whenNotToUse: [
+    { scenario: 'Inline text navigation within content', instead: 'Link — semantic anchor, underlined text style' },
+    { scenario: 'Toggling between 2-5 options in a group', instead: 'SegmentedControl — inline option switcher with visual state' },
+    { scenario: 'Toggling a boolean setting on/off', instead: 'Switch — conveys on/off state better than a button' },
+  ],
+  usageExamples: [
+    {
+      title: 'Form submit with cancel',
+      description: 'Standard form action row. One high-emphasis primary action, one low-emphasis cancel. Use ButtonGroup for consistent spacing.',
+      isDefault: true,
+      code: `<ButtonGroup spacing="form" align="end">\n  <Button emphasis="low">Cancel</Button>\n  <Button emphasis="high">Save Changes</Button>\n</ButtonGroup>`,
+    },
+    {
+      title: 'Destructive action',
+      description: 'Use for permanent actions like delete or revoke. Always pair with a ConfirmDialog.',
+      code: `<Button emphasis="high" destructive onClick={handleDelete}>\n  Revoke License\n</Button>`,
+    },
+    {
+      title: 'Icon button in toolbar',
+      description: 'Use iconOnly with aria-label for compact toolbar actions.',
+      code: `<Button emphasis="low" iconOnly aria-label="Add new item">\n  <IconPlus />\n</Button>`,
+    },
+  ],
 }
 
 export default function ButtonPage() {

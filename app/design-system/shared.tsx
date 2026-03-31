@@ -106,6 +106,7 @@ export const navSections: LeftNavSection[] = [
       { id: 'product-card', label: 'Product Card', href: '/components/product-card' },
       { id: 'segmented-control', label: 'Segmented Control', href: '/components/segmented-control' },
       { id: 'stepper', label: 'Stepper', href: '/components/stepper' },
+      { id: 'task-modal', label: 'Task Modal', href: '/components/task-modal' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
     ],
   },
@@ -1378,6 +1379,27 @@ export interface DocSubComponent {
   props: DocPropItem[]
 }
 
+/** Usage example for a component — shows a common configuration scenario. */
+export interface DocUsageExample {
+  /** Short title for this example (e.g., "Sortable table with pagination") */
+  title: string
+  /** Brief description of when/why to use this configuration */
+  description: string
+  /** Minimal JSX code snippet — props only, no app wrappers */
+  code?: string
+  /** Mark ONE example per component as the default "start here" config */
+  isDefault?: boolean
+}
+
+/** Anti-pattern: when NOT to use this component, with a redirect to the better choice. */
+export interface DocWhenNotToUse {
+  /** The scenario where this component is the wrong choice */
+  scenario: string
+  /** Component name + brief reason. Convention: start with component name.
+   *  e.g., "Combobox — supports search and async loading for large option sets" */
+  instead: string
+}
+
 export interface ComponentDocData {
   displayName: string
   importPath: string
@@ -1390,6 +1412,13 @@ export interface ComponentDocData {
   subComponents?: DocSubComponent[]
   relatedComponents?: { name: string; href: string }[]
   notes?: string[]
+  // ── Usage Intelligence ──────────────────────────────────────────────
+  /** When to reach for this component. 1-2 sentences each, 3-7 entries. */
+  whenToUse?: string[]
+  /** When NOT to use — redirects to a better component for the scenario. */
+  whenNotToUse?: DocWhenNotToUse[]
+  /** Usage examples showing common configurations. Mark one `isDefault: true`. */
+  usageExamples?: DocUsageExample[]
 }
 
 export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
@@ -1406,6 +1435,24 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
     `component: ${data.displayName}`,
     `import: "${data.importPath}"`,
     `description: "${data.description}"`,
+    // ── Usage Intelligence (top of block for LLM selection) ──
+    ...(data.whenToUse?.length ? [
+      `when_to_use:`,
+      ...data.whenToUse.map(u => `  - "${u}"`),
+    ] : []),
+    ...(data.whenNotToUse?.length ? [
+      `when_not_to_use:`,
+      ...data.whenNotToUse.map(w =>
+        `  - scenario: "${w.scenario}"\n    instead: "${w.instead}"`
+      ),
+    ] : []),
+    ...(data.usageExamples?.length ? [
+      `usage_examples:`,
+      ...data.usageExamples.map(e =>
+        `  - title: "${e.title}"\n    description: "${e.description}"${e.isDefault ? '\n    is_default: true' : ''}${e.code ? `\n    code: |\n      ${e.code.split('\n').join('\n      ')}` : ''}`
+      ),
+    ] : []),
+    // ── Props ──
     `props:`,
     ...data.props.map(p =>
       `  - name: ${p.name}\n    type: "${p.type}"\n    required: ${!!p.required}\n    default: ${p.default ? `"${p.default}"` : 'null'}\n    description: "${p.description}"`
@@ -1424,6 +1471,23 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
       ...data.accessibility.map(a =>
         `  - feature: "${a.feature}"\n    description: "${a.description}"`
       ),
+    ] : []),
+    // ── Previously missing from YAML output ──
+    ...(data.tokens?.length ? [
+      `tokens:`,
+      ...data.tokens.map(t =>
+        `  - token: "${t.token}"\n    usage: "${t.usage}"`
+      ),
+    ] : []),
+    ...(data.relatedComponents?.length ? [
+      `related_components:`,
+      ...data.relatedComponents.map(r =>
+        `  - name: "${r.name}"\n    href: "${r.href}"`
+      ),
+    ] : []),
+    ...(data.notes?.length ? [
+      `notes:`,
+      ...data.notes.map(n => `  - "${n}"`),
     ] : []),
   ].join('\n')
 
@@ -1474,6 +1538,110 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
           </pre>
         </div>
       </section>
+
+      {/* Usage Guidance */}
+      {(data.whenToUse?.length || data.whenNotToUse?.length) && (
+        <section style={sharedStyles.section}>
+          <h2 style={sharedStyles.sectionTitle}>Usage Guidance</h2>
+          <p style={sharedStyles.sectionDescription}>
+            When to use this component — and when to reach for something else.
+          </p>
+
+          {data.whenToUse && data.whenToUse.length > 0 && (
+            <div style={{ ...sharedStyles.card, marginBottom: '16px' }}>
+              <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0, color: colors.status.success }}>When to use</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {data.whenToUse.map((item, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                    <span style={{
+                      flexShrink: 0,
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      background: colors.status.success,
+                      marginTop: '7px',
+                    }} />
+                    <span style={{ ...typography.body.sm, color: colors.text.highEmphasis.onLight }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {data.whenNotToUse && data.whenNotToUse.length > 0 && (
+            <div style={sharedStyles.card}>
+              <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0, color: colors.status.important }}>When NOT to use</h3>
+              <div style={sharedStyles.tableContainer}>
+                <table style={sharedStyles.table}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...sharedStyles.th, width: '45%' }}>Scenario</th>
+                      <th style={sharedStyles.th}>Use Instead</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.whenNotToUse.map((item, i) => (
+                      <tr key={i}>
+                        <td style={sharedStyles.td}>{item.scenario}</td>
+                        <td style={{ ...sharedStyles.td, color: colors.brand.default, fontWeight: 600 }}>{item.instead}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Usage Examples */}
+      {data.usageExamples && data.usageExamples.length > 0 && (
+        <section style={sharedStyles.section}>
+          <h2 style={sharedStyles.sectionTitle}>Common Configurations</h2>
+          <p style={sharedStyles.sectionDescription}>
+            Recommended patterns for typical scenarios.{' '}
+            {data.usageExamples.some(e => e.isDefault) && (
+              <span style={{ fontWeight: 600 }}>Start with the default configuration below.</span>
+            )}
+          </p>
+          {data.usageExamples.map((example, i) => (
+            <div
+              key={i}
+              style={{
+                ...sharedStyles.card,
+                marginBottom: '16px',
+                borderLeft: example.isDefault ? `3px solid ${colors.brand.default}` : undefined,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0, marginBottom: 0 }}>{example.title}</h3>
+                {example.isDefault && (
+                  <span style={{
+                    ...typography.label.xs,
+                    background: colors.brand.default,
+                    color: '#fff',
+                    padding: '2px 8px',
+                    borderRadius: borderRadius.full,
+                    fontSize: '10px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                  }}>
+                    Default
+                  </span>
+                )}
+              </div>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, margin: '4px 0 12px' }}>
+                {example.description}
+              </p>
+              {example.code && (
+                <pre style={{ ...sharedStyles.codeBlock, fontSize: '12px', lineHeight: '1.5' }}>
+                  {example.code}
+                </pre>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
 
       {/* API Reference */}
       <section style={sharedStyles.section}>

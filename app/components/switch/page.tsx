@@ -50,6 +50,23 @@ const switchDocData: ComponentDocData = {
     'Prefer Checkbox for options that require a form submission to take effect.',
     'Use fullWidth with labelPlacement="start" for settings-style layouts.',
   ],
+  whenToUse: [
+    'Binary on/off toggles that take effect immediately without a form submit (e.g., enable notifications, dark mode).',
+    'Settings pages with labeled toggles in a vertical list.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Option that requires form submission to take effect', instead: 'Checkbox — conventional form control, submitted with the form' },
+    { scenario: 'Choosing one from multiple options', instead: 'Radio — single selection from a group' },
+    { scenario: 'Selecting from a dropdown list', instead: 'Select — dropdown for predefined options' },
+  ],
+  usageExamples: [
+    {
+      title: 'Settings toggle',
+      description: 'Immediate-effect toggle for a settings page. Use fullWidth with labelPlacement="start" for clean alignment.',
+      isDefault: true,
+      code: `<Switch\n  label="Enable email notifications"\n  checked={emailEnabled}\n  onChange={setEmailEnabled}\n  fullWidth\n  labelPlacement="start"\n/>`,
+    },
+  ],
 }
 
 export default function SwitchPage() {

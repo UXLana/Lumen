@@ -43,6 +43,12 @@ const dividerDocData: ComponentDocData = {
     'Use light variant for subtle separation, heavy for strong visual breaks.',
     'Vertical dividers work well in toolbars and inline layouts.',
   ],
+  whenToUse: [
+    'Visual separation between content sections, list items, or toolbar groups.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Collapsible content sections', instead: 'Accordion — provides expand/collapse with built-in dividers' },
+  ],
 }
 
 export default function DividerPage() {

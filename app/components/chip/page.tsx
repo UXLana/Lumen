@@ -81,6 +81,30 @@ import type { ChipProps, ChipGroupProps, ChipState, ChipLeftContent } from '@/co
     'Removable chips should always provide an onRemove handler.',
     'When using inside ChipGroup, ARIA roles are automatically managed via _inGroup prop.',
   ],
+  // ── Usage Intelligence ──
+  whenToUse: [
+    'Interactive filter controls that users can toggle on/off (e.g., filter by category, state, status).',
+    'Removable tags representing user selections (e.g., selected filters, assigned tags, multi-select tokens).',
+    'Compact, clickable entities that represent a selectable value in a horizontal group.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Static status indicators on data rows (e.g., "Active", "Pending")', instead: 'Badge — non-interactive, read-only status display' },
+    { scenario: 'Primary or secondary page actions', instead: 'Button — designed for actions with emphasis levels' },
+    { scenario: 'Navigation between content views', instead: 'Tab — content panel switching with underline indicators' },
+  ],
+  usageExamples: [
+    {
+      title: 'Filter chip group',
+      description: 'Horizontal row of toggleable filters. Use ChipGroup with aria-label. Track selected state to filter data.',
+      isDefault: true,
+      code: `<ChipGroup aria-label="Filter by category">\n  {categories.map(cat => (\n    <Chip\n      key={cat.id}\n      label={cat.name}\n      selected={activeFilters.includes(cat.id)}\n      onSelect={() => toggleFilter(cat.id)}\n    />\n  ))}\n</ChipGroup>`,
+    },
+    {
+      title: 'Removable selection tokens',
+      description: 'Show selected items as removable chips (e.g., after multi-select). Each chip has an onRemove handler.',
+      code: `<ChipGroup aria-label="Selected states">\n  {selectedStates.map(state => (\n    <Chip\n      key={state}\n      label={state}\n      removable\n      onRemove={() => removeState(state)}\n    />\n  ))}\n</ChipGroup>`,
+    },
+  ],
 }
 
 // =============================================================================

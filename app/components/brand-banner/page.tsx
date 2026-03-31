@@ -93,6 +93,13 @@ const brandBannerDocData: ComponentDocData = {
     'Text color is automatically calculated for contrast — no need to set manually.',
     'Use the trailing prop for decorative elements like avatars or illustrations.',
   ],
+  whenToUse: [
+    'Dashboard hero area to greet users, set context, or highlight key actions.',
+    'Full-width branded sections with gradient backgrounds.',
+  ],
+  whenNotToUse: [
+    { scenario: 'System messages, warnings, or errors', instead: 'Banner — semantic variants with icons and actions' },
+  ],
 }
 
 // =============================================================================

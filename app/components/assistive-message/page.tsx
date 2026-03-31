@@ -74,6 +74,22 @@ const assistiveMessageDocData: ComponentDocData = {
     'Use counter for character-limited fields to show remaining characters.',
     'Use error-overflow type when error text is too long for inline display.',
   ],
+  whenToUse: [
+    'Inline help text, hints, or validation messages directly below a form field.',
+    'Character count display for text inputs with length limits.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Page-level messages or alerts', instead: 'Banner — persistent, full-width message with actions' },
+    { scenario: 'Temporary feedback after an action', instead: 'Toast — auto-dismissing notification' },
+  ],
+  usageExamples: [
+    {
+      title: 'Field hint with error state',
+      description: 'Pair with Input via aria-describedby. Shows helper text normally, error text on validation failure.',
+      isDefault: true,
+      code: `<Input label="Email" aria-describedby="email-help" />\n<AssistiveMessage\n  id="email-help"\n  variant={hasError ? 'error' : 'helper'}\n>\n  {hasError ? 'Please enter a valid email' : 'We will never share your email'}\n</AssistiveMessage>`,
+    },
+  ],
 }
 
 export default function AssistiveMessagePage() {

@@ -83,6 +83,21 @@ import type { AvatarProps, AvatarGroupProps, AvatarSize, AvatarColor } from '@/c
     'Use AvatarGroup with compact mode for space-efficient user lists.',
     'Color assignments (1-8) should be deterministic per user for consistency.',
   ],
+  whenToUse: [
+    'Displaying user identity in headers, lists, cards, or comment threads.',
+    'Showing a group of users (AvatarGroup) with overlap for compact display.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Decorative product or content images', instead: 'ImageCarousel or a plain <img> — Avatar is for people' },
+  ],
+  usageExamples: [
+    {
+      title: 'User avatar with fallback',
+      description: 'Always provide name for initials fallback. Image is optional.',
+      isDefault: true,
+      code: `<Avatar name="Jane Smith" src={user.avatarUrl} size="md" />`,
+    },
+  ],
 }
 
 export default function AvatarPage() {

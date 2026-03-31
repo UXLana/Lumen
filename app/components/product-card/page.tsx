@@ -87,6 +87,13 @@ const productCardDocData: ComponentDocData = {
     'Compact layout hides category and potency badges for density.',
     'Legacy `brand` and `tags` props are still supported for backward compatibility.',
   ],
+  whenToUse: [
+    'Cannabis product displays with market badges, compliance scoring, and potency information.',
+    'Card view in DataTable display="cards" mode for product registries.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Generic app/integration marketplace listings', instead: 'MarketplaceCard — simpler card without cannabis-specific fields' },
+  ],
 }
 
 // =============================================================================

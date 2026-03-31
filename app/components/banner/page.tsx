@@ -60,6 +60,37 @@ const bannerDocData: ComponentDocData = {
     'Always include an icon for accessibility - do not rely on color alone.',
     'Banners with actions should have clear, descriptive action labels.',
   ],
+  // ── Usage Intelligence ──
+  whenToUse: [
+    'Persistent, page-level or section-level messages that stay visible until dismissed or resolved.',
+    'System status changes that affect the entire page (e.g., "License application submitted successfully").',
+    'Regulatory or compliance warnings that users must acknowledge before proceeding.',
+    'Informational tips or onboarding guidance at the top of a view.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Temporary success/error feedback after a user action (e.g., "Saved")', instead: 'Toast — auto-dismisses after a few seconds, non-blocking' },
+    { scenario: 'Inline validation or help text next to a form field', instead: 'AssistiveMessage — pairs directly with Input/Select for field-level feedback' },
+    { scenario: 'Confirming a destructive action before it happens', instead: 'ConfirmDialog — modal with cancel/confirm buttons' },
+    { scenario: 'Small status indicators on data items (e.g., "Active", "Pending")', instead: 'Badge — compact status label for tables and lists' },
+  ],
+  usageExamples: [
+    {
+      title: 'Page-level info banner',
+      description: 'Standard informational banner at the top of a page. Use as the starting point for most banner needs.',
+      isDefault: true,
+      code: `<Banner variant="info" title="New feature available">\n  You can now export compliance reports as PDF.\n</Banner>`,
+    },
+    {
+      title: 'Error with actions',
+      description: 'Critical error requiring user action. Use for blocking issues that prevent workflow completion.',
+      code: `<Banner\n  variant="error"\n  title="License renewal overdue"\n  primaryAction={{ label: "Renew Now", onClick: handleRenew }}\n  secondaryAction={{ label: "View Details", onClick: handleDetails }}\n/>`,
+    },
+    {
+      title: 'Dismissible warning',
+      description: 'Non-blocking warning that the user can dismiss. Use for important but non-critical notices.',
+      code: `<Banner\n  variant="warning"\n  title="Scheduled maintenance"\n  dismissible\n  onDismiss={handleDismiss}\n>\n  The system will be unavailable Saturday 2-4 AM ET.\n</Banner>`,
+    },
+  ],
 }
 
 export default function BannerPage() {

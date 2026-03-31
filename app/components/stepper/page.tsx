@@ -110,6 +110,30 @@ const stepperDocData: ComponentDocData = {
     'Keep step labels concise - ideally 1-3 words.',
     'Provide step content via the stepContent prop array.',
   ],
+  // ── Usage Intelligence ──
+  whenToUse: [
+    'Short multi-step forms (2-5 steps) that fit inline on a page without needing a full-screen takeover.',
+    'Settings or configuration wizards embedded within a page section.',
+    'Progress indication for a sequential process where each step expands in place.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Complex workflow with substantial content per step that needs full-screen focus', instead: 'TaskModal — full-screen modal with step navigation, columns, and mobile ProgressBar' },
+    { scenario: 'Collapsible content sections without sequential progression', instead: 'Accordion — expand/collapse without step ordering' },
+    { scenario: 'Switching between independent content views', instead: 'Tab — parallel content panels, no step progression' },
+  ],
+  usageExamples: [
+    {
+      title: 'Linear sequential stepper',
+      description: 'Standard inline stepper for short step-by-step forms. Steps expand in place with content below each step indicator.',
+      isDefault: true,
+      code: `<Stepper\n  steps={[\n    { id: 'info', label: 'Basic Info' },\n    { id: 'details', label: 'Details' },\n    { id: 'review', label: 'Review' },\n  ]}\n  activeStep={step}\n  onStepChange={setStep}\n  variant="linear"\n  stepContent={[<InfoForm />, <DetailsForm />, <ReviewPanel />]}\n/>`,
+    },
+    {
+      title: 'Non-linear with clickable steps',
+      description: 'Use when users need to jump between steps freely (e.g., editing previously completed sections).',
+      code: `<Stepper\n  steps={steps}\n  activeStep={step}\n  onStepChange={setStep}\n  variant="nonLinear"\n  clickable\n  stepContent={stepContents}\n/>`,
+    },
+  ],
 }
 
 export default function StepperPage() {

@@ -88,6 +88,12 @@ const marketplaceCardDocData: ComponentDocData = {
     'Use compact variant for sidebar or condensed lists.',
     'Use horizontal variant for search results or comparison views.',
   ],
+  whenToUse: [
+    'App or integration marketplace listings with image, title, description, and action.',
+  ],
+  whenNotToUse: [
+    { scenario: 'Cannabis product displays with compliance data', instead: 'ProductCard — includes market badges, potency, and compliance scoring' },
+  ],
 }
 
 export default function MarketplaceCardPage() {

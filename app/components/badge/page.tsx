@@ -52,6 +52,30 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
     'Always pair color with an icon for accessibility - do not rely on color alone.',
     'Keep badge text concise - ideally 1-2 words or a short number.',
   ],
+  // ── Usage Intelligence ──
+  whenToUse: [
+    'Static, read-only status indicators on data rows or cards (e.g., "Active", "Pending", "Expired").',
+    'Categorical labels that help users scan and identify item types at a glance.',
+    'Numeric counts or small metadata (e.g., notification count, item quantity).',
+  ],
+  whenNotToUse: [
+    { scenario: 'Interactive, toggleable filter tags', instead: 'Chip — supports selection, removal, and click handlers' },
+    { scenario: 'Page-level persistent messages or alerts', instead: 'Banner — full-width message with actions and dismiss' },
+    { scenario: 'Inline form field validation or help text', instead: 'AssistiveMessage — pairs with Input/Select for field-level feedback' },
+  ],
+  usageExamples: [
+    {
+      title: 'Status badge in a table row',
+      description: 'Display record status inline. Map status values to semantic variants for consistent color coding.',
+      isDefault: true,
+      code: `<Badge variant={statusMap[row.status]}>\n  {row.status}\n</Badge>`,
+    },
+    {
+      title: 'Category label on a card',
+      description: 'Use subtle variant for secondary classification labels that should not compete with primary content.',
+      code: `<Badge variant="neutral" appearance="subtle">\n  {item.category}\n</Badge>`,
+    },
+  ],
 }
 
 export default function BadgePage() {

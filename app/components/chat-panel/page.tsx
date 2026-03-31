@@ -84,6 +84,18 @@ import type { ChatMessage, ChatAction, DotAnimation } from '@/components/ChatPan
     'ChatFab and ChatSearchTrigger are standalone trigger components — use them to open the panel.',
     'DotGrid is an animated avatar with pulse and wind animations, respects prefers-reduced-motion.',
   ],
+  whenToUse: [
+    'AI assistant chat interface embedded in the application.',
+    'Conversational UI that can render structured data (tables, cards, stats) inline.',
+  ],
+  usageExamples: [
+    {
+      title: 'Floating chat panel',
+      description: 'Use ChatFab as the trigger and ChatPanel as the sliding panel.',
+      isDefault: true,
+      code: `<ChatFab onClick={() => setOpen(true)} />\n<ChatPanel\n  open={open}\n  onClose={() => setOpen(false)}\n  messages={messages}\n  onSend={handleSend}\n/>`,
+    },
+  ],
 }
 
 // =============================================================================
