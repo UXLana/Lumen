@@ -6,6 +6,7 @@ import {
   colors,
   fontFamilies,
   typography,
+  spacing,
   sidebar,
   transitionPresets,
   zIndex,
@@ -44,9 +45,11 @@ function useSidebarColors(): SidebarColors {
 
 import {
   IconChevronDown,
+  IconCheck,
   IconSidebarOpen,
   IconSidebarClose,
   IconX,
+  IconColors,
 } from '../Icons'
 
 // =============================================================================
@@ -83,11 +86,40 @@ export interface LeftNavSection {
 
 export type LeftNavVariant = 'default' | 'flat' | 'grouped'
 
+export interface LeftNavSelectorOption {
+  /** Unique value for the option */
+  value: string
+  /** Display label */
+  label: string
+  /** Optional icon shown in both the trigger and menu */
+  icon?: React.ReactNode
+}
+
+export interface LeftNavSelectorProps {
+  /** Menu options */
+  options: LeftNavSelectorOption[]
+  /** Currently selected value */
+  value?: string
+  /** Callback when selection changes */
+  onChange?: (value: string) => void
+  /** Icon shown in collapsed state and as leading icon in expanded trigger */
+  icon?: React.ReactNode
+  /** Accessible label for the selector button */
+  'aria-label'?: string
+}
+
 export interface LeftNavProps {
   /** Logo element displayed at the top */
   logo?: React.ReactNode
   /** Compact logo for collapsed state */
   collapsedLogo?: React.ReactNode
+  /**
+   * Dropdown selector below the logo (e.g., theme picker, environment selector).
+   * Renders as a low-emphasis button — shows label when expanded, icon-only when collapsed.
+   */
+  logoSelector?: LeftNavSelectorProps
+  /** Callback when logo is clicked. When provided, logo renders as a button with hover effect. */
+  onLogoClick?: () => void
   /** Navigation sections */
   sections: LeftNavSection[]
   /** Footer sections (e.g., Admin, Settings) */
@@ -102,6 +134,12 @@ export interface LeftNavProps {
   onItemClick?: (item: LeftNavItem) => void
   /** Whether to show the collapse toggle button */
   showCollapseToggle?: boolean
+  /**
+   * Shape controls the nav container's edge treatment:
+   * - 'default': Rectangular with right border divider (flush against page edge)
+   * - 'rounded': Rounded corners, no right border (floating card style)
+   */
+  shape?: 'default' | 'rounded'
   /**
    * Variant controls section header behavior:
    * - 'default': Sections with titles show collapsible headers with chevron
@@ -221,6 +259,277 @@ function Tooltip({ content, children, visible, position, id }: TooltipProps) {
         </div>
       )}
     </>
+  )
+}
+
+// =============================================================================
+// LOGO SELECTOR DROPDOWN
+// =============================================================================
+
+interface LogoSelectorDropdownProps {
+  selector: LeftNavSelectorProps
+  collapsed: boolean
+}
+
+function LogoSelectorDropdown({ selector, collapsed }: LogoSelectorDropdownProps) {
+  const sidebarColors = useSidebarColors()
+  const [isOpen, setIsOpen] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 })
+
+  const selectedOption = selector.options.find((o) => o.value === selector.value)
+  const selectorIcon = selector.icon || <IconColors size="sm" />
+
+  // Position menu below trigger
+  const updatePosition = useCallback(() => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      if (collapsed) {
+        setMenuPosition({
+          top: rect.bottom + 4,
+          left: rect.left,
+          width: 180,
+        })
+      } else {
+        setMenuPosition({
+          top: rect.bottom + 4,
+          left: rect.left,
+          width: rect.width,
+        })
+      }
+    }
+  }, [collapsed])
+
+  const handleToggle = () => {
+    if (!isOpen) updatePosition()
+    setIsOpen(!isOpen)
+  }
+
+  const handleSelect = (value: string) => {
+    selector.onChange?.(value)
+    setIsOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  // Close on click outside
+  useEffect(() => {
+    if (!isOpen) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        !triggerRef.current?.contains(e.target as Node) &&
+        !menuRef.current?.contains(e.target as Node)
+      ) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isOpen])
+
+  // Keyboard navigation in menu
+  const handleMenuKeyDown = (e: React.KeyboardEvent) => {
+    const items = menuRef.current?.querySelectorAll('[role="option"]') as NodeListOf<HTMLElement>
+    if (!items?.length) return
+    const currentIndex = Array.from(items).indexOf(document.activeElement as HTMLElement)
+
+    switch (e.key) {
+      case 'Escape':
+        e.preventDefault()
+        setIsOpen(false)
+        triggerRef.current?.focus()
+        break
+      case 'ArrowDown':
+        e.preventDefault()
+        items[currentIndex < items.length - 1 ? currentIndex + 1 : 0]?.focus()
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        items[currentIndex > 0 ? currentIndex - 1 : items.length - 1]?.focus()
+        break
+      case 'Enter':
+      case ' ':
+        e.preventDefault()
+        if (document.activeElement?.getAttribute('data-value')) {
+          handleSelect(document.activeElement.getAttribute('data-value')!)
+        }
+        break
+    }
+  }
+
+  // Focus first item when menu opens
+  useEffect(() => {
+    if (isOpen && menuRef.current) {
+      const selected = menuRef.current.querySelector('[aria-selected="true"]') as HTMLElement
+      const first = menuRef.current.querySelector('[role="option"]') as HTMLElement
+      setTimeout(() => (selected || first)?.focus(), 50)
+    }
+  }, [isOpen])
+
+  // Trigger button — low emphasis style matching nav items
+  const triggerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: collapsed ? '0' : spacing.xs,
+    width: '100%',
+    height: sidebar.navItem.height,
+    padding: collapsed ? `0` : `${sidebar.navItem.paddingY} ${sidebar.navItem.paddingX}`,
+    justifyContent: collapsed ? 'center' : 'flex-start',
+    border: 'none',
+    borderRadius: sidebar.navItem.borderRadius,
+    backgroundColor: isHovered || isOpen ? sidebarColors.item.hover.background : 'transparent',
+    color: sidebarColors.item.default.text,
+    cursor: 'pointer',
+    fontFamily: fontFamilies.body,
+    fontSize: sidebar.navItem.typography.fontSize,
+    fontWeight: sidebar.navItem.typography.fontWeight,
+    lineHeight: sidebar.navItem.typography.lineHeight,
+    transition: `all ${transitionPresets.fast}`,
+    outline: 'none',
+    ...(isFocused ? focusRingStyle : {}),
+  }
+
+  const menuStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: menuPosition.top,
+    left: menuPosition.left,
+    width: menuPosition.width,
+    backgroundColor: colors.surface.light,
+    border: `1px solid ${sidebarColors.border}`,
+    borderRadius: borderRadius.sm,
+    padding: spacing['2xs'],
+    boxShadow: shadows.lg,
+    zIndex: zIndex.popover,
+    maxHeight: '240px',
+    overflowY: 'auto',
+  }
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        style={triggerStyle}
+        onClick={handleToggle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-label={selector['aria-label'] || `Select: ${selectedOption?.label || 'None'}`}
+      >
+        <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: sidebarColors.item.default.icon }}>
+          {selectorIcon}
+        </span>
+        {!collapsed && (
+          <>
+            <span style={{
+              flex: 1,
+              textAlign: 'left',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}>
+              {selectedOption?.label || 'Select...'}
+            </span>
+            <span style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexShrink: 0,
+              color: sidebarColors.item.default.icon,
+              transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: `transform ${transitionPresets.fast}`,
+            }}>
+              <IconChevronDown size="sm" />
+            </span>
+          </>
+        )}
+      </button>
+
+      {isOpen && (
+        <div
+          ref={menuRef}
+          style={menuStyle}
+          role="listbox"
+          aria-label={selector['aria-label'] || 'Options'}
+          onKeyDown={handleMenuKeyDown}
+        >
+          {selector.options.map((option) => {
+            const isSelected = option.value === selector.value
+            return (
+              <SelectorMenuItem
+                key={option.value}
+                option={option}
+                isSelected={isSelected}
+                onSelect={handleSelect}
+              />
+            )
+          })}
+        </div>
+      )}
+    </>
+  )
+}
+
+interface SelectorMenuItemProps {
+  option: LeftNavSelectorOption
+  isSelected: boolean
+  onSelect: (value: string) => void
+}
+
+function SelectorMenuItem({ option, isSelected, onSelect }: SelectorMenuItemProps) {
+  const sidebarColors = useSidebarColors()
+  const [isHovered, setIsHovered] = useState(false)
+
+  const itemStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: spacing.xs,
+    padding: `${spacing['2xs']} ${spacing.xs}`,
+    borderRadius: borderRadius.xs,
+    backgroundColor: isHovered ? sidebarColors.item.hover.background : 'transparent',
+    color: isSelected ? sidebarColors.item.active.text : sidebarColors.item.default.text,
+    fontFamily: fontFamilies.body,
+    fontSize: sidebar.navItem.typography.fontSize,
+    fontWeight: isSelected ? sidebar.navItem.typographyActive.fontWeight : sidebar.navItem.typography.fontWeight,
+    cursor: 'pointer',
+    border: 'none',
+    width: '100%',
+    textAlign: 'left',
+    outline: 'none',
+    transition: `all ${transitionPresets.fast}`,
+  }
+
+  return (
+    <div
+      role="option"
+      aria-selected={isSelected}
+      data-value={option.value}
+      tabIndex={-1}
+      style={itemStyle}
+      onClick={() => onSelect(option.value)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setIsHovered(true)}
+      onBlur={() => setIsHovered(false)}
+    >
+      {option.icon && (
+        <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: sidebarColors.item.default.icon }}>
+          {option.icon}
+        </span>
+      )}
+      <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {option.label}
+      </span>
+      {isSelected && (
+        <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0, color: colors.brand.default }}>
+          <IconCheck size="sm" />
+        </span>
+      )}
+    </div>
   )
 }
 
@@ -524,7 +833,7 @@ function LeftNavItemComponent({
         left: '4px',
         right: '4px',
         backgroundColor: isActive ? sidebarColors.item.active.background : (isHovered ? sidebarColors.item.hover.background : 'transparent'),
-        borderRadius: borderRadius.md,
+        borderRadius: sidebar.navItem.borderRadius,
         zIndex: 0,
         transition: `all ${transitionPresets.fast}`,
       }
@@ -535,7 +844,7 @@ function LeftNavItemComponent({
         left: '4px',
         right: '4px',
         backgroundColor: isActive ? sidebarColors.item.active.background : (isHovered ? sidebarColors.item.hover.background : 'transparent'),
-        borderRadius: borderRadius.md,
+        borderRadius: sidebar.navItem.borderRadius,
         zIndex: 0,
         transition: `all ${transitionPresets.fast}`,
       }
@@ -1056,6 +1365,8 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
     {
       logo,
       collapsedLogo,
+      logoSelector,
+      onLogoClick,
       sections,
       footerSections,
       activeItemId,
@@ -1063,6 +1374,7 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
       onCollapseChange,
       onItemClick,
       showCollapseToggle = true,
+      shape = 'default',
       variant = 'default',
       mobileBehavior = 'drawer',
       mobileOpen = false,
@@ -1076,6 +1388,8 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
     const sidebarColors = getSidebarColors(themeColors)
     const [isToggleHovered, setIsToggleHovered] = useState(false)
     const [isToggleFocused, setIsToggleFocused] = useState(false)
+    const [isLogoHovered, setIsLogoHovered] = useState(false)
+    const [isLogoFocused, setIsLogoFocused] = useState(false)
     const prefersReducedMotion = usePrefersReducedMotion()
     const isMobile = useIsMobile(parseInt(breakpoints.md))
     const mobileNavRef = useRef<HTMLElement>(null)
@@ -1144,13 +1458,15 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
     }
 
     // Desktop nav styles
+    const isRounded = shape === 'rounded'
     const navStyle: React.CSSProperties = {
       display: 'flex',
       flexDirection: 'column',
       width: collapsed ? sidebar.collapsedWidth : sidebar.width,
       height: '100%',
       backgroundColor: sidebarColors.background,
-      borderRight: `1px solid ${sidebarColors.border}`,
+      borderRight: isRounded ? 'none' : `1px solid ${sidebarColors.border}`,
+      borderRadius: isRounded ? borderRadius.lg : '0',
       padding: `${sidebar.padding.y} ${sidebar.padding.x}`,
       transition: prefersReducedMotion ? 'none' : `width ${transitionPresets.default}`,
       overflow: 'hidden',
@@ -1165,8 +1481,15 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
       alignItems: collapsed ? 'center' : 'flex-start',
       justifyContent: collapsed ? 'center' : 'space-between',
       minHeight: sidebar.logo.height === 'auto' ? undefined : sidebar.logo.height,
-      marginBottom: '12px',
+      marginBottom: logoSelector ? '0' : spacing.sm,
       padding: collapsed ? '0' : `0 ${sidebar.navItem.paddingX}`,
+      flexShrink: 0,
+    }
+
+    const logoSelectorStyle: React.CSSProperties = {
+      display: logoSelector ? 'block' : 'none',
+      marginTop: spacing.md,
+      marginBottom: spacing.sm,
       flexShrink: 0,
     }
 
@@ -1291,6 +1614,11 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
               logo={logo}
               onClose={() => onMobileClose?.()}
             />
+            {logoSelector && (
+              <div style={{ marginTop: spacing.md, marginBottom: spacing.sm }}>
+                <LogoSelectorDropdown selector={logoSelector} collapsed={false} />
+              </div>
+            )}
             <div style={{ padding: `${sidebar.padding.y} ${sidebar.padding.x}`, flex: 1, display: 'flex', flexDirection: 'column' }}>
               {renderNavContent(true)}
             </div>
@@ -1311,9 +1639,34 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
           {/* Logo and Toggle */}
           <div style={logoContainerStyle}>
             {(logo || collapsedLogo) && (
-              <div style={logoContentStyle}>
-                {collapsed ? collapsedLogo || logo : logo}
-              </div>
+              onLogoClick ? (
+                <button
+                  type="button"
+                  onClick={onLogoClick}
+                  onMouseEnter={() => setIsLogoHovered(true)}
+                  onMouseLeave={() => setIsLogoHovered(false)}
+                  onFocus={() => setIsLogoFocused(true)}
+                  onBlur={() => setIsLogoFocused(false)}
+                  aria-label="Home"
+                  style={{
+                    ...logoContentStyle,
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: spacing.xs,
+                    borderRadius: sidebar.navItem.borderRadius,
+                    backgroundColor: isLogoHovered ? sidebarColors.item.hover.background : 'transparent',
+                    transition: `all ${transitionPresets.fast}`,
+                    outline: 'none',
+                    ...(isLogoFocused ? focusRingStyle : {}),
+                  }}
+                >
+                  {collapsed ? collapsedLogo || logo : logo}
+                </button>
+              ) : (
+                <div style={logoContentStyle}>
+                  {collapsed ? collapsedLogo || logo : logo}
+                </div>
+              )
             )}
             {showCollapseToggle && (
               <button
@@ -1335,6 +1688,13 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
               </button>
             )}
           </div>
+
+          {/* Logo Selector (theme picker, environment selector, etc.) */}
+          {logoSelector && (
+            <div style={logoSelectorStyle}>
+              <LogoSelectorDropdown selector={logoSelector} collapsed={collapsed} />
+            </div>
+          )}
 
           {renderNavContent(false)}
         </nav>

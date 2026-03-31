@@ -4,4 +4,6 @@ export type {
   LeftNavItem,
   LeftNavSection,
   LeftNavVariant,
+  LeftNavSelectorOption,
+  LeftNavSelectorProps,
 } from './LeftNav'
