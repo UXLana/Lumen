@@ -1,10 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { LeftNav, LeftNavSection, LeftNavItem, LeftNavVariant, IconHome, IconProduct, IconBundle, IconIntegration, IconSettings, IconGrid, Button } from '@/components'
+import type { LeftNavSelectorProps } from '@/components'
 import { colors, typography, sidebar as sidebarTokens, borderRadius, breakpoints } from '@/styles/design-tokens'
 import { IconMenu } from '@/components/Icons'
+import { useThemeSwitcher, availableThemes } from '@/styles/themes/theme-provider'
 
 // =============================================================================
 // TYPES
@@ -73,6 +76,8 @@ const leftNavDocData: ComponentDocData = {
   props: [
     { name: 'logo', type: 'ReactNode', description: 'Logo element displayed at the top' },
     { name: 'collapsedLogo', type: 'ReactNode', description: 'Compact logo for collapsed state' },
+    { name: 'logoSelector', type: 'LeftNavSelectorProps', description: 'Dropdown selector below logo. Shows label when expanded, icon-only when collapsed.' },
+    { name: 'onLogoClick', type: '() => void', description: 'Logo click handler. Makes logo a button with hover effect.' },
     { name: 'sections', type: 'LeftNavSection[]', required: true, description: 'Navigation sections' },
     { name: 'footerSections', type: 'LeftNavSection[]', description: 'Footer sections (Admin, Settings)' },
     { name: 'activeItemId', type: 'string', description: 'Currently active item ID' },
@@ -80,6 +85,7 @@ const leftNavDocData: ComponentDocData = {
     { name: 'onCollapseChange', type: '(collapsed: boolean) => void', description: 'Collapse state change callback' },
     { name: 'onItemClick', type: '(item: LeftNavItem) => void', description: 'Item click callback' },
     { name: 'showCollapseToggle', type: 'boolean', description: 'Show collapse toggle button' },
+    { name: 'shape', type: "'default' | 'rounded'", default: "'default'", description: 'Default: rectangular with right border. Rounded: rounded corners, no border.' },
     { name: 'variant', type: "'default' | 'flat' | 'grouped'", default: "'default'", description: 'Section header behavior variant' },
     { name: 'mobileBehavior', type: "'drawer' | 'sheet' | 'none'", default: "'drawer'", description: 'Mobile behavior mode' },
     { name: 'mobileOpen', type: 'boolean', description: 'Whether mobile drawer is open' },
@@ -129,6 +135,35 @@ export default function LeftNavPage() {
   const [variant, setVariant] = useState<LeftNavVariant>('flat')
   const [mobileBehavior, setMobileBehavior] = useState<MobileBehavior>('none')
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [showLogo, setShowLogo] = useState(false)
+  const [showLogoSelector, setShowLogoSelector] = useState(false)
+  const [shape, setShape] = useState<'default' | 'rounded'>('default')
+
+  // Theme switcher for the logo selector demo
+  const { themeName, setThemeName } = useThemeSwitcher()
+  const themeOptions = availableThemes.map((t) => ({
+    value: t.name,
+    label: t.name.charAt(0).toUpperCase() + t.name.slice(1).replace(/-/g, ' '),
+  }))
+
+  // Logo elements — horizontal logo expanded, icon mark collapsed
+  // Using <img> for SVGs to avoid Next.js Image distortion (SVGs don't need optimization)
+  const expandedLogo = (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/assets/Prism-logo-h.svg" alt="Prism Design System" style={{ height: '24px', width: 'auto' }} />
+  )
+  const collapsedLogoEl = (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/assets/Prism-logo.svg" alt="Prism" style={{ height: '24px', width: '24px' }} />
+  )
+
+  // Theme selector config
+  const themeSelector: LeftNavSelectorProps = {
+    options: themeOptions,
+    value: themeName,
+    onChange: setThemeName,
+    'aria-label': 'Select theme',
+  }
 
   // Custom tabs for component pages
   const componentTabs = [
@@ -201,12 +236,13 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
                           <div style={{
                             width: demoCollapsed ? '73px' : '278px',
                             height: '400px',
-                            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                            borderRadius: borderRadius.lg,
-                            overflow: 'hidden',
                             transition: 'width 0.3s ease',
                           }}>
                             <LeftNav
+                              logo={showLogo ? expandedLogo : undefined}
+                              collapsedLogo={showLogo ? collapsedLogoEl : undefined}
+                              logoSelector={showLogoSelector ? themeSelector : undefined}
+                              onLogoClick={showLogo ? () => setDemoActiveItem('home') : undefined}
                               sections={currentSections}
                               footerSections={showFooter ? demoFooterSections : undefined}
                               activeItemId={demoActiveItem}
@@ -214,6 +250,7 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
                               onCollapseChange={setDemoCollapsed}
                               onItemClick={handleItemClick}
                               showCollapseToggle={showCollapseToggle}
+                              shape={shape}
                               variant={variant}
                               mobileBehavior="none"
                               style={{ height: '100%' }}
@@ -232,12 +269,22 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
                             mobileBehavior={mobileBehavior}
                             mobileOpen={mobileOpen}
                             onMobileClose={() => setMobileOpen(false)}
-                            logo={<span style={{ fontWeight: 600, fontSize: '18px' }}>Metrc</span>}
+                            logo={showLogo ? expandedLogo : <span style={{ fontWeight: 600, fontSize: '18px' }}>Metrc</span>}
+                            logoSelector={showLogoSelector ? themeSelector : undefined}
+                            onLogoClick={showLogo ? () => setDemoActiveItem('home') : undefined}
                           />
                         )}
                       </div>
                     }
-                    code={`<LeftNav
+                    code={`<LeftNav${showLogo ? `
+  logo={<Image src="/assets/Prism-logo-h.svg" alt="Prism" width={140} height={28} />}
+  collapsedLogo={<Image src="/assets/Prism-logo.svg" alt="Prism" width={24} height={24} />}` : ''}${showLogoSelector ? `
+  logoSelector={{
+    options: themeOptions,
+    value: themeName,
+    onChange: setThemeName,
+    'aria-label': 'Select theme',
+  }}` : ''}
   sections={[
     {
       id: 'main',${showSectionHeaders ? `
@@ -263,7 +310,8 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
   mobileBehavior="${mobileBehavior}"
   mobileOpen={mobileOpen}
   onMobileClose={() => setMobileOpen(false)}`}
-  onItemClick={handleItemClick}
+  onItemClick={handleItemClick}${shape === 'rounded' ? `
+  shape="rounded"` : ''}
   variant="${variant}"${!showCollapseToggle && mobileBehavior === 'none' ? `
   showCollapseToggle={false}` : ''}
 />`}
@@ -337,6 +385,33 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
                       </div>
                     )}
 
+                    {/* Shape - only show for desktop */}
+                    {mobileBehavior === 'none' && (
+                      <div>
+                        <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                          Shape
+                        </label>
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          <PillButton
+                            onClick={() => setShape('default')}
+                            isActive={shape === 'default'}
+                          >
+                            Default
+                          </PillButton>
+                          <PillButton
+                            onClick={() => setShape('rounded')}
+                            isActive={shape === 'rounded'}
+                          >
+                            Rounded
+                          </PillButton>
+                        </div>
+                        <p style={{ ...typography.body.xs, color: colors.text.lowEmphasis.onLight, marginTop: '8px' }}>
+                          {shape === 'default' && 'Rectangular with right border divider.'}
+                          {shape === 'rounded' && 'Rounded corners, no right border.'}
+                        </p>
+                      </div>
+                    )}
+
                     {/* Collapsed State - only show for desktop */}
                     {mobileBehavior === 'none' && (
                       <div>
@@ -384,6 +459,16 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
                         Options
                       </label>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <StyledCheckbox
+                          checked={showLogo}
+                          onChange={setShowLogo}
+                          label="Show Logo"
+                        />
+                        <StyledCheckbox
+                          checked={showLogoSelector}
+                          onChange={setShowLogoSelector}
+                          label="Show Logo Selector (Theme Picker)"
+                        />
                         <StyledCheckbox
                           checked={showSectionHeaders}
                           onChange={setShowSectionHeaders}
@@ -484,6 +569,34 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
             </div>
 
             <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>With Logo and Selector</h3>
+              <CodeBlock>
+{`import Image from 'next/image'
+import { LeftNav } from '@/components'
+import type { LeftNavSelectorProps } from '@/components'
+import { useThemeSwitcher, availableThemes } from '@/styles/themes/theme-provider'
+
+const { themeName, setThemeName } = useThemeSwitcher()
+
+<LeftNav
+  logo={<Image src="/assets/Prism-logo-h.svg" alt="Prism" width={140} height={28} />}
+  collapsedLogo={<Image src="/assets/Prism-logo.svg" alt="Prism" width={24} height={24} />}
+  logoSelector={{
+    options: availableThemes.map((t) => ({ value: t.name, label: t.name })),
+    value: themeName,
+    onChange: setThemeName,
+    'aria-label': 'Select theme',
+  }}
+  onLogoClick={() => router.push('/')}
+  sections={sections}
+  activeItemId="home"
+  collapsed={collapsed}
+  onCollapseChange={setCollapsed}
+/>`}
+              </CodeBlock>
+            </div>
+
+            <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>With Collapsible Sections</h3>
               <CodeBlock>
 {`<LeftNav
@@ -514,6 +627,7 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
               <SpecTable
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
+                  [<code key="logoSelector">logoSelector</code>, <code>ReactNode</code>, '-', 'Selector below logo (theme picker, env selector). Hidden when collapsed.'],
                   [<code key="sections">sections</code>, <code>LeftNavSection[]</code>, 'Required', 'Array of navigation sections'],
                   [<code key="footerSections">footerSections</code>, <code>LeftNavSection[]</code>, '-', 'Sections displayed at the bottom'],
                   [<code key="activeItemId">activeItemId</code>, <code>string</code>, '-', 'ID of the currently active item'],
