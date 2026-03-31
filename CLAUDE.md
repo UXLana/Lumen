@@ -184,10 +184,12 @@ Apply with spread: `style={{ ...typography.heading.h2 }}`
 - `colors.surface.light` — Page background
 - `colors.surface.lightDarker` — Card/elevated background
 - `colors.text.highEmphasis.onLight` — Primary text
-- `colors.text.medEmphasis.onLight` — Secondary text
-- `colors.text.lowEmphasis.onLight` — Disabled/placeholder text
-- `colors.border.default` — Standard borders
-- `colors.semantic.success` / `warning` / `error` / `info` — Status colors
+- `colors.text.lowEmphasis.onLight` — Secondary text
+- `colors.text.disabled.onLight` — Disabled/placeholder text
+- `colors.border.lowEmphasis.onLight` — Standard borders
+- `colors.border.midEmphasis.onLight` — Medium-emphasis borders
+- `colors.border.highEmphasis.onLight` — Strong borders
+- `colors.status.success` / `warning` / `important` / `info` — Status colors
 
 ### Border Radius (use `borderRadius.{size}`)
 - `borderRadius.sm` — Subtle rounding (buttons, inputs)

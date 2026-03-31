@@ -235,6 +235,124 @@ function CollectionToolbarPreview({
 }
 
 // =============================================================================
+// INTERACTIVE DEMO
+// =============================================================================
+
+const DEFAULT_CHIPS = ['Status: Active', 'Category: Flower']
+
+interface CollectionToolbarPreviewProps {
+  showTabs: boolean
+  showActions: boolean
+  showToolbar: boolean
+  showFilter: boolean
+  showSort: boolean
+  showViewToggle: boolean
+  showSelection: boolean
+  hasSelected: boolean
+  onClearSelected: () => void
+  hasActiveFilters: boolean
+}
+
+function CollectionToolbarPreview({
+  showTabs,
+  showActions,
+  showToolbar,
+  showFilter,
+  showSort,
+  showViewToggle,
+  showSelection,
+  hasSelected,
+  onClearSelected,
+  hasActiveFilters,
+}: CollectionToolbarPreviewProps) {
+  const [activeTab, setActiveTab] = useState('all')
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards')
+  const [chips, setChips] = useState(DEFAULT_CHIPS)
+
+  // Reset chips when toggling Active Filters back on
+  const prevActiveFilters = React.useRef(hasActiveFilters)
+  React.useEffect(() => {
+    if (hasActiveFilters && !prevActiveFilters.current) {
+      setChips(DEFAULT_CHIPS)
+    }
+    prevActiveFilters.current = hasActiveFilters
+  }, [hasActiveFilters])
+
+  const selectedCount = hasSelected ? 3 : 0
+  const filterCount = hasActiveFilters ? chips.length : 0
+
+  const handleRemoveChip = (label: string) => {
+    setChips(prev => prev.filter(c => c !== label))
+  }
+
+  const handleClearAll = () => {
+    setChips([])
+  }
+
+  return (
+    <CollectionToolbar
+      tabs={[
+        { id: 'all', label: 'All' },
+        { id: 'active', label: 'Active' },
+        { id: 'archived', label: 'Archived' },
+      ]}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      showTabs={showTabs}
+      actions={[
+        {
+          label: 'Register product',
+          icon: <PlusIcon />,
+          onClick: () => {},
+        },
+      ]}
+      showActions={showActions}
+      showToolbar={showToolbar}
+      selectedCount={selectedCount}
+      onClearSelection={onClearSelected}
+      showSelection={showSelection}
+      bulkActions={
+        <>
+          <DataTable.IconButton title="Edit" label="Edit" onClick={() => {}}>
+            <PencilIcon />
+          </DataTable.IconButton>
+          <DataTable.IconButton title="Bundle" label="Bundle" onClick={() => {}}>
+            <PackageIcon />
+          </DataTable.IconButton>
+          <DataTable.IconButton title="Delete" label="Delete" onClick={() => {}}>
+            <Trash2Icon />
+          </DataTable.IconButton>
+        </>
+      }
+      showFilter={showFilter}
+      isFilterActive={hasActiveFilters && chips.length > 0}
+      filterCount={filterCount}
+      onFilterClick={() => {}}
+      showSort={showSort}
+      showViewToggle={showViewToggle}
+      viewMode={viewMode}
+      onViewModeChange={setViewMode}
+      filterChips={
+        hasActiveFilters && chips.length > 0 ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+            <ChipGroup gap="sm">
+              {chips.map(label => (
+                <Chip key={label} removable onRemove={() => handleRemoveChip(label)}>
+                  {label}
+                </Chip>
+              ))}
+            </ChipGroup>
+            <Button emphasis="low" size="md" onClick={handleClearAll}>
+              Clear
+            </Button>
+          </div>
+        ) : undefined
+      }
+    />
+  )
+}
+
+// =============================================================================
 // PAGE
 // =============================================================================
 
