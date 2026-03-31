@@ -15,7 +15,15 @@
     "public/icons/",
     "public/images/"
   ],
+  "main": "./dist/components.js",
+  "module": "./dist/components.mjs",
+  "types": "./dist/components.d.ts",
   "exports": {
+    ".": {
+      "types": "./dist/components.d.ts",
+      "import": "./dist/components.mjs",
+      "require": "./dist/components.js"
+    },
     "./components": {
       "types": "./dist/components.d.ts",
       "import": "./dist/components.mjs",
@@ -40,7 +48,7 @@
   "scripts": {
     "dev": "next dev -p 3333",
     "build:pkg": "tsup",
-    "prepublishOnly": "tsup",
+    "prepublishOnly": "npm run build:pkg",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

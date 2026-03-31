@@ -157,20 +157,22 @@ export const CollectionToolbar = forwardRef<HTMLDivElement, CollectionToolbarPro
           <div
             style={{
               display: 'flex',
-              flexWrap: 'wrap',
               alignItems: 'center',
               justifyContent: 'space-between',
               gap: spacing.md,
             }}
           >
-            {hasTabs && (
+            {hasTabs ? (
               <TabBar
                 tabs={tabs as TabItem[]}
                 activeTab={activeTab ?? tabs[0]?.id ?? ''}
                 onTabChange={onTabChange ?? (() => {})}
                 align="left"
                 hasDivider={false}
+                style={{ width: 'auto', flex: '0 1 auto' }}
               />
+            ) : (
+              <div aria-hidden="true" />
             )}
 
             {hasActions && (
@@ -178,7 +180,8 @@ export const CollectionToolbar = forwardRef<HTMLDivElement, CollectionToolbarPro
                 style={{
                   display: 'flex',
                   gap: spacing.sm,
-                  paddingBottom: spacing.xs,
+                  flexShrink: 0,
+                  alignItems: 'center',
                 }}
               >
                 {actions.map((action, i) => (
