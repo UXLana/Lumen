@@ -5,6 +5,7 @@ import Link from 'next/link'
 import {
   colors,
   typography,
+  spacing,
   borderRadius,
   shadows,
   zIndex,
@@ -21,7 +22,7 @@ import {
   IconSidebarOpen,
   IconSidebarClose,
 } from '@/components/Icons'
-import { LeftNav, type LeftNavSection, type LeftNavItem } from '@/components/LeftNav'
+import { LeftNav, type LeftNavSection, type LeftNavItem, type LeftNavSelectorProps } from '@/components/LeftNav'
 import { useThemeSwitcher, availableThemes } from '@/styles/themes'
 
 // =============================================================================
@@ -93,7 +94,7 @@ export const navSections: LeftNavSection[] = [
       { id: 'combobox', label: 'Combobox', href: '/components/combobox' },
       { id: 'data-table', label: 'Data Table', href: '/components/data-table' },
       { id: 'divider', label: 'Divider', href: '/components/divider' },
-      { id: 'full-screen-modal', label: 'Full Screen Modal', href: '/components/full-screen-modal' },
+      { id: 'full-screen-modal', label: 'Modal', href: '/components/full-screen-modal' },
       { id: 'image-carousel', label: 'Image Carousel', href: '/components/image-carousel' },
       { id: 'input', label: 'Input', href: '/components/input' },
       { id: 'link', label: 'Link', href: '/components/link' },
@@ -353,17 +354,21 @@ export function StyleguideLayout({
 
   // Check if we're on mobile on mount and on resize
   useEffect(() => {
+    let wasMobile = window.innerWidth < MOBILE_BREAKPOINT
+    setIsMobile(wasMobile)
+    if (wasMobile) setSidebarCollapsed(true)
+
     const checkMobile = () => {
       const mobile = window.innerWidth < MOBILE_BREAKPOINT
+      // Collapse sidebar when transitioning from desktop to mobile
+      if (mobile && !wasMobile) setSidebarCollapsed(true)
+      wasMobile = mobile
       setIsMobile(mobile)
-      if (mobile && !isHydrated) {
-        setSidebarCollapsed(true)
-      }
     }
-    checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
-  }, [isHydrated])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- state setters are stable
+  }, [])
 
   const handleCollapseChange = useCallback((collapsed: boolean) => {
     setSidebarCollapsed(collapsed)
@@ -377,7 +382,7 @@ export function StyleguideLayout({
     }
   }, [isMobile])
 
-  // Logo with theme switcher (shown when sidebar is expanded)
+  // Logo — expanded state
   const logoElement = (
     <div>
       <p style={{
@@ -389,7 +394,7 @@ export function StyleguideLayout({
         margin: '0 0 2px 0',
         fontFamily: fontFamilies.body,
       }}>
-        Prism
+        PRISM
       </p>
       <Link href="/" style={{
         ...typography.heading.h5,
@@ -403,41 +408,41 @@ export function StyleguideLayout({
       <p style={{
         ...typography.body.sm,
         color: colors.text.lowEmphasis.onLight,
-        margin: '0 0 12px 0',
+        margin: 0,
       }}>v1.0.0</p>
-      <select
-        id="ds-theme-select"
-        aria-label="Theme"
-        value={themeName}
-        onChange={(e) => setThemeName(e.target.value)}
-        style={{
-          width: '100%',
-          padding: '6px 10px',
-          borderRadius: borderRadius.sm,
-          border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-          background: 'transparent',
-          color: colors.text.lowEmphasis.onLight,
-          fontSize: '12px',
-          fontWeight: 500,
-          fontFamily: fontFamilies.body,
-          cursor: 'pointer',
-          appearance: 'auto' as const,
-        }}
-      >
-        {availableThemes.map((t) => (
-          <option key={t.name} value={t.name}>
-            {t.name.charAt(0).toUpperCase() + t.name.slice(1)}
-          </option>
-        ))}
-      </select>
     </div>
   )
+
+  // Logo — collapsed state (just the P mark)
+  const collapsedLogoElement = (
+    <Link href="/" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
+      <span style={{
+        ...typography.heading.h4,
+        color: colors.brand.default,
+      }}>
+        P
+      </span>
+    </Link>
+  )
+
+  // Theme selector via logoSelector prop — works collapsed and expanded
+  const themeSelector: LeftNavSelectorProps = {
+    options: availableThemes.map((t) => ({
+      value: t.name,
+      label: t.name.charAt(0).toUpperCase() + t.name.slice(1),
+    })),
+    value: themeName,
+    onChange: (value) => setThemeName(value),
+    'aria-label': 'Theme',
+  }
 
   return (
     <div style={sharedStyles.page}>
       {/* LeftNav replaces the inline sidebar */}
       <LeftNav
         logo={logoElement}
+        collapsedLogo={collapsedLogoElement}
+        logoSelector={themeSelector}
         sections={sections}
         activeItemId={activeId}
         collapsed={sidebarCollapsed}
@@ -466,6 +471,34 @@ export function StyleguideLayout({
         }}
         data-content
       >
+        {/* Mobile menu toggle */}
+        {isMobile && sidebarCollapsed && (
+          <button
+            type="button"
+            onClick={() => setSidebarCollapsed(false)}
+            aria-label="Open navigation"
+            style={{
+              position: 'fixed',
+              top: spacing.sm,
+              left: spacing.sm,
+              zIndex: zIndex.header - 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: spacing['3xl'],
+              height: spacing['3xl'],
+              borderRadius: borderRadius.sm,
+              border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+              background: colors.surface.light,
+              cursor: 'pointer',
+              color: colors.text.highEmphasis.onLight,
+              boxShadow: shadows.sm,
+            }}
+          >
+            <IconSidebarOpen size={20} />
+          </button>
+        )}
+
         {/* Header Banner */}
         <div style={sharedStyles.headerWrapper}>
           <header style={{

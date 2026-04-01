@@ -142,7 +142,6 @@ export default function BrandBannerPage() {
       title="Brand Banner"
       description="Brand banners display prominent branding elements with customizable backgrounds, logos, and messaging."
     >
-      <div style={sharedStyles.content}>
         {/* Hero */}
         <div style={{ marginBottom: spacing['2xl'] }}>
           <h1
@@ -496,7 +495,6 @@ export default function BrandBannerPage() {
         {activePageTab === 'documentation' && (
           <ComponentDocumentation data={brandBannerDocData} />
         )}
-      </div>
     </StyleguideLayout>
   )
 }

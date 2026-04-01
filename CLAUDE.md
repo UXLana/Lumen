@@ -71,7 +71,7 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 - **Stepper** — Linear and non-linear step indicators
 
 ### Feedback
-- **Banner** — variant: `"info"` | `"success"` | `"warning"` | `"error"`. Content goes as `children` (not `description`). Optional `title`, `dismissible`, `onDismiss`
+- **Banner** — variant: `"info"` | `"success"` | `"warning"` | `"error"`. Content goes as `children` (not `description`). Optional `title`, `size` (`"sm"` | `"md"`), `primaryAction`, `secondaryAction`. Use `secondaryAction` for dismiss.
 - **Toast** — Temporary notifications (use `useToast()` hook)
 - **ConfirmDialog** — Confirmation modal with cancel/confirm actions
 - **AssistiveMessage** — Inline helper/error text for form fields
@@ -79,7 +79,7 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 
 ### Layout
 - **Divider** — Horizontal/vertical separator
-- **FullScreenModal** — Full-screen overlay with panel layout
+- **FullScreenModal** — Modal overlay with `variant`: `"fullscreen"` (default, full viewport) or `"floating"` (centered dialog with scrim). `size` for floating: `"sm"` | `"md"` | `"lg"` | `"xl"`. Mobile always renders fullscreen.
 - **Accordion** / **AccordionItem** — Collapsible content sections
 - **ListItem** / **List** — Structured list with leading/trailing content
 
@@ -101,7 +101,7 @@ When building a UI, use this guide to pick the right component. If two component
 
 | Scenario | Component | Key Config |
 |----------|-----------|------------|
-| Persistent page-level message (info, warning, error, success) | **Banner** | `variant`, `title`, `dismissible` |
+| Persistent page-level message (info, warning, error, success) | **Banner** | `variant`, `title`, `size` (`"sm"` | `"md"`). Use `secondaryAction` for dismiss. |
 | Temporary notification after a user action ("Saved", "Deleted") | **Toast** | `useToast()` → `addToast({ message, variant })` |
 | Inline validation or help text next to a form field | **AssistiveMessage** | Pair with `Input` or `Select` |
 | Confirmation before a destructive action | **ConfirmDialog** | `destructive`, `onConfirm`, `onCancel` |
@@ -124,7 +124,8 @@ When building a UI, use this guide to pick the right component. If two component
 |----------|-----------|------------|
 | Short inline stepper (2-5 steps, fits on page) | **Stepper** | `steps`, `activeStep`, `variant="linear"` |
 | Full-screen guided workflow (3+ steps, substantial content) | **TaskModal** | `steps`, `activeStep`, `open`, `orientation` |
-| Full-screen overlay without step navigation | **FullScreenModal** | `open`, `onClose` |
+| Full-screen overlay without step navigation | **FullScreenModal** | `open`, `onClose`, `variant="fullscreen"` (default) |
+| Floating centered dialog (settings, edit forms, detail views) | **FullScreenModal** | `variant="floating"`, `size` (`"sm"` | `"md"` | `"lg"` | `"xl"`). Mobile auto-fullscreen. |
 | Collapsible sections (no step progression) | **Accordion** | `defaultExpandedIds={['first']}` — always open one by default |
 
 ### Data Display
