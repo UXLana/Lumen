@@ -45,6 +45,16 @@ export type { CheckboxProps, CheckboxGroupProps, CheckboxState } from './Checkbo
 export { Chip, ChipGroup } from './Chip'
 export type { ChipProps, ChipState, ChipLeftContent, ChipGroupProps } from './Chip'
 
+// ColumnManager
+export { ColumnManager, useColumnManager } from './ColumnManager'
+export type {
+  ColumnManagerProps,
+  ColumnConfig,
+  ColumnManagerTab,
+  UseColumnManagerOptions,
+  UseColumnManagerReturn,
+} from './ColumnManager'
+
 // CollectionToolbar
 export { CollectionToolbar } from './CollectionToolbar'
 export type {
@@ -149,6 +159,16 @@ export type { LinkProps } from './Link'
 export { ListItem, List } from './ListItem'
 export type { ListItemProps, ListProps, ListItemLeftType, ListItemRightType, ListItemLines, ListItemStatus } from './ListItem'
 
+// Menu
+export { Menu, MenuGroup, MenuDivider, MenuItem, useMenuSearch } from './Menu'
+export type {
+  MenuProps,
+  MenuGroupProps,
+  MenuDividerProps,
+  MenuItemProps,
+  MenuItemType,
+} from './Menu'
+
 // MarketplaceCard
 export { MarketplaceCard } from './MarketplaceCard'
 export type {
@@ -235,3 +255,13 @@ export type { TextareaProps } from './Textarea'
 // Toast
 export { Toast, useToast } from './Toast'
 export type { ToastProps, ToastVariant, ToastPosition, ToastItem, UseToastReturn } from './Toast'
+
+// Upload
+export { Upload, useUpload, formatFileSize } from './Upload'
+export type {
+  UploadProps,
+  UploadFile,
+  UploadFileStatus,
+  UseUploadOptions,
+  UseUploadReturn,
+} from './Upload'

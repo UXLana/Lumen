@@ -8,11 +8,21 @@ import {
   borderRadius,
   fontFamilies,
   fontWeights,
+  transitionPresets,
 } from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES & CONTRACTS
 // =============================================================================
+
+/**
+ * Switch variant:
+ * - default: plain toggle knob
+ * - icon: checkmark (on) / X (off) inside the thumb
+ * - text: "On"/"Off" labels beside the track
+ * - iconText: icons inside thumb + text labels beside the track
+ */
+export type SwitchVariant = 'default' | 'icon' | 'text' | 'iconText'
 
 export interface SwitchProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type'> {
@@ -30,17 +40,63 @@ export interface SwitchProps
   fullWidth?: boolean
   /** Error state */
   error?: boolean
+  /** Visual variant — controls icon/text display in the toggle */
+  variant?: SwitchVariant
+  /** Custom "on" label (default: "On") — used with text/iconText variants */
+  onLabel?: string
+  /** Custom "off" label (default: "Off") — used with text/iconText variants */
+  offLabel?: string
 }
 
 // =============================================================================
 // CONSTANTS
 // =============================================================================
 
-const TRACK_WIDTH = 40
+// Default track (no text)
+const TRACK_WIDTH = 44
 const TRACK_HEIGHT = 24
 const THUMB_SIZE = 18
 const THUMB_OFFSET = 3
 const THUMB_TRAVEL = TRACK_WIDTH - THUMB_SIZE - THUMB_OFFSET * 2
+
+// Wider track for text/iconText variants (text sits inside track)
+const TEXT_TRACK_WIDTH = 48
+const TEXT_TRACK_HEIGHT = 28
+const TEXT_THUMB_SIZE = 22
+const TEXT_THUMB_OFFSET = 3
+const TEXT_THUMB_TRAVEL = TEXT_TRACK_WIDTH - TEXT_THUMB_SIZE - TEXT_THUMB_OFFSET * 2
+
+// =============================================================================
+// INTERNAL ICONS
+// =============================================================================
+
+function CheckIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path
+        d="M2 5L4 7L8 3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function XIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+      <path
+        d="M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 // =============================================================================
 // COMPONENT: Switch
@@ -57,6 +113,9 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
       fullWidth = false,
       error = false,
       disabled = false,
+      variant = 'default',
+      onLabel = 'On',
+      offLabel = 'Off',
       className,
       style,
       id: providedId,
@@ -76,60 +135,98 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
       [onChange]
     )
 
+    const hasIcon = variant === 'icon' || variant === 'iconText'
+    const hasText = variant === 'text' || variant === 'iconText'
+
     // Track colors
     const trackBackground = disabled
-      ? colors.surface.disabled.onLight
-      : checked
-        ? colors.brand.default
-        : isHovered
-          ? colors.border.highEmphasis.onLight
-          : colors.border.midEmphasis.onLight
-    const trackBorder = error && !checked && !disabled
+      ? colors.border.lowEmphasis.onLight
+      : error && !checked
+        ? colors.variants.important.background
+        : checked
+          ? colors.brand.default
+          : isHovered
+            ? colors.border.highEmphasis.onLight
+            : colors.border.midEmphasis.onLight
+    const trackBorder = error && !disabled
       ? colors.status.important
       : 'transparent'
 
     // Thumb colors
     const thumbBackground = disabled
-      ? colors.text.disabled.onLight
+      ? colors.border.midEmphasis.onLight
       : '#FFFFFF'
+
+    // Icon color inside thumb
+    const thumbIconColor = disabled
+      ? colors.text.disabled.onLight
+      : checked
+        ? colors.brand.default
+        : colors.text.lowEmphasis.onLight
+
+    // Status text color
+    const statusTextColor = disabled
+      ? colors.text.disabled.onLight
+      : checked
+        ? colors.brand.default
+        : colors.text.lowEmphasis.onLight
 
     const containerStyles: React.CSSProperties = {
       display: 'flex',
-      alignItems: 'flex-start',
+      alignItems: metadata ? 'flex-start' : 'center',
       gap: spacing.xs,
       flexDirection: labelPlacement === 'start' ? 'row-reverse' : 'row',
       justifyContent: fullWidth ? 'space-between' : undefined,
       padding: `${spacing.xs} ${spacing.sm}`,
       cursor: disabled ? 'not-allowed' : 'pointer',
-      opacity: disabled ? 0.6 : 1,
+      opacity: disabled ? 0.85 : 1,
       width: fullWidth ? '100%' : 'auto',
       borderRadius: borderRadius.sm,
       position: 'relative' as const,
       ...style,
     }
 
+    // Use wider track + larger thumb for text variants
+    const activeTrackWidth = hasText ? TEXT_TRACK_WIDTH : TRACK_WIDTH
+    const activeTrackHeight = hasText ? TEXT_TRACK_HEIGHT : TRACK_HEIGHT
+    const activeThumbSize = hasText ? TEXT_THUMB_SIZE : THUMB_SIZE
+    const activeThumbOffset = hasText ? TEXT_THUMB_OFFSET : THUMB_OFFSET
+    const activeThumbTravel = hasText ? TEXT_THUMB_TRAVEL : THUMB_TRAVEL
+
     const trackStyles: React.CSSProperties = {
       position: 'relative',
-      width: `${TRACK_WIDTH}px`,
-      height: `${TRACK_HEIGHT}px`,
-      minWidth: `${TRACK_WIDTH}px`,
+      display: 'flex',
+      alignItems: 'center',
+      width: `${activeTrackWidth}px`,
+      height: `${activeTrackHeight}px`,
+      minWidth: `${activeTrackWidth}px`,
+      boxSizing: 'border-box' as const,
       borderRadius: borderRadius.full,
       backgroundColor: trackBackground,
-      border: `1.5px solid ${trackBorder}`,
-      transition: 'background-color 0.2s ease, border-color 0.2s ease',
-      marginTop: '0px',
+      border: error && !disabled ? `2px solid ${trackBorder}` : `1.5px solid ${trackBorder}`,
+      transition: `background-color ${transitionPresets.default}, border-color ${transitionPresets.default}`,
     }
+
+    // Center thumb vertically inside border-box track
+    const thumbTop = (activeTrackHeight - 3 - activeThumbSize) / 2  // 3 = 1.5px border * 2
+    const thumbInset = (activeTrackHeight - 3 - activeThumbSize) / 2
+    const thumbTravel = activeTrackWidth - 3 - activeThumbSize - thumbInset * 2
 
     const thumbStyles: React.CSSProperties = {
       position: 'absolute',
-      top: `${THUMB_OFFSET}px`,
-      left: checked ? `${THUMB_OFFSET + THUMB_TRAVEL}px` : `${THUMB_OFFSET}px`,
-      width: `${THUMB_SIZE}px`,
-      height: `${THUMB_SIZE}px`,
+      top: `${thumbTop}px`,
+      left: checked ? `${thumbInset + thumbTravel}px` : `${thumbInset}px`,
+      width: `${activeThumbSize}px`,
+      height: `${activeThumbSize}px`,
       borderRadius: borderRadius.full,
       backgroundColor: thumbBackground,
-      transition: 'left 0.2s ease',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+      transition: `left ${transitionPresets.default}`,
+      boxShadow: disabled ? 'none' : '0 1px 3px rgba(0,0,0,0.2)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: thumbIconColor,
+      zIndex: 1,
     }
 
     const focusRingStyles: React.CSSProperties = isFocusVisible
@@ -155,6 +252,74 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
       color: disabled ? colors.text.disabled.onLight : colors.text.lowEmphasis.onLight,
       marginTop: '2px',
     }
+
+    // Inner track label styles (positioned inside the track, opposite side of thumb)
+    const innerLabelStyles: React.CSSProperties = {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      display: 'flex',
+      alignItems: 'center',
+      fontFamily: fontFamilies.body,
+      fontSize: '9px',
+      fontWeight: fontWeights.semibold,
+      letterSpacing: '0.5px',
+      textTransform: 'uppercase' as const,
+      color: '#FFFFFF',
+      userSelect: 'none',
+      zIndex: 0,
+      pointerEvents: 'none',
+    }
+
+    // The toggle area: track with optional inner text
+    const toggleArea = (
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          flexShrink: 0,
+          lineHeight: 0,
+        }}
+      >
+        {/* Track + thumb + inner labels */}
+        <span style={{ ...trackStyles, ...focusRingStyles }} aria-hidden="true">
+          {/* "On" label inside track — visible when checked, sits on the left */}
+          {hasText && (
+            <span
+              style={{
+                ...innerLabelStyles,
+                left: `${thumbInset + 1}px`,
+                opacity: checked ? 1 : 0,
+                transition: `opacity ${transitionPresets.default}`,
+              }}
+            >
+              {onLabel}
+            </span>
+          )}
+
+          <span style={thumbStyles}>
+            {hasIcon && (checked ? <CheckIcon /> : <XIcon />)}
+          </span>
+
+          {/* "Off" label inside track — visible when unchecked, sits on the right */}
+          {hasText && (
+            <span
+              style={{
+                ...innerLabelStyles,
+                right: `${thumbInset + 1}px`,
+                opacity: checked ? 0 : 1,
+                transition: `opacity ${transitionPresets.default}`,
+                color: disabled
+                  ? colors.text.disabled.onLight
+                  : colors.text.lowEmphasis.onLight,
+              }}
+            >
+              {offLabel}
+            </span>
+          )}
+        </span>
+      </span>
+    )
 
     return (
       <label
@@ -191,11 +356,9 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
           }}
           {...props}
         />
-        <span style={{ ...trackStyles, ...focusRingStyles }} aria-hidden="true">
-          <span style={thumbStyles} />
-        </span>
+        {toggleArea}
         {(label || metadata) && (
-          <span style={{ display: 'flex', flexDirection: 'column' }}>
+          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             {label && <span style={labelStyles}>{label}</span>}
             {metadata && <span style={metadataStyles}>{metadata}</span>}
           </span>
