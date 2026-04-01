@@ -9,6 +9,7 @@ import {
   fontFamilies,
   fontWeights,
   transitionPresets,
+  bannerIcon,
 } from '../../styles/design-tokens'
 
 // =============================================================================
@@ -142,7 +143,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     const trackBackground = disabled
       ? colors.border.lowEmphasis.onLight
       : error && !checked
-        ? colors.variants.important.background
+        ? bannerIcon.variants.important.background
         : checked
           ? colors.brand.default
           : isHovered
