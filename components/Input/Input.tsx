@@ -260,7 +260,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={`${inputId}-error`}
             type={resolvedAssistiveType}
             counter={counter}
-            indent
           >
             {errorMessage}
           </AssistiveMessage>
@@ -270,7 +269,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={`${inputId}-helper`}
             type={resolvedAssistiveType}
             counter={counter}
-            indent
           >
             {helperText}
           </AssistiveMessage>

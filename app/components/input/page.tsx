@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Input } from '@/components'
 import type { InputWidth } from '@/components'
+import { IconInfoFilled } from '@/components/Icons/IconInfoFilled'
 import { colors, spacing, typography, borderRadiusSemantics } from '@/styles/design-tokens'
 
 // =============================================================================
@@ -90,6 +91,7 @@ export default function InputPage() {
   const [demoRequired, setDemoRequired] = useState(false)
   const [demoShowHelper, setDemoShowHelper] = useState(false)
   const [demoShowAdornment, setDemoShowAdornment] = useState(false)
+  const [demoShowEndAdornment, setDemoShowEndAdornment] = useState(false)
 
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
@@ -154,13 +156,14 @@ import { Input } from '@/components'`}</CodeBlock>
                           required={demoRequired}
                           helperText={demoShowHelper ? 'This is helpful text' : undefined}
                           startAdornment={demoShowAdornment ? <SearchIcon /> : undefined}
+                          endAdornment={demoShowEndAdornment ? <IconInfoFilled size="sm" color={colors.text.lowEmphasis.onLight} /> : undefined}
                         />
                       </div>
                     }
                     code={`<Input
   label="Label"
   value={value}
-  onChange={setValue}${demoSize !== 'md' ? `\n  size="${demoSize}"` : ''}${demoWidth !== 'md' ? `\n  width="${demoWidth}"` : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error\n  errorMessage="This field has an error"' : ''}${demoRequired ? '\n  required' : ''}${demoShowHelper ? '\n  helperText="This is helpful text"' : ''}${demoShowAdornment ? '\n  startAdornment={<SearchIcon />}' : ''}
+  onChange={setValue}${demoSize !== 'md' ? `\n  size="${demoSize}"` : ''}${demoWidth !== 'md' ? `\n  width="${demoWidth}"` : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error\n  errorMessage="This field has an error"' : ''}${demoRequired ? '\n  required' : ''}${demoShowHelper ? '\n  helperText="This is helpful text"' : ''}${demoShowAdornment ? '\n  startAdornment={<SearchIcon />}' : ''}${demoShowEndAdornment ? '\n  endAdornment={<IconInfoFilled size="sm" />}' : ''}
 />`}
                     previewPadding={spacing.xs}
                   />
@@ -210,6 +213,7 @@ import { Input } from '@/components'`}</CodeBlock>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <StyledCheckboxControl checked={demoRequired} onChange={() => setDemoRequired(!demoRequired)} label="Required" />
                         <StyledCheckboxControl checked={demoShowAdornment} onChange={() => setDemoShowAdornment(!demoShowAdornment)} label="Start Adornment" />
+                        <StyledCheckboxControl checked={demoShowEndAdornment} onChange={() => setDemoShowEndAdornment(!demoShowEndAdornment)} label="End Adornment" />
                         <StyledCheckboxControl checked={demoShowHelper} onChange={() => setDemoShowHelper(!demoShowHelper)} label="Helper Text" />
                         <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
                         <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />

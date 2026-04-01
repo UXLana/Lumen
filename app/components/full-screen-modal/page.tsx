@@ -21,6 +21,8 @@ import {
 import type {
   FullScreenModalColumns,
   FullScreenModalHeaderButton,
+  ModalVariant,
+  ModalSize,
 } from '@/components'
 import { colors, typography, borderRadius, shadows } from '@/styles/design-tokens'
 
@@ -45,17 +47,19 @@ import type {
   FullScreenModalHeaderButton,
 } from '@/components'`,
   description:
-    'A full-viewport modal overlay with a configurable header (0–2 action buttons), and a responsive multi-column body layout (1, 2, or 3 columns).',
+    'A versatile modal overlay supporting fullscreen and floating variants with a configurable header (0–2 action buttons) and responsive multi-column body layout (1, 2, or 3 columns). Mobile always renders fullscreen.',
   props: [
     { name: 'open', type: 'boolean', required: true, description: 'Controls modal visibility' },
     { name: 'onClose', type: '() => void', required: true, description: 'Close callback (X button, Escape, or backdrop click)' },
     { name: 'title', type: 'string', required: true, description: 'Title in the header bar' },
     { name: 'subtitle', type: 'string', description: 'Optional subtitle below the title' },
+    { name: 'variant', type: "'fullscreen' | 'floating'", default: "'fullscreen'", description: 'Display variant. Floating shows centered dialog with scrim. Mobile always renders fullscreen.' },
+    { name: 'size', type: "'sm' | 'md' | 'lg' | 'xl'", default: "'lg'", description: 'Floating dialog size. Ignored in fullscreen variant.' },
     { name: 'columns', type: '1 | 2 | 3', default: '1', description: 'Number of body grid columns (responsive)' },
     { name: 'children', type: 'React.ReactNode', required: true, description: 'Body content — use FullScreenModalPanel for structured layout' },
     { name: 'headerButtons', type: 'FullScreenModalHeaderButton[]', description: '0–2 header action buttons' },
     { name: 'closeOnEscape', type: 'boolean', default: 'true', description: 'Escape key closes modal' },
-    { name: 'closeOnBackdrop', type: 'boolean', default: 'true', description: 'Backdrop click closes modal' },
+    { name: 'closeOnBackdrop', type: 'boolean', default: 'variant-dependent', description: 'Backdrop click closes modal. Default: true for floating, false for fullscreen.' },
     { name: 'className', type: 'string', description: 'Additional CSS class' },
   ],
   subComponents: [
@@ -237,6 +241,8 @@ export default function FullScreenModalPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
 
   // Demo state
+  const [demoVariant, setDemoVariant] = useState<ModalVariant>('fullscreen')
+  const [demoSize, setDemoSize] = useState<ModalSize>('lg')
   const [demoColumns, setDemoColumns] = useState<FullScreenModalColumns>(1)
   const [demoSubtitle, setDemoSubtitle] = useState(false)
   const [demoHeaderButtons, setDemoHeaderButtons] = useState(true)
@@ -247,6 +253,7 @@ export default function FullScreenModalPage() {
   const [singleColOpen, setSingleColOpen] = useState(false)
   const [twoColOpen, setTwoColOpen] = useState(false)
   const [threeColOpen, setThreeColOpen] = useState(false)
+  const [floatingOpen, setFloatingOpen] = useState(false)
   const [playgroundOpen, setPlaygroundOpen] = useState(false)
 
   const componentTabs = [
@@ -308,7 +315,7 @@ export default function FullScreenModalPage() {
                     code={`<FullScreenModal
   open={isOpen}
   onClose={() => setIsOpen(false)}
-  title="Edit Product"${demoSubtitle ? '\n  subtitle="Fill in required fields"' : ''}${demoColumns > 1 ? `\n  columns={${demoColumns}}` : ''}${!demoCloseOnEscape ? '\n  closeOnEscape={false}' : ''}${!demoCloseOnBackdrop ? '\n  closeOnBackdrop={false}' : ''}${demoHeaderButtons ? `\n  headerButtons={[\n    { label: 'Cancel', emphasis: 'low', onClick: close },\n    { label: 'Save', emphasis: 'high', onClick: save },\n  ]}` : ''}
+  title="Edit Product"${demoVariant !== 'fullscreen' ? `\n  variant="${demoVariant}"` : ''}${demoVariant === 'floating' && demoSize !== 'lg' ? `\n  size="${demoSize}"` : ''}${demoSubtitle ? '\n  subtitle="Fill in required fields"' : ''}${demoColumns > 1 ? `\n  columns={${demoColumns}}` : ''}${!demoCloseOnEscape ? '\n  closeOnEscape={false}' : ''}${!demoCloseOnBackdrop ? '\n  closeOnBackdrop={false}' : ''}${demoHeaderButtons ? `\n  headerButtons={[\n    { label: 'Cancel', emphasis: 'low', onClick: close },\n    { label: 'Save', emphasis: 'high', onClick: save },\n  ]}` : ''}
 >
   <FullScreenModalPanel>
     <Form />
@@ -326,6 +333,44 @@ export default function FullScreenModalPage() {
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                    {/* Variant */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Variant
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {(['fullscreen', 'floating'] as const).map((v) => (
+                          <PillButton
+                            key={v}
+                            onClick={() => setDemoVariant(v)}
+                            isActive={demoVariant === v}
+                          >
+                            {v}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Size (only for floating) */}
+                    {demoVariant === 'floating' && (
+                      <div>
+                        <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                          Size
+                        </label>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          {(['sm', 'md', 'lg', 'xl'] as const).map((s) => (
+                            <PillButton
+                              key={s}
+                              onClick={() => setDemoSize(s)}
+                              isActive={demoSize === s}
+                            >
+                              {s}
+                            </PillButton>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Columns */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
@@ -380,7 +425,25 @@ export default function FullScreenModalPage() {
               Click each button to see the modal in action with different column configurations.
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
+              {/* Floating */}
+              <div
+                style={{
+                  padding: '24px',
+                  background: colors.surface.light,
+                  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                  borderRadius: borderRadius.lg,
+                }}
+              >
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Floating (Dialog)</h3>
+                <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, margin: '0 0 16px' }}>
+                  Centered dialog with scrim backdrop. Click outside to dismiss.
+                </p>
+                <Button emphasis="mid" onClick={() => setFloatingOpen(true)}>
+                  Open Demo
+                </Button>
+              </div>
+
               {/* Single Column */}
               <div
                 style={{
@@ -390,7 +453,7 @@ export default function FullScreenModalPage() {
                   borderRadius: borderRadius.lg,
                 }}
               >
-                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>1-Column (Settings)</h3>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Fullscreen — 1 Column</h3>
                 <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, margin: '0 0 16px' }}>
                   Single column for forms, settings, and detail views.
                 </p>
@@ -408,7 +471,7 @@ export default function FullScreenModalPage() {
                   borderRadius: borderRadius.lg,
                 }}
               >
-                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>2-Column (Edit + Preview)</h3>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Fullscreen — 2 Column</h3>
                 <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, margin: '0 0 16px' }}>
                   Form on the left, live preview on the right.
                 </p>
@@ -426,7 +489,7 @@ export default function FullScreenModalPage() {
                   borderRadius: borderRadius.lg,
                 }}
               >
-                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>3-Column (Bulk Edit)</h3>
+                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Fullscreen — 3 Column</h3>
                 <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, margin: '0 0 16px' }}>
                   Selection list + edit form + preview panel.
                 </p>
@@ -508,7 +571,28 @@ import type {
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Single Column — Settings</h3>
+              <h3 style={sharedStyles.cardTitle}>Floating Dialog</h3>
+              <CodeBlock>
+{`<FullScreenModal
+  open={isOpen}
+  onClose={close}
+  title="Edit Settings"
+  variant="floating"
+  size="md"
+  headerButtons={[
+    { label: 'Cancel', emphasis: 'low', onClick: close },
+    { label: 'Save', emphasis: 'high', onClick: handleSave },
+  ]}
+>
+  <FullScreenModalPanel>
+    <SettingsForm />
+  </FullScreenModalPanel>
+</FullScreenModal>`}
+              </CodeBlock>
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Fullscreen — Single Column</h3>
               <CodeBlock>
 {`<FullScreenModal open={isOpen} onClose={close} title="Settings">
   <FullScreenModalPanel>
@@ -581,11 +665,13 @@ import type {
                   [<code key="p2">onClose</code>, <code key="pt2">{'() => void'}</code>, '—', 'Close callback'],
                   [<code key="p3">title</code>, <code key="pt3">string</code>, '—', 'Header title'],
                   [<code key="p4">subtitle</code>, <code key="pt4">string</code>, '—', 'Optional subtitle'],
+                  [<code key="p4b">variant</code>, <code key="pt4b">{"'fullscreen' | 'floating'"}</code>, <code key="pd4b">{"'fullscreen'"}</code>, 'Display variant. Mobile always renders fullscreen.'],
+                  [<code key="p4c">size</code>, <code key="pt4c">{"'sm' | 'md' | 'lg' | 'xl'"}</code>, <code key="pd4c">{"'lg'"}</code>, 'Floating dialog size. Ignored in fullscreen.'],
                   [<code key="p5">columns</code>, <code key="pt5">1 | 2 | 3</code>, <code key="pd5">1</code>, 'Body grid columns'],
                   [<code key="p6">children</code>, <code key="pt6">ReactNode</code>, '—', 'Body content'],
                   [<code key="p7">headerButtons</code>, <code key="pt7">FullScreenModalHeaderButton[]</code>, '—', '0–2 header action buttons'],
                   [<code key="p8">closeOnEscape</code>, <code key="pt8">boolean</code>, <code key="pd8">true</code>, 'Escape closes modal'],
-                  [<code key="p9">closeOnBackdrop</code>, <code key="pt9">boolean</code>, <code key="pd9">true</code>, 'Backdrop click closes modal'],
+                  [<code key="p9">closeOnBackdrop</code>, <code key="pt9">boolean</code>, 'variant-dependent', 'Backdrop click closes modal. Default: true for floating, false for fullscreen.'],
                   [<code key="p10">className</code>, <code key="pt10">string</code>, '—', 'Additional CSS class'],
                 ]}
               />
@@ -666,6 +752,8 @@ import type {
         open={playgroundOpen}
         onClose={() => setPlaygroundOpen(false)}
         title="Edit Product"
+        variant={demoVariant}
+        size={demoSize}
         subtitle={demoSubtitle ? 'Fill in all required fields' : undefined}
         columns={demoColumns}
         headerButtons={playgroundHeaderButtons.length > 0 ? playgroundHeaderButtons : undefined}
@@ -685,6 +773,24 @@ import type {
             <SamplePreviewContent />
           </FullScreenModalPanel>
         )}
+      </FullScreenModal>
+
+      {/* Floating Demo */}
+      <FullScreenModal
+        open={floatingOpen}
+        onClose={() => setFloatingOpen(false)}
+        title="Edit Settings"
+        subtitle="Update your preferences"
+        variant="floating"
+        size="md"
+        headerButtons={[
+          { label: 'Cancel', emphasis: 'low', onClick: () => setFloatingOpen(false) },
+          { label: 'Save', emphasis: 'high', onClick: () => setFloatingOpen(false) },
+        ]}
+      >
+        <FullScreenModalPanel>
+          <SampleFormContent />
+        </FullScreenModalPanel>
       </FullScreenModal>
 
       {/* Single Column Demo */}

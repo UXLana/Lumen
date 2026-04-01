@@ -1,7 +1,7 @@
 'use client'
 
 import React, { forwardRef, useState } from 'react'
-import { fontFamilies, typography, banner, bannerIcon } from '../../styles/design-tokens'
+import { fontFamilies, typography, spacing, banner, bannerIcon } from '../../styles/design-tokens'
 import {
   IconInfoFilled,
   IconSuccessFilled,
@@ -24,10 +24,10 @@ export type BannerVariant = 'info' | 'success' | 'warning' | 'error'
 
 /**
  * Banner size options
- * - md: Standard banner size
- * - lg: Larger banner for more prominent messages
+ * - sm: Compact banner with smaller typography
+ * - md: Standard banner size (default)
  */
-export type BannerSize = 'md' | 'lg'
+export type BannerSize = 'sm' | 'md'
 
 /**
  * Banner style options
@@ -308,42 +308,41 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
     }
 
     const hasActions = primaryAction || secondaryAction || actions
-    const isSideAlignment = buttonAlignment === 'side'
-    const isBelow = buttonAlignment === 'below'
+    const hasMultilineContent = !!(title && children)
+    // Auto-switch buttons below when content is multiline (title + children), unless explicitly set to 'side'
+    const isBelow = buttonAlignment === 'below' || (hasMultilineContent && buttonAlignment !== 'side')
+
+    // Typography based on size
+    const textStyle = size === 'sm' ? typography.body.sm : typography.body.md
 
     // Icon container size (40px with 8px padding = 24px icon)
     const iconContainerSize = 40
+    const insetPad = parseInt(spacing.sm) // 12px — token-derived
 
-    // Base container styles - matching Figma exactly
-    // Side alignment: 56px height, row layout, full width
-    // Below alignment: ~100px height, column layout
+    // Base container styles — sizes with content, no fixed height
     const baseStyles: React.CSSProperties = {
       position: 'relative',
       display: 'flex',
       flexDirection: isBelow ? 'column' : 'row',
-      alignItems: isBelow ? 'flex-start' : 'center',
+      alignItems: 'flex-start',
       width: '100%',
-      height: isBelow ? 'auto' : '56px',
-      minHeight: isBelow ? '100px' : '56px',
-      padding: '0',
-      paddingLeft: `${7 + iconContainerSize + 8}px`, // 7px left (8-1 for border) + icon (40px) + 8px gap = 55px
-      paddingRight: '7px', // 8px - 1px border
+      padding: spacing.sm,
+      paddingLeft: `${insetPad + iconContainerSize + parseInt(spacing.xs)}px`, // inset + icon (40px) + gap
+      paddingRight: dismissible ? '40px' : spacing.sm, // Reserve space for dismiss button
       background: variantStyle.surface,
       borderRadius: banner.border.radius.inline,
       border: `1px solid ${variantStyle.divider}`,
-      opacity: 1,
       fontFamily: fontFamilies.body,
       transition: banner.transition,
       boxSizing: 'border-box',
       ...style,
     }
 
-    // Icon container styles (positioned absolutely, vertically centered for side, top for below)
+    // Icon container styles — always aligned to top
     const iconContainerStyles: React.CSSProperties = {
       position: 'absolute',
-      left: '7px', // 8px - 1px border
-      top: isBelow ? '7px' : '50%', // 8px - 1px border for below alignment
-      transform: isBelow ? 'none' : 'translateY(-50%)',
+      left: spacing.sm,
+      top: spacing.sm,
       flexShrink: 0,
       display: 'flex',
       alignItems: 'center',
@@ -362,9 +361,7 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       justifyContent: 'center',
       alignItems: 'flex-start',
       minWidth: 0,
-      paddingTop: isBelow ? '6px' : '0',
-      paddingBottom: isBelow ? '6px' : '0',
-      paddingRight: isBelow ? '6px' : '0',
+      minHeight: iconContainerSize, // Ensure content area at least matches icon height for single-line centering
     }
 
     // Actions container styles
@@ -377,10 +374,12 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
         ? {
             justifyContent: 'flex-end',
             width: '100%',
-            paddingRight: '8px',
-            paddingBottom: '8px',
+            marginTop: '4px',
           }
-        : {}),
+        : {
+            alignSelf: 'flex-start',
+            marginTop: '4px',
+          }),
     }
 
     return (
@@ -392,7 +391,7 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
         style={baseStyles}
         {...props}
       >
-        {/* Icon with background container (positioned absolutely) */}
+        {/* Icon with background container (positioned absolutely, top-aligned) */}
         {icon ? (
           <div style={{ ...iconContainerStyles, padding: 0 }}>{icon}</div>
         ) : (
@@ -406,10 +405,10 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
           {title && (
             <div
               style={{
-                fontSize: typography.body.md.fontSize,
-                fontWeight: typography.body.md.fontWeight,
-                lineHeight: typography.body.md.lineHeight,
-                letterSpacing: typography.body.md.letterSpacing,
+                fontSize: textStyle.fontSize,
+                fontWeight: textStyle.fontWeight,
+                lineHeight: textStyle.lineHeight,
+                letterSpacing: textStyle.letterSpacing,
                 color: onDark ? banner.text.primaryOnDark : banner.text.primary,
                 marginBottom: children ? banner.spacing.titleMarginBottom : 0,
               }}
@@ -420,10 +419,10 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
           {children && (
             <div
               style={{
-                fontSize: typography.body.md.fontSize,
-                fontWeight: typography.body.md.fontWeight,
-                lineHeight: typography.body.md.lineHeight,
-                letterSpacing: typography.body.md.letterSpacing,
+                fontSize: textStyle.fontSize,
+                fontWeight: textStyle.fontWeight,
+                lineHeight: textStyle.lineHeight,
+                letterSpacing: textStyle.letterSpacing,
                 color: onDark ? banner.text.primaryOnDark : banner.text.primary,
               }}
             >
@@ -456,13 +455,16 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
           </div>
         )}
 
-        {/* Dismiss button */}
+        {/* Dismiss button — always top-right */}
         {dismissible && (
           <button
             type="button"
             onClick={handleDismiss}
             aria-label="Dismiss"
             style={{
+              position: 'absolute',
+              top: spacing.sm,
+              right: spacing.sm,
               flexShrink: 0,
               background: banner.dismiss.background.default,
               border: 'none',
@@ -475,7 +477,6 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
               borderRadius: banner.dismiss.borderRadius,
               transition: banner.transition,
               opacity: banner.dismiss.opacity.default,
-              marginLeft: hasActions ? '8px' : '0',
               outline: isDismissFocusVisible ? '2px solid currentColor' : 'none',
               outlineOffset: '2px',
             }}

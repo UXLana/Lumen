@@ -4,6 +4,9 @@ import React, { forwardRef, useEffect, useCallback, useState } from 'react'
 import {
   typography,
   shadows,
+  spacing,
+  borderRadius,
+  breakpoints,
   transitionPresets,
   zIndex,
 } from '../../styles/design-tokens'
@@ -29,8 +32,39 @@ function usePrefersReducedMotion(): boolean {
 }
 
 // =============================================================================
+// MOBILE DETECTION HOOK
+// =============================================================================
+
+/** Breakpoint below which the modal always renders fullscreen */
+const MOBILE_BREAKPOINT = parseInt(breakpoints.md) // 768
+
+function useIsMobile(): boolean {
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`).matches
+      : false
+  )
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    setIsMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  return isMobile
+}
+
+// =============================================================================
 // TYPES
 // =============================================================================
+
+/** Modal display variant */
+export type ModalVariant = 'fullscreen' | 'floating'
+
+/** Modal size for floating variant */
+export type ModalSize = 'sm' | 'md' | 'lg' | 'xl'
 
 /** Number of content columns for the modal body */
 export type FullScreenModalColumns = 1 | 2 | 3
@@ -60,6 +94,10 @@ export interface FullScreenModalProps {
   title: string
   /** Optional subtitle below the title */
   subtitle?: string
+  /** Display variant: 'fullscreen' takes the entire viewport, 'floating' is a centered dialog with scrim. Default: 'fullscreen'. Mobile always renders fullscreen. */
+  variant?: ModalVariant
+  /** Size of the floating modal. Ignored in fullscreen variant. Default: 'lg' */
+  size?: ModalSize
   /** Number of body columns: 1, 2, or 3. Responsive. */
   columns?: FullScreenModalColumns
   /** Body content — use FullScreenModalPanel for structured layout */
@@ -68,7 +106,7 @@ export interface FullScreenModalProps {
   headerButtons?: FullScreenModalHeaderButton[]
   /** Close on Escape key press */
   closeOnEscape?: boolean
-  /** Close on backdrop click */
+  /** Close on scrim/backdrop click. Default: true for floating, false for fullscreen. */
   closeOnBackdrop?: boolean
   /** Additional CSS class */
   className?: string
@@ -84,6 +122,17 @@ export interface FullScreenModalPanelProps {
   className?: string
   /** Sticky panel with independent scrolling */
   sticky?: boolean
+}
+
+// =============================================================================
+// SIZE CONFIG (floating variant)
+// =============================================================================
+
+const floatingSizeConfig: Record<ModalSize, { width: string; maxHeight: string }> = {
+  sm: { width: '480px', maxHeight: '60vh' },
+  md: { width: '640px', maxHeight: '70vh' },
+  lg: { width: '860px', maxHeight: '80vh' },
+  xl: { width: '1080px', maxHeight: '90vh' },
 }
 
 // =============================================================================
@@ -113,11 +162,11 @@ const CloseIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
 // =============================================================================
 
 /**
- * FullScreenModal — A full-viewport modal overlay with a configurable header
- * (0–2 action buttons), and a responsive multi-column body layout (1, 2, or 3 columns).
+ * FullScreenModal — A versatile modal overlay supporting fullscreen and floating variants.
  *
- * Use for multi-step forms, detail views, editors, or any flow that benefits
- * from the full screen real estate while maintaining a clear path back.
+ * - `variant="fullscreen"` (default): Takes the full viewport, no scrim.
+ * - `variant="floating"`: Centered dialog with scrim backdrop. Size controlled by `size` prop.
+ * - Mobile viewports always render fullscreen regardless of variant.
  *
  * Features:
  * - Theme-aware via `useColors()`
@@ -131,21 +180,17 @@ const CloseIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
  *
  * @example
  * ```tsx
- * <FullScreenModal
- *   open={isOpen}
- *   onClose={() => setIsOpen(false)}
- *   title="Edit Product"
- *   columns={2}
- *   headerButtons={[
- *     { label: 'Save', emphasis: 'high', onClick: handleSave },
- *   ]}
- * >
- *   <FullScreenModalPanel>
- *     <ProductForm />
- *   </FullScreenModalPanel>
+ * // Fullscreen (default)
+ * <FullScreenModal open={isOpen} onClose={close} title="Edit Product" columns={2}>
+ *   <FullScreenModalPanel><ProductForm /></FullScreenModalPanel>
  *   <FullScreenModalPanel background="muted" border="left" sticky>
  *     <ProductPreview />
  *   </FullScreenModalPanel>
+ * </FullScreenModal>
+ *
+ * // Floating dialog
+ * <FullScreenModal open={isOpen} onClose={close} title="Settings" variant="floating" size="md">
+ *   <FullScreenModalPanel><SettingsForm /></FullScreenModalPanel>
  * </FullScreenModal>
  * ```
  */
@@ -156,17 +201,27 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
       onClose,
       title,
       subtitle,
+      variant = 'fullscreen',
+      size = 'lg',
       columns = 1,
       children,
       headerButtons,
       closeOnEscape = true,
-      closeOnBackdrop = true,
+      closeOnBackdrop,
       className,
     },
     ref,
   ) => {
     const colors = useColors()
     const prefersReducedMotion = usePrefersReducedMotion()
+    const isMobile = useIsMobile()
+
+    // Mobile always renders fullscreen
+    const resolvedVariant: ModalVariant = isMobile ? 'fullscreen' : variant
+    const isFloating = resolvedVariant === 'floating'
+
+    // Default: floating closes on backdrop, fullscreen does not
+    const shouldCloseOnBackdrop = closeOnBackdrop ?? isFloating
 
     const handleEscape = useCallback(
       (e: KeyboardEvent) => {
@@ -199,38 +254,60 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
           ? 'repeat(2, 1fr)'
           : '1fr'
 
+    const sizeConfig = floatingSizeConfig[size]
+
+    // Scrim styles — visible for floating, transparent for fullscreen
+    const scrimStyles: React.CSSProperties = {
+      position: 'fixed',
+      inset: 0,
+      zIndex: zIndex?.overlay ?? 50,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: isFloating ? colors.scrim : 'transparent',
+      backdropFilter: isFloating ? 'blur(4px)' : undefined,
+      animation: prefersReducedMotion ? 'none' : 'modalFadeIn 200ms ease-out',
+    }
+
+    // Dialog container styles
+    const dialogStyles: React.CSSProperties = isFloating
+      ? {
+          width: `min(${sizeConfig.width}, calc(100vw - ${spacing['2xl']}))`,
+          maxHeight: sizeConfig.maxHeight,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          backgroundColor: colors.surface.light,
+          boxShadow: shadows?.xl ?? '0 25px 50px -12px rgba(0,0,0,.25)',
+          borderRadius: borderRadius.lg,
+          transition: transitionPresets?.slow ?? 'all 300ms ease-in-out',
+          position: 'relative',
+          animation: prefersReducedMotion ? 'none' : 'modalSlideUp 200ms ease-out',
+        }
+      : {
+          width: '100%',
+          height: '100dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          backgroundColor: colors.surface.light,
+          boxShadow: shadows?.xl ?? '0 25px 50px -12px rgba(0,0,0,.25)',
+          transition: transitionPresets?.slow ?? 'all 300ms ease-in-out',
+          position: 'relative',
+        }
+
     return (
       <div
         ref={ref}
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: zIndex?.overlay ?? 50,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: colors.scrim,
-          backdropFilter: 'blur(4px)',
-          animation: prefersReducedMotion ? 'none' : 'fadeIn 200ms ease-out',
-        }}
-        onClick={closeOnBackdrop ? onClose : undefined}
+        style={scrimStyles}
+        onClick={shouldCloseOnBackdrop ? onClose : undefined}
       >
         <div
           className={className}
-          style={{
-            width: '100%',
-            height: '100dvh',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            backgroundColor: colors.surface.light,
-            boxShadow: shadows?.xl ?? '0 25px 50px -12px rgba(0,0,0,.25)',
-            transition: transitionPresets?.slow ?? 'all 300ms ease-in-out',
-            position: 'relative',
-          }}
+          style={dialogStyles}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -239,16 +316,18 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              paddingLeft: 24,
-              paddingRight: 24,
-              height: 64,
+              paddingLeft: spacing.xl,
+              paddingRight: spacing.xl,
+              height: spacing['5xl'], // 64px
               flexShrink: 0,
               backgroundColor: colors.surface.light,
               borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
+              borderRadius: isFloating ? `${borderRadius.lg} ${borderRadius.lg} 0 0` : undefined,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, minWidth: 0 }}>
               <button
+                type="button"
                 onClick={onClose}
                 aria-label="Close"
                 style={{
@@ -303,7 +382,7 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
             </div>
 
             {headerButtons && headerButtons.length > 0 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexShrink: 0 }}>
                 {headerButtons.map((btn, i) => (
                   <Button
                     key={i}
@@ -337,19 +416,32 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
           </div>
         </div>
 
-        {/* Keyframe for fade-in (injected once) */}
-        <style>{`
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-        `}</style>
       </div>
     )
   },
 )
 
 FullScreenModal.displayName = 'FullScreenModal'
+
+// Inject keyframes once (same pattern as Skeleton)
+if (typeof document !== 'undefined') {
+  const styleId = 'mtr-modal-keyframes'
+  if (!document.getElementById(styleId)) {
+    const styleEl = document.createElement('style')
+    styleEl.id = styleId
+    styleEl.textContent = `
+      @keyframes modalFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes modalSlideUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `
+    document.head.appendChild(styleEl)
+  }
+}
 
 // =============================================================================
 // FULL SCREEN MODAL PANEL

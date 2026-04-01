@@ -212,8 +212,8 @@ export const sharedStyles = {
 
   main: {
     padding: '40px 0',
-    maxWidth: '960px',
-    margin: '0 auto',
+    maxWidth: '1400px',
+    margin: '0',
   },
   
   section: {

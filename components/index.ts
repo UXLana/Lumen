@@ -118,6 +118,8 @@ export type {
   FullScreenModalHeaderButton,
   FullScreenModalPanelBackground,
   FullScreenModalPanelBorder,
+  ModalVariant,
+  ModalSize,
 } from './FullScreenModal'
 
 // Header

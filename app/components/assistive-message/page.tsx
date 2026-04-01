@@ -108,7 +108,7 @@ export default function AssistiveMessagePage() {
   return (
     <StyleguideLayout
       title="Assistive Message"
-      description="Small helper / validation messages shown beneath form fields. Supports 7 visual types from the Lumen Design System v2.0 with optional character counters and contextual icons."
+      description="Small helper / validation messages shown beneath form fields. Supports 7 visual types from the Prism Design System v2.0 with optional character counters and contextual icons."
       activeId="assistive-message"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -207,35 +207,6 @@ import { AssistiveMessage } from '@/components'`}</CodeBlock>
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-          </section>
-
-          {/* All Types Showcase */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>All Types</h2>
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '400px' }}>
-                {ALL_TYPES.map(t => (
-                  <div key={t}>
-                    <div style={{
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      textTransform: 'uppercase' as const,
-                      letterSpacing: '0.5px',
-                      color: colors.text.lowEmphasis.onLight,
-                      marginBottom: '6px',
-                    }}>
-                      {TYPE_LABELS[t]}
-                    </div>
-                    <AssistiveMessage
-                      type={t}
-                      counter={t === 'error-overflow' ? '35/30' : (t !== 'disabled' ? '12/30' : undefined)}
-                    >
-                      {DEMO_TEXT[t]}
-                    </AssistiveMessage>
-                  </div>
-                ))}
               </div>
             </div>
           </section>
@@ -421,7 +392,7 @@ import type { AssistiveMessageProps, AssistiveMessageType } from '@/components'`
                 headers={['Property', 'Value']}
                 rows={[
                   ['Component', 'Assistive message'],
-                  ['File', 'Lumen Design System v2.0 (wip)'],
+                  ['File', 'Prism Design System v2.0 (wip)'],
                   ['Node ID', '2068-39659'],
                   ['Figma Properties', <span key="fp"><code>type</code> (variant), <code>Assistive text</code> (text), <code>Counter</code> (boolean)</span>],
                 ]}

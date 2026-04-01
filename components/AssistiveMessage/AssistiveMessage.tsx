@@ -176,7 +176,7 @@ export const AssistiveMessage = forwardRef<HTMLDivElement, AssistiveMessageProps
       fontWeight: tokens.typography.fontWeight,
       lineHeight: tokens.typography.lineHeight,
       letterSpacing: tokens.typography.letterSpacing,
-      ...(indent ? { paddingLeft: spacing.xs } : {}),
+      paddingLeft: indent ? spacing.sm : spacing.xs,
       ...style,
     }
 

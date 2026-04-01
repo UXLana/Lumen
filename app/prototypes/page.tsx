@@ -622,7 +622,7 @@ export default function PrototypesIndexPage() {
     <StyleguideLayout
       activeId="prototypes-index"
       title="Prototypes"
-      description="Browse all prototypes built with the Lumen Design System."
+      description="Browse all prototypes built with the Prism Design System."
       tabs={[]}
       headerAction={allOwners.length > 1 ? (
         <div style={{

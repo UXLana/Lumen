@@ -219,7 +219,7 @@ export default function CreatePage() {
       {viewState === 'error' && (
         <Banner
           variant="error"
-          size="lg"
+          size="md"
           dismissible
           onDismiss={() => setViewState('default')}
         >

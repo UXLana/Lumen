@@ -409,7 +409,7 @@ function StepIndicatorHorizontal({
                   style={{
                     flex: '1 1 0',
                     height: 2,
-                    minWidth: 16,
+                    minWidth: 40,
                     backgroundColor: isCompleted
                       ? stepper.connector.colors.completed
                       : stepper.connector.colors.pending,
