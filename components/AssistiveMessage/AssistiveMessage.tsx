@@ -1,7 +1,7 @@
 'use client'
 
 import React, { forwardRef } from 'react'
-import { fontFamilies } from '../../styles/design-tokens'
+import { assistiveMessage as tokens, spacing } from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES
@@ -16,6 +16,9 @@ export type AssistiveMessageType =
   | 'success'
   | 'info'
 
+/** Icon display size */
+export type AssistiveMessageIconSize = 16 | 24
+
 export interface AssistiveMessageProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Visual type / state of the message */
   type?: AssistiveMessageType
@@ -25,118 +28,90 @@ export interface AssistiveMessageProps extends React.HTMLAttributes<HTMLDivEleme
   counter?: string
   /** Override the default icon for the current type (pass `null` to hide) */
   icon?: React.ReactNode | null
+  /** Icon size — 16 (inline with form fields) or 24 (standalone) */
+  iconSize?: AssistiveMessageIconSize
+  /** Add left padding to align with input content (e.g. when used below a labeled Input) */
+  indent?: boolean
 }
 
 // =============================================================================
-// ICON SVGs — pixel-matched to Figma (16×16)
+// ICON SVGs — 24×24 viewBox, rendered at iconSize prop
+// Matched to Figma node 32-10882
 // =============================================================================
 
-const ErrorFilledIcon: React.FC<{ color: string }> = ({ color }) => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M8 1.333A6.667 6.667 0 1 0 8 14.667 6.667 6.667 0 0 0 8 1.333ZM7.333 5.333a.667.667 0 0 1 1.334 0v2.334a.667.667 0 0 1-1.334 0V5.333Zm.667 5a.667.667 0 1 0 0-1.333.667.667 0 0 0 0 1.333Z"
-      fill={color}
-    />
-  </svg>
-)
-
-const WarningIcon: React.FC<{ color: string }> = ({ color }) => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M7.134 2.567a1 1 0 0 1 1.732 0l5.333 9.333A1 1 0 0 1 13.333 13.333H2.667a1 1 0 0 1-.866-1.433l5.333-9.333ZM8 5.333a.667.667 0 0 1 .667.667v2a.667.667 0 0 1-1.334 0V6A.667.667 0 0 1 8 5.333Zm0 5.334a.667.667 0 1 0 0-1.334.667.667 0 0 0 0 1.334Z"
-      fill={color}
-    />
-  </svg>
-)
-
-const SuccessIcon: React.FC<{ color: string }> = ({ color }) => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M8 1.333A6.667 6.667 0 1 0 8 14.667 6.667 6.667 0 0 0 8 1.333Zm2.471 5.138a.667.667 0 0 0-.942-.942L7.333 7.724 6.471 6.862a.667.667 0 0 0-.942.942l1.333 1.334a.667.667 0 0 0 .943 0l2.666-2.667Z"
-      fill={color}
-    />
-  </svg>
-)
-
-const InfoFilledIcon: React.FC<{ color: string }> = ({ color }) => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M8 1.333A6.667 6.667 0 1 0 8 14.667 6.667 6.667 0 0 0 8 1.333ZM8 5a.667.667 0 1 0 0-1.333A.667.667 0 0 0 8 5Zm.667 1.667a.667.667 0 0 0-1.334 0v3.666a.667.667 0 0 0 1.334 0V6.667Z"
-      fill={color}
-    />
-  </svg>
-)
-
-// =============================================================================
-// STYLE CONFIG PER TYPE — extracted from Figma node 2068:39659
-// =============================================================================
-
-interface TypeStyle {
-  textColor: string
-  counterColor: string
-  iconColor: string | null
-  icon: React.FC<{ color: string }> | null
-  gap: string
+interface IconComponentProps {
+  color: string
+  size?: number
 }
 
-const typeStyles: Record<AssistiveMessageType, TypeStyle> = {
-  assistive: {
-    textColor: 'rgba(0, 0, 0, 0.60)',
-    counterColor: 'rgba(0, 0, 0, 0.60)',
-    iconColor: null,
-    icon: null,
-    gap: '4px',
-  },
-  disabled: {
-    textColor: 'rgba(0, 0, 0, 0.30)',
-    counterColor: 'rgba(0, 0, 0, 0.30)',
-    iconColor: null,
-    icon: null,
-    gap: '4px',
-  },
-  error: {
-    textColor: '#C10B1E',
-    counterColor: 'rgba(0, 0, 0, 0.60)',
-    iconColor: '#DC0C22',
-    icon: ErrorFilledIcon,
-    gap: '2px',
-  },
-  'error-overflow': {
-    textColor: '#C10B1E',
-    counterColor: '#C10B1E',
-    iconColor: '#DC0C22',
-    icon: ErrorFilledIcon,
-    gap: '4px',
-  },
-  warning: {
-    textColor: '#A35C00',
-    counterColor: 'rgba(0, 0, 0, 0.60)',
-    iconColor: '#D17600',
-    icon: WarningIcon,
-    gap: '4px',
-  },
-  success: {
-    textColor: '#006B50',
-    counterColor: 'rgba(0, 0, 0, 0.60)',
-    iconColor: '#1B7F66',
-    icon: SuccessIcon,
-    gap: '4px',
-  },
-  info: {
-    textColor: 'rgba(0, 0, 0, 0.95)',
-    counterColor: 'rgba(0, 0, 0, 0.60)',
-    iconColor: '#6E61FF',
-    icon: InfoFilledIcon,
-    gap: '4px',
-  },
+/** Error — diamond/rotated square with exclamation. Figma node 11:5905 */
+const ErrorFilledIcon: React.FC<IconComponentProps> = ({ color, size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M0.67 10.382L10.382 0.67C11.275-0.223 12.725-0.223 13.618 0.67L23.33 10.382C24.223 11.275 24.223 12.725 23.33 13.618L13.618 23.33C12.725 24.223 11.275 24.223 10.382 23.33L0.67 13.618C-0.223 12.725-0.223 11.275 0.67 10.382ZM11.997 18.895C11.037 18.895 10.263 18.122 10.263 17.162C10.263 16.202 11.037 15.429 11.997 15.429C12.957 15.429 13.731 16.202 13.731 17.162C13.731 18.122 12.957 18.895 11.997 18.895ZM10.669 12.381C10.669 13.114 11.269 13.714 12.003 13.714C12.736 13.714 13.337 13.114 13.337 12.381V7.047C13.337 6.314 12.736 5.714 12.003 5.714C11.269 5.714 10.669 6.314 10.669 7.047V12.381Z"
+      fill={color}
+    />
+  </svg>
+)
+
+/** Warning — triangle with exclamation. Figma node 11:5913 */
+const WarningIcon: React.FC<IconComponentProps> = ({ color, size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+    <path
+      d="M9.2 1.435C10.252-0.478 13.002-0.478 14.054 1.435L22.904 17.553C23.919 19.399 22.564 21.657 20.462 21.657H2.773C0.67 21.657-0.684 19.399 0.331 17.553L9.2 1.435ZM11.628 14.865C10.779 14.865 10.09 15.554 10.09 16.403C10.09 17.253 10.779 17.945 11.628 17.945C12.477 17.945 13.167 17.253 13.167 16.403C13.167 15.554 12.477 14.865 11.628 14.865ZM11.628 5.636C10.949 5.636 10.399 6.188 10.399 6.868V11.788C10.399 12.468 10.949 13.02 11.628 13.02C12.307 13.02 12.858 12.468 12.858 11.788V6.868C12.858 6.188 12.307 5.636 11.628 5.636Z"
+      fill={color}
+    />
+  </svg>
+)
+
+/** Success — circle with checkmark. Figma node 11:5923 */
+const SuccessIcon: React.FC<IconComponentProps> = ({ color, size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M12 0C5.373 0 0 5.373 0 12C0 18.627 5.373 24 12 24C18.627 24 24 18.627 24 12C24 5.373 18.627 0 12 0ZM17.56 9.97a1 1 0 0 0-1.414-1.414L10.5 14.2l-2.646-2.646a1 1 0 0 0-1.414 1.414l3.353 3.353a1 1 0 0 0 1.414 0l6.353-6.353Z"
+      fill={color}
+    />
+  </svg>
+)
+
+/** Info — circle with "i" symbol. Figma node 11:5930 */
+const InfoFilledIcon: React.FC<IconComponentProps> = ({ color, size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M12 0C5.373 0 0 5.373 0 12C0 18.627 5.373 24 12 24C18.627 24 24 18.627 24 12C24 5.373 18.627 0 12 0ZM10.8 11.4C10.8 10.737 11.337 10.2 12 10.2C12.663 10.2 13.2 10.737 13.2 11.4V17.4C13.2 18.063 12.663 18.6 12 18.6C11.337 18.6 10.8 18.063 10.8 17.4V11.4ZM12 5.4C11.173 5.4 10.5 6.073 10.5 6.9C10.5 7.727 11.173 8.4 12 8.4C12.827 8.4 13.5 7.727 13.5 6.9C13.5 6.073 12.827 5.4 12 5.4Z"
+      fill={color}
+    />
+  </svg>
+)
+
+// =============================================================================
+// TOKEN KEY MAPPING — maps component type to design token key
+// =============================================================================
+
+const typeToTokenKey: Record<AssistiveMessageType, keyof typeof tokens.types> = {
+  assistive: 'assistive',
+  disabled: 'disabled',
+  error: 'error',
+  'error-overflow': 'errorOverflow',
+  warning: 'warning',
+  success: 'success',
+  info: 'info',
+}
+
+const iconForType: Record<AssistiveMessageType, React.FC<IconComponentProps> | null> = {
+  assistive: null,
+  disabled: null,
+  error: ErrorFilledIcon,
+  'error-overflow': ErrorFilledIcon,
+  warning: WarningIcon,
+  success: SuccessIcon,
+  info: InfoFilledIcon,
 }
 
 // =============================================================================
@@ -157,15 +132,18 @@ const ariaRoleForType: Partial<Record<AssistiveMessageType, string>> = {
  * AssistiveMessage
  *
  * A small helper / validation message shown beneath form fields.
- * Supports 7 visual types matching the Trace Design System v2.0 Figma spec
- * (node 2068-39659): Assistive, Disabled, Error, Error-Overflow (too many
- * characters), Warning, Success, and Info.
+ * Supports 7 visual types matching the Prism Design System Figma spec
+ * (node 32-10882): Assistive, Disabled, Error, Error-Overflow,
+ * Warning, Success, and Info.
+ *
+ * All colors and typography are sourced from design tokens.
  *
  * @example
  * <AssistiveMessage>Enter your full legal name</AssistiveMessage>
  * <AssistiveMessage type="error">This field is required</AssistiveMessage>
  * <AssistiveMessage type="error-overflow" counter="35/30">Too many characters</AssistiveMessage>
  * <AssistiveMessage type="success">Looks good!</AssistiveMessage>
+ * <AssistiveMessage type="warning" iconSize={24}>Please review</AssistiveMessage>
  */
 export const AssistiveMessage = forwardRef<HTMLDivElement, AssistiveMessageProps>(
   (
@@ -174,14 +152,17 @@ export const AssistiveMessage = forwardRef<HTMLDivElement, AssistiveMessageProps
       children,
       counter,
       icon,
+      iconSize = 16,
+      indent = false,
       className,
       style,
       ...props
     },
     ref
   ) => {
-    const ts = typeStyles[type]
-    const IconComponent = icon === undefined ? ts.icon : null
+    const tokenKey = typeToTokenKey[type]
+    const ts = tokens.types[tokenKey]
+    const IconComponent = icon === undefined ? iconForType[type] : null
     const customIcon = icon !== undefined ? icon : undefined
     const role = ariaRoleForType[type]
 
@@ -190,11 +171,12 @@ export const AssistiveMessage = forwardRef<HTMLDivElement, AssistiveMessageProps
       flexDirection: 'row',
       alignItems: 'flex-start',
       gap: ts.gap,
-      fontFamily: fontFamilies.body,
-      fontSize: '14px',
-      fontWeight: 400,
-      lineHeight: '18px',
-      letterSpacing: '-0.3px',
+      fontFamily: tokens.typography.fontFamily,
+      fontSize: tokens.typography.fontSize,
+      fontWeight: tokens.typography.fontWeight,
+      lineHeight: tokens.typography.lineHeight,
+      letterSpacing: tokens.typography.letterSpacing,
+      ...(indent ? { paddingLeft: spacing.xs } : {}),
       ...style,
     }
 
@@ -209,12 +191,13 @@ export const AssistiveMessage = forwardRef<HTMLDivElement, AssistiveMessageProps
       color: ts.counterColor,
     }
 
+    // Icon wrapper height matches line-height for vertical alignment
     const iconWrapperStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      width: '16px',
-      height: '18px',
+      width: `${iconSize}px`,
+      height: tokens.typography.lineHeight,
       flexShrink: 0,
     }
 
@@ -229,7 +212,7 @@ export const AssistiveMessage = forwardRef<HTMLDivElement, AssistiveMessageProps
       >
         {IconComponent && ts.iconColor && (
           <span style={iconWrapperStyles}>
-            <IconComponent color={ts.iconColor} />
+            <IconComponent color={ts.iconColor} size={iconSize} />
           </span>
         )}
         {customIcon !== undefined && customIcon !== null && (

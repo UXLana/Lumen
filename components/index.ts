@@ -133,7 +133,7 @@ export type { ImageCarouselProps, NavigationStyle } from './ImageCarousel'
 
 // Input
 export { Input } from './Input'
-export type { InputProps } from './Input'
+export type { InputProps, InputWidth } from './Input'
 
 // LeftNav
 export { LeftNav } from './LeftNav'

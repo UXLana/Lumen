@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Input } from '@/components'
+import type { InputWidth } from '@/components'
 import { colors, spacing, typography, borderRadiusSemantics } from '@/styles/design-tokens'
 
 // =============================================================================
@@ -44,7 +45,8 @@ const inputDocData: ComponentDocData = {
     { token: 'colors.border.midEmphasis.onLight', value: 'Gray border', usage: 'Default border color' },
     { token: 'colors.brand.default', value: 'Theme brand', usage: 'Focus border color' },
     { token: 'colors.status.important', value: 'Error red', usage: 'Error border and message color' },
-    { token: 'typography.body.md', value: '16px/24px', usage: 'Input text' },
+    { token: 'typography.body.md', value: '16px/24px', usage: 'Input text (md/lg)' },
+    { token: 'typography.body.sm', value: '14px/20px', usage: 'Input text (sm)' },
     { token: 'typography.label.sm', value: '14px/20px', usage: 'Label text' },
     { token: 'borderRadius.md', value: '8px', usage: 'Input border radius' },
   ],
@@ -82,11 +84,12 @@ export default function InputPage() {
   // Playground state
   const [demoValue, setDemoValue] = useState('')
   const [demoSize, setDemoSize] = useState<'sm' | 'md' | 'lg'>('md')
+  const [demoWidth, setDemoWidth] = useState<InputWidth>('md')
   const [demoDisabled, setDemoDisabled] = useState(false)
   const [demoError, setDemoError] = useState(false)
   const [demoRequired, setDemoRequired] = useState(false)
-  const [demoFullWidth, setDemoFullWidth] = useState(false)
   const [demoShowHelper, setDemoShowHelper] = useState(false)
+  const [demoShowAdornment, setDemoShowAdornment] = useState(false)
 
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
@@ -117,21 +120,11 @@ export default function InputPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Input } from '@/components'
+              <CodeBlock>{`// Package import
+import { Input } from '@metrc/design-system'
 
-<Input
-  label="Email"
-  placeholder="Enter your email"
-  value={email}
-  onChange={(value) => setEmail(value)}
-/>
-
-<Input
-  label="Search"
-  placeholder="Search..."
-  startAdornment={<SearchIcon />}
-  errorMessage={error ? "Invalid input" : undefined}
-/>`}</CodeBlock>
+// Or with path alias (requires tsconfig setup)
+import { Input } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -139,36 +132,35 @@ export default function InputPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
             <p style={sharedStyles.sectionDescription}>
-              Experiment with input properties to see how they affect the component.
+              Configure input properties to see how they affect the component.
             </p>
 
             <div style={sharedStyles.card}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-                {/* Preview/Code with Tabs */}
+                {/* Preview/Code */}
                 <div>
                   <Playground
                     preview={
-                      <div style={{ padding: spacing.md, width: demoFullWidth ? '100%' : 'auto' }}>
+                      <div style={{ padding: spacing.md, width: '100%' }}>
                         <Input
                           label="Label"
-                          placeholder="Enter text..."
                           value={demoValue}
                           onChange={setDemoValue}
                           size={demoSize}
+                          width={demoWidth}
                           disabled={demoDisabled}
                           error={demoError}
                           errorMessage={demoError ? 'This field has an error' : undefined}
                           required={demoRequired}
-                          fullWidth={demoFullWidth}
                           helperText={demoShowHelper ? 'This is helpful text' : undefined}
+                          startAdornment={demoShowAdornment ? <SearchIcon /> : undefined}
                         />
                       </div>
                     }
                     code={`<Input
   label="Label"
-  placeholder="Enter text..."
   value={value}
-  onChange={setValue}${demoSize !== 'md' ? `\n  size="${demoSize}"` : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error\n  errorMessage="This field has an error"' : ''}${demoRequired ? '\n  required' : ''}${demoFullWidth ? '\n  fullWidth' : ''}${demoShowHelper ? '\n  helperText="This is helpful text"' : ''}
+  onChange={setValue}${demoSize !== 'md' ? `\n  size="${demoSize}"` : ''}${demoWidth !== 'md' ? `\n  width="${demoWidth}"` : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error\n  errorMessage="This field has an error"' : ''}${demoRequired ? '\n  required' : ''}${demoShowHelper ? '\n  helperText="This is helpful text"' : ''}${demoShowAdornment ? '\n  startAdornment={<SearchIcon />}' : ''}
 />`}
                     previewPadding={spacing.xs}
                   />
@@ -178,10 +170,10 @@ export default function InputPage() {
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                    {/* Size */}
+                    {/* Height */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Size
+                        Height
                       </label>
                       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                         {(['sm', 'md', 'lg'] as const).map(s => (
@@ -196,61 +188,36 @@ export default function InputPage() {
                       </div>
                     </div>
 
-                    {/* Options */}
+                    {/* Width */}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Options
+                        Width
                       </label>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-                        <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
-                        <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {(['xs', 'sm', 'md', 'lg', 'full'] as InputWidth[]).map(w => (
+                          <PillButton
+                            key={w}
+                            onClick={() => setDemoWidth(w)}
+                            isActive={demoWidth === w}
+                          >
+                            {w}
+                          </PillButton>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Toggles */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <StyledCheckboxControl checked={demoRequired} onChange={() => setDemoRequired(!demoRequired)} label="Required" />
-                        <StyledCheckboxControl checked={demoFullWidth} onChange={() => setDemoFullWidth(!demoFullWidth)} label="Full Width" />
+                        <StyledCheckboxControl checked={demoShowAdornment} onChange={() => setDemoShowAdornment(!demoShowAdornment)} label="Start Adornment" />
                         <StyledCheckboxControl checked={demoShowHelper} onChange={() => setDemoShowHelper(!demoShowHelper)} label="Helper Text" />
+                        <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
+                        <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
-
-          {/* ========== WITH ADORNMENTS ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>With Adornments</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Inputs can include leading and trailing adornments for icons, currency symbols, or units.
-            </p>
-            <Playground
-              preview={
-                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs, padding: spacing.md }}>
-                  <Input
-                    label="Search"
-                    placeholder="Search..."
-                    startAdornment={<SearchIcon />}
-                  />
-                  <Input
-                    label="Amount"
-                    placeholder="0.00"
-                    startAdornment={<span style={{ fontSize: '14px' }}>$</span>}
-                    endAdornment={<span style={{ fontSize: '12px', color: colors.text.lowEmphasis.onLight }}>USD</span>}
-                  />
-                </div>
-              }
-              code={`<Input
-  label="Search"
-  placeholder="Search..."
-  startAdornment={<SearchIcon />}
-/>
-
-<Input
-  label="Amount"
-  placeholder="0.00"
-  startAdornment={<span>$</span>}
-  endAdornment={<span>USD</span>}
-/>`}
-              previewPadding={spacing.xs}
-            />
           </section>
 
           {/* ========== DESIGN TOKENS ========== */}
@@ -268,21 +235,21 @@ export default function InputPage() {
                   rows={[
                     [
                       'sm',
-                      <PixelValue key="smh" value="32px" />,
-                      <TokenValue key="smfs" token="typography.body.xs.fontSize" value={typography.body.xs.fontSize} />,
-                      <CopyableToken key="smp" token={`0 ${spacing.xs}`} />,
+                      <PixelValue key="smh" value="36px" />,
+                      <TokenValue key="smfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />,
+                      <CopyableToken key="smp" token={`0 ${spacing.sm}`} />,
                     ],
                     [
-                      'md',
+                      'md (default)',
                       <PixelValue key="mdh" value="40px" />,
-                      <TokenValue key="mdfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />,
+                      <TokenValue key="mdfs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />,
                       <CopyableToken key="mdp" token={`0 ${spacing.sm}`} />,
                     ],
                     [
                       'lg',
                       <PixelValue key="lgh" value="48px" />,
                       <TokenValue key="lgfs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />,
-                      <CopyableToken key="lgp" token={`0 ${spacing.sm}`} />,
+                      <CopyableToken key="lgp" token={`0 ${spacing.md}`} />,
                     ],
                   ]}
                 />
@@ -296,15 +263,15 @@ export default function InputPage() {
                   rows={[
                     [
                       'Label',
-                      <TokenValue key="lfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />,
+                      <TokenValue key="lfs" token="typography.label.sm.fontSize" value={typography.label.sm.fontSize} />,
                       <TokenValue key="lfw" token="fontWeights.medium" value="500" />,
-                      <TokenValue key="llh" token="typography.body.sm.lineHeight" value={typography.body.sm.lineHeight} />,
+                      <TokenValue key="llh" token="typography.label.sm.lineHeight" value={typography.label.sm.lineHeight} />,
                     ],
                     [
                       'Input text (MD)',
-                      <TokenValue key="ifs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />,
+                      <TokenValue key="ifs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />,
                       <TokenValue key="ifw" token="fontWeights.regular" value="400" />,
-                      <TokenValue key="ilh" token="typography.body.sm.lineHeight" value={typography.body.sm.lineHeight} />,
+                      <TokenValue key="ilh" token="typography.body.md.lineHeight" value={typography.body.md.lineHeight} />,
                     ],
                     [
                       'Helper/Error text',
@@ -359,7 +326,7 @@ export default function InputPage() {
                   rows={[
                     ['Border width', <CopyableToken key="bw" token="1.5px (fixed)" />, <PixelValue key="bwv" value="1.5px" />],
                     ['Border radius', <CopyableToken key="br" token="borderRadiusSemantics.input" />, <PixelValue key="brv" value={borderRadiusSemantics.input} />],
-                    ['Bottom margin', <CopyableToken key="bm" token="spacing.md" />, <PixelValue key="bmv" value={spacing.md} />],
+                    ['Label gap', <CopyableToken key="lg" token="spacing['2xs']" />, <PixelValue key="lgv" value={spacing['2xs']} />],
                     ['Focus ring', <CopyableToken key="fr" token="box-shadow: 0 0 0 1px brand.default" />, <PixelValue key="frv" value={`0 0 0 1px ${colors.brand.default}`} />],
                   ]}
                 />

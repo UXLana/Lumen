@@ -10,10 +10,15 @@ import {
   fontFamilies,
   fontWeights,
 } from '../../styles/design-tokens'
+import { AssistiveMessage } from '../AssistiveMessage'
+import type { AssistiveMessageType } from '../AssistiveMessage'
 
 // =============================================================================
 // TYPES & CONTRACTS
 // =============================================================================
+
+/** Content-based width presets */
+export type InputWidth = 'xs' | 'sm' | 'md' | 'lg' | 'full'
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
@@ -25,9 +30,15 @@ export interface InputProps
   errorMessage?: string
   /** Whether the input has an error */
   error?: boolean
-  /** Visual size */
+  /** Assistive message type — defaults to 'assistive' for helper text, 'error' for errors */
+  assistiveType?: AssistiveMessageType
+  /** Character counter string (e.g. "12/30") — passed to AssistiveMessage */
+  counter?: string
+  /** Visual size (height) */
   size?: 'sm' | 'md' | 'lg'
-  /** Full-width mode */
+  /** Content-based width preset. Overrides fullWidth when set. */
+  width?: InputWidth
+  /** Full-width mode (shorthand for width="full") */
   fullWidth?: boolean
   /** Left icon/element */
   startAdornment?: React.ReactNode
@@ -45,24 +56,33 @@ export interface InputProps
 
 const sizeConfig = {
   sm: {
-    height: '32px',
-    padding: `0 ${spacing.xs}`,
-    fontSize: typography.body.xs.fontSize,
-    lineHeight: typography.body.xs.lineHeight,
+    height: '36px',
+    padding: `0 ${spacing.sm}`,
+    fontSize: typography.body.sm.fontSize,   // 14px — Figma: Small (36px)
+    lineHeight: typography.body.sm.lineHeight,
   },
   md: {
     height: '40px',
     padding: `0 ${spacing.sm}`,
-    fontSize: typography.body.sm.fontSize,
-    lineHeight: typography.body.sm.lineHeight,
+    fontSize: typography.body.md.fontSize,   // 16px — Figma: Default (40px)
+    lineHeight: typography.body.md.lineHeight,
   },
   lg: {
     height: '48px',
-    padding: `0 ${spacing.sm}`,
-    fontSize: typography.body.md.fontSize,
+    padding: `0 ${spacing.md}`,
+    fontSize: typography.body.md.fontSize,   // 16px — Figma: Large (48px)
     lineHeight: typography.body.md.lineHeight,
   },
 } as const
+
+// Width presets — content-based sizing
+const widthConfig: Record<InputWidth, string> = {
+  xs: '72px',    // State codes, 2-char fields
+  sm: '120px',   // ZIP codes, short numbers
+  md: '280px',   // Default — names, emails
+  lg: '400px',   // Longer text, addresses
+  full: '100%',  // Fill container
+}
 
 // =============================================================================
 // COMPONENT: Input
@@ -75,7 +95,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       helperText,
       errorMessage,
       error = false,
+      assistiveType,
+      counter,
       size = 'md',
+      width: widthProp,
       fullWidth = false,
       startAdornment,
       endAdornment,
@@ -116,21 +139,27 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ? colors.border.highEmphasis.onLight
             : colors.border.midEmphasis.onLight
 
+    // Width resolution: explicit width prop > fullWidth > default (md)
+    const resolvedWidth = widthProp
+      ? widthConfig[widthProp]
+      : fullWidth
+        ? '100%'
+        : widthConfig.md
+
     const containerStyles: React.CSSProperties = {
       display: 'flex',
       flexDirection: 'column',
-      width: fullWidth ? '100%' : '280px',
-      marginBottom: spacing.md,
+      gap: spacing['2xs'],
+      width: resolvedWidth,
       ...style,
     }
 
     const labelStyles: React.CSSProperties = {
       fontFamily: fontFamilies.body,
-      fontSize: typography.body.sm.fontSize,
+      fontSize: typography.label.sm.fontSize,
       fontWeight: fontWeights.medium,
-      lineHeight: typography.body.sm.lineHeight,
+      lineHeight: typography.label.sm.lineHeight,
       color: disabled ? colors.text.disabled.onLight : colors.text.highEmphasis.onLight,
-      marginBottom: spacing['2xs'],
     }
 
     const inputWrapperStyles: React.CSSProperties = {
@@ -176,14 +205,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       flexShrink: 0,
     }
 
-    const helperStyles: React.CSSProperties = {
-      fontFamily: fontFamilies.body,
-      fontSize: typography.body.xs.fontSize,
-      fontWeight: fontWeights.regular,
-      lineHeight: typography.body.xs.lineHeight,
-      color: hasError ? colors.status.important : colors.text.lowEmphasis.onLight,
-      marginTop: spacing['2xs'],
-    }
+    // Resolve assistive message type: explicit prop > auto from error state
+    const resolvedAssistiveType: AssistiveMessageType = assistiveType
+      ? assistiveType
+      : hasError
+        ? 'error'
+        : disabled
+          ? 'disabled'
+          : 'assistive'
 
     return (
       <div className={className} style={containerStyles}>
@@ -227,14 +256,24 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {hasError && errorMessage && (
-          <span id={`${inputId}-error`} role="alert" style={helperStyles}>
+          <AssistiveMessage
+            id={`${inputId}-error`}
+            type={resolvedAssistiveType}
+            counter={counter}
+            indent
+          >
             {errorMessage}
-          </span>
+          </AssistiveMessage>
         )}
         {!hasError && helperText && (
-          <span id={`${inputId}-helper`} style={helperStyles}>
+          <AssistiveMessage
+            id={`${inputId}-helper`}
+            type={resolvedAssistiveType}
+            counter={counter}
+            indent
+          >
             {helperText}
-          </span>
+          </AssistiveMessage>
         )}
       </div>
     )

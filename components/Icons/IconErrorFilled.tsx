@@ -12,6 +12,10 @@ const sizes = {
   lg: 24,
 }
 
+/**
+ * Error filled icon — diamond/rotated square with exclamation mark.
+ * Matched to Figma node 11:5905. Uses currentColor for token compliance.
+ */
 export const IconErrorFilled = forwardRef<SVGSVGElement, IconErrorFilledProps>(
   ({ size = 'md', className, color = 'currentColor', ...props }, ref) => {
     const dimension = typeof size === 'number' ? size : sizes[size]
@@ -25,12 +29,14 @@ export const IconErrorFilled = forwardRef<SVGSVGElement, IconErrorFilledProps>(
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={className}
+        aria-hidden="true"
+        focusable="false"
         {...props}
       >
         <path
           fillRule="evenodd"
           clipRule="evenodd"
-          d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM12 7C12.5523 7 13 7.44772 13 8V12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12V8C11 7.44772 11.4477 7 12 7ZM12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17H12.01C12.5623 17 13.01 16.5523 13.01 16C13.01 15.4477 12.5623 15 12.01 15H12Z"
+          d="M0.67 10.382L10.382 0.67C11.275-0.223 12.725-0.223 13.618 0.67L23.33 10.382C24.223 11.275 24.223 12.725 23.33 13.618L13.618 23.33C12.725 24.223 11.275 24.223 10.382 23.33L0.67 13.618C-0.223 12.725-0.223 11.275 0.67 10.382ZM11.997 18.895C11.037 18.895 10.263 18.122 10.263 17.162C10.263 16.202 11.037 15.429 11.997 15.429C12.957 15.429 13.731 16.202 13.731 17.162C13.731 18.122 12.957 18.895 11.997 18.895ZM10.669 12.381C10.669 13.114 11.269 13.714 12.003 13.714C12.736 13.714 13.337 13.114 13.337 12.381V7.047C13.337 6.314 12.736 5.714 12.003 5.714C11.269 5.714 10.669 6.314 10.669 7.047V12.381Z"
           fill={color}
         />
       </svg>

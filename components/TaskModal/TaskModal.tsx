@@ -871,6 +871,8 @@ export const TaskModalPanel = forwardRef<HTMLDivElement, TaskModalPanelProps>(
           transition: 'background-color 200ms',
           backgroundColor:
             background === 'muted' ? colors.surface.lightDarker : colors.surface.light,
+          minHeight: 0,
+          overflowY: 'auto',
           ...borderStyle,
         }}
       >
@@ -1191,22 +1193,14 @@ export const TaskModal = forwardRef<HTMLDivElement, TaskModalProps>(
                 style={{
                   flex: 1,
                   overflowY: 'auto',
+                  overflowX: 'hidden',
                   width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
+                  display: 'grid',
+                  gridTemplateColumns: isMobile ? '1fr' : gridTemplateColumns,
+                  minHeight: 0,
                 }}
               >
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: isMobile ? '1fr' : gridTemplateColumns,
-                    minHeight: '100%',
-                    width: '100%',
-                    maxWidth: 960,
-                  }}
-                >
-                  {children}
-                </div>
+                {children}
               </div>
 
               {/* ============ FOOTER ============ */}

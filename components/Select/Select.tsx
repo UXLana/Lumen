@@ -45,7 +45,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       value: controlledValue,
       defaultValue,
       onChange,
-      placeholder = 'Select an option',
+      placeholder = 'Select',
       size = 'md',
       error = false,
       errorMessage,
@@ -68,9 +68,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     const selectedOption = options.find((o) => o.value === value)
 
     const sizes = {
-      sm: { height: '32px', fontSize: typography.body.sm.fontSize, padding: `0 ${spacing.xs}` },
+      sm: { height: '36px', fontSize: typography.body.sm.fontSize, padding: `0 ${spacing.sm}` },
       md: { height: '40px', fontSize: typography.body.md.fontSize, padding: `0 ${spacing.sm}` },
-      lg: { height: '48px', fontSize: typography.body.lg.fontSize, padding: `0 ${spacing.md}` },
+      lg: { height: '48px', fontSize: typography.body.md.fontSize, padding: `0 ${spacing.md}` },
     }
 
     const s = sizes[size]
