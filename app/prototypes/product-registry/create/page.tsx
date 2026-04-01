@@ -220,8 +220,7 @@ export default function CreatePage() {
         <Banner
           variant="error"
           size="md"
-          dismissible
-          onDismiss={() => setViewState('default')}
+          secondaryAction={{ label: 'Dismiss', onClick: () => setViewState('default') }}
         >
           Failed to save product. Please check your connection and try again, or contact support if the issue persists.
         </Banner>

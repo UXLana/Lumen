@@ -26,8 +26,6 @@ const bannerDocData: ComponentDocData = {
     { name: 'title', type: 'string', description: 'Main title/heading' },
     { name: 'children', type: 'ReactNode', description: 'Main content text' },
     { name: 'icon', type: 'ReactNode', description: 'Icon displayed on the left' },
-    { name: 'dismissible', type: 'boolean', description: 'Whether banner can be dismissed' },
-    { name: 'onDismiss', type: '() => void', description: 'Dismiss callback' },
     { name: 'primaryAction', type: '{ label: string; onClick: () => void }', description: 'Primary action button' },
     { name: 'secondaryAction', type: '{ label: string; onClick: () => void }', description: 'Secondary action button' },
     { name: 'onDark', type: 'boolean', description: 'Display on dark background' },
@@ -87,8 +85,8 @@ const bannerDocData: ComponentDocData = {
     },
     {
       title: 'Dismissible warning',
-      description: 'Non-blocking warning that the user can dismiss. Use for important but non-critical notices.',
-      code: `<Banner\n  variant="warning"\n  title="Scheduled maintenance"\n  dismissible\n  onDismiss={handleDismiss}\n>\n  The system will be unavailable Saturday 2-4 AM ET.\n</Banner>`,
+      description: 'Non-blocking warning that the user can dismiss via an action button.',
+      code: `<Banner\n  variant="warning"\n  title="Scheduled maintenance"\n  secondaryAction={{ label: 'Dismiss', onClick: handleDismiss }}\n>\n  The system will be unavailable Saturday 2-4 AM ET.\n</Banner>`,
     },
   ],
 }
@@ -113,7 +111,6 @@ export default function BannerPage() {
   const [demoButtonOption, setDemoButtonOption] = useState<ButtonOption>('both')
   const [demoTitle, setDemoTitle] = useState('Example text')
   const [demoMessage, setDemoMessage] = useState('')
-  const [demoDismissible, setDemoDismissible] = useState(false)
   const [demoOnDark, setDemoOnDark] = useState(false)
 
   // Custom tabs for component pages
@@ -159,7 +156,6 @@ export default function BannerPage() {
     // Escape quotes in title to generate valid JSX
     if (demoTitle) lines.push(`  title="${demoTitle.replace(/"/g, '\\"')}"`)
     if (demoOnDark) lines.push('  onDark={true}')
-    if (demoDismissible) lines.push('  dismissible={true}')
 
     if (demoButtonOption === 'one') {
       lines.push('  primaryAction={{ label: "Button", onClick: () => {} }}')
@@ -183,7 +179,7 @@ export default function BannerPage() {
   return (
     <StyleguideLayout
       title="Banner"
-      description="Banners communicate important information and actions to users. They appear at the top of content areas and can include actions or be dismissible."
+      description="Banners communicate important information and actions to users. They appear at the top of content areas and can include action buttons."
       activeId="banner"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -229,7 +225,6 @@ import { Banner } from '@/components'`}</CodeBlock>
                           surface={demoSurface}
                           buttonAlignment={demoButtonAlignment}
                           title={demoTitle || undefined}
-                          dismissible={demoDismissible}
                           onDark={demoOnDark}
                           {...getActionProps()}
                         >
@@ -363,11 +358,6 @@ import { Banner } from '@/components'`}</CodeBlock>
 
                     {/* Toggles */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <StyledCheckbox
-                        checked={demoDismissible}
-                        onChange={setDemoDismissible}
-                        label="Dismissible"
-                      />
                       <StyledCheckbox
                         checked={demoOnDark}
                         onChange={setDemoOnDark}
@@ -550,8 +540,6 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
                   [<code>children</code>, <code>ReactNode</code>, '-', 'Description content'],
                   [<code>primaryAction</code>, <code>{'{ label: string; onClick: () => void }'}</code>, '-', 'Primary action button'],
                   [<code>secondaryAction</code>, <code>{'{ label: string; onClick: () => void }'}</code>, '-', 'Secondary action button'],
-                  [<code>dismissible</code>, <code>boolean</code>, <code>false</code>, 'Show dismiss button'],
-                  [<code>onDismiss</code>, <code>{'() => void'}</code>, '-', 'Dismiss callback'],
                   [<code>onDark</code>, <code>boolean</code>, <code>false</code>, 'Display on dark background'],
                 ]}
               />
@@ -583,7 +571,7 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
                   ['Use banners for important, timely information', 'Use banners for permanent UI elements'],
                   ['Keep messages concise and actionable', 'Write long paragraphs or multiple topics'],
                   ['Limit to 1-2 actions maximum', 'Add more than 2 action buttons'],
-                  ['Make dismissible for non-critical messages', 'Make critical error banners dismissible'],
+                  ['Add a Dismiss action button for non-critical messages', 'Omit close options for critical error banners'],
                   ['Use consistent placement (top of content)', 'Scatter banners throughout the page'],
                 ]}
               />
@@ -596,7 +584,7 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
                 rows={[
                   ['Role', 'role="alert" for dynamic banners'],
                   ['Live Region', 'aria-live="polite" for announcements'],
-                  ['Dismiss Button', 'Includes aria-label="Dismiss"'],
+                  ['Action Buttons', 'Action buttons are keyboard-accessible and focusable'],
                   ['Color Contrast', 'All text meets WCAG AA standards'],
                   ['Icons', 'Semantic meaning conveyed through text, not just icons'],
                 ]}

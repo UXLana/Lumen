@@ -69,10 +69,6 @@ export interface BannerProps {
   children?: React.ReactNode
   /** Icon to display on the left */
   icon?: React.ReactNode
-  /** Whether the banner can be dismissed */
-  dismissible?: boolean
-  /** Callback when banner is dismissed */
-  onDismiss?: () => void
   /** Primary action button */
   primaryAction?: {
     label: string
@@ -251,7 +247,7 @@ function ActionButton({ label, onClick, onDark = false }: ActionButtonProps) {
  * Banner component - displays important messages to users
  *
  * Features filled icons with colored backgrounds matching the Figma design system.
- * Supports light and dark modes, dismissible functionality, and action buttons.
+ * Supports light and dark modes and action buttons.
  *
  * @example
  * ```tsx
@@ -278,8 +274,6 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       title,
       children,
       icon,
-      dismissible = false,
-      onDismiss,
       primaryAction,
       secondaryAction,
       actions,
@@ -295,18 +289,6 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       : getVariantStyle(variant, surface)
     const IconComponent = variantStyle.iconComponent
 
-    const [dismissed, setDismissed] = React.useState(false)
-    const [isDismissFocusVisible, setIsDismissFocusVisible] = useState(false)
-
-    const handleDismiss = () => {
-      setDismissed(true)
-      onDismiss?.()
-    }
-
-    if (dismissed) {
-      return null
-    }
-
     const hasActions = primaryAction || secondaryAction || actions
     const hasMultilineContent = !!(title && children)
     // Auto-switch buttons below when content is multiline (title + children), unless explicitly set to 'side'
@@ -319,16 +301,12 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
     const iconContainerSize = 40
     const insetPad = parseInt(spacing.sm) // 12px — token-derived
 
-    // Base container styles — sizes with content, no fixed height
-    const baseStyles: React.CSSProperties = {
-      position: 'relative',
+    // Outer container — wraps everything, holds border/background
+    const outerStyles: React.CSSProperties = {
       display: 'flex',
-      flexDirection: isBelow ? 'column' : 'row',
-      alignItems: 'flex-start',
+      flexDirection: 'column',
       width: '100%',
       padding: spacing.sm,
-      paddingLeft: `${insetPad + iconContainerSize + parseInt(spacing.xs)}px`, // inset + icon (40px) + gap
-      paddingRight: dismissible ? '40px' : spacing.sm, // Reserve space for dismiss button
       background: variantStyle.surface,
       borderRadius: banner.border.radius.inline,
       border: `1px solid ${variantStyle.divider}`,
@@ -338,11 +316,16 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       ...style,
     }
 
-    // Icon container styles — always aligned to top
+    // Top row: icon + content + (side actions) + dismiss — always a single horizontal flex
+    const topRowStyles: React.CSSProperties = {
+      display: 'flex',
+      alignItems: 'center',
+      gap: parseInt(spacing.xs),
+      minHeight: iconContainerSize,
+    }
+
+    // Icon container styles
     const iconContainerStyles: React.CSSProperties = {
-      position: 'absolute',
-      left: spacing.sm,
-      top: spacing.sm,
       flexShrink: 0,
       display: 'flex',
       alignItems: 'center',
@@ -351,6 +334,7 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       height: iconContainerSize,
       borderRadius: '16px',
       background: variantStyle.iconBackground,
+      alignSelf: 'flex-start',
     }
 
     // Content area styles
@@ -361,25 +345,24 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
       justifyContent: 'center',
       alignItems: 'flex-start',
       minWidth: 0,
-      minHeight: iconContainerSize, // Ensure content area at least matches icon height for single-line centering
+      minHeight: iconContainerSize,
     }
 
-    // Actions container styles
-    const actionsContainerStyles: React.CSSProperties = {
+    // Actions container styles (side mode — inline with content)
+    const sideActionsStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'center',
       gap: banner.spacing.actionGap,
       flexShrink: 0,
-      ...(isBelow
-        ? {
-            justifyContent: 'flex-end',
-            width: '100%',
-            marginTop: '4px',
-          }
-        : {
-            alignSelf: 'flex-start',
-            marginTop: '4px',
-          }),
+    }
+
+    // Actions container styles (below mode — full width, right-aligned)
+    const belowActionsStyles: React.CSSProperties = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      gap: banner.spacing.actionGap,
+      marginTop: spacing['2xs'],
     }
 
     return (
@@ -388,113 +371,77 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
         role="alert"
         aria-live="polite"
         className={className}
-        style={baseStyles}
+        style={outerStyles}
         {...props}
       >
-        {/* Icon with background container (positioned absolutely, top-aligned) */}
-        {icon ? (
-          <div style={{ ...iconContainerStyles, padding: 0 }}>{icon}</div>
-        ) : (
-          <div style={iconContainerStyles}>
-            <IconComponent size="md" color={variantStyle.icon} />
-          </div>
-        )}
+        {/* Top row: icon + content + side actions + dismiss */}
+        <div style={topRowStyles}>
+          {/* Icon */}
+          {icon ? (
+            <div style={{ ...iconContainerStyles, padding: 0 }}>{icon}</div>
+          ) : (
+            <div style={iconContainerStyles}>
+              <IconComponent size="md" color={variantStyle.icon} />
+            </div>
+          )}
 
-        {/* Content */}
-        <div style={contentStyles}>
-          {title && (
-            <div
-              style={{
-                fontSize: textStyle.fontSize,
-                fontWeight: textStyle.fontWeight,
-                lineHeight: textStyle.lineHeight,
-                letterSpacing: textStyle.letterSpacing,
-                color: onDark ? banner.text.primaryOnDark : banner.text.primary,
-                marginBottom: children ? banner.spacing.titleMarginBottom : 0,
-              }}
-            >
-              {title}
+          {/* Content */}
+          <div style={contentStyles}>
+            {title && (
+              <div
+                style={{
+                  fontSize: textStyle.fontSize,
+                  fontWeight: textStyle.fontWeight,
+                  lineHeight: textStyle.lineHeight,
+                  letterSpacing: textStyle.letterSpacing,
+                  color: onDark ? banner.text.primaryOnDark : banner.text.primary,
+                  marginBottom: children ? banner.spacing.titleMarginBottom : 0,
+                }}
+              >
+                {title}
+              </div>
+            )}
+            {children && (
+              <div
+                style={{
+                  fontSize: textStyle.fontSize,
+                  fontWeight: textStyle.fontWeight,
+                  lineHeight: textStyle.lineHeight,
+                  letterSpacing: textStyle.letterSpacing,
+                  color: onDark ? banner.text.primaryOnDark : banner.text.primary,
+                }}
+              >
+                {children}
+              </div>
+            )}
+          </div>
+
+          {/* Side actions (only when not below) */}
+          {hasActions && !isBelow && (
+            <div style={sideActionsStyles}>
+              {actions}
+              {secondaryAction && (
+                <ActionButton label={secondaryAction.label} onClick={secondaryAction.onClick} onDark={onDark} />
+              )}
+              {primaryAction && (
+                <ActionButton label={primaryAction.label} onClick={primaryAction.onClick} onDark={onDark} />
+              )}
             </div>
           )}
-          {children && (
-            <div
-              style={{
-                fontSize: textStyle.fontSize,
-                fontWeight: textStyle.fontWeight,
-                lineHeight: textStyle.lineHeight,
-                letterSpacing: textStyle.letterSpacing,
-                color: onDark ? banner.text.primaryOnDark : banner.text.primary,
-              }}
-            >
-              {children}
-            </div>
-          )}
+
         </div>
 
-        {/* Actions */}
-        {hasActions && (
-          <div style={actionsContainerStyles}>
-            {/* Legacy actions support */}
+        {/* Below actions row (only when isBelow and has actions) */}
+        {hasActions && isBelow && (
+          <div style={belowActionsStyles}>
             {actions}
-
-            {/* New action buttons */}
             {secondaryAction && (
-              <ActionButton
-                label={secondaryAction.label}
-                onClick={secondaryAction.onClick}
-                onDark={onDark}
-              />
+              <ActionButton label={secondaryAction.label} onClick={secondaryAction.onClick} onDark={onDark} />
             )}
             {primaryAction && (
-              <ActionButton
-                label={primaryAction.label}
-                onClick={primaryAction.onClick}
-                onDark={onDark}
-              />
+              <ActionButton label={primaryAction.label} onClick={primaryAction.onClick} onDark={onDark} />
             )}
           </div>
-        )}
-
-        {/* Dismiss button — always top-right */}
-        {dismissible && (
-          <button
-            type="button"
-            onClick={handleDismiss}
-            aria-label="Dismiss"
-            style={{
-              position: 'absolute',
-              top: spacing.sm,
-              right: spacing.sm,
-              flexShrink: 0,
-              background: banner.dismiss.background.default,
-              border: 'none',
-              padding: banner.dismiss.padding,
-              cursor: 'pointer',
-              color: variantStyle.icon,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: banner.dismiss.borderRadius,
-              transition: banner.transition,
-              opacity: banner.dismiss.opacity.default,
-              outline: isDismissFocusVisible ? '2px solid currentColor' : 'none',
-              outlineOffset: '2px',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.opacity = banner.dismiss.opacity.hover.toString()
-              e.currentTarget.style.background = onDark ? 'rgba(255, 255, 255, 0.1)' : banner.dismiss.background.hover
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = banner.dismiss.opacity.default.toString()
-              e.currentTarget.style.background = banner.dismiss.background.default
-            }}
-            onFocus={(e) => {
-              if (e.target.matches(':focus-visible')) setIsDismissFocusVisible(true)
-            }}
-            onBlur={() => setIsDismissFocusVisible(false)}
-          >
-            <CloseIcon size={parseInt(banner.dismiss.iconSize)} color={variantStyle.icon} />
-          </button>
         )}
 
       </div>

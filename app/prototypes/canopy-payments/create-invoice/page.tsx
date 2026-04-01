@@ -619,7 +619,7 @@ export default function CreateInvoicePage() {
     // Step 0: Recipient
     <div key="recipient" style={fieldColumnStyle}>
       {errors._step0 && (
-        <Banner variant="error" dismissible={false}>
+        <Banner variant="error" >
           {errors._step0}
         </Banner>
       )}
@@ -692,7 +692,7 @@ export default function CreateInvoicePage() {
     // Step 1: Line Items
     <div key="line-items" style={fieldColumnStyle}>
       {errors.items && (
-        <Banner variant="error" dismissible={false}>
+        <Banner variant="error" >
           {errors.items}
         </Banner>
       )}
@@ -841,7 +841,7 @@ export default function CreateInvoicePage() {
     // Step 2: Payment Terms
     <div key="terms" style={fieldColumnStyle}>
       {errors._step2 && (
-        <Banner variant="error" dismissible={false}>
+        <Banner variant="error" >
           {errors._step2}
         </Banner>
       )}
