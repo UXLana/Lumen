@@ -1373,6 +1373,8 @@ function MobileHeader({ logo, onClose }: MobileHeaderProps) {
 // LEFT NAV COMPONENT
 // =============================================================================
 
+const SCROLL_KEY = 'ds-nav-scroll'
+
 export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
   (
     {
@@ -1407,6 +1409,7 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
     const isMobile = useIsMobile(parseInt(breakpoints.md))
     const mobileNavRef = useRef<HTMLElement>(null)
     const previouslyFocusedRef = useRef<HTMLElement | null>(null)
+    const navScrollRef = useRef<HTMLDivElement>(null)
 
     const transitionStyle = prefersReducedMotion ? 'none' : transitionPresets.default
 
@@ -1430,6 +1433,31 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
         document.body.style.overflow = ''
       }
     }, [isMobile, mobileOpen])
+
+    // Persist nav scroll position across page navigations
+    useEffect(() => {
+      const el = navScrollRef.current
+      if (!el) return
+      // Restore saved position
+      const saved = sessionStorage.getItem(SCROLL_KEY)
+      if (saved) {
+        el.scrollTop = parseInt(saved, 10)
+      }
+      // Save on scroll (throttled to reduce writes)
+      let timer: ReturnType<typeof setTimeout> | null = null
+      const handleScroll = () => {
+        if (timer) return
+        timer = setTimeout(() => {
+          sessionStorage.setItem(SCROLL_KEY, String(el.scrollTop))
+          timer = null
+        }, 100)
+      }
+      el.addEventListener('scroll', handleScroll, { passive: true })
+      return () => {
+        el.removeEventListener('scroll', handleScroll)
+        if (timer) clearTimeout(timer)
+      }
+    }, [])
 
     // Mobile drawer styles
     const mobileDrawerStyle: React.CSSProperties = {
@@ -1561,7 +1589,7 @@ export const LeftNav = forwardRef<HTMLElement, LeftNavProps>(
     const renderNavContent = (isMobileContext: boolean = false) => (
       <>
         {/* Main Navigation */}
-        <div style={navContainerStyle}>
+        <div ref={isMobileContext ? undefined : navScrollRef} style={navContainerStyle}>
           {sections.map((section, index) => (
             <LeftNavSectionComponent
               key={section.id}
