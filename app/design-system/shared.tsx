@@ -57,7 +57,7 @@ export const navSections: LeftNavSection[] = [
     id: 'foundations',
     title: 'Foundations',
     icon: <IconFoundations size="md" />,
-    defaultExpanded: true,
+    defaultExpanded: false,
     items: [
       { id: 'colors', label: 'Colors', href: '/design-system/colors' },
       { id: 'typography', label: 'Typography', href: '/design-system/typography' },
@@ -72,7 +72,7 @@ export const navSections: LeftNavSection[] = [
     id: 'components',
     title: 'Components',
     icon: <IconComponents size="md" />,
-    defaultExpanded: true,
+    defaultExpanded: false,
     items: [
       { id: 'accordion', label: 'Accordion', href: '/components/accordion' },
       { id: 'assistive-message', label: 'Assistive Message', href: '/components/assistive-message' },

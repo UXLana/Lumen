@@ -315,7 +315,8 @@ function SectionCard({
   collapsed: boolean
   onItemClick?: (item: LeftNavItem) => void
 }) {
-  const [isExpanded, setIsExpanded] = useState(section.defaultExpanded !== false)
+  const hasActiveItem = section.items.some((item) => item.id === activeItemId)
+  const [isExpanded, setIsExpanded] = useState(hasActiveItem || section.defaultExpanded === true)
   const themeColors = useColors()
 
   const cardStyle: React.CSSProperties = {
