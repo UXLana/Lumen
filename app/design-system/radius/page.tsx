@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../shared'
-import { colors, typography, borderRadius, borderRadiusSemantics } from '@/styles/design-tokens'
+import { colors, typography, borderRadius, borderRadiusSemantics, shadows } from '@/styles/design-tokens'
 
 // =============================================================================
 // MAIN PAGE
@@ -80,7 +80,7 @@ export default function RadiusPage() {
                 <div style={{
                   width: '100%',
                   height: '60px',
-                  background: '#C6E7DA',
+                  background: colors.brand.lighter,
                   borderRadius: value,
                   display: 'flex',
                   alignItems: 'center',
@@ -122,7 +122,7 @@ export default function RadiusPage() {
               <button key={r} style={{
                 padding: '12px 24px',
                 background: colors.brand.default,
-                color: 'white',
+                color: colors.text.highEmphasis.onDark,
                 border: 'none',
                 borderRadius: (borderRadius as any)[r],
                 cursor: 'pointer',
@@ -143,7 +143,7 @@ export default function RadiusPage() {
                 height: '100px',
                 background: colors.surface.light,
                 borderRadius: (borderRadius as any)[r],
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                boxShadow: shadows.md,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

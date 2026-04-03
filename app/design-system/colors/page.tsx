@@ -71,7 +71,7 @@ function ColorSwatch({
         height: small ? '48px' : '72px',
         borderRadius: borderRadius.md,
         overflow: 'hidden',
-        border: '1px solid rgba(0,0,0,0.10)',
+        border: `1px solid ${tc.border.lowEmphasis.onLight}`,
         marginBottom: '6px',
         ...(onDarkBg ? { background: tc.surface.darkDarker } : {}),
       }}>
@@ -336,7 +336,7 @@ export default function ColorsPage() {
                 background: themeColors.surface.light,
                 borderRadius: borderRadius.lg,
                 padding: '24px',
-                border: '1px solid rgba(0,0,0,0.10)',
+                border: `1px solid ${themeColors.border.lowEmphasis.onLight}`,
               }}>
                 <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '16px', marginTop: 0 }}>
                   On Light
@@ -805,7 +805,7 @@ import { traceTheme } from '@/styles/themes'
               Figma Token Mapping
             </h3>
             <p style={{ ...typography.body.sm, color: themeColors.text.lowEmphasis.onLight, marginBottom: '16px' }}>
-              All color tokens map 1:1 to Figma variables with the <code style={{ background: '#F5F5F5', padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>mtr_sys_color_</code> prefix.
+              All color tokens map 1:1 to Figma variables with the <code style={{ background: themeColors.surface.lightDarker, padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>mtr_sys_color_</code> prefix.
             </p>
             <SpecTable
               headers={['Code Token', 'Figma Variable']}

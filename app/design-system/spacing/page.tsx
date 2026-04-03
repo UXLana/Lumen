@@ -97,7 +97,7 @@ export default function SpacingPage() {
                 {(['2xs', 'xs', 'sm', 'md', 'xl', '2xl'] as const).map((name) => (
                   <div key={name} style={{ textAlign: 'center' }}>
                     <div style={{
-                      background: '#C6E7DA',
+                      background: colors.brand.lighter,
                       padding: spacing[name],
                       borderRadius: borderRadius.md,
                       marginBottom: '8px',

@@ -233,7 +233,7 @@ function IconCard({
         padding: '16px 8px',
         borderRadius: borderRadius.md,
         border: `1px solid ${hovered ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
-        background: hovered ? '#F5F5F5' : colors.surface.light,
+        background: hovered ? colors.surface.lightDarker : colors.surface.light,
         transition: 'all 0.15s ease',
         position: 'relative',
       }}
@@ -296,7 +296,7 @@ function IconCard({
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.background = colors.brand.default
-              e.currentTarget.style.color = 'white'
+              e.currentTarget.style.color = colors.text.highEmphasis.onDark
               e.currentTarget.style.borderColor = colors.brand.default
             }}
             onMouseOut={(e) => {
@@ -325,7 +325,7 @@ function IconCard({
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.background = colors.brand.default
-              e.currentTarget.style.color = 'white'
+              e.currentTarget.style.color = colors.text.highEmphasis.onDark
               e.currentTarget.style.borderColor = colors.brand.default
             }}
             onMouseOut={(e) => {
@@ -349,7 +349,7 @@ function IconCard({
             alignItems: 'center',
             justifyContent: 'center',
             background: colors.brand.default,
-            color: 'white',
+            color: colors.text.highEmphasis.onDark,
             fontSize: '11px',
             fontWeight: 600,
             borderRadius: borderRadius.md,
@@ -383,7 +383,7 @@ function SizeDemo() {
         alignItems: 'flex-end',
         gap: '32px',
         padding: '24px',
-        background: '#F5F5F5',
+        background: colors.surface.lightDarker,
         borderRadius: borderRadius.lg,
       }}
     >
@@ -424,7 +424,7 @@ function StrokeDemo() {
         alignItems: 'center',
         gap: '32px',
         padding: '24px',
-        background: '#F5F5F5',
+        background: colors.surface.lightDarker,
         borderRadius: borderRadius.lg,
       }}
     >

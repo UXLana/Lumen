@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../shared'
-import { colors, typography, borderRadius, breakpoints, mediaQueries, zIndex, transitions, transitionPresets } from '@/styles/design-tokens'
+import { colors, typography, borderRadius, breakpoints, mediaQueries, zIndex, transitions, transitionPresets, shadows } from '@/styles/design-tokens'
 
 // =============================================================================
 // MAIN PAGE
@@ -106,10 +106,10 @@ export default function BreakpointsPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'white',
+                color: colors.text.highEmphasis.onDark,
                 fontSize: '11px',
                 fontWeight: 600,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                boxShadow: shadows.md,
               }}>
                 {name}
               </div>

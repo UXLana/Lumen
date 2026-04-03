@@ -176,13 +176,13 @@ export const sharedStyles = {
   headerTitle: {
     ...typography.heading.h2,
     fontWeight: 700,
-    color: '#FFFFFF',
+    color: colors.text.highEmphasis.onDark,
     marginBottom: '8px',
   },
 
   headerDescription: {
     ...typography.body.md,
-    color: 'rgba(255, 255, 255, 0.85)',
+    color: colors.text.lowEmphasis.onDark,
     maxWidth: '600px',
     margin: '0',
   },
@@ -593,7 +593,7 @@ export function CodeBlock({ children }: { children: string }) {
           alignItems: 'center',
           justifyContent: 'center',
           transition: transitionPresets.default,
-          color: copied ? 'white' : colors.text.lowEmphasis.onLight,
+          color: copied ? colors.text.highEmphasis.onDark : colors.text.lowEmphasis.onLight,
         }}
         title={copied ? 'Copied!' : 'Copy code'}
         aria-label={copied ? 'Copied!' : 'Copy code'}
@@ -697,11 +697,11 @@ export function Playground({
 
       {/* Content with rounded grey background */}
       <div style={{
-        background: activeTab === 'source' ? '#1e1e1e' : previewBackground,
+        background: activeTab === 'source' ? colors.surface.darkDarker : previewBackground,
         borderRadius: borderRadius.lg,
         overflow: 'hidden',
         // Add border when background is white for visual separation
-        ...(previewBackground === colors.surface.light || previewBackground === '#ffffff' || previewBackground === 'white'
+        ...(previewBackground === colors.surface.light
           ? { border: `2px solid ${colors.border.lowEmphasis.onLight}` }
           : {}),
       }}>
@@ -727,13 +727,13 @@ export function Playground({
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '8px 12px',
-              background: '#2d2d2d',
-              borderBottom: '1px solid #404040',
+              background: colors.surface.dark,
+              borderBottom: `1px solid ${colors.border.highEmphasis.onDark}`,
             }}>
               <span style={{
                 fontSize: '12px',
                 fontFamily: fontFamilies.mono,
-                color: '#888',
+                color: colors.text.lowEmphasis.onDark,
               }}>
                 {componentPath}
               </span>
@@ -752,10 +752,10 @@ export function Playground({
                     ? colors.status.success
                     : hasSourceChanges
                     ? colors.brand.default
-                    : '#404040',
+                    : colors.border.highEmphasis.onDark,
                   color: (sourceSaveStatus === 'saved' || hasSourceChanges)
-                    ? '#FFFFFF'
-                    : '#666',
+                    ? colors.text.highEmphasis.onDark
+                    : colors.text.disabled.onDark,
                   opacity: sourceSaving ? 0.7 : 1,
                 }}
               >
@@ -768,8 +768,8 @@ export function Playground({
             {sourceError && (
               <div style={{
                 padding: '6px 12px',
-                background: '#3a1a1a',
-                color: '#ff6b6b',
+                background: colors.surface.important,
+                color: colors.text.important,
                 fontSize: '12px',
                 fontFamily: fontFamilies.mono,
               }}>
@@ -784,8 +784,8 @@ export function Playground({
                 width: '100%',
                 minHeight: '400px',
                 padding: '16px',
-                background: '#1e1e1e',
-                color: '#d4d4d4',
+                background: colors.surface.darkDarker,
+                color: colors.text.lowEmphasis.onDark,
                 border: 'none',
                 outline: 'none',
                 resize: 'vertical',
@@ -853,7 +853,7 @@ export function StyledCheckbox({ checked, onChange, label, disabled = false }: S
         {checked && (
           <path
             d="M6 10L9 13L14 7"
-            stroke="white"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -873,8 +873,8 @@ export function PillButton({ children, isActive = false, onClick, style }: PillB
         padding: '8px 16px',
         border: isActive ? 'none' : `1px solid ${colors.border.lowEmphasis.onLight}`,
         borderRadius: '9999px', // Full pill shape
-        background: isActive ? colors.brand.default : 'white',
-        color: isActive ? 'white' : colors.text.highEmphasis.onLight,
+        background: isActive ? colors.brand.default : colors.surface.light,
+        color: isActive ? colors.text.highEmphasis.onDark : colors.text.highEmphasis.onLight,
         cursor: 'pointer',
         ...typography.label.sm,
         transition: transitionPresets.default,
@@ -1259,7 +1259,7 @@ export function TweakPanel({ fields, onChange, onSave }: TweakPanelProps) {
               ? colors.brand.default
               : colors.surface.lightDarker,
             color: (saveStatus === 'saved' || saveStatus === 'error' || hasChanges)
-              ? '#FFFFFF'
+              ? colors.text.highEmphasis.onDark
               : colors.text.lowEmphasis.onLight,
             opacity: isSaving ? 0.7 : 1,
           }}
@@ -1275,8 +1275,8 @@ export function TweakPanel({ fields, onChange, onSave }: TweakPanelProps) {
       {saveStatus === 'error' && errorMessage && (
         <div style={{
           padding: '8px 16px',
-          background: '#FBE4E7',
-          color: '#9A0818',
+          background: colors.surface.important,
+          color: colors.text.important,
           fontSize: '12px',
           fontFamily: fontFamilies.body,
         }}>
@@ -1556,7 +1556,7 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
               fontSize: '12px',
               fontWeight: 600,
               fontFamily: fontFamilies.body,
-              color: copiedYaml ? '#fff' : colors.text.lowEmphasis.onLight,
+              color: copiedYaml ? colors.text.highEmphasis.onDark : colors.text.lowEmphasis.onLight,
               transition: transitionPresets.default,
               zIndex: 1,
             }}
@@ -1655,7 +1655,7 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
                   <span style={{
                     ...typography.label.sm,
                     background: colors.brand.default,
-                    color: '#fff',
+                    color: colors.text.highEmphasis.onDark,
                     padding: '2px 8px',
                     borderRadius: borderRadius.full,
                     fontSize: '10px',
@@ -1701,7 +1701,7 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
                 fontSize: '11px',
                 fontWeight: 600,
                 fontFamily: fontFamilies.body,
-                color: copiedImport ? '#fff' : colors.text.lowEmphasis.onLight,
+                color: copiedImport ? colors.text.highEmphasis.onDark : colors.text.lowEmphasis.onLight,
                 transition: transitionPresets.default,
               }}
             >

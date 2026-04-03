@@ -72,7 +72,7 @@ function hexToRgb(hex: string): string {
 
 function rgbaToHex(rgba: string): string {
   const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
-  if (!match) return rgba.startsWith('#') ? rgba : '#000000'
+  if (!match) return rgba.startsWith('#') ? rgba : colors.text.highEmphasis.onLight
   const toHex = (n: number) => n.toString(16).padStart(2, '0')
   return '#' + toHex(+match[1]) + toHex(+match[2]) + toHex(+match[3])
 }
@@ -362,7 +362,7 @@ const s = {
     borderRadius: '20px',
     border: `1px solid ${active ? colors.brand.default : colors.border.lowEmphasis.onLight}`,
     background: active ? colors.brand.default : 'transparent',
-    color: active ? '#fff' : colors.text.lowEmphasis.onLight,
+    color: active ? colors.text.highEmphasis.onDark : colors.text.lowEmphasis.onLight,
     fontSize: '12px',
     cursor: 'pointer',
     fontWeight: active ? 600 : 400,
@@ -383,7 +383,7 @@ const s = {
     borderRadius: '8px',
     border: 'none',
     background: colors.brand.default,
-    color: '#fff',
+    color: colors.text.highEmphasis.onDark,
     fontSize: '12px',
     fontWeight: 600,
     cursor: 'pointer',
@@ -560,8 +560,8 @@ function ExportModal({ state, onClose }: { state: ThemeEditorState; onClose: () 
             <span style={{ fontSize: '12px', color: colors.text.lowEmphasis.onLight }}>Name:</span>
             <input value={name} onChange={e => setName(e.target.value)} style={{ flex: 1, padding: '6px 10px', borderRadius: '6px', border: `1px solid ${colors.border.lowEmphasis.onLight}`, background: colors.surface.lightDarker, color: colors.text.highEmphasis.onLight, fontSize: '13px' }} />
             <div style={{ display: 'flex', gap: '4px' }}>
-              <button onClick={() => setFormat('ts')} style={{ ...s.actionBtn, ...(format === 'ts' ? { background: colors.brand.default, color: '#fff', borderColor: colors.brand.default } : {}) }}>TypeScript</button>
-              <button onClick={() => setFormat('json')} style={{ ...s.actionBtn, ...(format === 'json' ? { background: colors.brand.default, color: '#fff', borderColor: colors.brand.default } : {}) }}>JSON</button>
+              <button onClick={() => setFormat('ts')} style={{ ...s.actionBtn, ...(format === 'ts' ? { background: colors.brand.default, color: colors.text.highEmphasis.onDark, borderColor: colors.brand.default } : {}) }}>TypeScript</button>
+              <button onClick={() => setFormat('json')} style={{ ...s.actionBtn, ...(format === 'json' ? { background: colors.brand.default, color: colors.text.highEmphasis.onDark, borderColor: colors.brand.default } : {}) }}>JSON</button>
             </div>
           </div>
           <textarea readOnly value={code} style={{ width: '100%', minHeight: '350px', background: colors.surface.lightDarker, border: `1px solid ${colors.border.lowEmphasis.onLight}`, borderRadius: '8px', padding: '16px', color: colors.text.highEmphasis.onLight, fontFamily: 'ui-monospace, monospace', fontSize: '11px', lineHeight: 1.5, resize: 'vertical' }} />
@@ -623,7 +623,7 @@ function Toast({ message, visible }: { message: string; visible: boolean }) {
   return (
     <div style={{
       position: 'fixed', bottom: '24px', right: '24px',
-      background: colors.status.success, color: '#fff',
+      background: colors.status.success, color: colors.text.highEmphasis.onDark,
       padding: '10px 20px', borderRadius: '8px', fontSize: '13px', fontWeight: 600,
       zIndex: 1100, transform: visible ? 'translateY(0)' : 'translateY(80px)',
       opacity: visible ? 1 : 0, transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
@@ -730,7 +730,7 @@ export default function ThemePlaygroundPage() {
             {Object.keys(savedThemes).map(name => (
               <div key={name} style={{ position: 'relative', display: 'inline-flex' }}>
                 <button style={s.presetPill(activePreset === name)} onClick={() => loadSavedTheme(name)}>{name}</button>
-                <button onClick={() => deleteSavedTheme(name)} style={{ position: 'absolute', top: '-4px', right: '-4px', width: '14px', height: '14px', borderRadius: '50%', background: colors.status.important, color: '#fff', border: 'none', fontSize: '9px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>&times;</button>
+                <button onClick={() => deleteSavedTheme(name)} style={{ position: 'absolute', top: '-4px', right: '-4px', width: '14px', height: '14px', borderRadius: '50%', background: colors.status.important, color: colors.text.highEmphasis.onDark, border: 'none', fontSize: '9px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>&times;</button>
               </div>
             ))}
           </>
@@ -947,8 +947,8 @@ export default function ThemePlaygroundPage() {
               <div>
                 <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: st.text.lowEmphasis.onLight, marginBottom: '12px', opacity: 0.5 }}>Buttons</div>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
-                  <button style={{ padding: `8px ${st.spacing.buttonPadding}px`, borderRadius: `${st.componentRadius.button}px`, background: st.action.enabled, color: '#fff', border: 'none', fontSize: '13px', fontWeight: 500, fontFamily: st.typography.fontFamilies.body, cursor: 'pointer' }}>Primary</button>
-                  <button style={{ padding: `8px ${st.spacing.buttonPadding}px`, borderRadius: `${st.componentRadius.button}px`, background: st.action.important.enabled, color: '#fff', border: 'none', fontSize: '13px', fontWeight: 500, fontFamily: st.typography.fontFamilies.body, cursor: 'pointer' }}>Important</button>
+                  <button style={{ padding: `8px ${st.spacing.buttonPadding}px`, borderRadius: `${st.componentRadius.button}px`, background: st.action.enabled, color: st.text.highEmphasis.onDark, border: 'none', fontSize: '13px', fontWeight: 500, fontFamily: st.typography.fontFamilies.body, cursor: 'pointer' }}>Primary</button>
+                  <button style={{ padding: `8px ${st.spacing.buttonPadding}px`, borderRadius: `${st.componentRadius.button}px`, background: st.action.important.enabled, color: st.text.highEmphasis.onDark, border: 'none', fontSize: '13px', fontWeight: 500, fontFamily: st.typography.fontFamilies.body, cursor: 'pointer' }}>Important</button>
                   <button style={{ padding: `8px ${st.spacing.buttonPadding}px`, borderRadius: `${st.componentRadius.button}px`, background: 'transparent', color: st.text.highEmphasis.onLight, border: `1px solid ${st.text.highEmphasis.onLight}33`, fontSize: '13px', fontWeight: 500, fontFamily: st.typography.fontFamilies.body, cursor: 'pointer' }}>Outline</button>
                 </div>
               </div>
@@ -1023,7 +1023,7 @@ export default function ThemePlaygroundPage() {
                 {['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'].map((label, i) => {
                   const mults = [1, 2, 4, 6, 8, 12, 16, 9999]
                   const r = mults[i] === 9999 ? '9999px' : `${base * mults[i]}px`
-                  return <div key={label} style={{ width: '36px', height: '36px', background: st.brand.default, borderRadius: r, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', color: '#fff', fontWeight: 600 }}>{label}</div>
+                  return <div key={label} style={{ width: '36px', height: '36px', background: st.brand.default, borderRadius: r, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', color: st.text.highEmphasis.onDark, fontWeight: 600 }}>{label}</div>
                 })}
               </div>
             </div>
@@ -1057,10 +1057,10 @@ export default function ThemePlaygroundPage() {
           </div>
 
           {/* Brand surface card */}
-          <div style={{ background: st.brand.default, borderRadius: `${st.componentRadius.card}px`, padding: `${st.spacing.cardPadding}px`, color: '#fff' }}>
+          <div style={{ background: st.brand.default, borderRadius: `${st.componentRadius.card}px`, padding: `${st.spacing.cardPadding}px`, color: st.text.highEmphasis.onDark }}>
             <h3 style={{ fontFamily: st.typography.fontFamilies.display, fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>Brand Surface</h3>
             <p style={{ fontFamily: st.typography.fontFamilies.body, fontSize: '13px', opacity: 0.85, marginBottom: '12px' }}>Content displayed on the brand color background.</p>
-            <button style={{ padding: `8px ${st.spacing.buttonPadding}px`, borderRadius: `${st.componentRadius.button}px`, background: 'rgba(255,255,255,0.2)', color: '#fff', border: 'none', fontSize: '13px', cursor: 'pointer', fontFamily: st.typography.fontFamilies.body }}>Action on Brand</button>
+            <button style={{ padding: `8px ${st.spacing.buttonPadding}px`, borderRadius: `${st.componentRadius.button}px`, background: 'rgba(255,255,255,0.2)', color: st.text.highEmphasis.onDark, border: 'none', fontSize: '13px', cursor: 'pointer', fontFamily: st.typography.fontFamilies.body }}>Action on Brand</button>
           </div>
         </div>
       </div>
