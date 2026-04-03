@@ -324,25 +324,26 @@ function SectionCard({
   const cardStyle: React.CSSProperties = {
     background: themeColors.surface.lightDarker,
     borderRadius: borderRadius.lg,
-    padding: collapsed ? `${spacing.xs} ${spacing['2xs']}` : `${spacing.xs} ${spacing.xs}`,
+    border: `1px solid ${themeColors.border.lowEmphasis.onLight}`,
     display: 'flex',
     flexDirection: 'column',
-    gap: '2px',
     transition: `all ${transitionPresets.default}`,
     overflow: 'hidden',
     minHeight: 0,
     flexShrink: isExpanded ? 1 : 0,
-    ...(collapsed ? { alignItems: 'center' } : {}),
+    ...(collapsed ? { alignItems: 'center', padding: `${spacing.xs} ${spacing['2xs']}` } : {}),
   }
 
+  // Brand-colored banner header
   const headerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     gap: spacing.xs,
-    padding: `${spacing['2xs']} ${sidebar.navItem.paddingX}`,
+    padding: `${spacing.xs} ${spacing.sm}`,
     cursor: 'pointer',
     userSelect: 'none',
-    borderRadius: sidebar.navItem.borderRadius,
+    background: themeColors.surface.lightDarker,
+    borderBottom: isExpanded ? `1px solid ${themeColors.border.lowEmphasis.onLight}` : 'none',
   }
 
   const headerLabelStyle: React.CSSProperties = {
@@ -350,7 +351,7 @@ function SectionCard({
     fontWeight: 600,
     textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
-    color: themeColors.text.lowEmphasis.onLight,
+    color: themeColors.text.highEmphasis.onLight,
     flex: 1,
   }
 
@@ -448,8 +449,8 @@ function SectionCard({
           overflowY: isExpanded ? 'auto' : 'hidden',
           overflowX: 'hidden',
           transition: `max-height ${transitionPresets.slow}, opacity ${transitionPresets.default}`,
-          paddingRight: '2px',
-          paddingBottom: isExpanded ? spacing.xs : '0',
+          padding: isExpanded ? `${spacing.xs} ${spacing.xs} ${spacing.xs} ${spacing.xs}` : '0',
+          paddingRight: isExpanded ? '2px' : '0',
         }}
       >
         {section.items.map((item) => (
