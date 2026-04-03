@@ -550,7 +550,8 @@ export function StyleguideLayout({
           position: 'fixed',
           top: spacing.sm,
           left: spacing.sm,
-          height: `calc(100vh - ${spacing.md})`,
+          bottom: spacing.sm,
+          height: `calc(100vh - ${spacing.sm} - ${spacing.sm})`,
           zIndex: zIndex.header,
         }}
       />

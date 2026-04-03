@@ -433,14 +433,17 @@ function SectionCard({
       {/* Items */}
       <div
         id={`section-${section.id}-items`}
+        className="segmented-nav-scroll"
         style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '2px',
-          maxHeight: isExpanded ? '2000px' : '0',
+          maxHeight: isExpanded ? 'calc(100vh - 280px)' : '0',
           opacity: isExpanded ? 1 : 0,
-          overflow: 'hidden',
+          overflowY: isExpanded ? 'auto' : 'hidden',
+          overflowX: 'hidden',
           transition: `max-height ${transitionPresets.slow}, opacity ${transitionPresets.default}`,
+          paddingRight: '2px',
         }}
       >
         {section.items.map((item) => (
@@ -524,7 +527,7 @@ export function LeftNavSegmented({
     flexShrink: 0,
   }
 
-  // ── Scroll area ──
+  // ── Scroll area (no scroll here — each card scrolls internally) ──
   const scrollAreaStyle: React.CSSProperties = {
     flex: 1,
     overflowY: 'auto',
@@ -532,8 +535,6 @@ export function LeftNavSegmented({
     display: 'flex',
     flexDirection: 'column',
     gap: spacing.xs,
-    paddingRight: '2px',
-    marginRight: '-2px',
   }
 
   // ── Footer ──
@@ -631,9 +632,37 @@ export function LeftNavSegmented({
     )
   }
 
+  // ── Custom scrollbar styles ──
+  const scrollbarCSS = `
+    .segmented-nav-scroll::-webkit-scrollbar {
+      width: 3px;
+    }
+    .segmented-nav-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .segmented-nav-scroll::-webkit-scrollbar-thumb {
+      background: ${themeColors.scrollbar.enabled.onLight};
+      border-radius: 9999px;
+    }
+    .segmented-nav-scroll::-webkit-scrollbar-thumb:hover {
+      background: ${themeColors.scrollbar.hover.onLight};
+    }
+    .segmented-nav-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: ${themeColors.scrollbar.enabled.onLight} transparent;
+    }
+    .segmented-nav-outer::-webkit-scrollbar {
+      width: 0px;
+    }
+    .segmented-nav-outer {
+      scrollbar-width: none;
+    }
+  `
+
   // ── Desktop nav ──
   return (
     <nav aria-label="Main navigation" style={navStyle}>
+      <style>{scrollbarCSS}</style>
       {/* Logo */}
       <div style={logoContainerStyle}>
         {collapsed ? collapsedLogo : logo}
@@ -649,7 +678,7 @@ export function LeftNavSegmented({
       </div>
 
       {/* Section cards */}
-      <div style={scrollAreaStyle}>
+      <div className="segmented-nav-outer" style={scrollAreaStyle}>
         {sections.map((section) => (
           <SectionCard
             key={section.id}
