@@ -324,7 +324,7 @@ function SectionCard({
   const cardStyle: React.CSSProperties = {
     background: themeColors.surface.lightDarker,
     borderRadius: borderRadius.lg,
-    border: `1px solid ${themeColors.border.lowEmphasis.onLight}`,
+    border: 'none',
     display: 'flex',
     flexDirection: 'column',
     transition: `all ${transitionPresets.default}`,
