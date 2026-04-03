@@ -151,6 +151,10 @@ export type { InputProps, InputWidth } from './Input'
 export { LeftNav } from './LeftNav'
 export type { LeftNavProps, LeftNavItem, LeftNavSection, LeftNavVariant, LeftNavSelectorProps, LeftNavSelectorOption } from './LeftNav'
 
+// LeftNavSegmented
+export { LeftNavSegmented } from './LeftNavSegmented'
+export type { LeftNavSegmentedProps } from './LeftNavSegmented'
+
 // Link
 export { Link } from './Link'
 export type { LinkProps } from './Link'
