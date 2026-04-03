@@ -67,8 +67,8 @@ function ColorSwatch({
     >
       <div style={{
         position: 'relative',
-        width: small ? '32px' : '48px',
-        height: small ? '32px' : '48px',
+        width: '48px',
+        height: '48px',
         borderRadius: '50%',
         overflow: 'hidden',
         border: `1px solid ${tc.border.lowEmphasis.onLight}`,
