@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable } from '../shared'
 import { borderRadius, typography } from '@/styles/design-tokens'
-import { useTheme, useColors } from '@/styles/themes'
+import { useColors } from '@/styles/themes'
 
 // =============================================================================
 // TYPES
@@ -67,9 +67,9 @@ function ColorSwatch({
     >
       <div style={{
         position: 'relative',
-        width: '100%',
+        width: small ? '48px' : '72px',
         height: small ? '48px' : '72px',
-        borderRadius: borderRadius.md,
+        borderRadius: '50%',
         overflow: 'hidden',
         border: `1px solid ${tc.border.lowEmphasis.onLight}`,
         marginBottom: '6px',
@@ -206,35 +206,6 @@ function flattenColors(
   return result
 }
 
-// =============================================================================
-// THEME INDICATOR
-// =============================================================================
-
-function ThemeIndicator() {
-  const theme = useTheme()
-  return (
-    <div style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '6px 14px',
-      borderRadius: '9999px',
-      background: 'rgba(0,0,0,0.06)',
-      fontSize: '13px',
-      fontWeight: 500,
-      color: theme.colors.text.highEmphasis.onLight,
-    }}>
-      <span style={{
-        width: '10px',
-        height: '10px',
-        borderRadius: '50%',
-        background: theme.colors.brand.default,
-        border: '1px solid rgba(0,0,0,0.15)',
-      }} />
-      Theme: {theme.name.charAt(0).toUpperCase() + theme.name.slice(1)}
-    </div>
-  )
-}
 
 // =============================================================================
 // MAIN PAGE
@@ -243,7 +214,6 @@ function ThemeIndicator() {
 export default function ColorsPage() {
   const [activeTab, setActiveTab] = useState<PageTab>('overview')
   const themeColors = useColors()
-  const theme = useTheme()
 
   const tabs = [
     { id: 'overview', label: 'Core' },
@@ -267,7 +237,6 @@ export default function ColorsPage() {
         <>
           {/* Theme badge */}
           <div style={{ marginBottom: '32px' }}>
-            <ThemeIndicator />
           </div>
 
           {/* BRAND */}
@@ -533,7 +502,6 @@ export default function ColorsPage() {
       {activeTab === 'extended' && (
         <>
           <div style={{ marginBottom: '32px' }}>
-            <ThemeIndicator />
           </div>
 
           {/* BADGE */}
