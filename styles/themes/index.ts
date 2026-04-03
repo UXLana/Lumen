@@ -19,6 +19,7 @@ export { ridTheme } from './rid';
 export { ridDarkTheme } from './rid-dark';
 export { claudeLightTheme } from './claude-light';
 export { lumenTheme } from './lumen';
+export { lumenDarkTheme } from './lumen-dark';
 export { buildBorderRadius, buildComponentRadius } from './theme-interface';
 export type {
   ProductTheme,

@@ -9,13 +9,14 @@ import { ridTheme } from './rid';
 import { ridDarkTheme } from './rid-dark';
 import { claudeLightTheme } from './claude-light';
 import { lumenTheme } from './lumen';
+import { lumenDarkTheme } from './lumen-dark';
 import { applyAllThemeVars } from './css-vars';
 
 // ---------------------------------------------------------------------------
 // Theme registry
 // ---------------------------------------------------------------------------
 
-const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme, ridTheme, ridDarkTheme, claudeLightTheme, lumenTheme];
+const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme, ridTheme, ridDarkTheme, claudeLightTheme, lumenTheme, lumenDarkTheme];
 const themeMap: Record<string, ProductTheme> = Object.fromEntries(
   availableThemes.map((t) => [t.name, t]),
 );
