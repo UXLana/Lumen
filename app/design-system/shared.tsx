@@ -380,7 +380,7 @@ export function StyleguideLayout({
         margin: '0 0 2px 0',
         fontFamily: fontFamilies.body,
       }}>
-        PRISM
+        LUMEN
       </p>
       <Link href="/" style={{
         ...typography.heading.h5,
@@ -389,7 +389,7 @@ export function StyleguideLayout({
         textDecoration: 'none',
         display: 'block',
       }}>
-        Design System
+        Build it right.
       </Link>
       <p style={{
         ...typography.body.sm,
@@ -406,7 +406,7 @@ export function StyleguideLayout({
         ...typography.heading.h4,
         color: colors.brand.default,
       }}>
-        P
+        L
       </span>
     </Link>
   )
