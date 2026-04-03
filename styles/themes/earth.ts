@@ -10,7 +10,7 @@ import type { ProductTheme } from './theme-interface';
 import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
 export const earthTheme: ProductTheme = {
-  name: 'Earth',
+  name: 'Fall',
   colors: {
     brand: {
       default: '#342f2d',

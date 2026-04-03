@@ -22,7 +22,7 @@ import type { ProductTheme } from './theme-interface';
 import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
 export const ridDarkTheme: ProductTheme = {
-  name: 'RID-Dark',
+  name: 'Foliage-Dark',
   colors: {
     brand: {
       default: '#3B8767',

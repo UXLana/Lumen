@@ -8,7 +8,7 @@ import type { ProductTheme } from './theme-interface';
 import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
 export const universityTheme: ProductTheme = {
-  name: 'university',
+  name: 'Spring',
   colors: {
     brand: {
       default: '#385C3F',

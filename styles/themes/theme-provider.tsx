@@ -2,12 +2,10 @@
 
 import { createContext, useContext, useState, useEffect, useLayoutEffect, useMemo, useCallback, type ReactNode } from 'react';
 import type { ProductTheme, ThemeColors, ThemeTypography, ThemeBorderRadius, ThemeElevation, ThemeSpacing, ThemeIconStyle } from './theme-interface';
-import { traceTheme } from './trace';
 import { universityTheme } from './university';
 import { earthTheme } from './earth';
 import { ridTheme } from './rid';
 import { ridDarkTheme } from './rid-dark';
-import { claudeLightTheme } from './claude-light';
 import { lumenTheme } from './lumen';
 import { lumenDarkTheme } from './lumen-dark';
 import { applyAllThemeVars } from './css-vars';
@@ -16,7 +14,7 @@ import { applyAllThemeVars } from './css-vars';
 // Theme registry
 // ---------------------------------------------------------------------------
 
-const availableThemes: ProductTheme[] = [traceTheme, universityTheme, earthTheme, ridTheme, ridDarkTheme, claudeLightTheme, lumenTheme, lumenDarkTheme];
+const availableThemes: ProductTheme[] = [universityTheme, earthTheme, ridTheme, ridDarkTheme, lumenTheme, lumenDarkTheme];
 const themeMap: Record<string, ProductTheme> = Object.fromEntries(
   availableThemes.map((t) => [t.name, t]),
 );
