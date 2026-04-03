@@ -331,7 +331,7 @@ function SectionCard({
     transition: `all ${transitionPresets.default}`,
     overflow: 'hidden',
     minHeight: 0,
-    ...(isExpanded ? { flex: '1 1 0%' } : { flex: '0 0 auto' }),
+    ...(isExpanded ? { flex: '1 1 0%' } : { flexShrink: 0 }),
     ...(collapsed ? { alignItems: 'center' } : {}),
   }
 
