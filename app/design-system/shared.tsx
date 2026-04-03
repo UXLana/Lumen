@@ -151,8 +151,9 @@ export const sharedStyles = {
 
   header: {
     background: `linear-gradient(135deg, ${colors.brand.darker} 0%, ${colors.brand.default} 50%, ${colors.brand.lighter} 100%)`,
-    padding: '24px',
-    borderRadius: borderRadius.lg,
+    padding: '32px',
+    borderRadius: borderRadius.xl,
+    boxShadow: shadows.lg,
   },
 
   headerTitle: {
@@ -433,6 +434,7 @@ export function StyleguideLayout({
         collapsed={sidebarCollapsed}
         onCollapseChange={handleCollapseChange}
         showCollapseToggle
+        shape="rounded"
         variant="default"
         mobileBehavior="drawer"
         mobileOpen={isMobile && !sidebarCollapsed}
@@ -440,9 +442,9 @@ export function StyleguideLayout({
         onItemClick={handleItemClick}
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          height: '100vh',
+          top: spacing.sm,
+          left: spacing.sm,
+          height: `calc(100vh - ${spacing.md})`,
           zIndex: zIndex.header,
         }}
       />

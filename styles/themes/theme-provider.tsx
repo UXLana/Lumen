@@ -27,7 +27,7 @@ export { availableThemes, themeMap };
 // Theme value context (read-only)
 // ---------------------------------------------------------------------------
 
-const ThemeContext = createContext<ProductTheme>(traceTheme);
+const ThemeContext = createContext<ProductTheme>(lumenDarkTheme);
 
 // ---------------------------------------------------------------------------
 // Theme switcher context (set active theme by name)
@@ -52,7 +52,7 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
-export function ThemeProvider({ theme = traceTheme, children }: ThemeProviderProps) {
+export function ThemeProvider({ theme = lumenDarkTheme, children }: ThemeProviderProps) {
   const value = useMemo(() => theme, [theme]);
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
@@ -66,7 +66,7 @@ interface SwitchableThemeProviderProps {
 }
 
 export function SwitchableThemeProvider({ children }: SwitchableThemeProviderProps) {
-  const [themeName, setThemeNameRaw] = useState('trace');
+  const [themeName, setThemeNameRaw] = useState('Lumen-Dark');
   const [hydrated, setHydrated] = useState(false);
 
   // Restore from localStorage on mount
@@ -91,7 +91,7 @@ export function SwitchableThemeProvider({ children }: SwitchableThemeProviderPro
     }
   }, []);
 
-  const activeTheme = useMemo(() => themeMap[themeName] ?? traceTheme, [themeName]);
+  const activeTheme = useMemo(() => themeMap[themeName] ?? lumenDarkTheme, [themeName]);
 
   useLayoutEffect(() => {
     applyAllThemeVars(activeTheme, document.documentElement);
