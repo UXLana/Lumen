@@ -476,7 +476,7 @@ export default function IconsPage() {
   return (
     <StyleguideLayout
       title="Icons"
-      description={`A comprehensive library of ${totalIcons} scalable icons in the Feather icon style. All icons use currentColor for easy styling and are available in multiple sizes.`}
+      description="24 pixels of pure intention."
       activeId="icons"
       activeTab={activeTab}
       onTabChange={setActiveTab}

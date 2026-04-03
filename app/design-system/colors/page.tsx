@@ -225,7 +225,7 @@ export default function ColorsPage() {
   return (
     <StyleguideLayout
       title="Colors"
-      description="Theme-aware color tokens mapped 1:1 to Figma mtr_sys_color_* variables. Click any swatch to copy its token path."
+      description="Every pixel has a purpose."
       activeId="colors"
       tabs={tabs}
       activeTab={activeTab}

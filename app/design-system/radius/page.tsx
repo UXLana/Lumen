@@ -14,7 +14,7 @@ export default function RadiusPage() {
   return (
     <StyleguideLayout
       title="Border Radius"
-      description="Border radius tokens for consistent corner rounding across components. From sharp corners to fully rounded pills."
+      description="Corners that know their place."
       activeId="radius"
       activeTab={activeTab}
       onTabChange={setActiveTab}

@@ -34,7 +34,7 @@ export default function SpacingPage() {
   return (
     <StyleguideLayout
       title="Spacing"
-      description="A consistent spacing system based on a 4px grid. Use semantic names for clear, readable code."
+      description="Breathing room, by design."
       activeId="spacing"
       activeTab={activeTab}
       onTabChange={setActiveTab}

@@ -14,7 +14,7 @@ export default function ShadowsPage() {
   return (
     <StyleguideLayout
       title="Shadows"
-      description="Elevation shadows for creating depth and visual hierarchy. From subtle lifts to prominent overlays."
+      description="Depth without the drama."
       activeId="shadows"
       activeTab={activeTab}
       onTabChange={setActiveTab}

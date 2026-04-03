@@ -150,22 +150,21 @@ export const sharedStyles = {
   },
 
   header: {
-    background: `linear-gradient(135deg, ${colors.brand.darker} 0%, ${colors.brand.default} 50%, ${colors.brand.lighter} 100%)`,
-    padding: '32px',
-    borderRadius: borderRadius.xl,
-    boxShadow: shadows.lg,
+    background: 'transparent',
+    padding: '24px 0',
   },
 
   headerTitle: {
-    ...typography.heading.h2,
-    fontWeight: 700,
-    color: colors.text.highEmphasis.onDark,
-    marginBottom: '8px',
+    ...typography.display.md,
+    fontWeight: 600,
+    color: colors.text.highEmphasis.onLight,
+    marginBottom: '4px',
   },
 
   headerDescription: {
-    ...typography.body.md,
-    color: colors.text.lowEmphasis.onDark,
+    ...typography.display.xs,
+    fontWeight: 400,
+    color: colors.text.lowEmphasis.onLight,
     maxWidth: '600px',
     margin: '0',
   },
@@ -488,10 +487,7 @@ export function StyleguideLayout({
 
         {/* Header Banner */}
         <div style={sharedStyles.headerWrapper}>
-          <header style={{
-            ...sharedStyles.header,
-            background: `linear-gradient(135deg, ${colors.brand.darker} 0%, ${colors.brand.default} 50%, ${colors.brand.lighter} 100%)`,
-          }}>
+          <header style={sharedStyles.header}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <h1 style={sharedStyles.headerTitle}>{title}</h1>
               {headerAction}

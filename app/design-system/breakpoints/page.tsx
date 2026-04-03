@@ -14,7 +14,7 @@ export default function BreakpointsPage() {
   return (
     <StyleguideLayout
       title="Breakpoints & System"
-      description="Responsive breakpoints, z-index scale, and transition presets for building adaptive, polished interfaces."
+      description="Every screen gets the VIP treatment."
       activeId="breakpoints"
       activeTab={activeTab}
       onTabChange={setActiveTab}

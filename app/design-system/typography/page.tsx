@@ -75,7 +75,7 @@ export default function TypographyPage() {
   return (
     <StyleguideLayout
       title="Typography"
-      description={`Typography system using ${displayFontName} for UI text and system monospace for code. Designed for clarity and readability.`}
+      description="Words that work harder."
       activeId="typography"
       activeTab={activeTab}
       onTabChange={setActiveTab}
