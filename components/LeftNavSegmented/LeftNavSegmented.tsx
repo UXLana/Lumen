@@ -322,7 +322,7 @@ function SectionCard({
   const themeColors = useColors()
 
   const cardStyle: React.CSSProperties = {
-    background: themeColors.surface.lightDarker,
+    background: 'rgba(0, 0, 0, 0.06)',
     borderRadius: borderRadius.lg,
     border: 'none',
     display: 'flex',
@@ -339,10 +339,10 @@ function SectionCard({
     display: 'flex',
     alignItems: 'center',
     gap: spacing.xs,
-    padding: `${spacing.xs} ${spacing.sm}`,
+    padding: `${spacing.sm} ${spacing.md}`,
     cursor: 'pointer',
     userSelect: 'none',
-    background: themeColors.surface.lightDarker,
+    background: 'transparent',
     borderBottom: 'none',
   }
 
