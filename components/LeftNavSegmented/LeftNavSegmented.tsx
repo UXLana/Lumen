@@ -309,14 +309,16 @@ function SectionCard({
   activeItemId,
   collapsed,
   onItemClick,
+  isExpanded,
+  onToggle,
 }: {
   section: LeftNavSection
   activeItemId?: string
   collapsed: boolean
   onItemClick?: (item: LeftNavItem) => void
+  isExpanded: boolean
+  onToggle: () => void
 }) {
-  const hasActiveItem = section.items.some((item) => item.id === activeItemId)
-  const [isExpanded, setIsExpanded] = useState(hasActiveItem || section.defaultExpanded === true)
   const themeColors = useColors()
 
   const cardStyle: React.CSSProperties = {
@@ -406,11 +408,11 @@ function SectionCard({
       {section.title && (
         <div
           style={headerStyle}
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={() => onToggle()}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
-              setIsExpanded(!isExpanded)
+              onToggle()
             }
           }}
           role="button"
@@ -486,6 +488,10 @@ export function LeftNavSegmented({
   const prefersReducedMotion = usePrefersReducedMotion()
   const isMobile = useIsMobile()
   const themeColors = useColors()
+
+  // Accordion state — only one section expanded at a time
+  const activeSection = sections.find((s) => s.items.some((i) => i.id === activeItemId))
+  const [expandedSectionId, setExpandedSectionId] = useState<string | null>(activeSection?.id ?? null)
 
   const SIDEBAR_WIDTH = parseInt(sidebar.width)
   const SIDEBAR_COLLAPSED_WIDTH = parseInt(sidebar.collapsedWidth)
@@ -607,6 +613,8 @@ export function LeftNavSegmented({
                 section={section}
                 activeItemId={activeItemId}
                 collapsed={false}
+                isExpanded={expandedSectionId === section.id}
+                onToggle={() => setExpandedSectionId(expandedSectionId === section.id ? null : section.id)}
                 onItemClick={(item) => {
                   onItemClick?.(item)
                   onMobileClose?.()
@@ -623,6 +631,8 @@ export function LeftNavSegmented({
                   section={section}
                   activeItemId={activeItemId}
                   collapsed={false}
+                  isExpanded={expandedSectionId === section.id}
+                  onToggle={() => setExpandedSectionId(expandedSectionId === section.id ? null : section.id)}
                   onItemClick={(item) => {
                     onItemClick?.(item)
                     onMobileClose?.()
@@ -690,6 +700,8 @@ export function LeftNavSegmented({
             activeItemId={activeItemId}
             collapsed={collapsed}
             onItemClick={onItemClick}
+            isExpanded={expandedSectionId === section.id}
+            onToggle={() => setExpandedSectionId(expandedSectionId === section.id ? null : section.id)}
           />
         ))}
       </div>
@@ -704,6 +716,8 @@ export function LeftNavSegmented({
               activeItemId={activeItemId}
               collapsed={collapsed}
               onItemClick={onItemClick}
+              isExpanded={expandedSectionId === section.id}
+              onToggle={() => setExpandedSectionId(expandedSectionId === section.id ? null : section.id)}
             />
           ))}
         </div>
