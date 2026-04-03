@@ -331,7 +331,7 @@ function SectionCard({
     transition: `all ${transitionPresets.default}`,
     overflow: 'hidden',
     minHeight: 0,
-    ...(isExpanded ? { flex: '1 1 0%' } : { flexShrink: 0 }),
+    flexShrink: isExpanded ? 1 : 0,
     ...(collapsed ? { alignItems: 'center' } : {}),
   }
 
@@ -443,14 +443,13 @@ function SectionCard({
           display: 'flex',
           flexDirection: 'column',
           gap: '2px',
-          flex: isExpanded ? '1 1 auto' : '0 0 0px',
+          maxHeight: isExpanded ? 'calc(100vh - 220px)' : '0',
           opacity: isExpanded ? 1 : 0,
           overflowY: isExpanded ? 'auto' : 'hidden',
           overflowX: 'hidden',
-          transition: `flex ${transitionPresets.slow}, opacity ${transitionPresets.default}`,
+          transition: `max-height ${transitionPresets.slow}, opacity ${transitionPresets.default}`,
           paddingRight: '2px',
           paddingBottom: isExpanded ? spacing.xs : '0',
-          minHeight: 0,
         }}
       >
         {section.items.map((item) => (
