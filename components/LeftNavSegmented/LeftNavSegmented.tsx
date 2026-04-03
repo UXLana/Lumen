@@ -328,6 +328,7 @@ function SectionCard({
     gap: '2px',
     transition: `all ${transitionPresets.default}`,
     overflow: 'hidden',
+    minHeight: 0,
     ...(collapsed ? { alignItems: 'center' } : {}),
   }
 
@@ -439,13 +440,14 @@ function SectionCard({
           display: 'flex',
           flexDirection: 'column',
           gap: '2px',
-          maxHeight: isExpanded ? 'calc(100vh - 280px)' : '0',
+          flex: isExpanded ? '1 1 auto' : '0 0 0px',
           opacity: isExpanded ? 1 : 0,
           overflowY: isExpanded ? 'auto' : 'hidden',
           overflowX: 'hidden',
-          transition: `max-height ${transitionPresets.slow}, opacity ${transitionPresets.default}`,
+          transition: `flex ${transitionPresets.slow}, opacity ${transitionPresets.default}`,
           paddingRight: '2px',
           paddingBottom: isExpanded ? spacing.xs : '0',
+          minHeight: 0,
         }}
       >
         {section.items.map((item) => (
@@ -529,11 +531,10 @@ export function LeftNavSegmented({
     flexShrink: 0,
   }
 
-  // ── Scroll area ──
+  // ── Scroll area (no outer scroll — cards scroll internally) ──
   const scrollAreaStyle: React.CSSProperties = {
     flex: 1,
-    overflowY: 'auto',
-    overflowX: 'hidden',
+    overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
     gap: spacing.xs,
