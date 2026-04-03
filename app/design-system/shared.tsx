@@ -22,7 +22,8 @@ import {
   IconSidebarOpen,
   IconSidebarClose,
 } from '@/components/Icons'
-import { LeftNav, type LeftNavSection, type LeftNavItem } from '@/components/LeftNav'
+import { type LeftNavSection, type LeftNavItem } from '@/components/LeftNav'
+import { LeftNavSegmented } from '@/components/LeftNavSegmented'
 import { useThemeSwitcher, availableThemes } from '@/styles/themes'
 
 // =============================================================================
@@ -532,8 +533,8 @@ export function StyleguideLayout({
 
   return (
     <div style={sharedStyles.page}>
-      {/* LeftNav replaces the inline sidebar */}
-      <LeftNav
+      {/* Segmented LeftNav — each section in its own card */}
+      <LeftNavSegmented
         logo={logoElement}
         collapsedLogo={collapsedLogoElement}
         sections={sections}
@@ -541,8 +542,6 @@ export function StyleguideLayout({
         collapsed={sidebarCollapsed}
         onCollapseChange={handleCollapseChange}
         showCollapseToggle
-        shape="rounded"
-        variant="default"
         mobileBehavior="drawer"
         mobileOpen={isMobile && !sidebarCollapsed}
         onMobileClose={() => setSidebarCollapsed(true)}
