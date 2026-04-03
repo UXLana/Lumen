@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import {
   colors,
@@ -22,7 +22,7 @@ import {
   IconSidebarOpen,
   IconSidebarClose,
 } from '@/components/Icons'
-import { LeftNav, type LeftNavSection, type LeftNavItem, type LeftNavSelectorProps } from '@/components/LeftNav'
+import { LeftNav, type LeftNavSection, type LeftNavItem } from '@/components/LeftNav'
 import { useThemeSwitcher, availableThemes } from '@/styles/themes'
 
 // =============================================================================
@@ -122,7 +122,8 @@ export const innerPageTabs = [
 export const sharedStyles = {
   page: {
     minHeight: '100vh',
-    background: colors.surface.light,
+    backgroundColor: colors.surface.light,
+    backgroundImage: `radial-gradient(at 0% 0%, rgba(255, 87, 34, 0.08) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.08) 0px, transparent 50%)`,
     display: 'flex',
     position: 'relative' as const,
   },
@@ -282,6 +283,125 @@ export const sharedStyles = {
 }
 
 // =============================================================================
+// THEME SWITCHER BUTTON
+// =============================================================================
+
+const IconChevronDown = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <polyline points="6 9 12 15 18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
+function ThemeSwitcherButton() {
+  const { themeName, setThemeName } = useThemeSwitcher()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [open])
+
+  const displayName = themeName.charAt(0).toUpperCase() + themeName.slice(1)
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }}>
+      <button
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-label={`Theme: ${displayName}`}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          padding: '6px 12px',
+          borderRadius: borderRadius.lg,
+          border: `1px solid ${colors.border.midEmphasis.onLight}`,
+          background: 'transparent',
+          color: colors.text.lowEmphasis.onLight,
+          fontSize: '12px',
+          fontWeight: 500,
+          fontFamily: fontFamilies.body,
+          cursor: 'pointer',
+          transition: 'background 150ms ease, border-color 150ms ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = colors.hover.onLight
+          e.currentTarget.style.borderColor = colors.border.highEmphasis.onLight
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent'
+          e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight
+        }}
+      >
+        {displayName}
+        <IconChevronDown />
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          aria-label="Select theme"
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            right: 0,
+            minWidth: '140px',
+            background: colors.surface.light,
+            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+            borderRadius: borderRadius.md,
+            boxShadow: shadows.lg,
+            padding: '4px 0',
+            overflow: 'hidden',
+            zIndex: 200,
+          }}
+        >
+          {availableThemes.map((t) => {
+            const isActive = t.name === themeName
+            const label = t.name.charAt(0).toUpperCase() + t.name.slice(1)
+            return (
+              <button
+                key={t.name}
+                role="option"
+                aria-selected={isActive}
+                onClick={() => { setThemeName(t.name); setOpen(false) }}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  padding: '8px 14px',
+                  border: 'none',
+                  background: isActive ? colors.selected.onLight : 'transparent',
+                  color: isActive ? colors.text.highEmphasis.onLight : colors.text.lowEmphasis.onLight,
+                  fontSize: '12px',
+                  fontWeight: isActive ? 600 : 400,
+                  fontFamily: fontFamilies.body,
+                  textAlign: 'left' as const,
+                  cursor: 'pointer',
+                  transition: 'background 100ms ease',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) e.currentTarget.style.background = colors.hover.onLight
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) e.currentTarget.style.background = 'transparent'
+                }}
+              >
+                {label}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// =============================================================================
 // LAYOUT COMPONENT
 // =============================================================================
 
@@ -410,24 +530,12 @@ export function StyleguideLayout({
     </Link>
   )
 
-  // Theme selector via logoSelector prop — works collapsed and expanded
-  const themeSelector: LeftNavSelectorProps = {
-    options: availableThemes.map((t) => ({
-      value: t.name,
-      label: t.name.charAt(0).toUpperCase() + t.name.slice(1),
-    })),
-    value: themeName,
-    onChange: (value) => setThemeName(value),
-    'aria-label': 'Theme',
-  }
-
   return (
     <div style={sharedStyles.page}>
       {/* LeftNav replaces the inline sidebar */}
       <LeftNav
         logo={logoElement}
         collapsedLogo={collapsedLogoElement}
-        logoSelector={themeSelector}
         sections={sections}
         activeItemId={activeId}
         collapsed={sidebarCollapsed}
@@ -488,11 +596,16 @@ export function StyleguideLayout({
         {/* Header Banner */}
         <div style={sharedStyles.headerWrapper}>
           <header style={sharedStyles.header}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <h1 style={sharedStyles.headerTitle}>{title}</h1>
-              {headerAction}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h1 style={sharedStyles.headerTitle}>{title}</h1>
+                <p style={sharedStyles.headerDescription}>{description}</p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {headerAction}
+                <ThemeSwitcherButton />
+              </div>
             </div>
-            <p style={sharedStyles.headerDescription}>{description}</p>
           </header>
 
           {/* Tabs */}

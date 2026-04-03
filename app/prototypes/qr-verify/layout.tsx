@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useRef, useLayoutEffect } from 'react'
-import { traceTheme, ThemeProvider } from '@/styles/themes'
+import { lumenDarkTheme, ThemeProvider } from '@/styles/themes'
 import { applyAllThemeVars } from '@/styles/themes/css-vars'
 import {
   colors,
@@ -16,7 +16,7 @@ function VerifyShell({ children }: { children: React.ReactNode }) {
 
   useLayoutEffect(() => {
     if (containerRef.current) {
-      applyAllThemeVars(traceTheme, containerRef.current)
+      applyAllThemeVars(lumenDarkTheme, containerRef.current)
     }
   }, [])
 
@@ -131,7 +131,7 @@ export default function QrVerifyLayout({
   children: React.ReactNode
 }) {
   return (
-    <ThemeProvider theme={traceTheme}>
+    <ThemeProvider theme={lumenDarkTheme}>
       <VerifyShell>{children}</VerifyShell>
     </ThemeProvider>
   )
