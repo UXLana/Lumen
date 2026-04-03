@@ -67,12 +67,13 @@ function ColorSwatch({
     >
       <div style={{
         position: 'relative',
-        width: '100%',
-        aspectRatio: '1',
-        borderRadius: borderRadius.md,
+        width: small ? '32px' : '48px',
+        height: small ? '32px' : '48px',
+        borderRadius: '50%',
         overflow: 'hidden',
         border: `1px solid ${tc.border.lowEmphasis.onLight}`,
         marginBottom: '6px',
+        flexShrink: 0,
         ...(onDarkBg ? { background: tc.surface.darkDarker } : {}),
       }}>
         {isTransparent && !onDarkBg && (
