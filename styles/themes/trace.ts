@@ -27,7 +27,7 @@ export const traceTheme: ProductTheme = {
 
     surface: {
       light: '#FFFFFF',
-      lightDarker: '#F5F5F5',
+      lightDarker: 'rgba(0, 0, 0, 0.06)',
       dark: '#4A4A4A',
       darkDarker: '#323232',
       disabled: {

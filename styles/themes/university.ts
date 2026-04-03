@@ -24,7 +24,7 @@ export const universityTheme: ProductTheme = {
 
     surface: {
       light: '#F7F9F7',
-      lightDarker: '#EEF0EE',
+      lightDarker: 'rgba(0, 0, 0, 0.06)',
       dark: '#3E4F42',
       darkDarker: '#2A3B2E',
       disabled: {

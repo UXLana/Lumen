@@ -24,7 +24,7 @@ export const earthTheme: ProductTheme = {
     },
     surface: {
       light: '#fdf9f7',
-      lightDarker: '#f4efec',
+      lightDarker: 'rgba(0, 0, 0, 0.06)',
       dark: '#38302C',
       darkDarker: '#2D2520',
       disabled: {

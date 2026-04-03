@@ -38,7 +38,7 @@ export const ridTheme: ProductTheme = {
 
     surface: {
       light: '#F5F7F6',
-      lightDarker: '#EBEEED',
+      lightDarker: 'rgba(0, 0, 0, 0.06)',
       dark: '#33423F',
       darkDarker: '#213F39',
       disabled: {

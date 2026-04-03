@@ -38,7 +38,7 @@ export const lumenTheme: ProductTheme = {
     // =========================================================================
     surface: {
       light: '#FFFAF8',
-      lightDarker: '#F5F0EE',
+      lightDarker: 'rgba(0, 0, 0, 0.06)',
       dark: '#4A3E3B',
       darkDarker: '#322A28',
       disabled: {

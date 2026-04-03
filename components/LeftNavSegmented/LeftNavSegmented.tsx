@@ -322,7 +322,7 @@ function SectionCard({
   const themeColors = useColors()
 
   const cardStyle: React.CSSProperties = {
-    background: 'rgba(0, 0, 0, 0.06)',
+    background: themeColors.surface.lightDarker,
     borderRadius: borderRadius.lg,
     border: 'none',
     display: 'flex',
