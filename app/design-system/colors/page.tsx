@@ -175,7 +175,7 @@ function SwatchGrid({
   onDarkBg?: boolean
 }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: '10px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
       {entries.map(([key, val]) => (
         <ColorSwatch
           key={key}
@@ -263,7 +263,7 @@ export default function ColorsPage() {
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>
               Light Surfaces
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               <ColorSwatch token="colors.surface.light" value={themeColors.surface.light} label="light" />
               <ColorSwatch token="colors.surface.lightDarker" value={themeColors.surface.lightDarker} label="lightDarker" />
               <ColorSwatch token="colors.surface.dark" value={themeColors.surface.dark} label="dark" />
@@ -273,7 +273,7 @@ export default function ColorsPage() {
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>
               Disabled Surfaces
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               <ColorSwatch token="colors.surface.disabled.onLight" value={themeColors.surface.disabled.onLight} label="disabled.onLight" />
               <ColorSwatch token="colors.surface.disabled.onDark" value={themeColors.surface.disabled.onDark} label="disabled.onDark" onDarkBg />
             </div>
@@ -281,7 +281,7 @@ export default function ColorsPage() {
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>
               Status Surfaces
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
               <ColorSwatch token="colors.surface.info" value={themeColors.surface.info} label="info" />
               <ColorSwatch token="colors.surface.success" value={themeColors.surface.success} label="success" />
               <ColorSwatch token="colors.surface.warning" value={themeColors.surface.warning} label="warning" />
@@ -356,7 +356,7 @@ export default function ColorsPage() {
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>
               Action Text
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               <ColorSwatch token="colors.text.action.enabled" value={themeColors.text.action.enabled} label="action.enabled" />
               <ColorSwatch token="colors.text.action.hover" value={themeColors.text.action.hover} label="action.hover" />
               <ColorSwatch token="colors.text.action.active" value={themeColors.text.action.active} label="action.active" />
@@ -365,7 +365,7 @@ export default function ColorsPage() {
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>
               Status Text
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
               <ColorSwatch token="colors.text.success" value={themeColors.text.success} label="success" />
               <ColorSwatch token="colors.text.warning" value={themeColors.text.warning} label="warning" />
               <ColorSwatch token="colors.text.important" value={themeColors.text.important} label="important" />
@@ -406,7 +406,7 @@ export default function ColorsPage() {
 
           {/* ICON BG */}
           <ColorGroup title="Icon Background" description="Background colors for icon containers in status contexts.">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
               {Object.entries(themeColors.iconBg).map(([key, val]) => (
                 <ColorSwatch
                   key={key}
@@ -425,7 +425,7 @@ export default function ColorsPage() {
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>
               Primary Action
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               <ColorSwatch token="colors.action.enabled" value={themeColors.action.enabled} label="enabled" />
               <ColorSwatch token="colors.action.hover" value={themeColors.action.hover} label="hover" />
               <ColorSwatch token="colors.action.active" value={themeColors.action.active} label="active" />
@@ -434,7 +434,7 @@ export default function ColorsPage() {
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>
               Important (Destructive) Action
             </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               <ColorSwatch token="colors.action.important.enabled" value={themeColors.action.important.enabled} label="important.enabled" />
               <ColorSwatch token="colors.action.important.hover" value={themeColors.action.important.hover} label="important.hover" />
               <ColorSwatch token="colors.action.important.active" value={themeColors.action.important.active} label="important.active" />
@@ -465,7 +465,7 @@ export default function ColorsPage() {
 
           {/* STATUS */}
           <ColorGroup title="Status" description="Semantic colors for system feedback (info, success, warning, important).">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
               {Object.entries(themeColors.status).map(([key, val]) => (
                 <ColorSwatch
                   key={key}
@@ -481,13 +481,13 @@ export default function ColorsPage() {
 
           {/* HOVER / SELECTED / SCRIM / FOCUS */}
           <ColorGroup title="Interaction States" description="Hover, selected, focus, and scrim overlay colors.">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               <ColorSwatch token="colors.hover.onLight" value={themeColors.hover.onLight} label="hover.onLight" />
               <ColorSwatch token="colors.hover.onDark" value={themeColors.hover.onDark} label="hover.onDark" onDarkBg />
               <ColorSwatch token="colors.selected.onLight" value={themeColors.selected.onLight} label="selected.onLight" />
               <ColorSwatch token="colors.scrim" value={themeColors.scrim} label="scrim" />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
               <ColorSwatch token="colors.selectedHighlight" value={themeColors.selectedHighlight} label="selectedHighlight" />
               <ColorSwatch token="colors.selectedHighlight_hover" value={themeColors.selectedHighlight_hover} label="selectedHighlight_hover" />
               <ColorSwatch token="colors.focusBorder.onLight" value={themeColors.focusBorder.onLight} label="focusBorder.onLight" />
@@ -507,7 +507,7 @@ export default function ColorsPage() {
 
           {/* BADGE */}
           <ColorGroup title="Badge" description="Color pairs for badges and tags. Each has a saturated and light variant.">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               {Object.entries(themeColors.badge).map(([key, val]) => (
                 <ColorSwatch
                   key={key}
@@ -551,7 +551,7 @@ export default function ColorsPage() {
 
           {/* AVATAR */}
           <ColorGroup title="Avatar" description="8 distinct background colors for avatar initials. Assigned by user name hash.">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               {Object.entries(themeColors.avatar).map(([key, val]) => (
                 <ColorSwatch key={key} token={`colors.avatar.${key}`} value={val} label={`Avatar ${key}`} small />
               ))}
@@ -600,7 +600,7 @@ export default function ColorsPage() {
                   />
                 ))}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
               {Object.entries(themeColors.dataViz).map(([key, val]) => (
                 <ColorSwatch key={key} token={`colors.dataViz.${key}`} value={val} label={key} small />
               ))}
@@ -609,7 +609,7 @@ export default function ColorsPage() {
 
           {/* CVD */}
           <ColorGroup title="CVD Accessible Palette" description="8 colors distinguishable for most forms of color vision deficiency. Use for charts where color differentiation is critical.">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
               {Object.entries(themeColors.cvd).map(([key, val]) => (
                 <ColorSwatch key={key} token={`colors.cvd.${key}`} value={val} label={key} />
               ))}
@@ -628,19 +628,19 @@ export default function ColorsPage() {
             </div>
 
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>Navigation</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginBottom: '24px' }}>
               <ColorSwatch token="colors.navItemText.enabled.onLight" value={themeColors.navItemText.enabled.onLight} label="navItemText.onLight" />
               <ColorSwatch token="colors.navItemText.enabled.onDark" value={themeColors.navItemText.enabled.onDark} label="navItemText.onDark" onDarkBg />
             </div>
 
             <h3 style={{ ...typography.label.md, color: themeColors.text.highEmphasis.onLight, marginBottom: '12px' }}>Other</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px' }}>
               <ColorSwatch token="colors.buttonToggleBg.onLight" value={themeColors.buttonToggleBg.onLight} label="buttonToggleBg.onLight" small />
               <ColorSwatch token="colors.buttonToggleBg.onDark" value={themeColors.buttonToggleBg.onDark} label="buttonToggleBg.onDark" small onDarkBg />
               <ColorSwatch token="colors.chipBg.enabled" value={themeColors.chipBg.enabled} label="chipBg.enabled" small />
               <ColorSwatch token="colors.chipBg.hover" value={themeColors.chipBg.hover} label="chipBg.hover" small />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginTop: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, max-content))', gap: '16px', marginTop: '16px' }}>
               <ColorSwatch token="colors.progressIndicatorTrack" value={themeColors.progressIndicatorTrack} label="progressIndicatorTrack" small />
               <ColorSwatch token="colors.tableCellHighlight.highEmphasis" value={themeColors.tableCellHighlight.highEmphasis} label="tableCellHighlight.high" small />
               <ColorSwatch token="colors.tableCellHighlight.midEmphasis" value={themeColors.tableCellHighlight.midEmphasis} label="tableCellHighlight.mid" small />
