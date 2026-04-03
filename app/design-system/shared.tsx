@@ -37,14 +37,6 @@ const MOBILE_BREAKPOINT = parseInt(breakpoints.md) // 768px
 // CUSTOM ICONS (Not in the main library)
 // =============================================================================
 
-// Shield/checkmark icon for Tools section
-const IconTools = () => (
-  <svg aria-hidden="true" width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M10 1L3 5v4.5c0 4.42 2.98 8.56 7 9.5 4.02-.94 7-5.08 7-9.5V5l-7-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M7.5 10l2 2 3.5-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-)
-
 // Layers icon for Prototypes section
 const IconPrototypes = () => (
   <svg aria-hidden="true" width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -112,16 +104,6 @@ export const navSections: LeftNavSection[] = [
       { id: 'task-modal', label: 'Task Modal', href: '/components/task-modal' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
       { id: 'upload', label: 'Upload', href: '/components/upload' },
-    ],
-  },
-  {
-    id: 'tools',
-    title: 'Tools',
-    icon: <IconTools />,
-    defaultExpanded: true,
-    items: [
-      { id: 'theme-playground', label: 'Theme Playground', href: '/design-system/theme-playground' },
-      { id: 'compliance', label: 'Compliance Dashboard', href: '/design-system/compliance' },
     ],
   },
 ]
