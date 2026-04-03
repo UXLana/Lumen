@@ -331,7 +331,7 @@ function SectionCard({
     overflow: 'hidden',
     minHeight: 0,
     flexShrink: isExpanded ? 1 : 0,
-    ...(collapsed ? { alignItems: 'center', padding: `${spacing.xs} ${spacing['2xs']}` } : {}),
+    ...(collapsed ? { alignItems: 'center', padding: `${spacing.xs} ${spacing['2xs']}` } : { padding: 0 }),
   }
 
   // Brand-colored banner header
@@ -343,7 +343,7 @@ function SectionCard({
     cursor: 'pointer',
     userSelect: 'none',
     background: themeColors.surface.lightDarker,
-    borderBottom: isExpanded ? `1px solid ${themeColors.border.lowEmphasis.onLight}` : 'none',
+    borderBottom: 'none',
   }
 
   const headerLabelStyle: React.CSSProperties = {
