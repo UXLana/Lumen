@@ -1,5 +1,5 @@
 // =============================================================================
-// MTR DESIGN SYSTEM - COMPONENT EXPORTS
+// LUMEN DESIGN SYSTEM - COMPONENT EXPORTS
 // =============================================================================
 
 // Accordion
@@ -9,6 +9,23 @@ export type { AccordionProps, AccordionItemProps } from './Accordion'
 // AssistiveMessage
 export { AssistiveMessage } from './AssistiveMessage'
 export type { AssistiveMessageProps, AssistiveMessageType } from './AssistiveMessage'
+
+// Amount
+export { Amount } from './Amount'
+export type {
+  AmountProps,
+  AmountSize,
+  AmountVariant,
+  AmountSign,
+  AmountShowCents,
+} from './Amount'
+
+// AmountConfirmDialog
+export { AmountConfirmDialog } from './AmountConfirmDialog'
+export type {
+  AmountConfirmDialogProps,
+  VerificationMode,
+} from './AmountConfirmDialog'
 
 // Avatar
 export { Avatar, AvatarGroup } from './Avatar'
@@ -44,6 +61,10 @@ export type { CheckboxProps, CheckboxGroupProps, CheckboxState } from './Checkbo
 // Chip
 export { Chip, ChipGroup } from './Chip'
 export type { ChipProps, ChipState, ChipLeftContent, ChipGroupProps } from './Chip'
+
+// CommentBox
+export { CommentBox } from './CommentBox'
+export type { CommentBoxProps } from './CommentBox'
 
 // ColumnManager
 export { ColumnManager, useColumnManager } from './ColumnManager'
@@ -133,8 +154,8 @@ export type {
 } from './FullScreenModal'
 
 // Header
-export { Header, IconButton, CanopyLogo } from './Header'
-export type { HeaderProps, CanopyLogoProps } from './Header'
+export { Header } from './Header'
+export type { HeaderProps } from './Header'
 
 // Icons
 export * from './Icons'
@@ -154,6 +175,10 @@ export type { LeftNavProps, LeftNavItem, LeftNavSection, LeftNavVariant, LeftNav
 // LeftNavSegmented
 export { LeftNavSegmented } from './LeftNavSegmented'
 export type { LeftNavSegmentedProps } from './LeftNavSegmented'
+
+// LineChart
+export { LineChart } from './LineChart'
+export type { LineChartProps, LineChartDatum } from './LineChart'
 
 // Link
 export { Link } from './Link'
@@ -193,6 +218,9 @@ export type { ProductCardProps, ProductCardLayout, MarketBadge, ProductTag } fro
 export { ProgressBar } from './ProgressBar'
 export type { ProgressBarProps, ProgressBarSize, ProgressBarVariant } from './ProgressBar'
 
+// PushDrawer
+export { Drawer, PushDrawer } from './PushDrawer'
+
 // PrototypeToolbar
 export { PrototypeToolbar } from './PrototypeToolbar'
 export type { PrototypeToolbarProps, ViewState, UseCase, Version } from './PrototypeToolbar'
@@ -221,13 +249,17 @@ export type { SidebarProps, NavItem, NavSection } from './Sidebar'
 export { Skeleton } from './Skeleton'
 export type { SkeletonProps } from './Skeleton'
 
+// SparkLine
+export { SparkLine } from './SparkLine'
+export type { SparkLineProps } from './SparkLine'
+
 // StatsCard
 export { StatsCard, StatsCardGroup } from './StatsCard'
 export type { StatsCardProps, StatsCardGroupProps } from './StatsCard'
 
 // Stepper
-export { Stepper, StepperStep, LinearStepper, NonLinearStepper, DefaultStepIndicator } from './Stepper'
-export type { StepperProps, StepperStepProps, StepItem, StepStatus, StepperVariant, LinearStepperProps, NonLinearStepperProps, StepIndicatorProps } from './Stepper'
+export { Stepper, StepperStep, LinearStepper, NonLinearStepper, HorizontalStepper, DefaultStepIndicator } from './Stepper'
+export type { StepperProps, StepperStepProps, StepItem, StepStatus, StepperVariant, StepperOrientation, LinearStepperProps, NonLinearStepperProps, HorizontalStepperProps, StepIndicatorProps } from './Stepper'
 
 // Switch
 export { Switch } from './Switch'
