@@ -108,6 +108,14 @@ export interface FullScreenModalProps {
   closeOnEscape?: boolean
   /** Close on scrim/backdrop click. Default: true for floating, false for fullscreen. */
   closeOnBackdrop?: boolean
+  /**
+   * Position of the close (X) button in the header.
+   * - `'right'` (default): close button sits on the right side of the header,
+   *   after any header action buttons. Matches common dialog conventions.
+   * - `'left'`: close button sits to the left of the title. Useful for mobile
+   *   back-affordance patterns or iOS-style presentation.
+   */
+  closeButtonPosition?: 'left' | 'right'
   /** Additional CSS class */
   className?: string
 }
@@ -155,6 +163,45 @@ const CloseIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
+)
+
+// =============================================================================
+// INTERNAL: Close button — shared between left/right header positions
+// =============================================================================
+
+interface CloseButtonProps {
+  onClose: () => void
+  colors: ReturnType<typeof useColors>
+}
+
+const CloseButton: React.FC<CloseButtonProps> = ({ onClose, colors }) => (
+  <button
+    type="button"
+    onClick={onClose}
+    aria-label="Close"
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 8,
+      borderRadius: '50%',
+      border: 'none',
+      background: 'transparent',
+      cursor: 'pointer',
+      color: colors.text.disabled.onLight,
+      flexShrink: 0,
+      transition: 'background-color 150ms',
+    }}
+    onMouseEnter={(e) => {
+      ;(e.currentTarget as HTMLButtonElement).style.backgroundColor =
+        colors.hover?.onLight ?? 'rgba(0,0,0,0.04)'
+    }}
+    onMouseLeave={(e) => {
+      ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'
+    }}
+  >
+    <CloseIcon size={20} />
+  </button>
 )
 
 // =============================================================================
@@ -208,6 +255,7 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
       headerButtons,
       closeOnEscape = true,
       closeOnBackdrop,
+      closeButtonPosition = 'right',
       className,
     },
     ref,
@@ -326,33 +374,9 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, minWidth: 0 }}>
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 8,
-                  borderRadius: '50%',
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: 'pointer',
-                  color: colors.text.disabled.onLight,
-                  flexShrink: 0,
-                  transition: 'background-color 150ms',
-                }}
-                onMouseEnter={(e) => {
-                  ;(e.currentTarget as HTMLButtonElement).style.backgroundColor =
-                    colors.hover?.onLight ?? 'rgba(0,0,0,0.04)'
-                }}
-                onMouseLeave={(e) => {
-                  ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'
-                }}
-              >
-                <CloseIcon size={20} />
-              </button>
+              {closeButtonPosition === 'left' && (
+                <CloseButton onClose={onClose} colors={colors} />
+              )}
               <div style={{ minWidth: 0 }}>
                 <div
                   style={{
@@ -381,9 +405,10 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
               </div>
             </div>
 
-            {headerButtons && headerButtons.length > 0 && (
+            {/* Right side: header action buttons + close X (when position=right) */}
+            {(closeButtonPosition === 'right' || (headerButtons && headerButtons.length > 0)) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexShrink: 0 }}>
-                {headerButtons.map((btn, i) => (
+                {headerButtons?.map((btn, i) => (
                   <Button
                     key={i}
                     emphasis={btn.emphasis}
@@ -395,6 +420,9 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
                     {btn.label}
                   </Button>
                 ))}
+                {closeButtonPosition === 'right' && (
+                  <CloseButton onClose={onClose} colors={colors} />
+                )}
               </div>
             )}
           </div>
@@ -425,7 +453,7 @@ FullScreenModal.displayName = 'FullScreenModal'
 
 // Inject keyframes once (same pattern as Skeleton)
 if (typeof document !== 'undefined') {
-  const styleId = 'mtr-modal-keyframes'
+  const styleId = 'lumen-modal-keyframes'
   if (!document.getElementById(styleId)) {
     const styleEl = document.createElement('style')
     styleEl.id = styleId

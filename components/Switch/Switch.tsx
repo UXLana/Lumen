@@ -24,9 +24,10 @@ import {
  * - iconText: icons inside thumb + text labels beside the track
  */
 export type SwitchVariant = 'default' | 'icon' | 'text' | 'iconText'
+export type SwitchSize = 'sm' | 'md'
 
 export interface SwitchProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type'> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type' | 'size'> {
   /** Label text displayed next to the switch */
   label?: string
   /** Metadata/description text below the label */
@@ -43,6 +44,8 @@ export interface SwitchProps
   error?: boolean
   /** Visual variant — controls icon/text display in the toggle */
   variant?: SwitchVariant
+  /** Size — sm (36x20) for dense UI, md (44x24) default */
+  size?: SwitchSize
   /** Custom "on" label (default: "On") — used with text/iconText variants */
   onLabel?: string
   /** Custom "off" label (default: "Off") — used with text/iconText variants */
@@ -53,11 +56,17 @@ export interface SwitchProps
 // CONSTANTS
 // =============================================================================
 
-// Default track (no text)
-const TRACK_WIDTH = 44
-const TRACK_HEIGHT = 24
-const THUMB_SIZE = 18
-const THUMB_OFFSET = 3
+// Size configs
+const SIZES = {
+  sm: { trackWidth: 36, trackHeight: 20, thumbSize: 14, thumbOffset: 3 },
+  md: { trackWidth: 44, trackHeight: 24, thumbSize: 18, thumbOffset: 3 },
+} as const
+
+// Default track (no text) — md size
+const TRACK_WIDTH = SIZES.md.trackWidth
+const TRACK_HEIGHT = SIZES.md.trackHeight
+const THUMB_SIZE = SIZES.md.thumbSize
+const THUMB_OFFSET = SIZES.md.thumbOffset
 const THUMB_TRAVEL = TRACK_WIDTH - THUMB_SIZE - THUMB_OFFSET * 2
 
 // Wider track for text/iconText variants (text sits inside track)
@@ -115,6 +124,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
       error = false,
       disabled = false,
       variant = 'default',
+      size = 'md',
       onLabel = 'On',
       offLabel = 'Off',
       className,
@@ -187,12 +197,13 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
       ...style,
     }
 
-    // Use wider track + larger thumb for text variants
-    const activeTrackWidth = hasText ? TEXT_TRACK_WIDTH : TRACK_WIDTH
-    const activeTrackHeight = hasText ? TEXT_TRACK_HEIGHT : TRACK_HEIGHT
-    const activeThumbSize = hasText ? TEXT_THUMB_SIZE : THUMB_SIZE
-    const activeThumbOffset = hasText ? TEXT_THUMB_OFFSET : THUMB_OFFSET
-    const activeThumbTravel = hasText ? TEXT_THUMB_TRAVEL : THUMB_TRAVEL
+    // Resolve track dimensions: text variants use wider track, size='sm' uses compact track
+    const sizeConfig = SIZES[size]
+    const activeTrackWidth = hasText ? TEXT_TRACK_WIDTH : sizeConfig.trackWidth
+    const activeTrackHeight = hasText ? TEXT_TRACK_HEIGHT : sizeConfig.trackHeight
+    const activeThumbSize = hasText ? TEXT_THUMB_SIZE : sizeConfig.thumbSize
+    const activeThumbOffset = hasText ? TEXT_THUMB_OFFSET : sizeConfig.thumbOffset
+    const activeThumbTravel = activeTrackWidth - activeThumbSize - activeThumbOffset * 2
 
     const trackStyles: React.CSSProperties = {
       position: 'relative',
@@ -222,7 +233,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
       borderRadius: borderRadius.full,
       backgroundColor: thumbBackground,
       transition: `left ${transitionPresets.default}`,
-      boxShadow: disabled ? 'none' : '0 1px 3px rgba(0,0,0,0.2)',
+      boxShadow: disabled ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.12)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -251,7 +262,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
       fontWeight: fontWeights.regular,
       lineHeight: typography.body.xs.lineHeight,
       color: disabled ? colors.text.disabled.onLight : colors.text.lowEmphasis.onLight,
-      marginTop: '2px',
+      marginTop: spacing['2xs'],
     }
 
     // Inner track label styles (positioned inside the track, opposite side of thumb)
@@ -262,11 +273,11 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
       display: 'flex',
       alignItems: 'center',
       fontFamily: fontFamilies.body,
-      fontSize: '9px',
+      fontSize: '9px', // Micro-UI: no token at this size — fits inside 28px track
       fontWeight: fontWeights.semibold,
       letterSpacing: '0.5px',
       textTransform: 'uppercase' as const,
-      color: '#FFFFFF',
+      color: colors.text.highEmphasis.onDark,
       userSelect: 'none',
       zIndex: 0,
       pointerEvents: 'none',

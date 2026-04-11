@@ -203,7 +203,9 @@ export function Avatar({
     fontSize: typographyStyle.fontSize,
     fontWeight: typographyStyle.fontWeight,
     lineHeight: typographyStyle.lineHeight,
-    color: colors.text.highEmphasis.onLight,
+    // Always dark text on pastel backgrounds — not theme-reactive because
+    // avatar.colors are fixed light pastels that need consistent contrast.
+    color: 'rgba(0, 0, 0, 0.75)',
     userSelect: 'none',
   }
   

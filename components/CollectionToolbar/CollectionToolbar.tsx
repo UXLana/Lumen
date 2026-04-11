@@ -3,29 +3,30 @@
 import React, { forwardRef } from 'react'
 import { TabBar, DataTable, Button } from '../../components'
 import type { TabItem } from '../../components'
-import { spacing } from '../../styles/design-tokens'
+import { IconColumnManagerToolbar } from '../Icons'
+import { colors, spacing } from '../../styles/design-tokens'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
-export interface CollectionToolbarTab {
+export interface ToolbarTab {
   id: string
   label: string
   icon?: React.ReactNode
 }
 
-export interface CollectionToolbarAction {
+export interface ToolbarAction {
   label: string
   icon?: React.ReactNode
   onClick: () => void
   emphasis?: 'high' | 'mid' | 'low'
 }
 
-export interface CollectionToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
   // ── Tabs (Row 1 left) ──────────────────────────────────────────────────
   /** Tab definitions. Omit or pass empty array to hide tabs. */
-  tabs?: CollectionToolbarTab[]
+  tabs?: ToolbarTab[]
   /** Currently active tab id */
   activeTab?: string
   /** Called when a tab is clicked */
@@ -35,7 +36,7 @@ export interface CollectionToolbarProps extends React.HTMLAttributes<HTMLDivElem
 
   // ── Action button (Row 1 right) ────────────────────────────────────────
   /** Primary action(s) next to tabs. Omit to hide. */
-  actions?: CollectionToolbarAction[]
+  actions?: ToolbarAction[]
   /** Explicitly hide actions */
   showActions?: boolean
 
@@ -77,16 +78,30 @@ export interface CollectionToolbarProps extends React.HTMLAttributes<HTMLDivElem
   /** Called when the view toggle is changed */
   onViewModeChange?: (mode: 'cards' | 'table') => void
 
+  // ── Column Management ─────────────────────────────────────────────────
+  /** Show the column management button. Default: true */
+  showColumnManager?: boolean
+  /** Called when user clicks the column management button */
+  onColumnManagerClick?: () => void
+
   // ── Active filter chips (Row 3) ────────────────────────────────────────
   /** Render active filter chips below the toolbar. Pass a ReactNode (e.g. your ActiveFilters component). */
   filterChips?: React.ReactNode
 }
 
+// Backward-compatible aliases
+/** @deprecated Use ToolbarTab */
+export type CollectionToolbarTab = ToolbarTab
+/** @deprecated Use ToolbarAction */
+export type CollectionToolbarAction = ToolbarAction
+/** @deprecated Use ToolbarProps */
+export type CollectionToolbarProps = ToolbarProps
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const CollectionToolbar = forwardRef<HTMLDivElement, CollectionToolbarProps>(
+export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(
   (
     {
       // Tabs
@@ -123,6 +138,10 @@ export const CollectionToolbar = forwardRef<HTMLDivElement, CollectionToolbarPro
       viewMode = 'cards',
       onViewModeChange,
 
+      // Column management
+      showColumnManager = true,
+      onColumnManagerClick,
+
       // Filter chips
       filterChips,
 
@@ -136,7 +155,7 @@ export const CollectionToolbar = forwardRef<HTMLDivElement, CollectionToolbarPro
     const hasActions = showActions && actions && actions.length > 0
     const hasHeaderRow = hasTabs || hasActions
 
-    const hasToolbarRight = showFilter || showSort || showViewToggle
+    const hasToolbarRight = showFilter || showSort || showViewToggle || showColumnManager
     const hasToolbarLeft = showSelection && selectedCount > 0
 
     return (
@@ -231,6 +250,24 @@ export const CollectionToolbar = forwardRef<HTMLDivElement, CollectionToolbarPro
                   onChange={onViewModeChange ?? (() => {})}
                 />
               )}
+              {showColumnManager && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div
+                    style={{
+                      width: 1,
+                      height: 24,
+                      backgroundColor: colors.border.lowEmphasis.onLight,
+                      margin: `0 ${spacing['2xs']}`,
+                    }}
+                  />
+                  <DataTable.IconButton
+                    onClick={onColumnManagerClick}
+                    title="Manage columns"
+                  >
+                    <IconColumnManagerToolbar size="sm" />
+                  </DataTable.IconButton>
+                </div>
+              )}
             </DataTable.Toolbar.Right>
           </DataTable.Toolbar>
         )}
@@ -242,4 +279,7 @@ export const CollectionToolbar = forwardRef<HTMLDivElement, CollectionToolbarPro
   },
 )
 
-CollectionToolbar.displayName = 'CollectionToolbar'
+Toolbar.displayName = 'Toolbar'
+
+/** @deprecated Use Toolbar */
+export const CollectionToolbar = Toolbar

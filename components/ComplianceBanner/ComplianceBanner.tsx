@@ -45,10 +45,10 @@ export interface ComplianceBannerProps {
   onVendorLogoClick?: () => void
   /** External URL for the vendor/state agency website. When provided, shows a subtle link icon next to the logo */
   vendorUrl?: string
-  /** Path to the Metrc Retail ID logo (white version auto-selected for dark variant) */
-  metrcLogoSrc?: string
-  /** Path to the Metrc Retail ID logo for light variant (full color) */
-  metrcLogoDarkSrc?: string
+  /** Path to the Lumen Retail ID logo (white version auto-selected for dark variant) */
+  lumenLogoSrc?: string
+  /** Path to the Lumen Retail ID logo for light variant (full color) */
+  lumenLogoDarkSrc?: string
   /** Additional inline styles */
   style?: React.CSSProperties
   /** Additional CSS class name */
@@ -68,8 +68,8 @@ const DEFAULTS = {
     width: 101,
     height: 40,
   },
-  metrcLogoWhiteSrc: '/images/rid/metrc-logo.png',
-  metrcLogoDarkSrc: '/images/rid/metrc-rid-logo-dark.png',
+  lumenLogoWhiteSrc: '/images/rid/lumen-logo.png',
+  lumenLogoDarkSrc: '/images/rid/lumen-rid-logo-dark.png',
 }
 
 // =============================================================================
@@ -78,7 +78,7 @@ const DEFAULTS = {
 
 /**
  * ComplianceBanner — displays a state/vendor logo on the left and
- * Metrc Retail ID logo on the right.
+ * Lumen Retail ID logo on the right.
  *
  * Supports two variants:
  * - `dark` (default): Colored background with white logos
@@ -112,8 +112,8 @@ export const ComplianceBanner = forwardRef<HTMLDivElement, ComplianceBannerProps
       sticky = true,
       onVendorLogoClick,
       vendorUrl,
-      metrcLogoSrc,
-      metrcLogoDarkSrc,
+      lumenLogoSrc,
+      lumenLogoDarkSrc,
       style = {},
       className = '',
       ...props
@@ -123,9 +123,9 @@ export const ComplianceBanner = forwardRef<HTMLDivElement, ComplianceBannerProps
     const isLight = variant === 'light'
     const barHeight = DEFAULTS.barHeight
 
-    const resolvedMetrcLogo = isLight
-      ? (metrcLogoDarkSrc || DEFAULTS.metrcLogoDarkSrc)
-      : (metrcLogoSrc || DEFAULTS.metrcLogoWhiteSrc)
+    const resolvedLumenLogo = isLight
+      ? (lumenLogoDarkSrc || DEFAULTS.lumenLogoDarkSrc)
+      : (lumenLogoSrc || DEFAULTS.lumenLogoWhiteSrc)
 
     const containerStyles: React.CSSProperties = {
       position: sticky ? 'sticky' : 'relative',
@@ -154,7 +154,7 @@ export const ComplianceBanner = forwardRef<HTMLDivElement, ComplianceBannerProps
       <div
         ref={ref}
         role="banner"
-        aria-label={`${vendorLogo.alt} — Metrc Retail ID`}
+        aria-label={`${vendorLogo.alt} — Lumen Retail ID`}
         className={className}
         style={containerStyles}
         {...props}
@@ -207,10 +207,10 @@ export const ComplianceBanner = forwardRef<HTMLDivElement, ComplianceBannerProps
             )}
           </div>
 
-          {/* Right: Metrc Retail ID logo */}
+          {/* Right: Lumen Retail ID logo */}
           <Image
-            src={resolvedMetrcLogo}
-            alt="Metrc Retail ID"
+            src={resolvedLumenLogo}
+            alt="Lumen Retail ID"
             width={99}
             height={31}
             style={{ objectFit: 'contain' }}

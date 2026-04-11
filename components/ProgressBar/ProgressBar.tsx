@@ -56,7 +56,7 @@ const variantConfig: Record<ProgressBarVariant, string> = {
 // KEYFRAMES (injected once)
 // =============================================================================
 
-const ANIMATION_NAME = 'mtr-progress-indeterminate'
+const ANIMATION_NAME = 'lumen-progress-indeterminate'
 let styleInjected = false
 
 function injectKeyframes() {

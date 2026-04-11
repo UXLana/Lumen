@@ -3,6 +3,7 @@ export {
   StepperStep,
   LinearStepper,
   NonLinearStepper,
+  HorizontalStepper,
   DefaultStepIndicator,
   default,
 } from './Stepper'
@@ -13,7 +14,9 @@ export type {
   StepItem,
   StepStatus,
   StepperVariant,
+  StepperOrientation,
   LinearStepperProps,
   NonLinearStepperProps,
+  HorizontalStepperProps,
   StepIndicatorProps,
 } from './Stepper'

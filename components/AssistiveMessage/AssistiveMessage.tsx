@@ -132,7 +132,7 @@ const ariaRoleForType: Partial<Record<AssistiveMessageType, string>> = {
  * AssistiveMessage
  *
  * A small helper / validation message shown beneath form fields.
- * Supports 7 visual types matching the Prism Design System Figma spec
+ * Supports 7 visual types matching the Lumen Design System Figma spec
  * (node 32-10882): Assistive, Disabled, Error, Error-Overflow,
  * Warning, Success, and Info.
  *

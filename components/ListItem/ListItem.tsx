@@ -161,32 +161,32 @@ const listItem = {
     },
   },
 
-  // Colors
+  // Colors — all token-based so they adapt to light/dark themes
   colors: {
     text: {
-      primary: 'rgba(0, 0, 0, 0.95)',
-      secondary: 'rgba(0, 0, 0, 0.95)',
-      tertiary: 'rgba(0, 0, 0, 0.6)',
-      lowEmphasis: 'rgba(0, 0, 0, 0.6)',
-      nonActionable: 'rgba(0, 0, 0, 0.5)',
-      label: 'rgba(0, 0, 0, 0.6)',
+      primary: colors.text.highEmphasis.onLight,
+      secondary: colors.text.highEmphasis.onLight,
+      tertiary: colors.text.lowEmphasis.onLight,
+      lowEmphasis: colors.text.lowEmphasis.onLight,
+      nonActionable: colors.text.disabled.onLight,
+      label: colors.text.lowEmphasis.onLight,
     },
     background: {
       enabled: 'transparent',
-      hover: 'rgba(0, 0, 0, 0.04)',
-      pressed: 'rgba(0, 0, 0, 0.08)',
-      selected: 'rgba(19, 53, 44, 0.08)',
+      hover: colors.hover.onLight,
+      pressed: colors.selected.onLight,
+      selected: colors.selectedHighlight,
     },
     icon: {
-      enabled: 'rgba(0, 0, 0, 0.7)',
-      nonActionable: 'rgba(0, 0, 0, 0.38)',
+      enabled: colors.icon.enabled.onLight,
+      nonActionable: colors.icon.disabled.onLight,
     },
-    divider: 'rgba(0, 0, 0, 0.12)',
+    divider: colors.border.lowEmphasis.onLight,
     focus: avatar.focus.color,
     toggle: {
-      track: 'rgba(0, 0, 0, 0.38)',
+      track: colors.border.midEmphasis.onLight,
       trackActive: colors.brand.default,
-      thumb: colors.surface.light,
+      thumb: '#FFFFFF',
     },
   },
 
@@ -239,14 +239,14 @@ const CheckboxIcon = ({ checked, disabled }: { checked: boolean; disabled?: bool
       width="16"
       height="16"
       rx="4"
-      stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.default : 'rgba(0, 0, 0, 0.6)'}
+      stroke={disabled ? colors.border.lowEmphasis.onLight : checked ? colors.brand.default : colors.border.midEmphasis.onLight}
       strokeWidth="2"
       fill={checked ? colors.brand.default : 'transparent'}
     />
     {checked && (
       <path
         d="M6 10L9 13L14 7"
-        stroke="white"
+        stroke="#FFFFFF"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -261,7 +261,7 @@ const RadioIcon = ({ checked, disabled }: { checked: boolean; disabled?: boolean
       cx="10"
       cy="10"
       r="8"
-      stroke={disabled ? 'rgba(0, 0, 0, 0.38)' : checked ? colors.brand.default : 'rgba(0, 0, 0, 0.6)'}
+      stroke={disabled ? colors.border.lowEmphasis.onLight : checked ? colors.brand.default : colors.border.midEmphasis.onLight}
       strokeWidth="2"
       fill="transparent"
     />

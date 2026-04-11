@@ -40,6 +40,7 @@ export function StatsCard({
     padding: `${statsCard.padding.y} ${statsCard.padding.x}`,
     gap: statsCard.gap,
     backgroundColor: statsCard.colors.background,
+    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
     borderRadius: statsCard.borderRadius,
     ...style,
   }

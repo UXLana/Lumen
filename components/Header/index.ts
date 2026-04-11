@@ -1,2 +1,2 @@
-export { Header, IconButton, CanopyLogo } from './Header'
-export type { HeaderProps, CanopyLogoProps } from './Header'
+export { Header } from './Header'
+export type { HeaderProps, HeaderVariant } from './Header'

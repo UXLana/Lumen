@@ -272,7 +272,9 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
           style={{
             width: typeof width === 'number' ? `${width}px` : width,
             maxHeight: resolvedMaxHeight,
-            backgroundColor: colors.surface.light,
+            backgroundColor: colors.surface.frosted,
+            backdropFilter: colors.surface.frostedBlur !== '0px' ? `blur(${colors.surface.frostedBlur})` : undefined,
+            WebkitBackdropFilter: colors.surface.frostedBlur !== '0px' ? `blur(${colors.surface.frostedBlur})` : undefined,
             borderRadius: borderRadius.md,
             boxShadow: shadows.lg,
             border: `1px solid ${colors.border.lowEmphasis.onLight}`,

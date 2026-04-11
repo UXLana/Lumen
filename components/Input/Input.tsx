@@ -232,23 +232,50 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               {startAdornment}
             </span>
           )}
-          <input
-            ref={ref}
-            id={inputId}
-            disabled={disabled}
-            required={required}
-            onChange={handleChange}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            aria-invalid={hasError || undefined}
-            aria-describedby={
-              (hasError && errorMessage ? `${inputId}-error` : '') ||
-              (helperText ? `${inputId}-helper` : '') ||
-              undefined
-            }
-            style={inputStyles}
-            {...props}
-          />
+          {/*
+            Compose aria-describedby from internal (errorMessage / helperText)
+            AND external (props['aria-describedby']) so callers like dialogs can
+            link their own status/live regions without silently muting the Input's
+            own error text. Space-separated, filter falsy, dedupe.
+            Also compose aria-invalid so either source can mark the field invalid.
+          */}
+          {(() => {
+            const {
+              'aria-describedby': externalDescribedBy,
+              'aria-invalid': externalInvalid,
+              ...restProps
+            } = props as React.InputHTMLAttributes<HTMLInputElement>
+
+            const internalIds = [
+              hasError && errorMessage ? `${inputId}-error` : null,
+              helperText ? `${inputId}-helper` : null,
+            ].filter(Boolean) as string[]
+
+            const describedByIds = [
+              ...internalIds,
+              ...(externalDescribedBy ? String(externalDescribedBy).split(/\s+/) : []),
+            ].filter((id, i, arr) => !!id && arr.indexOf(id) === i)
+
+            const composedDescribedBy = describedByIds.length > 0 ? describedByIds.join(' ') : undefined
+            const composedInvalid =
+              externalInvalid !== undefined ? externalInvalid : (hasError || undefined)
+
+            return (
+              <input
+                ref={ref}
+                id={inputId}
+                disabled={disabled}
+                required={required}
+                onChange={handleChange}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                aria-invalid={composedInvalid}
+                aria-describedby={composedDescribedBy}
+                style={inputStyles}
+                {...restProps}
+              />
+            )
+          })()}
           {endAdornment && (
             <span style={{ ...adornmentStyles, paddingRight: spacing.xs }}>
               {endAdornment}

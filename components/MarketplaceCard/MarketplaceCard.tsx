@@ -557,9 +557,9 @@ HorizontalCard.displayName = 'MarketplaceCard.Horizontal'
  * @example
  * // Default with hero image
  * <MarketplaceCard
- *   name="Metrc Integration"
+ *   name="Lumen Integration"
  *   description="Industry-leading track-and-trace platform..."
- *   publisher="Metrc"
+ *   publisher="Lumen"
  *   category="Compliance"
  *   rating={5.0}
  *   status="installed"

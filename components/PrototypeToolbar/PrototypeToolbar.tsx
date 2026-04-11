@@ -94,19 +94,19 @@ const selectStyle: React.CSSProperties = {
 // =============================================================================
 
 const ANIMATION_STYLES = `
-@keyframes mtr-toolbar-fade-in {
+@keyframes lumen-toolbar-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-@keyframes mtr-toolbar-slide-up {
+@keyframes lumen-toolbar-slide-up {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
-@keyframes mtr-toolbar-dropdown-in {
+@keyframes lumen-toolbar-dropdown-in {
   from { opacity: 0; transform: scaleY(0.92); }
   to { opacity: 1; transform: scaleY(1); }
 }
-@keyframes mtr-toolbar-panel-in {
+@keyframes lumen-toolbar-panel-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
@@ -114,7 +114,7 @@ const ANIMATION_STYLES = `
 
 function useAnimationStyles() {
   useEffect(() => {
-    const id = 'mtr-toolbar-animations'
+    const id = 'lumen-toolbar-animations'
     if (document.getElementById(id)) return
     const style = document.createElement('style')
     style.id = id
@@ -227,7 +227,7 @@ function InlineSelect({
             overflow: 'auto',
             maxHeight: '180px',
             zIndex: 10,
-            animation: 'mtr-toolbar-dropdown-in 150ms ease-out',
+            animation: 'lumen-toolbar-dropdown-in 150ms ease-out',
             transformOrigin: flipUp ? 'bottom center' : 'top center',
           }}
         >
@@ -565,7 +565,7 @@ export function PrototypeToolbar({
                 backgroundColor: colors.scrim,
                 zIndex: zIndex.modal - 1,
                 pointerEvents: 'auto',
-                animation: 'mtr-toolbar-fade-in 200ms ease-out',
+                animation: 'lumen-toolbar-fade-in 200ms ease-out',
               }}
             />
           )}
@@ -589,7 +589,7 @@ export function PrototypeToolbar({
                 flexDirection: 'column',
                 gap: spacing.sm,
                 padding: `${spacing.xs} ${spacing.md} ${spacing.lg}`,
-                animation: 'mtr-toolbar-slide-up 250ms cubic-bezier(0.32, 0.72, 0, 1)',
+                animation: 'lumen-toolbar-slide-up 250ms cubic-bezier(0.32, 0.72, 0, 1)',
               }}
             >
               {/* Drag handle */}
@@ -658,7 +658,7 @@ export function PrototypeToolbar({
             flexDirection: 'column',
             gap: spacing.sm,
             padding: spacing.sm,
-            animation: 'mtr-toolbar-panel-in 200ms ease-out',
+            animation: 'lumen-toolbar-panel-in 200ms ease-out',
           }}
         >
           {buildPanelContents(isMobile)}

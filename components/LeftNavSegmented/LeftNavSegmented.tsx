@@ -324,7 +324,7 @@ function SectionCard({
   const cardStyle: React.CSSProperties = {
     background: themeColors.surface.lightDarker,
     borderRadius: borderRadius.lg,
-    border: 'none',
+    border: `1px solid ${themeColors.border.lowEmphasis.onLight}`,
     display: 'flex',
     flexDirection: 'column',
     transition: `all ${transitionPresets.default}`,
@@ -497,28 +497,30 @@ export function LeftNavSegmented({
   const SIDEBAR_WIDTH = parseInt(sidebar.width)
   const SIDEBAR_COLLAPSED_WIDTH = parseInt(sidebar.collapsedWidth)
 
-  // ── Nav container (transparent — sections provide their own cards) ──
+  // ── Nav container — fully hidden when collapsed, only toggle visible ──
+  const TOGGLE_STRIP_WIDTH = 40 // just enough for the toggle button
+
   const navStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
-    width: collapsed ? `${SIDEBAR_COLLAPSED_WIDTH}px` : `${SIDEBAR_WIDTH}px`,
+    width: collapsed ? `${TOGGLE_STRIP_WIDTH}px` : `${SIDEBAR_WIDTH}px`,
     height: '100%',
     backgroundColor: 'transparent',
-    padding: `${sidebar.padding.y} ${spacing['2xs']}`,
+    padding: collapsed ? `${sidebar.padding.y} 0` : `${sidebar.padding.y} ${spacing['2xs']}`,
     transition: prefersReducedMotion ? 'none' : `width ${transitionPresets.default}`,
     overflow: 'hidden',
     position: 'relative',
     ...style,
   }
 
-  // ── Logo area ──
+  // ── Logo area (hidden when collapsed — only toggle visible) ──
   const logoContainerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: collapsed ? 'center' : 'space-between',
-    padding: `0 ${collapsed ? '0' : spacing.sm}`,
-    marginBottom: spacing.sm,
-    minHeight: '48px',
+    padding: collapsed ? '0' : `0 ${spacing.sm}`,
+    marginBottom: collapsed ? 0 : spacing.sm,
+    minHeight: collapsed ? '36px' : '48px',
     flexShrink: 0,
   }
 
@@ -584,9 +586,9 @@ export function LeftNavSegmented({
           style={{
             ...navStyle,
             position: 'fixed',
-            top: 0,
-            left: 0,
-            height: '100vh',
+            top: style?.top ?? 0,
+            left: style?.left ?? 0,
+            height: style?.height ?? '100vh',
             width: `${SIDEBAR_WIDTH}px`,
             backgroundColor: themeColors.surface.light,
             transform: mobileOpen ? 'translateX(0)' : `translateX(-${SIDEBAR_WIDTH}px)`,
@@ -677,51 +679,69 @@ export function LeftNavSegmented({
   // ── Desktop nav ──
   return (
     <nav aria-label="Main navigation" style={navStyle}>
-      <style>{scrollbarCSS}</style>
-      {/* Logo */}
-      <div style={logoContainerStyle}>
-        {collapsed ? collapsedLogo : logo}
-        {showCollapseToggle && (
-          <button
-            onClick={() => onCollapseChange?.(!collapsed)}
-            aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-            style={toggleStyle}
-          >
-            {collapsed ? <IconSidebarOpen size={18} /> : <IconSidebarClose size={18} />}
-          </button>
-        )}
-      </div>
+      {!collapsed && <style>{scrollbarCSS}</style>}
 
-      {/* Section cards */}
-      <div className="segmented-nav-outer" style={scrollAreaStyle}>
-        {sections.map((section) => (
-          <SectionCard
-            key={section.id}
-            section={section}
-            activeItemId={activeItemId}
-            collapsed={collapsed}
-            onItemClick={onItemClick}
-            isExpanded={expandedSectionId === section.id}
-            onToggle={() => setExpandedSectionId(expandedSectionId === section.id ? null : section.id)}
-          />
-        ))}
-      </div>
-
-      {/* Footer sections */}
-      {footerSections && (
-        <div style={footerAreaStyle}>
-          {footerSections.map((section) => (
-            <SectionCard
-              key={section.id}
-              section={section}
-              activeItemId={activeItemId}
-              collapsed={collapsed}
-              onItemClick={onItemClick}
-              isExpanded={expandedSectionId === section.id}
-              onToggle={() => setExpandedSectionId(expandedSectionId === section.id ? null : section.id)}
-            />
-          ))}
+      {/* Collapsed: just the toggle button */}
+      {collapsed ? (
+        <div style={logoContainerStyle}>
+          {showCollapseToggle && (
+            <button
+              onClick={() => onCollapseChange?.(!collapsed)}
+              aria-label="Expand navigation"
+              style={toggleStyle}
+            >
+              <IconSidebarOpen size={18} />
+            </button>
+          )}
         </div>
+      ) : (
+        <>
+          {/* Logo */}
+          <div style={logoContainerStyle}>
+            {logo}
+            {showCollapseToggle && (
+              <button
+                onClick={() => onCollapseChange?.(!collapsed)}
+                aria-label="Collapse navigation"
+                style={toggleStyle}
+              >
+                <IconSidebarClose size={18} />
+              </button>
+            )}
+          </div>
+
+          {/* Section cards */}
+          <div className="segmented-nav-outer" style={scrollAreaStyle}>
+            {sections.map((section) => (
+              <SectionCard
+                key={section.id}
+                section={section}
+                activeItemId={activeItemId}
+                collapsed={false}
+                onItemClick={onItemClick}
+                isExpanded={expandedSectionId === section.id}
+                onToggle={() => setExpandedSectionId(expandedSectionId === section.id ? null : section.id)}
+              />
+            ))}
+          </div>
+
+          {/* Footer sections */}
+          {footerSections && (
+            <div style={footerAreaStyle}>
+              {footerSections.map((section) => (
+                <SectionCard
+                  key={section.id}
+                  section={section}
+                  activeItemId={activeItemId}
+                  collapsed={false}
+                  onItemClick={onItemClick}
+                  isExpanded={expandedSectionId === section.id}
+                  onToggle={() => setExpandedSectionId(expandedSectionId === section.id ? null : section.id)}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
     </nav>
   )

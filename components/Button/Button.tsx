@@ -147,7 +147,7 @@ function LoadingSpinner({ size = 20, color = 'currentColor' }: { size?: number; 
  * Button Component
  *
  * A flexible button component supporting multiple sizes, emphasis levels,
- * icons, and states. Follows the Prism Design System specifications.
+ * icons, and states. Follows the Lumen Design System specifications.
  *
  * @example
  * // High emphasis (primary) button
@@ -247,7 +247,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       padding: iconOnly ? 0 : `${button.sizes[size].paddingY} ${button.sizes[size].paddingX}`,
       
       // Typography
-      fontFamily: fontFamilies.display,
+      fontFamily: fontFamilies.body,
       fontSize: typographyConfig.fontSize,
       fontWeight: typographyConfig.fontWeight,
       lineHeight: typographyConfig.lineHeight,
@@ -275,12 +275,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     // Focus ring styles
+    // The ring is offset outward by `button.focus.offset` on all sides, so its
+    // radius must be `button.borderRadius + offset` to stay concentric with the
+    // button corner. Using the raw button radius makes the ring's curvature
+    // tighter than the corner it's tracing — visibly mismatched on any theme
+    // whose componentRadius.button is neither 0 nor pill-shaped.
     const focusRingStyles: React.CSSProperties = {
       position: 'absolute',
       inset: `-${button.focus.offset}`,
-      borderRadius: button.borderRadius,
+      borderRadius: `calc(${button.borderRadius} + ${button.focus.offset})`,
       border: `${button.focus.width} solid ${button.focus.color}`,
       pointerEvents: 'none',
+      boxSizing: 'border-box',
     }
 
     const iconSize = iconOnly

@@ -41,6 +41,8 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: BadgeSize
   /** Optional icon to display before text */
   icon?: React.ReactNode
+  /** Render on a dark or colored surface — uses white outline and semi-transparent background */
+  onDark?: boolean
   /** Children content (text) */
   children: React.ReactNode
 }
@@ -207,6 +209,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       color = 'neutral',
       size = 'sm',
       icon,
+      onDark = false,
       children,
       className,
       style,
@@ -216,6 +219,15 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
   ) => {
     const colorScheme = colorConfig[color][variant]
     const sizeScheme = sizeConfig[size]
+
+    // On dark surfaces: white outline, semi-transparent white bg, white text
+    const darkOverride: Partial<React.CSSProperties> = onDark
+      ? {
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          color: '#FFFFFF',
+          border: '1px solid rgba(255, 255, 255, 0.5)',
+        }
+      : {}
 
     const baseStyles: React.CSSProperties = {
       display: 'inline-flex',
@@ -231,6 +243,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       border: `1px solid ${colorScheme.border}`,
       borderRadius: borderRadiusSemantics.badge,
       whiteSpace: 'nowrap',
+      ...darkOverride,
       ...style,
     }
 

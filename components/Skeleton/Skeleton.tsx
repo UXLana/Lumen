@@ -56,7 +56,7 @@ Skeleton.displayName = 'Skeleton'
 
 // Inject keyframes once
 if (typeof document !== 'undefined') {
-  const styleId = 'mtr-skeleton-keyframes'
+  const styleId = 'lumen-skeleton-keyframes'
   if (!document.getElementById(styleId)) {
     const styleEl = document.createElement('style')
     styleEl.id = styleId

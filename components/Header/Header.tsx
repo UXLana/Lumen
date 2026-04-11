@@ -1,72 +1,51 @@
 'use client'
 
-import React, { forwardRef, useState, useCallback, useEffect, useRef } from 'react'
+import React, { forwardRef, useState, useEffect, useRef } from 'react'
+/* eslint-disable @next/next/no-img-element */
 import {
   fontFamilies,
   header,
   transitionPresets,
-  breakpoints,
-  zIndex,
+  borderRadius,
   shadows,
+  spacing,
   typography,
+  zIndex,
 } from '../../styles/design-tokens'
 import { useColors } from '../../styles/themes'
-import { useMediaQuery, usePrefersReducedMotion } from '../../hooks'
-import {
-  IconMenu,
-  IconGrid,
-  IconSearch,
-  IconBell,
-  IconSun,
-  IconMoon,
-  IconChevronDown,
-  IconX,
-} from '../Icons'
+import { useThemeSwitcher, availableThemes } from '../../styles/themes'
+import { usePrefersReducedMotion, useIsMobile } from '../../hooks'
+import { IconSun, IconMoon, IconBell } from '../Icons'
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
+export type HeaderVariant = 'full' | 'rounded'
+
 export interface HeaderProps {
-  /** Callback when menu/hamburger button is clicked */
-  onMenuToggle?: () => void
-  /** Callback when AppSwitcher grip icon is clicked */
-  onAppSwitcherClick?: () => void
-  /** Custom AppSwitcher dropdown overlay (rendered as a child of the grip button container) */
-  appSwitcher?: React.ReactNode
-  /** User avatar element (e.g. <Avatar name="Jane" size="xs" />) */
-  userAvatar?: React.ReactNode
-  /** User name displayed next to avatar (hidden on mobile) */
-  userName?: string
-  /** Organization name displayed below userName in smaller text (hidden on mobile) */
-  userOrg?: string
-  /** Callback when user avatar/name area is clicked */
-  onUserClick?: () => void
-
-  /** Search placeholder text */
-  searchPlaceholder?: string
-  /** Callback when search button is clicked (opens chat/search panel) */
-  onSearchClick?: () => void
-  /** Whether to show the search bar */
-  showSearch?: boolean
-
-  /** Callback when notifications bell is clicked */
-  onNotificationsClick?: () => void
-  /** Whether to show a notification badge dot */
-  showNotificationBadge?: boolean
-  /** Callback when theme toggle is clicked */
-  onThemeToggle?: () => void
-  /** Whether dark mode is active (controls sun/moon icon) */
-  isDarkMode?: boolean
-  /** Brand logo element displayed on the right */
-  brandLogo?: React.ReactNode
-  /** Brand name text displayed next to logo (hidden on mobile) */
-  brandName?: string
-  /** Additional right-side content slot */
-  actions?: React.ReactNode
-
+  /** Header layout variant.
+   *  - `"full"` (default): edge-to-edge with bottom border
+   *  - `"rounded"`: inset with border-radius, no bottom divider */
+  variant?: HeaderVariant
   /** Whether the header is sticky */
   sticky?: boolean
+  /** User avatar element (e.g. <Avatar name="Jane" size="sm" />) */
+  userAvatar?: React.ReactNode
+  /** User name for avatar aria-label */
+  userName?: string
+  /** Callback when avatar area is clicked */
+  onAvatarClick?: () => void
+  /** Callback when notifications bell is clicked */
+  onNotificationsClick?: () => void
+  /** Notification badge count (0 = hidden, >0 = shown) */
+  notificationCount?: number
+  /** Whether to show the notifications bell (default: true) */
+  showNotifications?: boolean
+  /** Whether to show the theme switcher (default: true) */
+  showThemeSwitcher?: boolean
+  /** Additional actions slot rendered before the toolbar icons */
+  actions?: React.ReactNode
   /** Custom styles for the root element */
   style?: React.CSSProperties
   /** Custom class name */
@@ -74,129 +53,75 @@ export interface HeaderProps {
 }
 
 // =============================================================================
-// FOCUS TRAP HOOK (for mobile menu dialog)
+// COLOR UTILS
 // =============================================================================
 
-function useFocusTrap(
-  containerRef: React.RefObject<HTMLDivElement | null>,
-  isActive: boolean,
-  onClose: () => void,
-  returnFocusRef?: React.RefObject<HTMLButtonElement | null>,
-) {
-  useEffect(() => {
-    if (!isActive || !containerRef.current) return
+/** Parse a hex color to RGB components */
+function parseHex(hex: string): [number, number, number] {
+  const h = hex.replace('#', '')
+  return [
+    parseInt(h.substring(0, 2), 16),
+    parseInt(h.substring(2, 4), 16),
+    parseInt(h.substring(4, 6), 16),
+  ]
+}
 
-    const container = containerRef.current
-    const focusableSelector =
-      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-
-    const firstFocusable = container.querySelector<HTMLElement>(focusableSelector)
-    firstFocusable?.focus()
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Tab') {
-        const focusables = container.querySelectorAll<HTMLElement>(focusableSelector)
-        if (focusables.length === 0) return
-        const first = focusables[0]
-        const last = focusables[focusables.length - 1]
-
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault()
-          last.focus()
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault()
-          first.focus()
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      returnFocusRef?.current?.focus()
-    }
-  }, [isActive, containerRef, onClose, returnFocusRef])
+/** Lighten a hex color by a number of steps (each step adds ~8% toward white) */
+function lightenColor(color: string, steps: number): string {
+  // Handle hex colors
+  if (color.startsWith('#')) {
+    const [r, g, b] = parseHex(color)
+    const factor = steps * 0.08 // 8% per step
+    const lighten = (c: number) => Math.min(255, Math.round(c + (255 - c) * factor))
+    return `rgb(${lighten(r)}, ${lighten(g)}, ${lighten(b)})`
+  }
+  // Fallback: return as-is
+  return color
 }
 
 // =============================================================================
-// ICON BUTTON SUB-COMPONENT
+// THEME DISPLAY NAME MAPPING
 // =============================================================================
 
-interface IconButtonProps {
-  icon: React.ReactNode
-  onClick?: () => void
-  ariaLabel: string
-  showBadge?: boolean
+function getThemeDisplayName(name: string): string {
+  // Friendly labels for the header theme switcher. Falls back to a
+  // Title-Cased version of the internal name (e.g. "foliage-dark" → "Foliage Dark").
+  const map: Record<string, string> = {
+    'lumen': 'Lumen',
+    'lumen-dark': 'Lumen Dark',
+    'fall': 'Fall',
+    'foliage': 'Foliage',
+    'foliage-dark': 'Foliage Dark',
+    'spring': 'Spring',
+    'pampas': 'Pampas',
+    'rainy-night': 'Rainy Night',
+  }
+  if (map[name]) return map[name]
+  return name
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
 }
 
-function IconButton({ icon, onClick, ariaLabel, showBadge }: IconButtonProps) {
-  const colors = useColors()
-  const reducedMotion = usePrefersReducedMotion()
-  const [isHovered, setIsHovered] = useState(false)
-  const [isFocusVisible, setIsFocusVisible] = useState(false)
+// =============================================================================
+// CHECK ICON (active theme indicator)
+// =============================================================================
 
-  const effectiveLabel = showBadge ? `${ariaLabel} (new)` : ariaLabel
-
+function CheckIcon({ size = 14, color = 'currentColor' }: { size?: number; color?: string }) {
   return (
-    <button
-      type="button"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '44px',
-        height: '44px',
-        borderRadius: header.iconButton.borderRadius,
-        backgroundColor: isHovered ? colors.hover.onLight : 'transparent',
-        color: isHovered ? colors.text.highEmphasis.onLight : colors.icon.enabled.onLight,
-        border: 'none',
-        cursor: 'pointer',
-        transition: reducedMotion ? 'none' : `all ${transitionPresets.default}`,
-        position: 'relative',
-        outline: isFocusVisible ? `2px solid ${colors.focusBorder.onLight}` : 'none',
-        outlineOffset: '2px',
-        padding: 0,
-      }}
-      onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onFocus={(e) => {
-        if (e.target.matches(':focus-visible')) setIsFocusVisible(true)
-      }}
-      onBlur={() => setIsFocusVisible(false)}
-      aria-label={effectiveLabel}
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
     >
-      {icon}
-      {showBadge && (
-        <span
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '8px',
-            right: '8px',
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            backgroundColor: colors.status.important,
-            border: `2px solid ${colors.surface.light}`,
-          }}
-        />
-      )}
-    </button>
-  )
-}
-
-// =============================================================================
-// INLINE SVG ICONS (remaining icons not yet in the shared Icons system)
-// =============================================================================
-
-function SearchIcon({ size = 16, color = 'currentColor' }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style={{ flexShrink: 0 }}>
-      <path
-        d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z"
+      <polyline
+        points="20 6 9 17 4 12"
         stroke={color}
-        strokeWidth="1.5"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -205,40 +130,150 @@ function SearchIcon({ size = 16, color = 'currentColor' }: { size?: number; colo
 }
 
 // =============================================================================
+// TOOLBAR ICON BUTTON (shared styling for theme, bell, etc.)
+// =============================================================================
+
+interface ToolbarButtonProps {
+  onClick?: () => void
+  'aria-label': string
+  'aria-expanded'?: boolean
+  'aria-haspopup'?: 'listbox' | 'menu' | 'true'
+  children: React.ReactNode
+  isActive?: boolean
+  buttonRef?: React.Ref<HTMLButtonElement>
+  isMobile?: boolean
+  colors: ReturnType<typeof useColors>
+  reducedMotion: boolean
+}
+
+function ToolbarButton({
+  onClick,
+  'aria-label': ariaLabel,
+  'aria-expanded': ariaExpanded,
+  'aria-haspopup': ariaHaspopup,
+  children,
+  isActive = false,
+  buttonRef,
+  isMobile = false,
+  colors,
+  reducedMotion,
+}: ToolbarButtonProps) {
+  const btnSize = isMobile ? '36px' : '40px'
+
+  return (
+    <button
+      ref={buttonRef}
+      type="button"
+      onClick={onClick}
+      aria-label={ariaLabel}
+      aria-expanded={ariaExpanded}
+      aria-haspopup={ariaHaspopup}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: btnSize,
+        height: btnSize,
+        borderRadius: borderRadius.md,
+        backgroundColor: isActive ? colors.hover.onLight : 'transparent',
+        color: colors.icon.enabled.onLight,
+        border: 'none',
+        cursor: 'pointer',
+        transition: reducedMotion ? 'none' : `all ${transitionPresets.default}`,
+        padding: 0,
+        outline: 'none',
+        position: 'relative',
+        flexShrink: 0,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = colors.hover.onLight
+        e.currentTarget.style.color = colors.text.highEmphasis.onLight
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.backgroundColor = 'transparent'
+          e.currentTarget.style.color = colors.icon.enabled.onLight
+        }
+      }}
+      onFocus={(e) => {
+        if (e.target.matches(':focus-visible')) {
+          e.currentTarget.style.outline = `2px solid ${colors.focusBorder.onLight}`
+          e.currentTarget.style.outlineOffset = '2px'
+        }
+      }}
+      onBlur={(e) => {
+        e.currentTarget.style.outline = 'none'
+      }}
+    >
+      {children}
+    </button>
+  )
+}
+
+// =============================================================================
+// NOTIFICATION BADGE
+// =============================================================================
+
+function NotificationBadge({ count, colors }: { count: number; colors: ReturnType<typeof useColors> }) {
+  if (count <= 0) return null
+  const display = count > 99 ? '99+' : String(count)
+  return (
+    <span
+      aria-label={`${count} notifications`}
+      style={{
+        position: 'absolute',
+        top: '2px',
+        right: '2px',
+        minWidth: '16px',
+        height: '16px',
+        borderRadius: borderRadius.full,
+        backgroundColor: colors.status.important,
+        color: '#fff',
+        fontSize: '10px',
+        fontWeight: 700,
+        fontFamily: fontFamilies.body,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '0 4px',
+        lineHeight: 1,
+        pointerEvents: 'none',
+      }}
+    >
+      {display}
+    </span>
+  )
+}
+
+// =============================================================================
 // HEADER COMPONENT
 // =============================================================================
 
 /**
- * Header — Top-level application header matching the Canopy ecosystem pattern.
+ * Header — App header for the LUMEN Design System.
  *
- * Layout: [Menu | AppSwitcher | Avatar+Name] — [Search Button] — [Bell | Theme | Brand Logo]
+ * Layout: [Logo + "LUMEN"] — (spacer) — [actions?] [theme] [bell+badge] [avatar]
  *
  * Features:
- * - Theme-aware via `useColors()`
- * - Responsive: collapses to hamburger on mobile
- * - Accessible: ARIA landmarks, focus-visible, keyboard support, 44px touch targets
- * - Search is a button trigger (opens external panel), not a real input
+ * - LUMEN logo SVG on the left
+ * - Right toolbar with theme switcher, notifications, and avatar
+ * - Frosted glass blur effect (full variant) or solid surface (rounded variant)
+ * - Theme-aware via `useColors()` + `useThemeSwitcher()`
+ * - Mobile responsive: hides text label, compact 36px buttons
+ * - Accessible: ARIA landmark, keyboard support, focus-visible
  */
 export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
   {
-    onMenuToggle,
-    onAppSwitcherClick,
-    appSwitcher,
+    variant = 'full',
+    sticky = false,
     userAvatar,
     userName,
-    userOrg,
-    onUserClick,
-    searchPlaceholder = 'Find or ask about a product or integration',
-    onSearchClick,
-    showSearch = true,
+    onAvatarClick,
     onNotificationsClick,
-    showNotificationBadge,
-    onThemeToggle,
-    isDarkMode = false,
-    brandLogo,
-    brandName,
+    notificationCount = 0,
+    showNotifications = true,
+    showThemeSwitcher = true,
     actions,
-    sticky = false,
     style,
     className,
   },
@@ -246,493 +281,286 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
 ) {
   const colors = useColors()
   const reducedMotion = usePrefersReducedMotion()
-  const isMobile = useMediaQuery(`(max-width: ${parseInt(breakpoints.md) - 1}px)`)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const mobileMenuRef = useRef<HTMLDivElement>(null)
-  const hamburgerRef = useRef<HTMLButtonElement>(null)
+  const isMobile = useIsMobile()
+  const { themeName, setThemeName } = useThemeSwitcher()
+  const darkThemeNames = ['lumen-dark', 'lumen-dark-2', 'rainy-night']
+  const isDarkTheme = darkThemeNames.includes(themeName.toLowerCase()) || themeName.toLowerCase().includes('dark')
 
-  const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), [])
+  // Theme dropdown state
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
 
-  useFocusTrap(mobileMenuRef, mobileMenuOpen, closeMobileMenu, hamburgerRef)
-
-  // Close mobile menu on Escape
+  // Close dropdown on outside click
   useEffect(() => {
-    if (!mobileMenuOpen) return
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMobileMenuOpen(false)
+    if (!dropdownOpen) return
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false)
+      }
     }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [mobileMenuOpen])
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [dropdownOpen])
 
-  // Close mobile menu when screen grows
+  // Close dropdown on Escape
   useEffect(() => {
-    if (!isMobile) setMobileMenuOpen(false)
-  }, [isMobile])
+    if (!dropdownOpen) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setDropdownOpen(false)
+        triggerRef.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [dropdownOpen])
+
+  const isRounded = variant === 'rounded'
+
+  // Frosted glass blur — unified surface.frosted token
+  const blurValue = colors.surface.frostedBlur ?? '0px'
+  const hasBlur = blurValue !== '0px'
 
   const headerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     height: header.height,
     padding: isMobile
-      ? `${header.padding.y} 16px`
+      ? `${header.padding.y} ${spacing.sm}`
       : `${header.padding.y} ${header.padding.x}`,
-    backgroundColor: colors.surface.light,
-    borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
     fontFamily: fontFamilies.body,
     boxSizing: 'border-box',
     transition: reducedMotion ? 'none' : `background-color 200ms ease`,
+    // Frosted glass backdrop blur
+    ...(hasBlur
+      ? {
+          backdropFilter: `blur(${blurValue})`,
+          WebkitBackdropFilter: `blur(${blurValue})`,
+        }
+      : {}),
+    // Variant-specific styles
+    ...(isRounded
+      ? {
+          backgroundColor: colors.surface.frosted,
+          borderRadius: borderRadius.xl,
+          margin: `${spacing.sm} ${spacing.md}`,
+        }
+      : {
+          backgroundColor: colors.surface.frosted,
+          borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
+        }),
     ...(sticky
       ? {
           position: 'sticky' as const,
-          top: 0,
+          top: isRounded ? spacing.sm : '0',
           zIndex: zIndex.header,
         }
       : {}),
     ...style,
   }
 
-  // ── Left section ─────────────────────────────────────────────────
-  const renderLeft = () => (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '4px',
-        flexShrink: 0,
-        minWidth: isMobile ? '50px' : '200px',
-      }}
-    >
-      {/* Mobile hamburger */}
-      {isMobile ? (
-        <button
-          ref={hamburgerRef}
-          type="button"
-          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="header-mobile-menu"
-          onClick={() => setMobileMenuOpen((v) => !v)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '44px',
-            height: '44px',
-            borderRadius: header.iconButton.borderRadius,
-            backgroundColor: 'transparent',
-            color: colors.text.lowEmphasis.onLight,
-            border: 'none',
-            cursor: 'pointer',
-            transition: reducedMotion ? 'none' : `all ${transitionPresets.default}`,
-            padding: 0,
-          }}
-        >
-          {mobileMenuOpen ? <IconX size="lg" /> : <IconMenu size="md" />}
-        </button>
-      ) : (
-        /* Desktop: menu toggle */
-        <IconButton
-          icon={<IconMenu size="md" />}
-          ariaLabel="Toggle sidebar"
-          onClick={onMenuToggle}
+  const toolbarBtnProps = { colors, reducedMotion, isMobile }
+
+  return (
+    <header ref={ref} role="banner" style={headerStyle} className={className}>
+      {/* ── Left: Logo ─────────────────────────────────────────── */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexShrink: 0 }}>
+        <img
+          src="/assets/lumen-logo.svg"
+          alt="LUMEN Design System"
+          width={isMobile ? 28 : 32}
+          height={isMobile ? 32 : 36}
+          style={{ flexShrink: 0 }}
         />
-      )}
+        {!isMobile && (
+          <span
+            style={{
+              ...typography.label.lg,
+              fontFamily: fontFamilies.display,
+              fontWeight: 600,
+              color: colors.text.highEmphasis.onLight,
+              letterSpacing: '0.02em',
+            }}
+          >
+            LUMEN
+          </span>
+        )}
+      </div>
 
-      {/* AppSwitcher grip button */}
-      {!isMobile && (
-        <div style={{ position: 'relative' }}>
-          <IconButton
-            icon={<IconGrid size="md" />}
-            ariaLabel="App switcher"
-            onClick={onAppSwitcherClick}
-          />
-          {appSwitcher}
-        </div>
-      )}
+      {/* ── Right: Toolbar ───────────────────────────────────── */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? spacing['2xs'] : spacing.xs }}>
+        {/* Custom actions slot */}
+        {actions}
 
-      {/* User avatar + name */}
-      <button
-        type="button"
-        onClick={onUserClick}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '6px 8px',
-          borderRadius: header.iconButton.borderRadius,
-          backgroundColor: 'transparent',
-          border: 'none',
-          cursor: onUserClick ? 'pointer' : 'default',
-          transition: reducedMotion ? 'none' : `background-color ${transitionPresets.default}`,
-          marginLeft: '4px',
-        }}
-        aria-label={userName ? `User: ${userName}` : 'User menu'}
-      >
-        {userAvatar}
-        {!isMobile && userName && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minWidth: 0 }}>
-            <span
-              style={{
-                fontFamily: fontFamilies.body,
-                fontSize: typography.label.md.fontSize,
-                fontWeight: typography.label.md.fontWeight,
-                lineHeight: 1.2,
-                color: colors.text.highEmphasis.onLight,
-                whiteSpace: 'nowrap',
-              }}
+        {/* Theme Switcher */}
+        {showThemeSwitcher && (
+          <div ref={dropdownRef} style={{ position: 'relative' }}>
+            <ToolbarButton
+              buttonRef={triggerRef}
+              onClick={() => setDropdownOpen((v) => !v)}
+              aria-expanded={dropdownOpen}
+              aria-haspopup="listbox"
+              aria-label={`Theme: ${getThemeDisplayName(themeName)}. Change theme`}
+              isActive={dropdownOpen}
+              {...toolbarBtnProps}
             >
-              {userName}
-            </span>
-            {userOrg && (
-              <span
+              {isDarkTheme ? <IconSun size="md" /> : <IconMoon size="md" />}
+            </ToolbarButton>
+
+            {/* Theme Dropdown */}
+            {dropdownOpen && (
+              <div
+                role="listbox"
+                aria-label="Select theme"
                 style={{
-                  fontFamily: fontFamilies.body,
-                  fontSize: typography.body.xs.fontSize,
-                  fontWeight: typography.body.xs.fontWeight,
-                  lineHeight: 1.2,
-                  color: colors.text.lowEmphasis.onLight,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  maxWidth: '160px',
+                  position: 'absolute',
+                  top: 'calc(100% + 6px)',
+                  right: 0,
+                  minWidth: '160px',
+                  background: colors.surface.frosted,
+                  backdropFilter: hasBlur ? `blur(${blurValue})` : undefined,
+                  WebkitBackdropFilter: hasBlur ? `blur(${blurValue})` : undefined,
+                  border: `1px solid ${colors.border.lowEmphasis.onLight}`,
+                  borderRadius: borderRadius.md,
+                  boxShadow: shadows.lg,
+                  padding: `${spacing['2xs']} 0`,
+                  zIndex: zIndex.dropdown,
                 }}
               >
-                {userOrg}
-              </span>
+                {(() => {
+                  // Core themes (Light/Dark) first, then product themes
+                  const coreNames = ['lumen', 'lumen-dark']
+                  const coreThemes = availableThemes.filter((t) => coreNames.includes(t.name))
+                  const productThemes = availableThemes.filter((t) => !coreNames.includes(t.name))
+
+                  const renderOption = (t: typeof availableThemes[number]) => {
+                    const isActive = t.name === themeName
+                    const label = getThemeDisplayName(t.name)
+                    return (
+                      <button
+                        key={t.name}
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => {
+                          setThemeName(t.name)
+                          setDropdownOpen(false)
+                          triggerRef.current?.focus()
+                        }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          width: '100%',
+                          padding: `${spacing.xs} ${spacing.sm}`,
+                          border: 'none',
+                          background: isActive ? colors.selected.onLight : 'transparent',
+                          color: isActive
+                            ? colors.text.highEmphasis.onLight
+                            : colors.text.lowEmphasis.onLight,
+                          fontSize: typography.body.sm.fontSize,
+                          fontWeight: isActive ? 600 : 400,
+                          fontFamily: fontFamilies.body,
+                          textAlign: 'left' as const,
+                          cursor: 'pointer',
+                          transition: reducedMotion ? 'none' : 'background 100ms ease',
+                          lineHeight: typography.body.sm.lineHeight,
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isActive) e.currentTarget.style.background = colors.hover.onLight
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isActive) e.currentTarget.style.background = 'transparent'
+                        }}
+                      >
+                        <span>{label}</span>
+                        {isActive && (
+                          <CheckIcon size={14} color={colors.brand.default} />
+                        )}
+                      </button>
+                    )
+                  }
+
+                  return (
+                    <>
+                      {coreThemes.map(renderOption)}
+                      {productThemes.length > 0 && (
+                        <div
+                          role="separator"
+                          style={{
+                            height: '1px',
+                            background: colors.border.lowEmphasis.onLight,
+                            margin: `${spacing['2xs']} 0`,
+                          }}
+                        />
+                      )}
+                      {productThemes.map(renderOption)}
+                    </>
+                  )
+                })()}
+              </div>
             )}
           </div>
         )}
-        {!isMobile && userName && (
-          <IconChevronDown size={14} color={colors.text.disabled.onLight} />
+
+        {/* Notifications Bell */}
+        {showNotifications && (
+          <ToolbarButton
+            onClick={onNotificationsClick}
+            aria-label={
+              notificationCount > 0
+                ? `Notifications (${notificationCount} new)`
+                : 'Notifications'
+            }
+            {...toolbarBtnProps}
+          >
+            <IconBell size="md" />
+            <NotificationBadge count={notificationCount} colors={colors} />
+          </ToolbarButton>
         )}
-      </button>
-    </div>
-  )
 
-  // ── Center section (search button) ─────────────────────────────
-  const renderCenter = () => {
-    if (!showSearch || isMobile) return <div style={{ flex: 1 }} />
-
-    return (
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          padding: '0 16px',
-          minWidth: 0,
-        }}
-      >
-        <button
-          type="button"
-          onClick={onSearchClick}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: header.search.width,
-            height: header.search.height,
-            padding: `${header.search.paddingY} ${header.search.paddingX}`,
-            gap: header.search.gap,
-            borderRadius: '9999px',
-            backgroundColor: colors.surface.lightDarker,
-            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-            cursor: 'pointer',
-            fontFamily: fontFamilies.body,
-            fontSize: header.search.typography.fontSize,
-            fontWeight: header.search.typography.fontWeight,
-            lineHeight: header.search.typography.lineHeight,
-            color: colors.text.disabled.onLight,
-            textAlign: 'left',
-            transition: reducedMotion ? 'none' : `all ${transitionPresets.default}`,
-            boxSizing: 'border-box',
-          }}
-          aria-label={searchPlaceholder}
-        >
-          <span style={{ flex: 1 }}>{searchPlaceholder}</span>
-          <SearchIcon size={16} />
-        </button>
-      </div>
-    )
-  }
-
-  // ── Right section ──────────────────────────────────────────────
-  const renderRight = () => (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        gap: '4px',
-        flexShrink: 0,
-        minWidth: isMobile ? '100px' : '200px',
-        color: colors.text.lowEmphasis.onLight,
-      }}
-    >
-      {/* Custom actions */}
-      {actions}
-
-      {/* Notifications */}
-      <IconButton
-        icon={<IconBell size="md" />}
-        ariaLabel="Notifications"
-        onClick={onNotificationsClick}
-        showBadge={showNotificationBadge}
-      />
-
-      {/* Theme toggle */}
-      {onThemeToggle && (
-        <IconButton
-          icon={isDarkMode ? <IconSun size="md" /> : <IconMoon size="md" />}
-          ariaLabel={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-          onClick={onThemeToggle}
-        />
-      )}
-
-      {/* Brand logo + name */}
-      {(brandLogo || brandName) && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '0 6px',
-            marginLeft: '8px',
-          }}
-        >
-          {brandLogo}
-          {!isMobile && brandName && (
-            <span
-              style={{
-                fontFamily: fontFamilies.body,
-                fontSize: typography.label.md.fontSize,
-                fontWeight: typography.label.md.fontWeight,
-                color: colors.text.highEmphasis.onLight,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {brandName}
-            </span>
-          )}
-        </div>
-      )}
-    </div>
-  )
-
-  // ── Mobile menu panel ──────────────────────────────────────────
-  const renderMobileMenu = () => {
-    if (!isMobile || !mobileMenuOpen) return null
-
-    return (
-      <>
-        {/* Scrim overlay */}
-        <div
-          onClick={() => setMobileMenuOpen(false)}
-          aria-hidden="true"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            top: header.height,
-            backgroundColor: colors.scrim,
-            zIndex: zIndex.overlay,
-          }}
-        />
-        {/* Panel */}
-        <div
-          ref={mobileMenuRef}
-          id="header-mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Mobile menu"
-          style={{
-            position: 'fixed',
-            top: header.height,
-            left: 0,
-            right: 0,
-            backgroundColor: colors.surface.light,
-            borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
-            boxShadow: shadows.lg,
-            zIndex: zIndex.overlay + 1,
-            padding: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            maxHeight: `calc(100vh - ${header.height})`,
-            overflowY: 'auto',
-          }}
-        >
-          {/* Search button in mobile panel */}
-          {showSearch && (
-            <button
-              type="button"
-              onClick={() => {
-                onSearchClick?.()
-                setMobileMenuOpen(false)
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                width: '100%',
-                padding: '10px 16px',
-                gap: '12px',
-                borderRadius: '9999px',
-                backgroundColor: colors.surface.lightDarker,
-                border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                cursor: 'pointer',
-                fontFamily: fontFamilies.body,
-                fontSize: header.search.typography.fontSize,
-                color: colors.text.disabled.onLight,
-                textAlign: 'left',
-              }}
-              aria-label={searchPlaceholder}
-            >
-              <SearchIcon size={16} color={colors.icon.enabled.onLight} />
-              <span>{searchPlaceholder}</span>
-            </button>
-          )}
-
-          {/* AppSwitcher in mobile */}
-          <div
+        {/* Avatar */}
+        {userAvatar && (
+          <button
+            type="button"
+            onClick={onAvatarClick}
+            aria-label={userName ? `User menu: ${userName}` : 'User menu'}
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              borderTop: `1px solid ${colors.border.lowEmphasis.onLight}`,
-              paddingTop: '16px',
+              justifyContent: 'center',
+              background: 'transparent',
+              border: 'none',
+              cursor: onAvatarClick ? 'pointer' : 'default',
+              padding: spacing['2xs'],
+              borderRadius: borderRadius.full,
+              outline: 'none',
+              transition: reducedMotion ? 'none' : `all ${transitionPresets.default}`,
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => {
+              if (onAvatarClick) e.currentTarget.style.backgroundColor = colors.hover.onLight
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent'
+            }}
+            onFocus={(e) => {
+              if (e.target.matches(':focus-visible')) {
+                e.currentTarget.style.outline = `2px solid ${colors.focusBorder.onLight}`
+                e.currentTarget.style.outlineOffset = '2px'
+              }
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.outline = 'none'
             }}
           >
-            <IconButton
-              icon={<IconGrid size="md" />}
-              ariaLabel="App switcher"
-              onClick={() => {
-                onAppSwitcherClick?.()
-                setMobileMenuOpen(false)
-              }}
-            />
-            <IconButton
-              icon={<IconBell size="md" />}
-              ariaLabel="Notifications"
-              onClick={onNotificationsClick}
-              showBadge={showNotificationBadge}
-            />
-            {onThemeToggle && (
-              <IconButton
-                icon={isDarkMode ? <IconSun size="md" /> : <IconMoon size="md" />}
-                ariaLabel={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                onClick={onThemeToggle}
-              />
-            )}
-          </div>
-
-          {/* User info in mobile */}
-          {userName && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                borderTop: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                paddingTop: '16px',
-              }}
-            >
-              {userAvatar}
-              <span
-                style={{
-                  fontFamily: fontFamilies.body,
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  color: colors.text.highEmphasis.onLight,
-                }}
-              >
-                {userName}
-              </span>
-            </div>
-          )}
-        </div>
-      </>
-    )
-  }
-
-  return (
-    <>
-      <header
-        ref={ref}
-        role="banner"
-        style={headerStyle}
-        className={className}
-      >
-        {renderLeft()}
-        {renderCenter()}
-        {renderRight()}
-      </header>
-      {renderMobileMenu()}
-    </>
+            {userAvatar}
+          </button>
+        )}
+      </div>
+    </header>
   )
 })
 
 Header.displayName = 'Header'
-
-// =============================================================================
-// CANOPY LOGO COMPONENT (preserved from original)
-// =============================================================================
-
-export interface CanopyLogoProps {
-  /** Logo size */
-  size?: 'sm' | 'md' | 'lg'
-  /** Whether to show the text alongside the logo */
-  showText?: boolean
-}
-
-export function CanopyLogo({ size = 'md', showText = true }: CanopyLogoProps) {
-  const sizes = {
-    sm: { logo: 28, fontSize: '14px', gap: '8px' },
-    md: { logo: 32, fontSize: '16px', gap: '10px' },
-    lg: { logo: 40, fontSize: '18px', gap: '12px' },
-  }
-
-  const s = sizes[size]
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: s.gap }}>
-      <svg
-        style={{ width: s.logo, height: s.logo, flexShrink: 0 }}
-        viewBox="0 0 48 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="Canopy logo"
-        role="img"
-      >
-        <path d="M24 4C14 4 6 8 6 8V24C6 34 14 42 24 46C34 42 42 34 42 24V8C42 8 34 4 24 4Z" stroke="#3D5A4C" strokeWidth="2" fill="none" />
-        <path d="M24 38V28" stroke="#5A7A68" strokeWidth="2.5" strokeLinecap="round" />
-        <path d="M21 38C21 36 22 34 24 34C26 34 27 36 27 38" stroke="#5A7A68" strokeWidth="1.5" fill="none" />
-        <ellipse cx="24" cy="20" rx="10" ry="8" fill="#6B8E7A" />
-        <ellipse cx="20" cy="18" rx="6" ry="5" fill="#5A7A68" />
-        <ellipse cx="28" cy="18" rx="6" ry="5" fill="#5A7A68" />
-        <ellipse cx="24" cy="15" rx="7" ry="5" fill="#4A6A58" />
-        <ellipse cx="24" cy="22" rx="8" ry="5" fill="#7A9E8A" />
-      </svg>
-      {showText && (
-        <span
-          style={{
-            fontFamily: fontFamilies.body,
-            fontSize: s.fontSize,
-            fontWeight: 600,
-            lineHeight: 1.2,
-            color: 'currentColor',
-          }}
-        >
-          Canopy
-        </span>
-      )}
-    </div>
-  )
-}
-
-CanopyLogo.displayName = 'CanopyLogo'
-
-// =============================================================================
-// EXPORTS
-// =============================================================================
-
-export { IconButton }

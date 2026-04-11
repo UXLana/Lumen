@@ -13,6 +13,8 @@ import {
 import { TabBar } from '../Tab'
 import { Input } from '../Input'
 import { Button } from '../Button'
+import { Divider } from '../Divider'
+import { IconX } from '../Icons'
 import { IconSearch } from '../Icons'
 import { ColumnItem } from './ColumnItem'
 import { useColumnManager } from './useColumnManager'
@@ -29,10 +31,18 @@ export interface ColumnManagerProps {
   onApply?: (columns: ColumnConfig[]) => void
   /** Called when user clicks Reset */
   onReset?: () => void
+  /** Called when user clicks the close button (only shown when showClose=true) */
+  onClose?: () => void
   /** Title text */
   title?: string
   /** Description text */
   description?: string
+  /** Show the built-in header (title, description, Reset) */
+  showHeader?: boolean
+  /** Show a close (X) button in the header — for drawer/panel usage */
+  showClose?: boolean
+  /** Switch size — sm for dense/drawer UI, md for standalone */
+  switchSize?: 'sm' | 'md'
   /** Width of the panel */
   width?: number | string
   /** Height of the panel */
@@ -53,8 +63,12 @@ export const ColumnManager = forwardRef<HTMLDivElement, ColumnManagerProps>(
       columns: initialColumns,
       onApply,
       onReset,
+      onClose,
       title = 'View settings',
       description = 'Manage visible columns',
+      showHeader = true,
+      showClose = false,
+      switchSize = 'md',
       width = 384,
       height = 600,
       className,
@@ -140,16 +154,49 @@ export const ColumnManager = forwardRef<HTMLDivElement, ColumnManagerProps>(
         }}
       >
         {/* Header */}
+        {showHeader && (
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            padding: `${spacing.lg} ${spacing.lg} ${spacing.xs}`,
+            alignItems: 'center',
+            padding: `${spacing.sm} ${spacing.sm}`,
+            borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
             flexShrink: 0,
           }}
         >
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+            {showClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: spacing.xl,
+                  height: spacing.xl,
+                  padding: 0,
+                  border: 'none',
+                  borderRadius: borderRadius.sm,
+                  backgroundColor: 'transparent',
+                  color: colors.text.lowEmphasis.onLight,
+                  cursor: 'pointer',
+                  transition: `background-color ${transitionPresets.fast}, color ${transitionPresets.fast}`,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.hover.onLight
+                  e.currentTarget.style.color = colors.text.highEmphasis.onLight
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.color = colors.text.lowEmphasis.onLight
+                }}
+              >
+                <IconX size="sm" />
+              </button>
+            )}
             <h3
               style={{
                 ...typography.label.md,
@@ -160,15 +207,6 @@ export const ColumnManager = forwardRef<HTMLDivElement, ColumnManagerProps>(
             >
               {title}
             </h3>
-            <p
-              style={{
-                ...typography.body.xs,
-                color: colors.text.lowEmphasis.onLight,
-                margin: `${spacing['2xs']} 0 0`,
-              }}
-            >
-              {description}
-            </p>
           </div>
           <Button
             emphasis="low"
@@ -179,11 +217,12 @@ export const ColumnManager = forwardRef<HTMLDivElement, ColumnManagerProps>(
             Reset
           </Button>
         </div>
+        )}
 
         {/* Tab Navigation */}
         <div
           style={{
-            padding: `0 ${spacing.lg}`,
+            padding: `0 ${spacing.sm}`,
             flexShrink: 0,
           }}
         >
@@ -200,7 +239,6 @@ export const ColumnManager = forwardRef<HTMLDivElement, ColumnManagerProps>(
         <div
           style={{
             padding: `${spacing.xs} ${spacing.sm}`,
-            borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
             flexShrink: 0,
           }}
         >
@@ -239,7 +277,7 @@ export const ColumnManager = forwardRef<HTMLDivElement, ColumnManagerProps>(
               <Button emphasis="low" size="md" onClick={showAll} style={{ padding: 0, minHeight: 'auto' }}>
                 Show all
               </Button>
-              <span style={{ ...typography.body.xs, color: colors.text.disabled.onLight }}>|</span>
+              <Divider orientation="vertical" spacing="none" style={{ height: spacing.md, alignSelf: 'center' }} />
               <Button emphasis="low" size="md" onClick={hideAll} style={{ padding: 0, minHeight: 'auto' }}>
                 Hide all
               </Button>
@@ -253,6 +291,7 @@ export const ColumnManager = forwardRef<HTMLDivElement, ColumnManagerProps>(
               index={idx}
               totalCount={filteredColumns.length}
               activeTab={activeTab}
+              switchSize={switchSize}
               onToggle={toggleColumn}
               onMove={handleMove}
               onDragStart={handleDragStart}

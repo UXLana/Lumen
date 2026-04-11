@@ -1090,7 +1090,7 @@ function LeftNavSectionComponent({
 }: LeftNavSectionComponentProps) {
   const sidebarColors = useSidebarColors()
   // Persist section expand state to localStorage so it survives page navigations
-  const storageKey = `prism-nav-section-${section.id}`
+  const storageKey = `lumen-nav-section-${section.id}`
   const [isExpanded, setIsExpanded] = useState(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(storageKey)

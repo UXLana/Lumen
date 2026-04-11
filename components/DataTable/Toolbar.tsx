@@ -78,12 +78,29 @@ export interface IconButtonProps {
 }
 
 export function IconButton({ children, active, onClick, title, label, disabled }: IconButtonProps) {
+  const [hovered, setHovered] = React.useState(false)
+  const [pressed, setPressed] = React.useState(false)
+
+  const isHighlighted = active || hovered
+  const bg = pressed
+    ? colors.hover.onLight
+    : isHighlighted
+      ? colors.hover.onLight
+      : 'transparent'
+  const fg = isHighlighted || pressed
+    ? colors.text.highEmphasis.onLight
+    : colors.text.lowEmphasis.onLight
+
   return (
     <button
       type="button"
       onClick={onClick}
       title={title}
       disabled={disabled}
+      onMouseEnter={() => !disabled && setHovered(true)}
+      onMouseLeave={() => { setHovered(false); setPressed(false) }}
+      onMouseDown={() => !disabled && setPressed(true)}
+      onMouseUp={() => setPressed(false)}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -91,8 +108,8 @@ export function IconButton({ children, active, onClick, title, label, disabled }
         padding: `6px ${spacing.xs}`,
         borderRadius: borderRadius.md,
         border: 'none',
-        background: active ? colors.hover.onLight : 'transparent',
-        color: active ? colors.text.highEmphasis.onLight : colors.text.lowEmphasis.onLight,
+        background: bg,
+        color: fg,
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.4 : 1,
         fontFamily: fontFamilies.body,

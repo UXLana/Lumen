@@ -173,17 +173,15 @@ export function SegmentedControl({
 
       // Colors
       background: isSelected
-        ? onDark ? 'rgba(255, 255, 255, 0.95)' : 'white'
+        ? onDark ? 'rgba(255, 255, 255, 0.95)' : colors.surface.light
         : isHovered
-          ? onDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'
+          ? colors.hover.onLight
           : 'transparent',
       color: isDisabled
         ? colors.text.disabled.onLight
         : isSelected
           ? colors.text.highEmphasis.onLight
-          : onDark
-            ? 'rgba(255, 255, 255, 0.7)'
-            : colors.text.lowEmphasis.onLight,
+          : colors.text.lowEmphasis.onLight,
 
       // Shape
       borderRadius: config.segmentBorderRadius,

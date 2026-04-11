@@ -10,6 +10,7 @@ import {
   transitionPresets,
 } from '../../styles/design-tokens'
 import { Switch } from '../Switch'
+import { Divider } from '../Divider'
 import { IconDrag, IconArrowUp, IconArrowDown } from '../Icons'
 import type { ColumnConfig, ColumnManagerTab } from './useColumnManager'
 
@@ -22,6 +23,7 @@ export interface ColumnItemProps {
   index: number
   totalCount: number
   activeTab: ColumnManagerTab
+  switchSize?: 'sm' | 'md'
   onToggle: (id: string) => void
   onMove: (fromIndex: number, toIndex: number) => void
   onDragStart: (index: number) => void
@@ -62,8 +64,8 @@ function ReorderButton({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '28px',
-        height: '28px',
+        width: spacing.xl,
+        height: spacing.xl,
         padding: 0,
         border: 'none',
         borderRadius: borderRadius.sm,
@@ -75,11 +77,11 @@ function ReorderButton({
             : colors.text.lowEmphasis.onLight,
         cursor: disabled ? 'default' : 'pointer',
         transition: `background-color ${transitionPresets.fast}, color ${transitionPresets.fast}`,
-        // Focus ring — 2px brand outline, offset for breathing room
-        outline: 'none',
-        boxShadow: isInteracting && !disabled
-          ? `0 0 0 2px ${colors.brand.default}`
+        // Focus ring — brand outline with offset for breathing room
+        outline: isInteracting && !disabled
+          ? `2px solid ${colors.brand.default}`
           : 'none',
+        outlineOffset: '2px',
       }}
     >
       {children}
@@ -96,6 +98,7 @@ export function ColumnItem({
   index,
   totalCount,
   activeTab,
+  switchSize = 'md',
   onToggle,
   onMove,
   onDragStart,
@@ -158,8 +161,8 @@ export function ColumnItem({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '20px',
-              height: '20px',
+              width: spacing.lg,
+              height: spacing.lg,
               flexShrink: 0,
               color: colors.text.disabled.onLight,
               cursor: 'grab',
@@ -194,7 +197,9 @@ export function ColumnItem({
           checked={column.visible}
           onChange={() => onToggle(column.id)}
           disabled={column.locked}
+          size={switchSize}
           aria-label={`Toggle ${column.label} visibility`}
+          style={{ padding: 0, flexShrink: 0 }}
         />
       )}
 
@@ -212,7 +217,7 @@ export function ColumnItem({
             style={{
               ...typography.body.xs,
               color: colors.text.disabled.onLight,
-              minWidth: '20px',
+              minWidth: spacing.lg,
               textAlign: 'center',
             }}
           >

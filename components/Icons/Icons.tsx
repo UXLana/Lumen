@@ -55,7 +55,7 @@ const BaseIcon: React.FC<BaseIconProps> = ({
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={strokeWidth ?? 'var(--prism-icon-style-strokeWidth, 1.5)'}
+      strokeWidth={strokeWidth ?? 'var(--lumen-icon-style-strokeWidth, 1.5)'}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-label={label}
@@ -1080,6 +1080,60 @@ export const IconDataTable: React.FC<IconProps> = (props) => (
   </BaseIcon>
 )
 IconDataTable.displayName = 'IconDataTable'
+
+/**
+ * Column management icon — three vertical columns with toggle circles.
+ * Outline: stroke-based columns with small circles indicating visibility toggles.
+ */
+export const IconColumnManager: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    {/* Three vertical column bars */}
+    <rect x="3" y="3" width="4" height="18" rx="1" />
+    <rect x="10" y="3" width="4" height="18" rx="1" />
+    <rect x="17" y="3" width="4" height="18" rx="1" />
+  </BaseIcon>
+)
+IconColumnManager.displayName = 'IconColumnManager'
+
+/**
+ * Column management icon (compact 16x16) — pixel-crisp for toolbars and dense UI.
+ * Matches the stroke weight and viewBox of GridIcon/ListIcon/FilterIcon in DataTable.Toolbar.
+ * Use this variant inside toolbars. Use IconColumnManager (24x24) for larger contexts.
+ */
+export const IconColumnManagerToolbar: React.FC<IconProps> = ({
+  size = 'sm',
+  label,
+  style,
+  ...props
+}) => {
+  const pixelSize = typeof size === 'number' ? size : getSize(size)
+
+  return (
+    <svg
+      width={pixelSize}
+      height={pixelSize}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-label={label}
+      aria-hidden={!label}
+      role={label ? 'img' : 'presentation'}
+      style={{
+        shapeRendering: 'geometricPrecision',
+        ...style,
+      }}
+      {...props}
+    >
+      <rect x="1.5" y="1" width="3" height="14" rx="0.75" />
+      <rect x="6.5" y="1" width="3" height="14" rx="0.75" />
+      <rect x="11.5" y="1" width="3" height="14" rx="0.75" />
+    </svg>
+  )
+}
+IconColumnManagerToolbar.displayName = 'IconColumnManagerToolbar'
 
 // =============================================================================
 // UPLOAD-RELATED ICONS

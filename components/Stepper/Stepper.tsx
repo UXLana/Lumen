@@ -5,8 +5,10 @@ import {
   stepper,
   colors,
   fontFamilies,
-  button,
+  borderRadius,
+  spacing,
 } from '../../styles/design-tokens'
+import { Button } from '../Button/Button'
 import {
   IconStatusComplete,
   IconStatusInProgress,
@@ -33,6 +35,13 @@ export type StepStatus = 'completed' | 'active' | 'pending' | 'disabled'
  * - nonLinear: Non-sequential stepper with circle indicators (can jump between steps)
  */
 export type StepperVariant = 'linear' | 'nonLinear'
+
+/**
+ * Stepper orientation
+ * - vertical: Steps stacked vertically, content inline under the active step (default)
+ * - horizontal: Steps laid out in a top bar, content rendered below
+ */
+export type StepperOrientation = 'horizontal' | 'vertical'
 
 /**
  * Individual step data
@@ -93,21 +102,18 @@ export function DefaultStepIndicator({
     return stepper.connector.colors.pending // grey
   }
 
-  // Icon color based on status
+  // Icon color based on status — uses step color tokens for consistency
   const getIconColor = () => {
-    if (isCompleted) {
-      return stepper.connector.colors.completed // green for completed checkmark
+    if (isCompleted || isActive) {
+      return stepper.connector.colors.completed
     }
-    if (isActive) {
-      return stepper.connector.colors.completed // green for in-progress
-    }
-    return 'rgba(0, 0, 0, 0.38)' // grey for pending/disabled
+    return stepper.step.colors.pending.text
   }
 
   // Render the appropriate icon based on status
   const renderIcon = () => {
     const iconColor = getIconColor()
-    const iconSize = 20 // Fixed 20px for the status icons
+    const iconSize = stepper.step.iconSize
 
     if (isCompleted) {
       return <IconStatusComplete size={iconSize} style={{ color: iconColor }} />
@@ -127,8 +133,8 @@ export function DefaultStepIndicator({
       style={{
         width: `${size}px`,
         height: `${size}px`,
-        borderRadius: '50%',
-        border: `2px solid ${getBorderColor()}`,
+        borderRadius: stepper.step.borderRadius,
+        border: `${stepper.connector.width} solid ${getBorderColor()}`,
         backgroundColor: colors.surface.light,
         display: 'flex',
         alignItems: 'center',
@@ -214,6 +220,8 @@ export interface StepperProps {
   clickable?: boolean
   /** Stepper variant */
   variant?: StepperVariant
+  /** Stepper orientation (default: 'vertical') */
+  orientation?: StepperOrientation
   /** Custom indicator component (for non-linear variant) */
   indicatorComponent?: React.ComponentType<StepIndicatorProps>
   /** Additional class name */
@@ -226,6 +234,11 @@ export interface StepperProps {
  * Linear Stepper Props (convenience type)
  */
 export interface LinearStepperProps extends Omit<StepperProps, 'variant'> {}
+
+/**
+ * Horizontal Stepper Props (convenience type)
+ */
+export interface HorizontalStepperProps extends Omit<StepperProps, 'orientation'> {}
 
 /**
  * Non-Linear Stepper Props (convenience type)
@@ -337,16 +350,17 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
     const isClickable = Boolean(onClick && !isDisabled)
 
     // Container styles with hover background for clickable steps
+    const pad = stepper.spacing.containerPadding
     const containerStyles: React.CSSProperties = {
       display: 'flex',
       alignItems: 'flex-start',
       position: 'relative',
-      width: 'calc(100% + 16px)',
-      marginLeft: '-8px',
-      marginRight: '-8px',
-      paddingLeft: '8px',
-      paddingRight: '8px',
-      borderRadius: '8px',
+      width: `calc(100% + ${pad} + ${pad})`,
+      marginLeft: `-${pad}`,
+      marginRight: `-${pad}`,
+      paddingLeft: pad,
+      paddingRight: pad,
+      borderRadius: borderRadius.sm,
       cursor: isClickable ? 'pointer' : 'default',
       ...style,
     }
@@ -365,7 +379,7 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
     // Top connector wrapper
     const topConnectorWrapperStyles: React.CSSProperties = {
       width: stepper.step.size,
-      height: '48px',
+      height: stepper.connector.topWrapperHeight,
       position: 'relative',
       overflow: 'hidden',
       zIndex: 2,
@@ -378,7 +392,7 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
       transform: 'translateX(-50%)',
       top: 0,
       width: stepper.connector.width,
-      height: '16px',
+      height: stepper.connector.topHeight,
       backgroundColor: topConnectorCompleted
         ? stepper.connector.colors.completed
         : stepper.connector.colors.pending,
@@ -392,7 +406,7 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
           // Non-linear: transparent container, DefaultStepIndicator provides the circle
           position: 'absolute',
           left: 0,
-          top: '16px',
+          top: stepper.connector.topHeight,
           width: stepper.step.size,
           height: stepper.step.size,
           display: 'flex',
@@ -404,12 +418,12 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
           // Linear: colored circle with number or checkmark
           position: 'absolute',
           left: 0,
-          top: '16px',
+          top: stepper.connector.topHeight,
           width: stepper.step.size,
           height: stepper.step.size,
-          borderRadius: '50%',
+          borderRadius: stepper.step.borderRadius,
           backgroundColor: stepColors.background,
-          border: stepColors.border !== 'transparent' ? `2px solid ${stepColors.border}` : 'none',
+          border: stepColors.border !== 'transparent' ? `${stepper.connector.width} solid ${stepColors.border}` : 'none',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -491,7 +505,7 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
       lineHeight: stepper.content.metadata.lineHeight,
       letterSpacing: stepper.content.metadata.letterSpacing,
       color: stepper.content.metadata.color,
-      marginTop: '4px',
+      marginTop: stepper.spacing.metadataMarginTop,
     }
 
     // Content area (for active step)
@@ -512,56 +526,15 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
       zIndex: 1,
     }
 
-    // Primary button styles
-    const primaryButtonStyles: React.CSSProperties = {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '6px',
-      minWidth: '100px',
-      padding: '12px 16px',
-      borderRadius: button.borderRadius,
-      backgroundColor: button.emphasis.high.enabled.background,
-      color: button.emphasis.high.enabled.text,
-      border: 'none',
-      cursor: 'pointer',
-      fontFamily: fontFamilies.display,
-      fontSize: button.typography.lg.fontSize,
-      fontWeight: button.typography.lg.fontWeight,
-      lineHeight: button.typography.lg.lineHeight,
-      letterSpacing: button.typography.lg.letterSpacing,
-      transition: button.transition,
-    }
-
-    // Secondary button styles
-    const secondaryButtonStyles: React.CSSProperties = {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '6px',
-      minWidth: '100px',
-      padding: '12px 16px',
-      borderRadius: button.borderRadius,
-      backgroundColor: 'rgba(120, 207, 184, 0.2)',
-      color: colors.brand.default,
-      border: 'none',
-      cursor: 'pointer',
-      fontFamily: fontFamilies.display,
-      fontSize: button.typography.lg.fontSize,
-      fontWeight: button.typography.lg.fontWeight,
-      lineHeight: button.typography.lg.lineHeight,
-      letterSpacing: button.typography.lg.letterSpacing,
-      transition: button.transition,
-    }
-
-    // Focus ring styles
+    // Focus ring styles (demo prop) — ring around the step indicator circle
+    const focusRingSize = `calc(${stepper.step.size} + ${stepper.focus.offset} * 2 + ${stepper.focus.width} * 2)`
     const focusRingStyles: React.CSSProperties = {
       position: 'absolute',
-      left: '-5px',
-      top: '11px',
-      width: '42px',
-      height: '42px',
-      borderRadius: '50%',
+      left: `-${stepper.focus.offset}`,
+      top: `calc(${stepper.connector.topHeight} - ${stepper.focus.offset})`,
+      width: focusRingSize,
+      height: focusRingSize,
+      borderRadius: stepper.step.borderRadius,
       border: `${stepper.focus.width} solid ${stepper.focus.color}`,
       pointerEvents: 'none',
     }
@@ -597,14 +570,14 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
             status={status}
             isHovered={isHovered}
             isFocused={focused}
-            size={32}
+            size={stepper.step.sizeNumeric}
           />
         )
       }
 
       // Linear: Show checkmark for completed, number for others
       if (isCompleted) {
-        return <CheckIcon size={16} color={stepColors.text} />
+        return <CheckIcon size={stepper.step.checkIconSize} color={stepColors.text} />
       }
       return <span style={stepNumberStyles}>{stepNumber}</span>
     }
@@ -657,16 +630,17 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
         {/* Focus ring (demo prop) */}
         {focused && <span style={focusRingStyles} aria-hidden="true" />}
 
-        {/* Focus ring on step indicator circle only */}
+        {/* Focus ring on step indicator circle only — sized relative to step indicator */}
         {isClickable && isFocused && (
           <div
             style={{
               position: 'absolute',
-              top: '14px',
-              left: '6px',
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
+              // Center around the step indicator: shift by half the size difference (2px) to center the ring
+              top: `calc(${stepper.connector.topHeight} - ${spacing['2xs']} / 2)`,
+              left: `calc(${pad} - ${spacing['2xs']} / 2)`,
+              width: `calc(${stepper.step.size} + ${spacing['2xs']})`,
+              height: `calc(${stepper.step.size} + ${spacing['2xs']})`,
+              borderRadius: stepper.step.borderRadius,
               outline: `${stepper.focus.width} solid ${stepper.focus.color}`,
               outlineOffset: '1px',
               pointerEvents: 'none',
@@ -704,8 +678,8 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
             {metadata && <p style={metadataStyles}>{metadata}</p>}
           </div>
 
-          {/* Step content — active steps get full content, completed steps get summary */}
-          {(isActive || isCompleted) && children && (
+          {/* Step content — only the active step shows expanded content */}
+          {isActive && children && (
             <div style={contentAreaStyles}>{children}</div>
           )}
 
@@ -713,46 +687,26 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
           {isActive && (onPrimaryClick || onSecondaryClick) && (
             <div style={buttonGroupStyles}>
               {secondaryButtonText && onSecondaryClick && (
-                <button
-                  type="button"
-                  style={secondaryButtonStyles}
-                  onFocus={(e) => {
-                    // WCAG 2.4.7: Use outline for visible focus (not clipped by overflow)
-                    e.currentTarget.style.outline = `3px solid ${stepper.focus.color}`
-                    e.currentTarget.style.outlineOffset = '2px'
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.outline = 'none'
-                    e.currentTarget.style.outlineOffset = '0'
-                  }}
+                <Button
+                  emphasis="mid"
                   onClick={(e) => {
                     e.stopPropagation()
                     onSecondaryClick()
                   }}
                 >
                   {secondaryButtonText}
-                </button>
+                </Button>
               )}
               {primaryButtonText && onPrimaryClick && (
-                <button
-                  type="button"
-                  style={primaryButtonStyles}
-                  onFocus={(e) => {
-                    // WCAG 2.4.7: Use outline for visible focus (not clipped by overflow)
-                    e.currentTarget.style.outline = `3px solid ${stepper.focus.color}`
-                    e.currentTarget.style.outlineOffset = '2px'
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.outline = 'none'
-                    e.currentTarget.style.outlineOffset = '0'
-                  }}
+                <Button
+                  emphasis="high"
                   onClick={(e) => {
                     e.stopPropagation()
                     onPrimaryClick()
                   }}
                 >
                   {primaryButtonText}
-                </button>
+                </Button>
               )}
             </div>
           )}
@@ -763,6 +717,227 @@ export const StepperStep = forwardRef<HTMLDivElement, StepperStepProps>(
 )
 
 StepperStep.displayName = 'StepperStep'
+
+// =============================================================================
+// HORIZONTAL STEPPER BAR (internal)
+// =============================================================================
+
+interface HorizontalStepperBarProps {
+  steps: StepItem[]
+  activeStep: number
+  clickable: boolean
+  onStepClick?: (index: number) => void
+}
+
+interface HorizontalStepperBarItemProps {
+  step: StepItem
+  index: number
+  status: StepStatus
+  isLast: boolean
+  clickable: boolean
+  onStepClick?: (index: number) => void
+}
+
+function HorizontalStepperBarItem({
+  step,
+  index,
+  status,
+  isLast,
+  clickable,
+  onStepClick,
+}: HorizontalStepperBarItemProps) {
+  const [isFocused, setIsFocused] = useState(false)
+
+  const isCompleted = status === 'completed'
+  const isActive = status === 'active'
+  const isDisabled = status === 'disabled'
+  const isClickable = clickable && !isDisabled && !!onStepClick
+
+  const stepColors = isCompleted
+    ? stepper.step.colors.completed
+    : isActive
+      ? stepper.step.colors.active
+      : isDisabled
+        ? stepper.step.colors.disabled
+        : stepper.step.colors.pending
+
+  return (
+    <li
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        flex: isLast ? '0 0 auto' : '1 1 0',
+        minWidth: 0,
+      }}
+    >
+      <button
+        type="button"
+        onClick={isClickable ? () => onStepClick!(index) : undefined}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        disabled={isDisabled}
+        aria-current={isActive ? 'step' : undefined}
+        aria-label={`Step ${index + 1}: ${step.label}${
+          isCompleted ? ', completed' : isActive ? ', current' : ''
+        }`}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: spacing.xs,
+          padding: `${spacing['2xs']} ${spacing.xs}`,
+          border: 'none',
+          background: 'transparent',
+          cursor: isClickable ? 'pointer' : 'default',
+          borderRadius: borderRadius.sm,
+          flexShrink: 0,
+          minWidth: 0,
+          maxWidth: '100%',
+          outline: 'none',
+          fontFamily: fontFamilies.display,
+          position: 'relative',
+        }}
+      >
+        {/* Step circle */}
+        <div
+          style={{
+            position: 'relative',
+            width: stepper.step.size,
+            height: stepper.step.size,
+            flexShrink: 0,
+          }}
+          aria-hidden="true"
+        >
+          {/* Focus ring (rendered outside the circle, concentric with it) */}
+          {isFocused && isClickable && (
+            <span
+              style={{
+                position: 'absolute',
+                inset: `-${stepper.focus.offset}`,
+                borderRadius: `calc(${stepper.step.borderRadius} + ${stepper.focus.offset})`,
+                border: `${stepper.focus.width} solid ${stepper.focus.color}`,
+                pointerEvents: 'none',
+                boxSizing: 'border-box',
+              }}
+            />
+          )}
+          <div
+            style={{
+              width: stepper.step.size,
+              height: stepper.step.size,
+              borderRadius: stepper.step.borderRadius,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: stepColors.background,
+              border:
+                stepColors.border !== 'transparent'
+                  ? `${stepper.connector.width} solid ${stepColors.border}`
+                  : 'none',
+              boxSizing: 'border-box',
+            }}
+          >
+                {isCompleted ? (
+                  <CheckIcon size={stepper.step.checkIconSize} color={stepColors.text} />
+                ) : (
+                  <span
+                    style={{
+                      fontFamily: fontFamilies.display,
+                      fontSize: stepper.step.typography.fontSize,
+                      fontWeight: stepper.step.typography.fontWeight,
+                      lineHeight: stepper.step.typography.lineHeight,
+                      letterSpacing: stepper.step.typography.letterSpacing,
+                      color: stepColors.text,
+                    }}
+                  >
+            {index + 1}
+          </span>
+        )}
+          </div>
+        </div>
+
+        {/* Label */}
+        <span
+          style={{
+            fontFamily: fontFamilies.display,
+            fontSize: stepper.content.label.inactive.fontSize,
+            lineHeight: stepper.content.label.inactive.lineHeight,
+            letterSpacing: stepper.content.label.inactive.letterSpacing,
+            fontWeight: isActive
+              ? stepper.content.label.active.fontWeight
+              : stepper.content.label.inactive.fontWeight,
+            color:
+              isActive || isCompleted
+                ? stepper.content.label.active.color
+                : stepper.content.label.inactive.color,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            minWidth: 0,
+          }}
+        >
+          {step.label}
+        </span>
+      </button>
+
+      {/* Connector line */}
+      {!isLast && (
+        <div
+          style={{
+            flex: '1 1 0',
+            height: stepper.connector.width,
+            minWidth: spacing['2xl'],
+            backgroundColor: isCompleted
+              ? stepper.connector.colors.completed
+              : stepper.connector.colors.pending,
+            marginLeft: spacing['2xs'],
+            marginRight: spacing['2xs'],
+          }}
+          aria-hidden="true"
+        />
+      )}
+    </li>
+  )
+}
+
+function HorizontalStepperBar({
+  steps,
+  activeStep,
+  clickable,
+  onStepClick,
+}: HorizontalStepperBarProps) {
+  const getStatus = (index: number, step: StepItem): StepStatus => {
+    if (step.disabled) return 'disabled'
+    if (index < activeStep) return 'completed'
+    if (index === activeStep) return 'active'
+    return 'pending'
+  }
+
+  return (
+    <ol
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        listStyle: 'none',
+        margin: 0,
+        padding: 0,
+        width: '100%',
+        minWidth: 0,
+      }}
+    >
+      {steps.map((step, index) => (
+        <HorizontalStepperBarItem
+          key={step.id}
+          step={step}
+          index={index}
+          status={getStatus(index, step)}
+          isLast={index === steps.length - 1}
+          clickable={clickable}
+          onStepClick={onStepClick}
+        />
+      ))}
+    </ol>
+  )
+}
 
 // =============================================================================
 // BASE STEPPER COMPONENT
@@ -809,6 +984,7 @@ export function Stepper({
   onSecondaryClick,
   clickable = false,
   variant = 'linear',
+  orientation = 'vertical',
   indicatorComponent,
   className,
   style,
@@ -853,6 +1029,83 @@ export function Stepper({
   const safeActiveStep =
     steps.length > 0 ? Math.min(Math.max(activeStep, 0), steps.length - 1) : 0
   const liveRegionLabel = steps[safeActiveStep]?.label ?? ''
+  const isHorizontal = orientation === 'horizontal'
+  const isLastStep = safeActiveStep === steps.length - 1
+  const showHorizontalSecondary = safeActiveStep > 0
+
+  if (isHorizontal) {
+    return (
+      <div
+        className={className}
+        style={containerStyles}
+        role="navigation"
+        aria-label={`Horizontal ${variant === 'linear' ? 'linear' : 'non-linear'} progress stepper`}
+      >
+        {/* Screen reader progress announcement */}
+        <div
+          style={visuallyHiddenStyles}
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          Step {steps.length > 0 ? safeActiveStep + 1 : 0} of {steps.length}
+          {liveRegionLabel ? `: ${liveRegionLabel}` : ''}
+        </div>
+
+        {/* Top: horizontal step bar */}
+        <div style={{ width: '100%', paddingBottom: stepper.spacing.contentGap }}>
+          <HorizontalStepperBar
+            steps={steps}
+            activeStep={safeActiveStep}
+            clickable={clickable}
+            onStepClick={clickable ? (index) => {
+              const step = steps[index]
+              if (step && !step.disabled) {
+                onStepChange?.(index)
+              }
+            } : undefined}
+          />
+        </div>
+
+        {/* Active step content */}
+        {stepContent?.[safeActiveStep] && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              width: '100%',
+              paddingBottom: stepper.spacing.contentGap,
+            }}
+          >
+            {stepContent[safeActiveStep]}
+          </div>
+        )}
+
+        {/* Navigation buttons */}
+        {(onPrimaryClick || onSecondaryClick) && (
+          <div
+            style={{
+              display: 'flex',
+              gap: stepper.spacing.buttonGap,
+              alignItems: 'flex-start',
+              width: '100%',
+            }}
+          >
+            {showHorizontalSecondary && onSecondaryClick && (
+              <Button emphasis="mid" onClick={onSecondaryClick}>
+                {secondaryButtonText}
+              </Button>
+            )}
+            {onPrimaryClick && (
+              <Button emphasis="high" onClick={onPrimaryClick}>
+                {isLastStep ? 'Complete' : primaryButtonText}
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div
@@ -1002,6 +1255,38 @@ export function NonLinearStepper({
 }
 
 NonLinearStepper.displayName = 'NonLinearStepper'
+
+// =============================================================================
+// HORIZONTAL STEPPER (Convenience Component)
+// =============================================================================
+
+/**
+ * HorizontalStepper Component
+ *
+ * A top-bar stepper that lays out steps horizontally with connectors between
+ * them. The active step's content renders below the bar, followed by the
+ * navigation buttons. Adapted from the TaskModal horizontal step indicator.
+ *
+ * @example
+ * <HorizontalStepper
+ *   steps={[
+ *     { id: '1', label: 'Details' },
+ *     { id: '2', label: 'Review' },
+ *     { id: '3', label: 'Submit' },
+ *   ]}
+ *   activeStep={activeStep}
+ *   onStepChange={setActiveStep}
+ *   stepContent={[<DetailsForm />, <ReviewPanel />, <SubmitConfirm />]}
+ *   onPrimaryClick={() => setActiveStep((s) => s + 1)}
+ *   onSecondaryClick={() => setActiveStep((s) => s - 1)}
+ *   clickable
+ * />
+ */
+export function HorizontalStepper(props: HorizontalStepperProps) {
+  return <Stepper {...props} orientation="horizontal" />
+}
+
+HorizontalStepper.displayName = 'HorizontalStepper'
 
 // =============================================================================
 // EXPORTS
