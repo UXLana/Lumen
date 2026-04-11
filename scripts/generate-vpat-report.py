@@ -186,7 +186,7 @@ run.font.color.rgb = MEDIUM_BLUE
 
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-run = p.add_run('Date: February 12, 2026  |  Product: Metrc v1.17.19225  |  VPAT Date: 1/13/2026')
+run = p.add_run('Date: February 12, 2026  |  Product: Lumen v1.17.19225  |  VPAT Date: 1/13/2026')
 run.font.size = Pt(10)
 run.font.color.rgb = RGBColor(0x66, 0x66, 0x66)
 
@@ -674,7 +674,7 @@ add_ticket_header(doc,
 
 add_section_label(doc, 'VPAT Finding')
 p = doc.add_paragraph()
-run = p.add_run('"Metrc Expert Training/Training Videos are provided on web pages outside of the application"')
+run = p.add_run('"Lumen Expert Training/Training Videos are provided on web pages outside of the application"')
 run.font.size = Pt(9)
 run.italic = True
 

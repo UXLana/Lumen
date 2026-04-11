@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "name": "Metrc Registry",
+    "name": "Lumen Registry",
     "lastModified": "2026-02-15T16:57:28Z",
     "thumbnailUrl": "https://s3-alpha.figma.com/thumbnails/17654b88-96c5-4be2-883d-634700faeb6c?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQ4GOSFWCRJS3YS53%2F20260215%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260215T120000Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=747dca299f8f566457a339df58f1250c0122d04fe5b72c87aa67a2bdb8936945",
     "components": {
@@ -1035,7 +1035,7 @@
       "185:35059": {
         "id": "185:35059",
         "key": "5e5631fd68f1b4661d9e33a6a22dc4c5b9ea2f8a",
-        "name": "Nav Header-mtr"
+        "name": "Nav Header-lumen"
       },
       "2:7903": {
         "id": "2:7903",
@@ -1208,7 +1208,7 @@
       "41:18701": {
         "id": "41:18701",
         "key": "3d9a8f0f5eed72b99a9ecebe0af098b3ceff3e8f",
-        "name": "mtr-card-title"
+        "name": "lumen-card-title"
       },
       "237:65808": {
         "id": "237:65808",
@@ -2497,7 +2497,7 @@
                                   "textStyle": "style_9PA4YA",
                                   "fills": "fill_5SY2UV",
                                   "layout": "layout_MQNHJQ",
-                                  "text": "Browse Metrc-verified applications for compliance, inventory, and operations."
+                                  "text": "Browse Lumen-verified applications for compliance, inventory, and operations."
                                 }
                               ]
                             }
@@ -8288,7 +8288,7 @@
                                   "textStyle": "style_9PA4YA",
                                   "fills": "fill_5SY2UV",
                                   "layout": "layout_MQNHJQ",
-                                  "text": "Browse Metrc-verified applications for compliance, inventory, and operations."
+                                  "text": "Browse Lumen-verified applications for compliance, inventory, and operations."
                                 }
                               ]
                             }
@@ -25216,7 +25216,7 @@
                                   "textStyle": "style_9PA4YA",
                                   "fills": "fill_5SY2UV",
                                   "layout": "layout_MQNHJQ",
-                                  "text": "Browse Metrc-verified applications for compliance, inventory, and operations."
+                                  "text": "Browse Lumen-verified applications for compliance, inventory, and operations."
                                 }
                               ]
                             }
@@ -26536,7 +26536,7 @@
                         },
                         {
                           "id": "203:27973",
-                          "name": "mtr-table",
+                          "name": "lumen-table",
                           "type": "FRAME",
                           "fills": "fill_55P28J",
                           "strokes": "stroke_7X56NF",
@@ -35674,7 +35674,7 @@
           "children": [
             {
               "id": "203:28332",
-              "name": "Nav Header-mtr",
+              "name": "Nav Header-lumen",
               "type": "INSTANCE",
               "componentId": "185:35059",
               "strokes": "stroke_0FZCWT",
@@ -39789,7 +39789,7 @@
           "children": [
             {
               "id": "203:28603",
-              "name": "Nav Header-mtr",
+              "name": "Nav Header-lumen",
               "type": "INSTANCE",
               "componentId": "185:35059",
               "strokes": "stroke_0FZCWT",

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────
-# publish-ds.sh — Package the Prism Design System and test it
+# publish-ds.sh — Package the Lumen Design System and test it
 #
 # What this does (in plain English):
 #   1. Zips up your components and tokens into a .tgz file
@@ -15,9 +15,9 @@
 #   ./scripts/publish-ds.sh
 #
 # After it passes, push the starter so your team gets the update:
-#   cd ~/path/to/metrcid.prototype.starter
+#   cd ~/path/to/lumen.prototype.starter
 #   git add .
-#   git commit -m "Update Prism design system to vX.X.X"
+#   git commit -m "Update Lumen design system to vX.X.X"
 #   git push
 # ─────────────────────────────────────────────────────────────────────
 
@@ -29,8 +29,8 @@ STARTER_DIR=""  # Will be set below
 
 # Find the starter repo — check common locations
 for candidate in \
-    "$DS_DIR/../metrcid.prototype.starter" \
-    "$HOME/Desktop/metrcid.prototype.starter" \
+    "$DS_DIR/../lumen.prototype.starter" \
+    "$HOME/Desktop/lumen.prototype.starter" \
     "/tmp/test-starter"; do
     if [ -d "$candidate/.git" ]; then
         STARTER_DIR="$(cd "$candidate" && pwd)"
@@ -40,11 +40,11 @@ done
 
 if [ -z "$STARTER_DIR" ]; then
     echo ""
-    echo "ERROR: Can't find the metrcid.prototype.starter repo."
+    echo "ERROR: Can't find the lumen.prototype.starter repo."
     echo ""
     echo "I looked in:"
-    echo "  - $DS_DIR/../metrcid.prototype.starter"
-    echo "  - $HOME/Desktop/metrcid.prototype.starter"
+    echo "  - $DS_DIR/../lumen.prototype.starter"
+    echo "  - $HOME/Desktop/lumen.prototype.starter"
     echo "  - /tmp/test-starter"
     echo ""
     echo "Either clone it or set STARTER_DIR:"
@@ -57,7 +57,7 @@ STARTER_DIR="${STARTER_DIR_OVERRIDE:-$STARTER_DIR}"
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════╗"
-echo "║  Prism Design System — Package & Test                   ║"
+echo "║  Lumen Design System — Package & Test                   ║"
 echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
 echo "  Design system:  $DS_DIR"
@@ -68,7 +68,7 @@ echo ""
 echo "📦 Step 1/5 — Packaging the design system..."
 cd "$DS_DIR"
 VERSION=$(node -p "require('./package.json').version")
-TARBALL="metrcid-design.system-${VERSION}.tgz"
+TARBALL="lumen-design-system-${VERSION}.tgz"
 
 npm pack --quiet 2>&1 | tail -1
 echo "   Created: $TARBALL ($VERSION)"
@@ -88,7 +88,7 @@ python3 -c "
 import json
 with open('package.json', 'r') as f:
     pkg = json.load(f)
-pkg['dependencies']['@metrcid/design.system'] = 'file:./vendor/$TARBALL'
+pkg['dependencies']['@lumen/design-system'] = 'file:./vendor/$TARBALL'
 with open('package.json', 'w') as f:
     json.dump(pkg, f, indent=2)
     f.write('\n')
@@ -118,7 +118,7 @@ if [ $BUILD_EXIT -eq 0 ]; then
     echo "  Next steps:"
     echo "    cd $STARTER_DIR"
     echo "    git add ."
-    echo "    git commit -m \"Update Prism design system to v${VERSION}\""
+    echo "    git commit -m \"Update Lumen design system to v${VERSION}\""
     echo "    git push"
     echo ""
     echo "  Then tell your team: 'New DS version is out — run:"

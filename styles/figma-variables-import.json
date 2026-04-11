@@ -1,12 +1,12 @@
 {
   "version": "1.0",
   "metadata": {
-    "description": "MTR Design System color variables with Trace and University modes. Import via Figma Variables > Import variables from JSON, or use the Variables REST API.",
+    "description": "LUMEN Design System color variables with Trace and University modes. Import via Figma Variables > Import variables from JSON, or use the Variables REST API.",
     "generated": "2026-02-10"
   },
   "collections": [
     {
-      "name": "mtr_sys_color",
+      "name": "lumen_sys_color",
       "modes": ["Trace", "University"],
       "variables": [
         { "name": "brand", "type": "COLOR", "values": { "Trace": "#005151", "University": "#213F39" } },

@@ -1,17 +1,17 @@
 /**
- * Prism Design System - Design Tokens
+ * Lumen Design System - Design Tokens
  * Source: Trace Design System v2.0 (Figma)
  * https://www.figma.com/design/gc68toINDS8Ovsan5aVPS2/Trace-Design-System-v2.0--wip-
  *
- * Color taxonomy: prism_sys_color_* (matches Figma variable naming exactly)
+ * Color taxonomy: lumen_sys_color_* (matches Figma variable naming exactly)
  * Typography: DM Sans
  *
  * Last updated: 2026-02-10
  *
  * THEMING:
- * - Colors use CSS custom properties (--prism-*) so they respond to theme changes
+ * - Colors use CSS custom properties (--lumen-*) so they respond to theme changes
  *   automatically — no component code changes needed.
- * - The SwitchableThemeProvider sets --prism-* vars on :root at runtime.
+ * - The SwitchableThemeProvider sets --lumen-* vars on :root at runtime.
  * - Default (Trace) values live in globals.css for flash-free first paint.
  * - Typography, spacing, radius, shadows, breakpoints are shared across all themes.
  *
@@ -19,7 +19,7 @@
  * Taxonomy restructured to match Figma 1:1 — Figma is source of truth for values.
  */
 
-import { traceTheme } from './themes/trace';
+import { lumenTheme } from './themes/lumen';
 import { themeColorsToVarRefs, tokensToVarRefs } from './themes/css-vars';
 import type { ThemeColors, ThemeTypography, ThemeBorderRadius, ThemeElevation, ThemeSpacing } from './themes/theme-interface';
 
@@ -27,7 +27,7 @@ import type { ThemeColors, ThemeTypography, ThemeBorderRadius, ThemeElevation, T
 // COLOR TOKENS — CSS-variable-backed, auto-themed via SwitchableThemeProvider
 // =============================================================================
 
-const _themed = themeColorsToVarRefs(traceTheme.colors as Record<string, any>) as unknown as ThemeColors;
+const _themed = themeColorsToVarRefs(lumenTheme.colors as Record<string, any>) as unknown as ThemeColors;
 
 export const colors = {
   ..._themed,
@@ -38,8 +38,8 @@ export const colors = {
 // =============================================================================
 
 const _themedDataViz = tokensToVarRefs(
-  traceTheme.colors.dataViz as unknown as Record<string, any>,
-  '--prism-dataviz',
+  lumenTheme.colors.dataViz as unknown as Record<string, any>,
+  '--lumen-dataviz',
 ) as unknown as Record<string, string>;
 
 /**
@@ -75,7 +75,7 @@ export const dataVizColors = _themedDataViz as {
 // TYPOGRAPHY TOKENS — CSS-variable-backed, auto-themed via SwitchableThemeProvider
 // =============================================================================
 
-const _themedTypo = tokensToVarRefs(traceTheme.typography as unknown as Record<string, any>, '--prism-typo') as unknown as ThemeTypography;
+const _themedTypo = tokensToVarRefs(lumenTheme.typography as unknown as Record<string, any>, '--lumen-typo') as unknown as ThemeTypography;
 
 export const fontFamilies = {
   display: _themedTypo.fontFamilies.display,
@@ -274,6 +274,37 @@ export const typography = {
 } as const;
 
 // =============================================================================
+// NUMERIC / TABULAR TYPOGRAPHY UTILITIES
+// =============================================================================
+
+/**
+ * Tabular figures — every digit renders at the same width so numbers stack
+ * in perfect columns. Use on any display of currency, percentages, stats,
+ * or other numeric values in a list or table.
+ *
+ * Spread onto a style block:
+ *   style={{ ...typography.body.md, ...numericStyles.tabular }}
+ *
+ * Why: proportional fonts make "1" narrower than "0", which causes decimal
+ * points to drift in lists. Tabular nums is a typographic OpenType feature
+ * that forces monospaced digits while keeping letters proportional.
+ */
+export const numericStyles = {
+  /** Apply tabular (monospaced) digits to a style block. */
+  tabular: {
+    fontVariantNumeric: 'tabular-nums' as const,
+  },
+  /** Apply lining figures (uppercase-style digits, aligned to baseline). */
+  lining: {
+    fontVariantNumeric: 'lining-nums' as const,
+  },
+  /** Combined tabular + lining — the default for financial UIs. */
+  financial: {
+    fontVariantNumeric: 'tabular-nums lining-nums' as const,
+  },
+} as const;
+
+// =============================================================================
 // SPACING TOKENS
 // =============================================================================
 
@@ -293,7 +324,7 @@ export const spacing = {
 } as const;
 
 // Component-specific themed spacing — CSS-variable-backed
-const _themedSpacing = tokensToVarRefs(traceTheme.spacing as unknown as Record<string, any>, '--prism-space') as unknown as ThemeSpacing;
+const _themedSpacing = tokensToVarRefs(lumenTheme.spacing as unknown as Record<string, any>, '--lumen-space') as unknown as ThemeSpacing;
 
 export const spacingTokens = {
   inputPadding: _themedSpacing.inputPadding,
@@ -314,7 +345,7 @@ export const spacingSemantics = spacingTokens;
 // BORDER RADIUS TOKENS — CSS-variable-backed, auto-themed
 // =============================================================================
 
-const _themedRadius = tokensToVarRefs(traceTheme.borderRadius as unknown as Record<string, any>, '--prism-radius') as unknown as ThemeBorderRadius;
+const _themedRadius = tokensToVarRefs(lumenTheme.borderRadius as unknown as Record<string, any>, '--lumen-radius') as unknown as ThemeBorderRadius;
 
 export const borderRadius = {
   none: _themedRadius.none,
@@ -332,13 +363,13 @@ export const borderRadius = {
 // These cascade from the theme's base via buildComponentRadius(), with per-theme
 // overrides. Changing the base updates every component radius automatically.
 export const borderRadiusSemantics = {
-  button: 'var(--prism-comp-radius-button)',
-  input:  'var(--prism-comp-radius-input)',
-  card:   'var(--prism-comp-radius-card)',
-  modal:  'var(--prism-comp-radius-modal)',
-  badge:  'var(--prism-comp-radius-badge)',
-  chip:   'var(--prism-comp-radius-chip)',
-  avatar: 'var(--prism-comp-radius-avatar)',
+  button: 'var(--lumen-comp-radius-button)',
+  input:  'var(--lumen-comp-radius-input)',
+  card:   'var(--lumen-comp-radius-card)',
+  modal:  'var(--lumen-comp-radius-modal)',
+  badge:  'var(--lumen-comp-radius-badge)',
+  chip:   'var(--lumen-comp-radius-chip)',
+  avatar: 'var(--lumen-comp-radius-avatar)',
 } as const;
 
 // =============================================================================
@@ -352,7 +383,7 @@ export const borderRadiusSemantics = {
 // SHADOW TOKENS — CSS-variable-backed, auto-themed
 // =============================================================================
 
-const _themedElevation = tokensToVarRefs(traceTheme.elevation as unknown as Record<string, any>, '--prism-elevation') as unknown as ThemeElevation;
+const _themedElevation = tokensToVarRefs(lumenTheme.elevation as unknown as Record<string, any>, '--lumen-elevation') as unknown as ThemeElevation;
 
 export const shadows = {
   none: _themedElevation.none,
@@ -470,56 +501,56 @@ export const transitionPresets = {
 } as const;
 
 // =============================================================================
-// COMPONENT TOKENS (Prism System Tokens)
+// COMPONENT TOKENS (Lumen System Tokens)
 // =============================================================================
 
-export const prismComponents = {
+export const lumenComponents = {
   // Typography component tokens
   text: {
     display: {
-      xl: 'prism_sys_text_display_xl',
-      lg: 'prism_sys_text_display_lg',
-      md: 'prism_sys_text_display_md',
-      sm: 'prism_sys_text_display_sm',
-      xs: 'prism_sys_text_display_xs',
-      xlOnDark: 'prism_sys_text_display_xl_onDark',
-      lgOnDark: 'prism_sys_text_display_lg_onDark',
-      mdOnDark: 'prism_sys_text_display_md_onDark',
-      smOnDark: 'prism_sys_text_display_sm_onDark',
-      xsOnDark: 'prism_sys_text_display_xs_onDark',
+      xl: 'lumen_sys_text_display_xl',
+      lg: 'lumen_sys_text_display_lg',
+      md: 'lumen_sys_text_display_md',
+      sm: 'lumen_sys_text_display_sm',
+      xs: 'lumen_sys_text_display_xs',
+      xlOnDark: 'lumen_sys_text_display_xl_onDark',
+      lgOnDark: 'lumen_sys_text_display_lg_onDark',
+      mdOnDark: 'lumen_sys_text_display_md_onDark',
+      smOnDark: 'lumen_sys_text_display_sm_onDark',
+      xsOnDark: 'lumen_sys_text_display_xs_onDark',
     },
     heading: {
-      h1: 'prism_sys_text_heading_h1',
-      h2: 'prism_sys_text_heading_h2',
-      h3: 'prism_sys_text_heading_h3',
-      h4: 'prism_sys_text_heading_h4',
-      h5: 'prism_sys_text_heading_h5',
-      h6: 'prism_sys_text_heading_h6',
+      h1: 'lumen_sys_text_heading_h1',
+      h2: 'lumen_sys_text_heading_h2',
+      h3: 'lumen_sys_text_heading_h3',
+      h4: 'lumen_sys_text_heading_h4',
+      h5: 'lumen_sys_text_heading_h5',
+      h6: 'lumen_sys_text_heading_h6',
     },
     body: {
-      xl: 'prism_sys_text_body_xl',
-      lg: 'prism_sys_text_body_lg',
-      md: 'prism_sys_text_body_md',
-      sm: 'prism_sys_text_body_sm',
-      xs: 'prism_sys_text_body_xs',
+      xl: 'lumen_sys_text_body_xl',
+      lg: 'lumen_sys_text_body_lg',
+      md: 'lumen_sys_text_body_md',
+      sm: 'lumen_sys_text_body_sm',
+      xs: 'lumen_sys_text_body_xs',
     },
     label: {
-      lg: 'prism_sys_text_label_lg',
-      md: 'prism_sys_text_label_md',
-      sm: 'prism_sys_text_label_sm',
+      lg: 'lumen_sys_text_label_lg',
+      md: 'lumen_sys_text_label_md',
+      sm: 'lumen_sys_text_label_sm',
     },
   },
   
   // Color component tokens
   color: {
-    brand: 'prism_sys_color_brand',
-    brandLight: 'prism_sys_color_brand_light',
-    brandDark: 'prism_sys_color_brand_dark',
-    surface: 'prism_sys_color_surface',
-    surfaceElevated: 'prism_sys_color_surface_elevated',
-    textPrimary: 'prism_sys_color_text_primary',
-    textSecondary: 'prism_sys_color_text_secondary',
-    textDisabled: 'prism_sys_color_text_disabled',
+    brand: 'lumen_sys_color_brand',
+    brandLight: 'lumen_sys_color_brand_light',
+    brandDark: 'lumen_sys_color_brand_dark',
+    surface: 'lumen_sys_color_surface',
+    surfaceElevated: 'lumen_sys_color_surface_elevated',
+    textPrimary: 'lumen_sys_color_text_primary',
+    textSecondary: 'lumen_sys_color_text_secondary',
+    textDisabled: 'lumen_sys_color_text_disabled',
   },
 } as const;
 
@@ -647,17 +678,19 @@ export const button = {
   },
 
   // Typography per size (from Figma - DM Sans Semibold)
+  // lineHeight: 1 lets flexbox alignItems:'center' handle vertical centering
+  // without font-metric offset from tight px line-heights.
   typography: {
     lg: {
       fontSize: '16px',
       fontWeight: 600,
-      lineHeight: '18px',
+      lineHeight: 1,
       letterSpacing: '-0.9px',
     },
     md: {
       fontSize: '14px',
       fontWeight: 600,
-      lineHeight: '16px',
+      lineHeight: 1,
       letterSpacing: '-0.9px',
     },
   },
@@ -863,7 +896,7 @@ export const button = {
   },
 
   // Border radius — per-theme via componentRadius.button CSS var
-  borderRadius: 'var(--prism-comp-radius-button)',
+  borderRadius: 'var(--lumen-comp-radius-button)',
 
   // Transition
   transition: '200ms ease-out',
@@ -1429,7 +1462,7 @@ export interface SidebarColors {
 
 export function getSidebarColors(tc: ThemeColors): SidebarColors {
   return {
-    background: tc.hover.onLight,
+    background: tc.navBackground,
     backgroundAlt: tc.surface.lightDarker,
     border: tc.border.lowEmphasis.onLight,
     item: {
@@ -1783,35 +1816,38 @@ export const stepper = {
   // Step indicator (circular button)
   step: {
     size: '32px',
+    sizeNumeric: 32,
     borderRadius: '50%',
+    iconSize: 20,
+    checkIconSize: 16,
 
-    // Colors per state — uses themed brand color
+    // Colors per state — themed via CSS variables
     colors: {
       completed: {
         background: colors.brand.default,
-        text: '#FFFFFF',
+        text: colors.text.highEmphasis.onDark,
         border: 'transparent',
       },
       active: {
         background: colors.brand.default,
-        text: '#FFFFFF',
+        text: colors.text.highEmphasis.onDark,
         border: 'transparent',
       },
       pending: {
-        background: '#FFFFFF',
-        text: 'rgba(0, 0, 0, 0.60)',
-        border: 'rgba(0, 0, 0, 0.15)',
+        background: colors.surface.light,
+        text: colors.text.lowEmphasis.onLight,
+        border: colors.border.midEmphasis.onLight,
       },
       disabled: {
-        background: '#FFFFFF',
-        text: 'rgba(0, 0, 0, 0.60)',
-        border: 'rgba(0, 0, 0, 0.15)',
+        background: colors.surface.light,
+        text: colors.text.disabled.onLight,
+        border: colors.border.midEmphasis.onLight,
       },
     },
 
-    // Typography for step number
+    // Typography for step number — custom Figma specs (18px line-height doesn't match standard tokens)
     typography: {
-      fontWeight: 600,
+      fontWeight: fontWeights.semibold,
       fontSize: '14px',
       lineHeight: '18px',
       letterSpacing: '-0.55px',
@@ -1821,66 +1857,70 @@ export const stepper = {
   // Connector lines between steps
   connector: {
     width: '2px',
+    topHeight: spacing.md,
+    topWrapperHeight: spacing['4xl'],
 
     colors: {
       completed: colors.brand.default,
-      pending: 'rgba(0, 0, 0, 0.15)',
+      pending: colors.border.midEmphasis.onLight,
     },
   },
 
   // Step content area
   content: {
-    paddingLeft: '16px',
+    paddingLeft: spacing.md,
 
-    // Label typography
+    // Label typography — custom Figma specs (22px line-height doesn't match standard tokens)
     label: {
       active: {
         fontSize: '16px',
-        fontWeight: 400,
+        fontWeight: fontWeights.regular,
         lineHeight: '22px',
         letterSpacing: '-0.35px',
-        color: 'rgba(0, 0, 0, 0.95)',
+        color: colors.text.highEmphasis.onLight,
       },
       inactive: {
         fontSize: '16px',
-        fontWeight: 400,
+        fontWeight: fontWeights.regular,
         lineHeight: '22px',
         letterSpacing: '-0.35px',
-        color: 'rgba(0, 0, 0, 0.60)',
+        color: colors.text.lowEmphasis.onLight,
       },
     },
 
-    // Metadata typography (optional subtitle)
+    // Metadata typography — custom Figma specs (18px line-height doesn't match standard tokens)
     metadata: {
       fontSize: '14px',
-      fontWeight: 400,
+      fontWeight: fontWeights.regular,
       lineHeight: '18px',
       letterSpacing: '-0.3px',
-      color: 'rgba(0, 0, 0, 0.60)',
+      color: colors.text.lowEmphasis.onLight,
     },
   },
 
   // Spacing
   spacing: {
-    labelPaddingY: '21px',
-    contentGap: '16px',
-    buttonGap: '16px',
+    labelPaddingY: '21px', // Custom Figma spec — no matching spacing token
+    contentGap: spacing.md,
+    buttonGap: spacing.md,
+    containerPadding: spacing.xs,
+    metadataMarginTop: spacing['2xs'],
   },
 
-  // Focus ring
+  // Focus ring — #3086BF is shared across components; TODO: promote to semantic focus token
   focus: {
     color: '#3086BF',
     width: '3px',
     offset: '5px',
   },
 
-  // Hover state
+  // Hover state — uses surface token for theme compatibility
   hover: {
-    background: 'rgba(18, 122, 86, 0.08)',
+    background: colors.surface.lightDarker,
   },
 
   // Transition
-  transition: '200ms ease-out',
+  transition: transitionPresets.default,
 } as const;
 
 
@@ -1965,7 +2005,7 @@ export const theme = {
   zIndex,
   transitions,
   transitionPresets,
-  prismComponents,
+  lumenComponents,
   avatar,
   button,
   tab,
