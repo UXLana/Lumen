@@ -166,7 +166,6 @@ export const CommentBox = forwardRef<HTMLTextAreaElement, CommentBoxProps>(
                     onAttach?.()
                   }}
                   disabled={disabled}
-                  title={`Attach file (${acceptedFiles})`}
                   aria-label={`Attach file (${acceptedFiles})`}
                   style={{
                     display: 'flex',
@@ -234,8 +233,7 @@ export const CommentBox = forwardRef<HTMLTextAreaElement, CommentBoxProps>(
                   handleSubmit()
                 }}
                 disabled={disabled || !hasContent}
-                title="Add note (⌘+Enter)"
-                aria-label="Add note"
+                aria-label="Add note (⌘+Enter to submit)"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -245,7 +243,7 @@ export const CommentBox = forwardRef<HTMLTextAreaElement, CommentBoxProps>(
                   border: 'none',
                   borderRadius: '50%',
                   backgroundColor: hasContent && !disabled ? colors.brand.default : colors.surface.lightDarker,
-                  color: hasContent && !disabled ? '#FFFFFF' : colors.text.disabled.onLight,
+                  color: hasContent && !disabled ? colors.text.highEmphasis.onDark : colors.text.disabled.onLight,
                   cursor: hasContent && !disabled ? 'pointer' : 'default',
                   transition: `background-color ${transitionPresets.default}, color ${transitionPresets.default}`,
                   padding: 0,

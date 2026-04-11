@@ -407,7 +407,7 @@ export function AmountConfirmDialog({
                   style={{
                     width: '20px',
                     height: '20px',
-                    accentColor: colors.brand.default,
+                    accentColor: themeColors.brand?.default ?? colors.brand.default,
                     cursor: 'pointer',
                     flexShrink: 0,
                   }}

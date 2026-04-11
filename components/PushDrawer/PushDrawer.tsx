@@ -19,6 +19,10 @@ export type DrawerVariant = 'rounded' | 'square'
 export type DrawerSide = 'left' | 'right'
 export type DrawerMode = 'push' | 'overlay'
 
+// Drawer slide animation — matches transitionPresets.slow (300ms ease-in-out)
+// for coordinated width/transform/opacity/padding transitions.
+const DRAWER_TRANSITION = transitionPresets.slow
+
 export interface DrawerProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Whether the drawer is open */
   isOpen: boolean
@@ -113,7 +117,7 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(
         flexDirection: 'column',
         overflow: 'hidden',
         height: '100%',
-        transition: 'width 300ms ease-in-out, min-width 300ms ease-in-out, opacity 300ms ease-in-out, padding 300ms ease-in-out',
+        transition: `width ${DRAWER_TRANSITION}, min-width ${DRAWER_TRANSITION}, opacity ${DRAWER_TRANSITION}, padding ${DRAWER_TRANSITION}`,
         ...(isRounded
           ? {
               padding: isOpen
@@ -184,7 +188,7 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(
       overflow: 'hidden',
       backgroundColor: colors.surface.light,
       transform: isOpen ? 'translateX(0)' : `translateX(${isRight ? '100%' : '-100%'})`,
-      transition: 'transform 300ms ease-in-out',
+      transition: `transform ${DRAWER_TRANSITION}`,
       zIndex: 1001,
       ...(isRounded
         ? {
@@ -211,7 +215,7 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(
             backgroundColor: colors.scrim,
             opacity: isOpen ? 1 : 0,
             pointerEvents: isOpen ? 'auto' : 'none',
-            transition: 'opacity 300ms ease-in-out',
+            transition: `opacity ${DRAWER_TRANSITION}`,
             zIndex: 1000,
           }}
         />

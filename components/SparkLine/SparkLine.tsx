@@ -22,22 +22,10 @@
 import React from 'react'
 import { LineChart as RechartsLineChart, Line, ResponsiveContainer } from 'recharts'
 import { colors } from '@/styles/design-tokens'
+import { srOnlyStyle } from '@/styles/a11y-utilities'
 
-// ---------------------------------------------------------------------------
-// Shared utilities (duplicated from LineChart to keep components independent)
-// ---------------------------------------------------------------------------
-
-const srOnlyStyle: React.CSSProperties = {
-  position: 'absolute',
-  width: '1px',
-  height: '1px',
-  padding: 0,
-  margin: '-1px',
-  overflow: 'hidden',
-  clip: 'rect(0,0,0,0)',
-  whiteSpace: 'nowrap',
-  border: 0,
-}
+// Client-only. Safe inside Next.js app router because this module is imported
+// from components marked 'use client'. Recharts relies on window measurements.
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = React.useState(false)

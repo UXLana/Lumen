@@ -35,23 +35,13 @@ import {
   fontFamilies,
   spacing,
   borderRadius,
+  shadows,
 } from '@/styles/design-tokens'
+import { srOnlyStyle } from '@/styles/a11y-utilities'
 
-// ---------------------------------------------------------------------------
-// Shared utilities (duplicated in SparkLine to keep components independent)
-// ---------------------------------------------------------------------------
-
-const srOnlyStyle: React.CSSProperties = {
-  position: 'absolute',
-  width: '1px',
-  height: '1px',
-  padding: 0,
-  margin: '-1px',
-  overflow: 'hidden',
-  clip: 'rect(0,0,0,0)',
-  whiteSpace: 'nowrap',
-  border: 0,
-}
+// Client-only. Safe inside Next.js app router because this module is imported
+// from components marked 'use client'. Recharts relies on window measurements,
+// so rendering on the server would fail.
 
 /**
  * Tracks the user's `prefers-reduced-motion` setting. Used to disable
@@ -181,8 +171,8 @@ export function LineChart({
           </tr>
         </thead>
         <tbody>
-          {data.map((d, i) => (
-            <tr key={i}>
+          {data.map((d) => (
+            <tr key={d.label}>
               <th scope="row">{d.label}</th>
               <td>{formatCurrencyFull(d.value)}</td>
             </tr>
@@ -336,7 +326,7 @@ function LumenChartTooltip({ active, payload, format }: LumenChartTooltipProps) 
         backgroundColor: colors.surface.light,
         border: `1px solid ${colors.border.lowEmphasis.onLight}`,
         borderRadius: borderRadius.md,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+        boxShadow: shadows.lg,
         fontFamily: fontFamilies.body,
       }}
     >
