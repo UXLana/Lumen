@@ -53,6 +53,8 @@ next-env.d.ts
 
 # Screenshots
 Screenshot*.png
+# Top-level debug screenshots (never commit these — put real assets in public/ or ASSETS/)
+/*.png
 
 # OS
 .DS_Store
