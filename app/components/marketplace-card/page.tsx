@@ -11,9 +11,9 @@ import { colors, typography } from '@/styles/design-tokens'
 
 const sampleApps = [
   {
-    name: 'Metrc Integration',
+    name: 'Lumen Integration',
     description: 'Industry-leading track-and-trace platform providing end-to-end supply chain visibility for cannabis operations.',
-    publisher: 'Metrc',
+    publisher: 'Lumen',
     category: 'Compliance',
     rating: 5.0,
     reviewCount: 128,
@@ -120,6 +120,7 @@ export default function MarketplaceCardPage() {
     <StyleguideLayout
       title="Marketplace Card"
       description="A specialized card component for displaying marketplace/app store items with app info, ratings, status, and verification badges."
+      tagline="Window shopping, component style."
       activeId="marketplace-card"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -133,7 +134,7 @@ export default function MarketplaceCardPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { MarketplaceCard } from '@metrc/design-system'
+import { MarketplaceCard } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { MarketplaceCard } from '@/components'`}</CodeBlock>
@@ -156,9 +157,9 @@ import { MarketplaceCard } from '@/components'`}</CodeBlock>
                       <div style={{ padding: '16px' }}>
                         <MarketplaceCard
                           variant={demoVariant}
-                          name="Metrc Integration"
+                          name="Lumen Integration"
                           description="Industry-leading track-and-trace platform providing end-to-end supply chain visibility for cannabis operations."
-                          publisher="Metrc"
+                          publisher="Lumen"
                           category="Compliance"
                           rating={5.0}
                           reviewCount={128}
@@ -171,9 +172,9 @@ import { MarketplaceCard } from '@/components'`}</CodeBlock>
                     }
                     code={`<MarketplaceCard
   variant="${demoVariant}"
-  name="Metrc Integration"
+  name="Lumen Integration"
   description="Industry-leading track-and-trace platform..."
-  publisher="Metrc"
+  publisher="Lumen"
   category="Compliance"
   rating={5.0}
   reviewCount={128}
@@ -337,9 +338,9 @@ import type {
               <CodeBlock>
 {`// Default card with hero image
 <MarketplaceCard
-  name="Metrc Integration"
+  name="Lumen Integration"
   description="Industry-leading track-and-trace platform..."
-  publisher="Metrc"
+  publisher="Lumen"
   category="Compliance"
   rating={5.0}
   reviewCount={128}

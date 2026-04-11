@@ -165,6 +165,7 @@ export default function ComboboxPage() {
     <StyleguideLayout
       title="Combobox"
       description="A searchable dropdown combining a text input with a filterable listbox. Supports keyboard navigation, async loading, and the full WAI-ARIA Combobox pattern."
+      tagline="Search, select, create — all in one field."
       activeId="combobox"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -387,7 +388,7 @@ const states = [
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Import</h3>
               <CodeBlock>{`// Package import (recommended for consumers)
-import { Combobox } from '@metrc/design-system'
+import { Combobox } from '@lumen/design-system'
 
 // Or with path alias
 import { Combobox } from '@/components'

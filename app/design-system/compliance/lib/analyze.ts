@@ -143,7 +143,7 @@ const axeRuleMappings: Record<string, AxeRuleMapping> = {
     wcagCriteria: ['2.4.2'],
     title: 'Document has no title',
     fix: 'Add a descriptive <title> element to every page. The title should describe the page content and follow a consistent pattern like "Page Name — Section — App Name".',
-    codeExample: '<head>\n  <title>Packages — Retail ID — Metrc</title>\n</head>\n\n<!-- For SPAs, update title on route change: -->\nuseEffect(() => {\n  document.title = `${pageTitle} — Metrc`;\n}, [pageTitle]);',
+    codeExample: '<head>\n  <title>Packages — Retail ID — Lumen</title>\n</head>\n\n<!-- For SPAs, update title on route change: -->\nuseEffect(() => {\n  document.title = `${pageTitle} — Lumen`;\n}, [pageTitle]);',
     effort: 'low',
     testingSteps: ['Check document.title for every page/route', 'Verify title changes on navigation', 'Screen reader: verify page title is announced on page load'],
   },

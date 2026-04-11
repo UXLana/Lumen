@@ -175,6 +175,7 @@ export default function ComplianceDashboardPage() {
     <StyleguideLayout
       title="Compliance Dashboard"
       description="Analyze VPAT reports, track accessibility issues, and generate remediation stories."
+      tagline="Accessibility is not a feature. It is a right."
       activeId="compliance"
       tabs={[]}
     >

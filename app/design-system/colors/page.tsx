@@ -760,11 +760,11 @@ border: \`1px solid \${colors.border.highEmphasis.onLight}\`  // Prominent`}</Co
               Theme Switching
             </h3>
             <CodeBlock>{`import { ThemeProvider } from '@/styles/themes'
-import { traceTheme } from '@/styles/themes'
+import { lumenTheme } from '@/styles/themes'
 // import { otherTheme } from '@/styles/themes/other'
 
 // Wrap your app or section with a theme
-<ThemeProvider theme={traceTheme}>
+<ThemeProvider theme={lumenTheme}>
   <App />
 </ThemeProvider>`}</CodeBlock>
           </div>
@@ -774,18 +774,18 @@ import { traceTheme } from '@/styles/themes'
               Figma Token Mapping
             </h3>
             <p style={{ ...typography.body.sm, color: themeColors.text.lowEmphasis.onLight, marginBottom: '16px' }}>
-              All color tokens map 1:1 to Figma variables with the <code style={{ background: themeColors.surface.lightDarker, padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>mtr_sys_color_</code> prefix.
+              All color tokens map 1:1 to Figma variables with the <code style={{ background: themeColors.surface.lightDarker, padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>lumen_sys_color_</code> prefix.
             </p>
             <SpecTable
               headers={['Code Token', 'Figma Variable']}
               rows={[
-                ['colors.brand.default', 'mtr_sys_color_brand'],
-                ['colors.surface.light', 'mtr_sys_color_surface_light'],
-                ['colors.text.highEmphasis.onLight', 'mtr_sys_color_text_highEmphasis_onLight'],
-                ['colors.border.lowEmphasis.onLight', 'mtr_sys_color_border_lowEmphasis_onLight'],
-                ['colors.action.enabled', 'mtr_sys_color_action_enabled'],
-                ['colors.badge.info', 'mtr_sys_color_badge_info'],
-                ['colors.scrim', 'mtr_sys_color_scrim'],
+                ['colors.brand.default', 'lumen_sys_color_brand'],
+                ['colors.surface.light', 'lumen_sys_color_surface_light'],
+                ['colors.text.highEmphasis.onLight', 'lumen_sys_color_text_highEmphasis_onLight'],
+                ['colors.border.lowEmphasis.onLight', 'lumen_sys_color_border_lowEmphasis_onLight'],
+                ['colors.action.enabled', 'lumen_sys_color_action_enabled'],
+                ['colors.badge.info', 'lumen_sys_color_badge_info'],
+                ['colors.scrim', 'lumen_sys_color_scrim'],
               ]}
             />
           </div>

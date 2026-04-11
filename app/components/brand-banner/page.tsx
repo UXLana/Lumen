@@ -141,6 +141,7 @@ export default function BrandBannerPage() {
       activeId="brand-banner"
       title="Brand Banner"
       description="Brand banners display prominent branding elements with customizable backgrounds, logos, and messaging."
+      tagline="First impressions, engineered to last."
     >
         {/* Hero */}
         <div style={{ marginBottom: spacing['2xl'] }}>

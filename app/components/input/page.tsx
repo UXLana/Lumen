@@ -110,6 +110,7 @@ export default function InputPage() {
     <StyleguideLayout
       title="Input"
       description="Text inputs allow users to enter and edit text. They support labels, helper text, error states, and adornments."
+      tagline="Where every user journey begins."
       activeId="input"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -123,7 +124,7 @@ export default function InputPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Input } from '@metrc/design-system'
+import { Input } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Input } from '@/components'`}</CodeBlock>

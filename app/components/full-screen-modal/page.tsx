@@ -274,6 +274,7 @@ export default function FullScreenModalPage() {
     <StyleguideLayout
       title="Full Screen Modal"
       description="A full-viewport modal overlay with configurable header, responsive multi-column body, and structured panel layout for immersive workflows."
+      tagline="Full focus. Zero distraction."
       activeId="full-screen-modal"
       tabs={componentTabs}
       activeTab={activePageTab}

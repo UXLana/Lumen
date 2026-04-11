@@ -108,7 +108,8 @@ export default function AssistiveMessagePage() {
   return (
     <StyleguideLayout
       title="Assistive Message"
-      description="Small helper / validation messages shown beneath form fields. Supports 7 visual types from the Prism Design System v2.0 with optional character counters and contextual icons."
+      description="Small helper / validation messages shown beneath form fields. Supports 7 visual types from the Lumen Design System v2.0 with optional character counters and contextual icons."
+      tagline="The quiet voice that guides your forms."
       activeId="assistive-message"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -122,7 +123,7 @@ export default function AssistiveMessagePage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { AssistiveMessage } from '@metrc/design-system'
+import { AssistiveMessage } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { AssistiveMessage } from '@/components'`}</CodeBlock>
@@ -392,7 +393,7 @@ import type { AssistiveMessageProps, AssistiveMessageType } from '@/components'`
                 headers={['Property', 'Value']}
                 rows={[
                   ['Component', 'Assistive message'],
-                  ['File', 'Prism Design System v2.0 (wip)'],
+                  ['File', 'Lumen Design System v2.0 (wip)'],
                   ['Node ID', '2068-39659'],
                   ['Figma Properties', <span key="fp"><code>type</code> (variant), <code>Assistive text</code> (text), <code>Counter</code> (boolean)</span>],
                 ]}

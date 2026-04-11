@@ -180,6 +180,7 @@ export default function BannerPage() {
     <StyleguideLayout
       title="Banner"
       description="Banners communicate important information and actions to users. They appear at the top of content areas and can include action buttons."
+      tagline="Important messages deserve the spotlight."
       activeId="banner"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -193,7 +194,7 @@ export default function BannerPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Banner } from '@metrc/design-system'
+import { Banner } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Banner } from '@/components'`}</CodeBlock>

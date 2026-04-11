@@ -128,6 +128,7 @@ export default function AvatarPage() {
     <StyleguideLayout
       title="Avatar"
       description="Avatars provide a consistent visual representation of a specific person. They use a rounded rectangle shape with 30% border radius."
+      tagline="Putting a face to the interface."
       activeId="avatar"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -141,7 +142,7 @@ export default function AvatarPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Avatar, AvatarGroup } from '@metrc/design-system'
+import { Avatar, AvatarGroup } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Avatar, AvatarGroup } from '@/components'`}</CodeBlock>
@@ -249,7 +250,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                               height: '32px',
                               border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                               borderRadius: borderRadius.md,
-                              background: 'white',
+                              background: colors.surface.light,
                               cursor: avatarCount <= 1 ? 'not-allowed' : 'pointer',
                               opacity: avatarCount <= 1 ? 0.5 : 1,
                               display: 'flex',
@@ -272,7 +273,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                               height: '32px',
                               border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                               borderRadius: borderRadius.md,
-                              background: 'white',
+                              background: colors.surface.light,
                               cursor: avatarCount >= 8 ? 'not-allowed' : 'pointer',
                               opacity: avatarCount >= 8 ? 0.5 : 1,
                               display: 'flex',
@@ -302,7 +303,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                                 height: '32px',
                                 border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                                 borderRadius: borderRadius.md,
-                                background: 'white',
+                                background: colors.surface.light,
                                 cursor: maxVisible <= 1 ? 'not-allowed' : 'pointer',
                                 opacity: maxVisible <= 1 ? 0.5 : 1,
                                 display: 'flex',
@@ -325,7 +326,7 @@ ${sampleUsers.slice(0, avatarCount).map((user, i) =>
                                 height: '32px',
                                 border: `1px solid ${colors.border.lowEmphasis.onLight}`,
                                 borderRadius: borderRadius.md,
-                                background: 'white',
+                                background: colors.surface.light,
                                 cursor: maxVisible >= avatarCount ? 'not-allowed' : 'pointer',
                                 opacity: maxVisible >= avatarCount ? 0.5 : 1,
                                 display: 'flex',

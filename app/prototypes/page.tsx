@@ -89,7 +89,7 @@ const statusConfig: Record<PrototypeStatus, { label: string; color: 'warning' | 
   archived: { label: 'Archived', color: 'warning' },
 }
 
-const GITHUB_REPO = 'MetrcID/vercel.ux'
+const GITHUB_REPO = 'UXLana/Lumen'
 
 function getDiscussUrl(prototype: PrototypeEntry): string {
   if (prototype.prUrl) return prototype.prUrl
@@ -209,13 +209,20 @@ function FidelityIndicator({ current }: { current: string }) {
 
 type DrawerTab = 'prompts' | 'questions' | 'context' | 'feedback'
 
-const STORAGE_KEY = 'mtr-prototype-owner'
+const STORAGE_KEY = 'lumen-prototype-owner'
+const LEGACY_STORAGE_KEY = 'mtr-prototype-owner' // pre-rebrand
 const allOwners = Array.from(new Set(prototypes.map((p) => p.owner))).sort()
 
 function useCurrentOwner() {
   const [owner, setOwner] = useState<string>(allOwners[0] || '')
 
   useEffect(() => {
+    // Migrate any value stored under the legacy key before the rebrand.
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY)
+    if (legacy && !localStorage.getItem(STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_KEY, legacy)
+      localStorage.removeItem(LEGACY_STORAGE_KEY)
+    }
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored && allOwners.includes(stored)) {
       setOwner(stored)
@@ -622,7 +629,8 @@ export default function PrototypesIndexPage() {
     <StyleguideLayout
       activeId="prototypes-index"
       title="Prototypes"
-      description="Browse all prototypes built with the Prism Design System."
+      description="Browse all prototypes built with the Lumen Design System."
+      tagline="Where ideas take their first shape."
       tabs={[]}
       headerAction={allOwners.length > 1 ? (
         <div style={{

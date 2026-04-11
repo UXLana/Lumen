@@ -158,6 +158,7 @@ export default function ListItemPage() {
     <StyleguideLayout
       title="List Item"
       description="List items display content in lists, menus, and selection interfaces. They support various left content types, interactive states, and selection modes."
+      tagline="Structure meets content, line by line."
       activeId="list-item"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -171,7 +172,7 @@ export default function ListItemPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { ListItem, List } from '@metrc/design-system'
+import { ListItem, List } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { ListItem, List } from '@/components'`}</CodeBlock>
@@ -191,7 +192,7 @@ import { ListItem, List } from '@/components'`}</CodeBlock>
                 <div>
                   <Playground
                     preview={
-                      <div style={{ width: '100%', maxWidth: '400px', background: 'white', borderRadius: '8px' }}>
+                      <div style={{ width: '100%', maxWidth: '400px', background: colors.surface.light, borderRadius: '8px' }}>
                         <List roundedCorners={demoRoundedCorners}>
                           <ListItem
                             primary={getPrimaryText()}
@@ -351,7 +352,7 @@ import { ListItem, List } from '@/components'`}</CodeBlock>
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Multiple Selection (Checkbox)</h3>
                   <div style={{ background: colors.surface.lightDarker, borderRadius: '12px', padding: '16px' }}>
-                    <div style={{ background: 'white', borderRadius: '8px' }}>
+                    <div style={{ background: colors.surface.light, borderRadius: '8px' }}>
                       <List selectionMode="multiple" roundedCorners aria-label="Notification settings">
                         <ListItem
                           leftType="checkbox"
@@ -386,7 +387,7 @@ import { ListItem, List } from '@/components'`}</CodeBlock>
                 <div>
                   <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Single Selection (Radio)</h3>
                   <div style={{ background: colors.surface.lightDarker, borderRadius: '12px', padding: '16px' }}>
-                    <div style={{ background: 'white', borderRadius: '8px' }}>
+                    <div style={{ background: colors.surface.light, borderRadius: '8px' }}>
                       <List selectionMode="single" roundedCorners aria-label="Theme selection">
                         <ListItem
                           leftType="radio"

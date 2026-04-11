@@ -8,9 +8,9 @@ import {
   ComponentDocumentation,
   ComponentDocData,
 } from '../../design-system/shared'
-import { ColumnManager } from '@/components'
+import { ColumnManager, Drawer, Button } from '@/components'
 import type { ColumnConfig } from '@/components'
-import { colors, spacing, typography } from '@/styles/design-tokens'
+import { colors, spacing, typography, borderRadius } from '@/styles/design-tokens'
 
 // =============================================================================
 // TYPES
@@ -112,7 +112,7 @@ const docData: ComponentDocData = {
 export default function ColumnManagerPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
   const [appliedColumns, setAppliedColumns] = useState(sampleColumns)
-  // Key to force re-render on reset
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const [resetKey, setResetKey] = useState(0)
 
   const componentTabs = [
@@ -125,6 +125,7 @@ export default function ColumnManagerPage() {
     <StyleguideLayout
       title="Column Manager"
       description="Panel for managing table column visibility and order with tabs, search, drag-and-drop, arrow-key reordering, and apply/reset."
+      tagline="Show what matters. Hide the rest."
       activeId="column-manager"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -151,22 +152,93 @@ export default function ColumnManagerPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
             <p style={sharedStyles.sectionDescription}>
-              Toggle columns on/off in the Visibility tab. Reorder in the Order tab using drag-and-drop or the up/down arrow buttons (only visible columns are shown). Search to filter, then click Apply to save.
+              Click "Open" to see the ColumnManager inside a rounded push Drawer. Toggle columns on/off in the Visibility tab, reorder in the Order tab, search, then Apply.
             </p>
 
-            <div style={{ ...sharedStyles.card, display: 'flex', justifyContent: 'center' }}>
-              <ColumnManager
-                key={resetKey}
-                columns={appliedColumns}
-                onApply={(updated) => {
-                  setAppliedColumns(updated)
-                  setResetKey((k) => k + 1)
+            <div style={{ marginBottom: spacing.md }}>
+              <Button emphasis="high" onClick={() => setDrawerOpen(true)}>
+                Open Column Manager
+              </Button>
+            </div>
+
+            <div
+              style={{
+                ...sharedStyles.card,
+                display: 'flex',
+                height: 700,
+                overflow: 'hidden',
+                padding: 0,
+              }}
+            >
+              {/* Main content placeholder */}
+              <div
+                style={{
+                  flex: 1,
+                  padding: spacing.xl,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: spacing.md,
+                  transition: 'all 300ms ease-in-out',
+                  overflow: 'hidden',
                 }}
-                onReset={() => {
-                  setAppliedColumns(sampleColumns)
-                  setResetKey((k) => k + 1)
-                }}
-              />
+              >
+                <h3 style={{ ...typography.heading.h5, color: colors.text.highEmphasis.onLight, margin: 0 }}>
+                  Table Content Area
+                </h3>
+                <p style={{ ...typography.body.md, color: colors.text.lowEmphasis.onLight, margin: 0 }}>
+                  Content pushes left when the drawer opens.
+                </p>
+                <div
+                  style={{
+                    flex: 1,
+                    backgroundColor: colors.surface.lightDarker,
+                    borderRadius: borderRadius.md,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: `1px dashed ${colors.border.lowEmphasis.onLight}`,
+                  }}
+                >
+                  <span style={{ ...typography.body.sm, color: colors.text.disabled.onLight }}>
+                    DataTable placeholder
+                  </span>
+                </div>
+              </div>
+
+              {/* Drawer with ColumnManager */}
+              <Drawer
+                isOpen={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                mode="push"
+                variant="rounded"
+                width={320}
+                showCloseButton={false}
+              >
+                <ColumnManager
+                  key={resetKey}
+                  columns={appliedColumns}
+                  title="Table columns"
+                  showHeader={true}
+                  showClose={true}
+                  switchSize="sm"
+                  onClose={() => setDrawerOpen(false)}
+                  onApply={(updated) => {
+                    setAppliedColumns(updated)
+                    setResetKey((k) => k + 1)
+                  }}
+                  onReset={() => {
+                    setAppliedColumns(sampleColumns)
+                    setResetKey((k) => k + 1)
+                  }}
+                  width="100%"
+                  height="100%"
+                  style={{
+                    boxShadow: 'none',
+                    border: 'none',
+                    borderRadius: 0,
+                  }}
+                />
+              </Drawer>
             </div>
           </section>
 

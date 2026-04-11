@@ -110,6 +110,7 @@ export default function RadioPage() {
     <StyleguideLayout
       title="Radio"
       description="Radio buttons allow selection of a single option from a set. They should be used in groups where only one choice is allowed."
+      tagline="One choice to rule them all."
       activeId="radio"
       tabs={componentTabs}
       activeTab={activePageTab}

@@ -131,6 +131,7 @@ export default function AccordionPage() {
     <StyleguideLayout
       title="Accordion"
       description="Accordions display a list of high-level options that can expand/collapse to reveal more information. Use them to organize content into collapsible sections."
+      tagline="Information on demand, complexity on tap."
       activeId="accordion"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -144,7 +145,7 @@ export default function AccordionPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Accordion, AccordionItem } from '@metrc/design-system'
+import { Accordion, AccordionItem } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Accordion, AccordionItem } from '@/components'`}</CodeBlock>

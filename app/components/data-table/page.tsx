@@ -262,6 +262,7 @@ export default function DataTablePage() {
     <StyleguideLayout
       title="Data Table"
       description="A responsive data display component that supports both table and card layouts. Sorts, loads skeletons, and adapts to viewport width."
+      tagline="Where data comes to work."
       activeId="data-table"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -275,7 +276,7 @@ export default function DataTablePage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { DataTable } from '@metrc/design-system'
+import { DataTable } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { DataTable } from '@/components'

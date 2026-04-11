@@ -123,6 +123,7 @@ export default function ImageCarouselPage() {
     <StyleguideLayout
       title="Image Carousel"
       description="A touch-friendly image carousel with thumbnail navigation, arrow controls, and keyboard support. Built for product detail pages in the Canopy Registry."
+      tagline="One image at a time, all the impact."
       activeId="image-carousel"
       tabs={componentTabs}
       activeTab={activePageTab}

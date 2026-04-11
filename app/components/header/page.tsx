@@ -14,7 +14,7 @@ import {
   ComponentDocumentation,
   ComponentDocData,
 } from '../../design-system/shared'
-import { Header, CanopyLogo, Avatar } from '@/components'
+import { Header, SegmentedControl, Avatar, type HeaderVariant } from '@/components'
 import { colors, typography, spacing, header as headerTokens } from '@/styles/design-tokens'
 
 // =============================================================================
@@ -30,83 +30,91 @@ type PageTab = 'overview' | 'implementation' | 'documentation'
 const headerDocData: ComponentDocData = {
   displayName: 'Header',
   importPath: '@/components',
-  importStatement: `import { Header, CanopyLogo, Avatar } from '@/components'\nimport type { HeaderProps } from '@/components'`,
-  description: 'Top-level application header matching the Canopy ecosystem pattern. Features user avatar, AppSwitcher, search trigger, theme toggle, and brand logo.',
+  importStatement: `import { Header, Avatar } from '@/components'\nimport type { HeaderProps } from '@/components'`,
+  description: 'App header with LUMEN logo on the left and a right-side toolbar with theme switcher, notifications, and avatar. Supports full-width and rounded variants with mobile responsiveness.',
   props: [
-    { name: 'onMenuToggle', type: '() => void', description: 'Callback when menu/hamburger button is clicked' },
-    { name: 'onAppSwitcherClick', type: '() => void', description: 'Callback when AppSwitcher grip icon is clicked' },
-    { name: 'appSwitcher', type: 'ReactNode', description: 'Custom AppSwitcher dropdown overlay' },
-    { name: 'userAvatar', type: 'ReactNode', description: 'User avatar element (e.g. <Avatar name="Jane" size="xs" />)' },
-    { name: 'userName', type: 'string', description: 'User name displayed next to avatar (hidden on mobile)' },
-    { name: 'onUserClick', type: '() => void', description: 'Callback when user avatar/name area is clicked' },
-    { name: 'searchPlaceholder', type: 'string', description: 'Search button placeholder text' },
-    { name: 'onSearchClick', type: '() => void', description: 'Callback when search button is clicked (opens panel)' },
-    { name: 'showSearch', type: 'boolean', description: 'Whether to show the search button' },
-    { name: 'onNotificationsClick', type: '() => void', description: 'Callback when bell icon is clicked' },
-    { name: 'showNotificationBadge', type: 'boolean', description: 'Whether to show notification badge dot' },
-    { name: 'onThemeToggle', type: '() => void', description: 'Callback when theme toggle is clicked' },
-    { name: 'isDarkMode', type: 'boolean', description: 'Controls sun/moon icon state' },
-    { name: 'brandLogo', type: 'ReactNode', description: 'Brand logo on the right side' },
-    { name: 'brandName', type: 'string', description: 'Brand name text (hidden on mobile)' },
-    { name: 'actions', type: 'ReactNode', description: 'Additional right-side content slot' },
-    { name: 'sticky', type: 'boolean', description: 'Whether the header is sticky' },
-  ],
-  subComponents: [
-    {
-      name: 'CanopyLogo',
-      description: 'Canopy branding logo with optional text.',
-      props: [
-        { name: 'size', type: "'sm' | 'md' | 'lg'", description: 'Logo size' },
-        { name: 'showText', type: 'boolean', description: 'Show text alongside the logo' },
-      ],
-    },
+    { name: 'variant', type: "'full' | 'rounded'", defaultValue: "'full'", description: 'Full-width with bottom border, or inset with border-radius and solid surface background' },
+    { name: 'sticky', type: 'boolean', defaultValue: 'false', description: 'Pin header to top of viewport' },
+    { name: 'userAvatar', type: 'ReactNode', description: 'Avatar element rendered in the toolbar (e.g. <Avatar name="Jane" size="sm" />)' },
+    { name: 'userName', type: 'string', description: 'User name for avatar aria-label' },
+    { name: 'onAvatarClick', type: '() => void', description: 'Callback when avatar area is clicked' },
+    { name: 'onNotificationsClick', type: '() => void', description: 'Callback when notifications bell is clicked' },
+    { name: 'notificationCount', type: 'number', defaultValue: '0', description: 'Badge count on bell icon (0 hides badge)' },
+    { name: 'showNotifications', type: 'boolean', defaultValue: 'true', description: 'Whether to show the notifications bell' },
+    { name: 'showThemeSwitcher', type: 'boolean', defaultValue: 'true', description: 'Whether to show the theme switcher' },
+    { name: 'actions', type: 'ReactNode', description: 'Additional actions slot rendered before toolbar icons' },
+    { name: 'style', type: 'React.CSSProperties', description: 'Custom styles for the root element' },
+    { name: 'className', type: 'string', description: 'Custom class name' },
   ],
   accessibility: [
     { feature: 'Landmark', description: 'Uses <header role="banner"> for the root element.' },
-    { feature: 'Search', description: 'Search button has a descriptive aria-label.' },
-    { feature: 'Keyboard', description: 'All interactive elements are focusable and operable via keyboard.' },
-    { feature: 'Touch targets', description: 'All buttons meet the 44x44px minimum (WCAG 2.5.8).' },
-    { feature: 'Mobile menu', description: 'Focus trap, Escape to close, focus return to hamburger.' },
+    { feature: 'Theme switcher', description: 'Icon button has descriptive aria-label with current theme name.' },
+    { feature: 'Dropdown', description: 'Uses role="listbox" with aria-selected on active option.' },
+    { feature: 'Keyboard', description: 'Escape closes dropdown and returns focus to trigger.' },
+    { feature: 'Notifications', description: 'Bell button includes notification count in aria-label.' },
+    { feature: 'Avatar', description: 'Avatar button includes user name in aria-label.' },
+    { feature: 'Focus visible', description: 'Focus ring on all toolbar buttons via :focus-visible.' },
     { feature: 'Reduced motion', description: 'Respects prefers-reduced-motion media query.' },
+    { feature: 'Mobile', description: 'Hides LUMEN text, compacts toolbar buttons to 36px.' },
   ],
   tokens: [
-    { token: 'colors.surface.light', value: 'Light bg', usage: 'Header background' },
-    { token: 'colors.border.lowEmphasis.onLight', value: 'Border', usage: 'Bottom border' },
+    { token: 'colors.surface.light', value: 'Surface bg', usage: 'Rounded variant background (matches nav)' },
+    { token: 'colors.border.lowEmphasis.onLight', value: 'Border', usage: 'Full variant bottom border' },
     { token: 'header.height', value: '64px', usage: 'Header height' },
+    { token: 'colors.status.important', value: 'Red', usage: 'Notification badge background' },
   ],
   relatedComponents: [
     { name: 'Left Nav', href: '/components/left-nav' },
     { name: 'Avatar', href: '/components/avatar' },
   ],
   notes: [
-    'Use sticky prop for persistent navigation across scroll.',
-    'Search is a button trigger — connect onSearchClick to open your chat/search panel.',
-    'Combine with LeftNav for a full application shell layout.',
-    'Pass onThemeToggle to enable the dark/light mode toggle.',
+    'The Header automatically connects to the theme system via useThemeSwitcher().',
+    'Rounded variant uses solid colors.surface.light background (same as nav sidebar).',
+    'Full variant uses frosted glass effect with backdrop-filter blur.',
+    'Mobile breakpoint (< 768px): hides LUMEN text, compacts buttons to 36px.',
+    'Notification badge auto-hides when count is 0, caps display at 99+.',
   ],
   whenToUse: [
-    'Application shell — top bar with logo, navigation, search, user menu.',
+    'Application shell — top bar with logo, toolbar, and user profile.',
     'Every full-page layout should include Header + LeftNav.',
   ],
   usageExamples: [
     {
-      title: 'App header with nav',
-      description: 'Standard app header. Combine with LeftNav for full application shell.',
+      title: 'Default header with toolbar',
+      description: 'Full-width header with theme switcher, notifications, and avatar.',
       isDefault: true,
-      code: `<Header\n  title="Metrc"\n  sticky\n  onSearchClick={openSearch}\n  userMenu={{ name: user.name, avatar: user.avatarUrl }}\n/>`,
+      code: `<Header
+  userAvatar={<Avatar name="Jane Doe" size="sm" />}
+  userName="Jane Doe"
+  onAvatarClick={() => {}}
+  onNotificationsClick={() => {}}
+  notificationCount={3}
+/>`,
+    },
+    {
+      title: 'Rounded variant',
+      description: 'Inset header with border-radius and solid surface background.',
+      code: `<Header
+  variant="rounded"
+  userAvatar={<Avatar name="Jane Doe" size="sm" />}
+/>`,
+    },
+    {
+      title: 'Minimal (logo + theme only)',
+      description: 'Hide notifications and avatar for a minimal header.',
+      code: `<Header showNotifications={false} />`,
     },
   ],
 }
 
 export default function HeaderPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
-
-  // Interactive playground state
-  const [demoShowSearch, setDemoShowSearch] = useState(true)
+  const [demoVariant, setDemoVariant] = useState<HeaderVariant>('full')
   const [demoSticky, setDemoSticky] = useState(false)
+  const [demoShowNotifications, setDemoShowNotifications] = useState(true)
+  const [demoShowTheme, setDemoShowTheme] = useState(true)
   const [demoShowAvatar, setDemoShowAvatar] = useState(true)
-  const [demoShowThemeToggle, setDemoShowThemeToggle] = useState(true)
-  const [demoDarkMode, setDemoDarkMode] = useState(false)
+  const [demoShowBadge, setDemoShowBadge] = useState(true)
 
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
@@ -116,18 +124,19 @@ export default function HeaderPage() {
 
   const generateCode = () => {
     const lines = ['<Header']
-    if (demoShowAvatar) {
-      lines.push('  userAvatar={<Avatar name="Jane Doe" size="xs" />}')
-      lines.push('  userName="Jane Doe"')
-    }
-    lines.push(`  showSearch={${demoShowSearch}}`)
-    if (demoShowThemeToggle) {
-      lines.push('  onThemeToggle={() => toggleDarkMode()}')
-      lines.push(`  isDarkMode={${demoDarkMode}}`)
-    }
-    lines.push('  brandLogo={<CanopyLogo size="sm" showText={false} />}')
-    lines.push('  brandName="Canopy"')
+    if (demoVariant !== 'full') lines.push(`  variant="${demoVariant}"`)
     if (demoSticky) lines.push('  sticky')
+    if (!demoShowTheme) lines.push('  showThemeSwitcher={false}')
+    if (!demoShowNotifications) lines.push('  showNotifications={false}')
+    if (demoShowNotifications) {
+      lines.push('  onNotificationsClick={() => {}}')
+      if (demoShowBadge) lines.push('  notificationCount={3}')
+    }
+    if (demoShowAvatar) {
+      lines.push('  userAvatar={<Avatar name="Jane Doe" size="sm" />}')
+      lines.push('  userName="Jane Doe"')
+      lines.push('  onAvatarClick={() => {}}')
+    }
     lines.push('/>')
     return lines.join('\n')
   }
@@ -135,7 +144,8 @@ export default function HeaderPage() {
   return (
     <StyleguideLayout
       title="Header"
-      description="Top-level application header with user avatar, AppSwitcher, search trigger, theme toggle, and brand logo. Matches the Canopy ecosystem pattern."
+      description="App header with LUMEN logo and right-side toolbar."
+      tagline="The north star of every application."
       activeId="header"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -148,16 +158,12 @@ export default function HeaderPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`import { Header, CanopyLogo, Avatar } from '@/components'
+              <CodeBlock>{`import { Header, Avatar } from '@/components'
 
 <Header
-  userAvatar={<Avatar name="Jane Doe" size="xs" />}
-  userName="Jane Doe"
-  onSearchClick={() => setChatOpen(true)}
-  onThemeToggle={() => toggleDarkMode()}
-  isDarkMode={isDarkMode}
-  brandLogo={<CanopyLogo size="sm" showText={false} />}
-  brandName="Canopy"
+  userAvatar={<Avatar name="Jane Doe" size="sm" />}
+  onNotificationsClick={() => {}}
+  notificationCount={3}
   sticky
 />`}</CodeBlock>
             </div>
@@ -167,7 +173,7 @@ export default function HeaderPage() {
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
             <p style={sharedStyles.sectionDescription}>
-              Manipulate header properties in real-time. Resize your browser to see responsive behavior.
+              Configure the header toolbar. Theme switcher, notifications bell, and avatar are all toggleable.
             </p>
 
             <div style={sharedStyles.card}>
@@ -177,18 +183,19 @@ export default function HeaderPage() {
                   <Playground
                     previewBackground={colors.surface.lightDarker}
                     previewPadding="0"
-                    previewMinHeight="auto"
+                    previewMinHeight="380px"
                     preview={
-                      <div style={{ width: '100%', position: 'relative', zIndex: 0 }}>
+                      <div style={{ width: '100%', position: 'relative', zIndex: 0, alignSelf: 'flex-start' }}>
                         <Header
-                          userAvatar={demoShowAvatar ? <Avatar name="Jane Doe" size="xs" /> : undefined}
-                          userName={demoShowAvatar ? 'Jane Doe' : undefined}
-                          showSearch={demoShowSearch}
-                          onThemeToggle={demoShowThemeToggle ? () => setDemoDarkMode(!demoDarkMode) : undefined}
-                          isDarkMode={demoDarkMode}
-                          brandLogo={<CanopyLogo size="sm" showText={false} />}
-                          brandName="Canopy"
+                          variant={demoVariant}
                           sticky={demoSticky}
+                          showThemeSwitcher={demoShowTheme}
+                          showNotifications={demoShowNotifications}
+                          notificationCount={demoShowBadge ? 3 : 0}
+                          onNotificationsClick={() => {}}
+                          userAvatar={demoShowAvatar ? <Avatar name="Jane Doe" size="sm" color={2} /> : undefined}
+                          userName={demoShowAvatar ? 'Jane Doe' : undefined}
+                          onAvatarClick={demoShowAvatar ? () => {} : undefined}
                         />
                       </div>
                     }
@@ -202,15 +209,33 @@ export default function HeaderPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing.xs }}>
-                        Visibility
+                        Variant
+                      </label>
+                      <SegmentedControl
+                        segments={[
+                          { id: 'full', label: 'Full' },
+                          { id: 'rounded', label: 'Rounded' },
+                        ]}
+                        value={demoVariant}
+                        onChange={(id) => setDemoVariant(id as HeaderVariant)}
+                        size="sm"
+                      />
+                    </div>
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing.xs }}>
+                        Toolbar
                       </label>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-                        <StyledCheckbox checked={demoShowAvatar} onChange={setDemoShowAvatar} label="Show user avatar" />
-                        <StyledCheckbox checked={demoShowSearch} onChange={setDemoShowSearch} label="Show search" />
-                        <StyledCheckbox checked={demoShowThemeToggle} onChange={setDemoShowThemeToggle} label="Show theme toggle" />
+                        <StyledCheckbox checked={demoShowTheme} onChange={setDemoShowTheme} label="Theme switcher" />
+                        <StyledCheckbox checked={demoShowNotifications} onChange={setDemoShowNotifications} label="Notifications" />
+                        <StyledCheckbox checked={demoShowAvatar} onChange={setDemoShowAvatar} label="Avatar" />
                       </div>
                     </div>
-
+                    {demoShowNotifications && (
+                      <div>
+                        <StyledCheckbox checked={demoShowBadge} onChange={setDemoShowBadge} label="Show badge" />
+                      </div>
+                    )}
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing.xs }}>
                         Behavior
@@ -243,41 +268,6 @@ export default function HeaderPage() {
                   ]}
                 />
               </div>
-
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Search Button</h3>
-                <SpecTable
-                  headers={['Token', 'Value', 'Usage']}
-                  rows={[
-                    [<CopyableToken key="sw" token="header.search.width" />, <PixelValue key="swv" value={headerTokens.search.width} />, 'Search max width'],
-                    [<CopyableToken key="sh" token="header.search.height" />, <PixelValue key="shv" value={headerTokens.search.height} />, 'Search height'],
-                    [<CopyableToken key="sr" token="header.search.borderRadius" />, <PixelValue key="srv" value={headerTokens.search.borderRadius} />, 'Search border radius (overridden to pill)'],
-                  ]}
-                />
-              </div>
-
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Icon Buttons</h3>
-                <SpecTable
-                  headers={['Token', 'Value', 'Usage']}
-                  rows={[
-                    [<CopyableToken key="ib" token="header.iconButton.size" />, <PixelValue key="ibv" value={headerTokens.iconButton.size} />, 'Icon button base size (padded to 44px for a11y)'],
-                    [<CopyableToken key="ibi" token="header.iconButton.iconSize" />, <PixelValue key="ibiv" value={headerTokens.iconButton.iconSize} />, 'Icon size inside button'],
-                    [<CopyableToken key="ibr" token="header.iconButton.borderRadius" />, <PixelValue key="ibrv" value={headerTokens.iconButton.borderRadius} />, 'Button border radius'],
-                  ]}
-                />
-              </div>
-
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Responsive Behavior</h3>
-                <SpecTable
-                  headers={['Breakpoint', 'Search', 'Actions', 'User Display', 'Menu']}
-                  rows={[
-                    ['Desktop (768px+)', 'Full search button', 'All icons visible', 'Avatar + name + chevron', 'Menu toggle'],
-                    ['Mobile (<768px)', 'In mobile panel', 'In mobile panel', 'Avatar only', 'Hamburger menu'],
-                  ]}
-                />
-              </div>
             </CollapsibleSection>
           </section>
         </>
@@ -291,42 +281,30 @@ export default function HeaderPage() {
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Import</h3>
-              <CodeBlock>{`import { Header, CanopyLogo, Avatar } from '@/components'
+              <CodeBlock>{`import { Header, Avatar } from '@/components'
 import type { HeaderProps } from '@/components'`}</CodeBlock>
             </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
-              <CodeBlock>{`// Full Canopy-style header
+              <CodeBlock>{`// Full header with all toolbar items
 <Header
-  userAvatar={<Avatar name="Jane Doe" size="xs" />}
+  userAvatar={<Avatar name="Jane Doe" size="sm" />}
   userName="Jane Doe"
-  onSearchClick={() => setChatOpen(true)}
-  onThemeToggle={() => toggleDarkMode()}
-  isDarkMode={isDarkMode}
-  brandLogo={<CanopyLogo size="sm" showText={false} />}
-  brandName="Canopy"
+  onAvatarClick={() => openUserMenu()}
+  onNotificationsClick={() => openNotifications()}
+  notificationCount={3}
   sticky
 />
 
-// Minimal header (no search, no theme toggle)
+// Rounded variant
 <Header
-  userAvatar={<Avatar name="Jane Doe" size="xs" />}
-  userName="Jane Doe"
-  showSearch={false}
-  brandLogo={<CanopyLogo size="sm" showText={false} />}
-  brandName="Canopy"
+  variant="rounded"
+  userAvatar={<Avatar name="Jane Doe" size="sm" />}
 />
 
-// With AppSwitcher
-<Header
-  userAvatar={<Avatar name="Jane Doe" size="xs" />}
-  userName="Jane Doe"
-  onAppSwitcherClick={() => setAppSwitcherOpen(true)}
-  appSwitcher={<AppSwitcher isOpen={appSwitcherOpen} onClose={() => setAppSwitcherOpen(false)} />}
-  brandLogo={<CanopyLogo size="sm" showText={false} />}
-  brandName="Canopy"
-/>`}</CodeBlock>
+// Minimal — logo + theme only
+<Header showNotifications={false} />`}</CodeBlock>
             </div>
           </section>
 
@@ -338,34 +316,18 @@ import type { HeaderProps } from '@/components'`}</CodeBlock>
               <SpecTable
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
-                  [<code key="mt">onMenuToggle</code>, <code key="mtt">{'() => void'}</code>, '—', 'Menu/hamburger click callback'],
-                  [<code key="asc">onAppSwitcherClick</code>, <code key="asct">{'() => void'}</code>, '—', 'AppSwitcher grip icon click callback'],
-                  [<code key="as">appSwitcher</code>, <code key="ast">ReactNode</code>, '—', 'Custom AppSwitcher dropdown overlay'],
-                  [<code key="ua">userAvatar</code>, <code key="uat">ReactNode</code>, '—', 'User avatar element'],
-                  [<code key="un">userName</code>, <code key="unt">string</code>, '—', 'User name (hidden on mobile)'],
-                  [<code key="uc">onUserClick</code>, <code key="uct">{'() => void'}</code>, '—', 'User area click callback'],
-                  [<code key="sp">searchPlaceholder</code>, <code key="spt">string</code>, <code key="spd">{'"Find or ask..."'}</code>, 'Search button placeholder'],
-                  [<code key="sc">onSearchClick</code>, <code key="sct">{'() => void'}</code>, '—', 'Search button click callback'],
-                  [<code key="ss">showSearch</code>, <code key="sst">boolean</code>, <code key="ssd">true</code>, 'Show the search button'],
-                  [<code key="nc">onNotificationsClick</code>, <code key="nct">{'() => void'}</code>, '—', 'Bell icon click callback'],
-                  [<code key="nb">showNotificationBadge</code>, <code key="nbt">boolean</code>, '—', 'Show notification badge dot'],
-                  [<code key="tt">onThemeToggle</code>, <code key="ttt">{'() => void'}</code>, '—', 'Theme toggle click callback'],
-                  [<code key="dm">isDarkMode</code>, <code key="dmt">boolean</code>, <code key="dmd">false</code>, 'Controls sun/moon icon'],
-                  [<code key="bl">brandLogo</code>, <code key="blt">ReactNode</code>, '—', 'Brand logo (right side)'],
-                  [<code key="bn">brandName</code>, <code key="bnt">string</code>, '—', 'Brand name text (hidden on mobile)'],
-                  [<code key="ac">actions</code>, <code key="act">ReactNode</code>, '—', 'Additional right-side content'],
-                  [<code key="st">sticky</code>, <code key="stt">boolean</code>, <code key="std">false</code>, 'Pin header to top of viewport'],
-                ]}
-              />
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Sub-Components</h3>
-              <SpecTable
-                headers={['Component', 'Export', 'Description']}
-                rows={[
-                  [<code key="ib">IconButton</code>, 'Named export', 'Icon-only button with hover, focus, and optional badge dot (44px touch target)'],
-                  [<code key="cl">CanopyLogo</code>, 'Named export', 'Canopy branding logo with optional text'],
+                  [<code key="vr">variant</code>, <code key="vrt">{`'full' | 'rounded'`}</code>, <code key="vrd">{`'full'`}</code>, 'Layout variant'],
+                  [<code key="st">sticky</code>, <code key="stt">boolean</code>, <code key="std">false</code>, 'Pin to viewport top'],
+                  [<code key="ua">userAvatar</code>, <code key="uat">ReactNode</code>, '—', 'Avatar element for toolbar'],
+                  [<code key="un">userName</code>, <code key="unt">string</code>, '—', 'User name for aria-label'],
+                  [<code key="oa">onAvatarClick</code>, <code key="oat">() =&gt; void</code>, '—', 'Avatar click callback'],
+                  [<code key="on">onNotificationsClick</code>, <code key="ont">() =&gt; void</code>, '—', 'Bell click callback'],
+                  [<code key="nc">notificationCount</code>, <code key="nct">number</code>, <code key="ncd">0</code>, 'Badge count (0 = hidden)'],
+                  [<code key="sn">showNotifications</code>, <code key="snt">boolean</code>, <code key="snd">true</code>, 'Show notifications bell'],
+                  [<code key="stm">showThemeSwitcher</code>, <code key="stmt">boolean</code>, <code key="stmd">true</code>, 'Show theme switcher'],
+                  [<code key="ac">actions</code>, <code key="act">ReactNode</code>, '—', 'Extra actions before toolbar icons'],
+                  [<code key="sy">style</code>, <code key="syt">CSSProperties</code>, '—', 'Custom root styles'],
+                  [<code key="cn">className</code>, <code key="cnt">string</code>, '—', 'Custom class name'],
                 ]}
               />
             </div>
@@ -375,31 +337,33 @@ import type { HeaderProps } from '@/components'`}</CodeBlock>
             <h2 style={sharedStyles.sectionTitle}>Design Guidance</h2>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Anatomy</h3>
+              <h3 style={sharedStyles.cardTitle}>Layout</h3>
+              <CodeBlock>{`[Logo + "LUMEN"] ——— spacer ——— [actions] [theme] [bell+badge] [avatar]`}</CodeBlock>
+              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginTop: spacing.sm }}>
+                On mobile (&lt; 768px): LUMEN text is hidden, toolbar buttons compact to 36px, gap tightens.
+              </p>
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Variants</h3>
               <SpecTable
-                headers={['Section', 'Contents']}
+                headers={['Variant', 'Background', 'Border']}
                 rows={[
-                  ['Left', 'Menu toggle, AppSwitcher (grip icon), User avatar + name'],
-                  ['Center', 'Search button (pill-shaped, opens external panel on click)'],
-                  ['Right', 'Notifications bell, Theme toggle (sun/moon), Brand logo + name'],
+                  [<code key="f">full</code>, 'Frosted glass (rgba + backdrop-filter blur)', 'Bottom 1px border'],
+                  [<code key="r">rounded</code>, <span key="rs"><code>colors.surface.light</code> (solid, matches nav)</span>, 'None — border-radius only'],
                 ]}
               />
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Theme Integration</h3>
-              <p style={{ ...typography.body.sm, color: colors.text.lowEmphasis.onLight, marginBottom: spacing.md }}>
-                The Header is fully theme-aware. All colors resolve from <code style={{ fontFamily: 'monospace' }}>useColors()</code> and adapt when the active theme changes.
-              </p>
+              <h3 style={sharedStyles.cardTitle}>Toolbar Buttons</h3>
               <SpecTable
-                headers={['Element', 'Token']}
+                headers={['Property', 'Desktop', 'Mobile']}
                 rows={[
-                  ['Background', <code key="bg">colors.surface.light</code>],
-                  ['Border', <code key="br">colors.border.lowEmphasis.onLight</code>],
-                  ['Icons', <code key="ic">colors.icon.enabled.onLight</code>],
-                  ['Text', <code key="tx">colors.text.highEmphasis.onLight</code>],
-                  ['Focus ring', <code key="fc">colors.focusBorder.onLight</code>],
-                  ['Search bg', <code key="sb">colors.surface.lightDarker</code>],
+                  ['Button size', '40 x 40px', '36 x 36px'],
+                  ['Icon size', '20px (md)', '20px (md)'],
+                  ['Gap between', <code key="gd">{`spacing.xs`}</code>, <code key="gm">{`spacing.2xs`}</code>],
+                  ['Badge size', '16px pill', '16px pill'],
                 ]}
               />
             </div>
@@ -410,12 +374,12 @@ import type { HeaderProps } from '@/components'`}</CodeBlock>
                 headers={['Feature', 'Implementation']}
                 rows={[
                   ['Landmark', <span key="l">Uses <code>&lt;header role=&quot;banner&quot;&gt;</code></span>],
-                  ['Focus management', 'Mobile menu traps focus and returns it to hamburger on close'],
-                  ['Focus visible', 'All interactive elements show visible focus outlines'],
-                  ['Keyboard', 'Full Tab/Shift+Tab navigation, Escape closes mobile menu'],
-                  ['Touch targets', 'All buttons meet 44x44px minimum (WCAG 2.5.8)'],
+                  ['Theme button', <span key="tb">aria-label with current theme, aria-expanded for dropdown</span>],
+                  ['Notifications', <span key="nb">aria-label includes count when &gt; 0</span>],
+                  ['Avatar', <span key="av">aria-label includes userName</span>],
+                  ['Keyboard', 'Escape closes dropdown, returns focus to trigger'],
+                  ['Focus visible', 'Focus ring on all toolbar buttons'],
                   ['Reduced motion', <span key="rm">Respects <code>prefers-reduced-motion</code></span>],
-                  ['Notification badge', <span key="n">Badge appends <code>&quot;(new)&quot;</code> to aria-label</span>],
                 ]}
               />
             </div>

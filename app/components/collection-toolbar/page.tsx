@@ -12,7 +12,7 @@ import {
   ComponentDocData,
 } from '../../design-system/shared'
 import {
-  CollectionToolbar,
+  CollectionToolbar as Toolbar,
   DataTable,
   Chip,
   ChipGroup,
@@ -56,17 +56,17 @@ type PageTab = 'overview' | 'implementation' | 'documentation'
 // =============================================================================
 
 const docData: ComponentDocData = {
-  displayName: 'CollectionToolbar',
+  displayName: 'Toolbar',
   importPath: '@/components',
-  importStatement: `import { CollectionToolbar } from '@/components'\nimport type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAction } from '@/components'`,
+  importStatement: `import { Toolbar } from '@/components'\nimport type { ToolbarProps, ToolbarTab, ToolbarAction } from '@/components'`,
   description:
     'Configurable toolbar assembly for collection pages. Composes TabBar, Button, and DataTable.Toolbar into a unified layout with toggleable tabs, action buttons, bulk selection, filter/sort controls, and view toggle.',
   props: [
-    { name: 'tabs', type: 'CollectionToolbarTab[]', description: 'Tab definitions (id, label, icon). Omit to hide tabs.' },
+    { name: 'tabs', type: 'ToolbarTab[]', description: 'Tab definitions (id, label, icon). Omit to hide tabs.' },
     { name: 'activeTab', type: 'string', description: 'Currently active tab id' },
     { name: 'onTabChange', type: '(tabId: string) => void', description: 'Tab change callback' },
     { name: 'showTabs', type: 'boolean', default: 'true', description: 'Explicitly hide tabs' },
-    { name: 'actions', type: 'CollectionToolbarAction[]', description: 'Action buttons next to tabs (label, icon, onClick, emphasis)' },
+    { name: 'actions', type: 'ToolbarAction[]', description: 'Action buttons next to tabs (label, icon, onClick, emphasis)' },
     { name: 'showActions', type: 'boolean', default: 'true', description: 'Explicitly hide actions' },
     { name: 'showToolbar', type: 'boolean', default: 'true', description: 'Show the DataTable.Toolbar row' },
     { name: 'selectedCount', type: 'number', default: '0', description: 'Number of selected items' },
@@ -109,9 +109,9 @@ const docData: ComponentDocData = {
   usageExamples: [
     {
       title: 'Data page with toolbar',
-      description: 'Standard collection page pattern. Place CollectionToolbar above DataTable.',
+      description: 'Standard collection page pattern. Place Toolbar above DataTable.',
       isDefault: true,
-      code: `<CollectionToolbar\n  tabs={tabs}\n  actions={[{ label: 'Add New', onClick: handleAdd }]}\n  onSearch={handleSearch}\n/>\n<DataTable columns={columns} data={data} rowKey={(r) => r.id} sortable paginated />`,
+      code: `<Toolbar\n  tabs={tabs}\n  actions={[{ label: 'Add New', onClick: handleAdd }]}\n  onSearch={handleSearch}\n/>\n<DataTable columns={columns} data={data} rowKey={(r) => r.id} sortable paginated />`,
     },
   ],
 }
@@ -122,7 +122,7 @@ const docData: ComponentDocData = {
 
 const DEFAULT_CHIPS = ['Status: Active', 'Category: Flower']
 
-interface CollectionToolbarPreviewProps {
+interface ToolbarPreviewProps {
   showTabs: boolean
   showActions: boolean
   showToolbar: boolean
@@ -135,7 +135,7 @@ interface CollectionToolbarPreviewProps {
   hasActiveFilters: boolean
 }
 
-function CollectionToolbarPreview({
+function ToolbarPreview({
   showTabs,
   showActions,
   showToolbar,
@@ -146,7 +146,7 @@ function CollectionToolbarPreview({
   hasSelected,
   onClearSelected,
   hasActiveFilters,
-}: CollectionToolbarPreviewProps) {
+}: ToolbarPreviewProps) {
   const [activeTab, setActiveTab] = useState('all')
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards')
   const [chips, setChips] = useState(DEFAULT_CHIPS)
@@ -172,7 +172,7 @@ function CollectionToolbarPreview({
   }
 
   return (
-    <CollectionToolbar
+    <Toolbar
       tabs={[
         { id: 'all', label: 'All' },
         { id: 'active', label: 'Active' },
@@ -238,7 +238,7 @@ function CollectionToolbarPreview({
 // PAGE
 // =============================================================================
 
-export default function CollectionToolbarPage() {
+export default function ToolbarPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
 
   // Playground controls
@@ -262,6 +262,7 @@ export default function CollectionToolbarPage() {
     <StyleguideLayout
       title="Collection Toolbar"
       description="Configurable toolbar for collection/list pages. Compose tabs, action buttons, bulk selection, filter/sort, and cards-vs-table view toggle."
+      tagline="Command central for your data views."
       activeId="collection-toolbar"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -275,11 +276,11 @@ export default function CollectionToolbarPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { CollectionToolbar } from '@metrc/design-system'
+import { Toolbar } from '@lumen/design-system'
 
 // Or with path alias
-import { CollectionToolbar } from '@/components'
-import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAction } from '@/components'`}</CodeBlock>
+import { Toolbar } from '@/components'
+import type { ToolbarProps, ToolbarTab, ToolbarAction } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
@@ -296,7 +297,7 @@ import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAct
                 <div>
                   <Playground
                     preview={
-                      <CollectionToolbarPreview
+                      <ToolbarPreview
                         showTabs={showTabs}
                         showActions={showActions}
                         showToolbar={showToolbar}
@@ -311,7 +312,7 @@ import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAct
                     }
                     previewStretch
                     previewPadding="24px"
-                    code={`<CollectionToolbar
+                    code={`<Toolbar
   tabs={[
     { id: 'all', label: 'All' },
     { id: 'active', label: 'Active' },
@@ -376,15 +377,15 @@ import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAct
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Import</h3>
               <CodeBlock>
-{`import { CollectionToolbar, DataTable } from '@/components'
-import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAction } from '@/components'`}
+{`import { Toolbar, DataTable } from '@/components'
+import type { ToolbarProps, ToolbarTab, ToolbarAction } from '@/components'`}
               </CodeBlock>
             </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Full-Featured Toolbar</h3>
               <CodeBlock>
-{`<CollectionToolbar
+{`<Toolbar
   tabs={[
     { id: 'all', label: 'All' },
     { id: 'active', label: 'Active' },
@@ -425,7 +426,7 @@ import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAct
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Toolbar Only (No Tabs/Actions)</h3>
               <CodeBlock>
-{`<CollectionToolbar
+{`<Toolbar
   showTabs={false}
   showActions={false}
   selectedCount={selectedIds.size}
@@ -439,7 +440,7 @@ import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAct
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Tabs Only (Minimal)</h3>
               <CodeBlock>
-{`<CollectionToolbar
+{`<Toolbar
   tabs={tabs}
   activeTab={activeTab}
   onTabChange={setActiveTab}
@@ -458,15 +459,15 @@ import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAct
             <h2 style={sharedStyles.sectionTitle}>Props</h2>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>CollectionToolbar Props</h3>
+              <h3 style={sharedStyles.cardTitle}>Toolbar Props</h3>
               <SpecTable
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
-                  [<code key="p">tabs</code>, <code key="t">CollectionToolbarTab[]</code>, '-', 'Tab definitions (id, label, icon). Omit to hide tabs.'],
+                  [<code key="p">tabs</code>, <code key="t">ToolbarTab[]</code>, '-', 'Tab definitions (id, label, icon). Omit to hide tabs.'],
                   [<code key="p">activeTab</code>, <code key="t">string</code>, '-', 'Currently active tab id'],
                   [<code key="p">onTabChange</code>, <code key="t">{'(tabId: string) => void'}</code>, '-', 'Tab change callback'],
                   [<code key="p">showTabs</code>, <code key="t">boolean</code>, <code key="d">true</code>, 'Explicitly hide tabs'],
-                  [<code key="p">actions</code>, <code key="t">CollectionToolbarAction[]</code>, '-', 'Action buttons next to tabs'],
+                  [<code key="p">actions</code>, <code key="t">ToolbarAction[]</code>, '-', 'Action buttons next to tabs'],
                   [<code key="p">showActions</code>, <code key="t">boolean</code>, <code key="d">true</code>, 'Explicitly hide actions'],
                   [<code key="p">showToolbar</code>, <code key="t">boolean</code>, <code key="d">true</code>, 'Show the DataTable.Toolbar row'],
                   [<code key="p">selectedCount</code>, <code key="t">number</code>, <code key="d">0</code>, 'Number of selected items'],
@@ -488,7 +489,7 @@ import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAct
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>CollectionToolbarTab</h3>
+              <h3 style={sharedStyles.cardTitle}>ToolbarTab</h3>
               <SpecTable
                 headers={['Property', 'Type', 'Description']}
                 rows={[
@@ -500,7 +501,7 @@ import type { CollectionToolbarProps, CollectionToolbarTab, CollectionToolbarAct
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>CollectionToolbarAction</h3>
+              <h3 style={sharedStyles.cardTitle}>ToolbarAction</h3>
               <SpecTable
                 headers={['Property', 'Type', 'Description']}
                 rows={[

@@ -13,8 +13,9 @@ import {
   fontFamilies,
   breakpoints,
   sidebar,
+  header,
 } from '@/styles/design-tokens'
-import { SegmentedControl } from '@/components'
+import { SegmentedControl, Avatar, Header } from '@/components'
 import {
   IconFoundations,
   IconComponents,
@@ -31,8 +32,9 @@ import { useThemeSwitcher, availableThemes } from '@/styles/themes'
 // =============================================================================
 
 const SIDEBAR_WIDTH = parseInt(sidebar.width) // 278px
-const SIDEBAR_COLLAPSED_WIDTH = parseInt(sidebar.collapsedWidth) // 73px
+const SIDEBAR_COLLAPSED_WIDTH = 40 // toggle-only strip (no icon-only mid-state)
 const MOBILE_BREAKPOINT = parseInt(breakpoints.md) // 768px
+const HEADER_HEIGHT = parseInt(header.height) // 64px
 
 // =============================================================================
 // CUSTOM ICONS (Not in the main library)
@@ -44,6 +46,16 @@ const IconPrototypes = () => (
     <path d="M10 2L2 6.5l8 4.5 8-4.5L10 2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M2 10l8 4.5L18 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M2 13.5l8 4.5 8-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+// Bar chart icon for Data Visualization section
+const IconDataViz = () => (
+  <svg aria-hidden="true" width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="10" width="3" height="7" rx="0.5" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="7" y="6" width="3" height="11" rx="0.5" stroke="currentColor" strokeWidth="1.5" />
+    <rect x="12" y="3" width="3" height="14" rx="0.5" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M2 3l5 3 5-2.5 5 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
@@ -75,6 +87,7 @@ export const navSections: LeftNavSection[] = [
     defaultExpanded: false,
     items: [
       { id: 'accordion', label: 'Accordion', href: '/components/accordion' },
+      { id: 'amount-confirm-dialog', label: 'Amount Confirm Dialog', href: '/components/amount-confirm-dialog' },
       { id: 'assistive-message', label: 'Assistive Message', href: '/components/assistive-message' },
       { id: 'avatar', label: 'Avatar', href: '/components/avatar' },
       { id: 'badge', label: 'Badge', href: '/components/badge' },
@@ -83,8 +96,9 @@ export const navSections: LeftNavSection[] = [
       { id: 'button', label: 'Button', href: '/components/button' },
       { id: 'checkbox', label: 'Checkbox', href: '/components/checkbox' },
       { id: 'chip', label: 'Chip', href: '/components/chip' },
+      { id: 'confirm-dialog', label: 'Confirm Dialog', href: '/components/confirm-dialog' },
       { id: 'column-manager', label: 'Column Manager', href: '/components/column-manager' },
-      { id: 'collection-toolbar', label: 'Collection Toolbar', href: '/components/collection-toolbar' },
+      { id: 'collection-toolbar', label: 'Toolbar', href: '/components/collection-toolbar' },
       { id: 'combobox', label: 'Combobox', href: '/components/combobox' },
       { id: 'data-table', label: 'Data Table', href: '/components/data-table' },
       { id: 'divider', label: 'Divider', href: '/components/divider' },
@@ -105,6 +119,17 @@ export const navSections: LeftNavSection[] = [
       { id: 'task-modal', label: 'Task Modal', href: '/components/task-modal' },
       { id: 'tab', label: 'Tab', href: '/components/tab' },
       { id: 'upload', label: 'Upload', href: '/components/upload' },
+      { id: 'push-drawer', label: 'Drawer', href: '/components/push-drawer' },
+    ],
+  },
+  {
+    id: 'data-visualization',
+    title: 'Data Visualization',
+    icon: <IconDataViz />,
+    defaultExpanded: false,
+    items: [
+      { id: 'line-chart', label: 'Line Chart', href: '/components/line-chart' },
+      { id: 'spark-line', label: 'Spark Line', href: '/components/spark-line' },
     ],
   },
 ]
@@ -124,7 +149,7 @@ export const sharedStyles = {
   page: {
     minHeight: '100vh',
     backgroundColor: colors.surface.light,
-    backgroundImage: `radial-gradient(at 0% 0%, rgba(255, 87, 34, 0.08) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.08) 0px, transparent 50%)`,
+    backgroundImage: 'none',
     display: 'flex',
     position: 'relative' as const,
   },
@@ -135,6 +160,7 @@ export const sharedStyles = {
     maxWidth: `calc(100% - ${SIDEBAR_WIDTH}px)`,
     padding: '24px 48px',
     transition: 'margin-left 0.3s ease, max-width 0.3s ease',
+    color: colors.text.highEmphasis.onLight,
   },
 
   contentCollapsed: {
@@ -261,6 +287,7 @@ export const sharedStyles = {
   
   codeBlock: {
     background: colors.surface.lightDarker,
+    border: `1px solid ${colors.border.lowEmphasis.onLight}`,
     padding: '16px 20px',
     borderRadius: borderRadius.md,
     fontFamily: fontFamilies.mono,
@@ -293,7 +320,7 @@ const IconChevronDown = () => (
   </svg>
 )
 
-function ThemeSwitcherButton() {
+function ThemeSwitcherButton({ onBrand = false }: { onBrand?: boolean }) {
   const { themeName, setThemeName } = useThemeSwitcher()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -322,22 +349,34 @@ function ThemeSwitcherButton() {
           gap: '6px',
           padding: '6px 12px',
           borderRadius: borderRadius.lg,
-          border: `1px solid ${colors.border.midEmphasis.onLight}`,
-          background: 'transparent',
-          color: colors.text.lowEmphasis.onLight,
+          border: onBrand ? '1px solid rgba(255,255,255,0.3)' : `1px solid ${colors.border.midEmphasis.onLight}`,
+          background: onBrand ? 'rgba(255,255,255,0.12)' : 'transparent',
+          color: onBrand ? 'rgba(255,255,255,0.9)' : colors.text.lowEmphasis.onLight,
           fontSize: '12px',
           fontWeight: 500,
           fontFamily: fontFamilies.body,
           cursor: 'pointer',
           transition: 'background 150ms ease, border-color 150ms ease',
+          backdropFilter: onBrand ? 'blur(8px)' : undefined,
+          WebkitBackdropFilter: onBrand ? 'blur(8px)' : undefined,
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = colors.hover.onLight
-          e.currentTarget.style.borderColor = colors.border.highEmphasis.onLight
+          if (onBrand) {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.2)'
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+          } else {
+            e.currentTarget.style.background = colors.hover.onLight
+            e.currentTarget.style.borderColor = colors.border.highEmphasis.onLight
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent'
-          e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight
+          if (onBrand) {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.12)'
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
+          } else {
+            e.currentTarget.style.background = 'transparent'
+            e.currentTarget.style.borderColor = colors.border.midEmphasis.onLight
+          }
         }}
       >
         {displayName}
@@ -410,6 +449,8 @@ interface StyleguideLayoutProps {
   children: React.ReactNode
   title: string
   description: string
+  /** One-liner subcopy displayed in the BrandBanner below the title */
+  tagline?: string
   activeId: string
   /** Override default navSections — pass custom sections for different apps */
   sections?: LeftNavSection[]
@@ -423,6 +464,7 @@ export function StyleguideLayout({
   children,
   title,
   description,
+  tagline,
   activeId,
   sections = navSections,
   tabs,
@@ -531,8 +573,29 @@ export function StyleguideLayout({
     </Link>
   )
 
+  // Detect dark themes: used to choose the page background surface.
+  // Dark themes: page bg uses surface.dark (darkest). Light themes: page bg uses surface.light.
+  const useDarkCanvas = themeName.includes('Dark') || themeName.includes('Night') || themeName.includes('dark')
+  const pageBg = useDarkCanvas ? colors.surface.dark : colors.surface.light
+
   return (
-    <div style={sharedStyles.page}>
+    <div style={{ ...sharedStyles.page, backgroundColor: pageBg, flexDirection: 'column' }}>
+      {/* App Header - full width, fixed at top */}
+      <Header
+        variant="full"
+        sticky
+        userAvatar={<Avatar name="Lana Holston" size="sm" color={2} />}
+        userName="Lana Holston"
+        showNotifications
+        notificationCount={0}
+        style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: zIndex.header + 1 }}
+      />
+
+      {/* Spacer for fixed header */}
+      <div style={{ height: `${HEADER_HEIGHT}px`, flexShrink: 0 }} />
+
+      {/* Inner shell: nav + content side by side */}
+      <div style={{ display: 'flex', flex: 1, position: 'relative' }}>
       {/* Segmented LeftNav — each section in its own card */}
       <LeftNavSegmented
         logo={logoElement}
@@ -548,10 +611,10 @@ export function StyleguideLayout({
         onItemClick={handleItemClick}
         style={{
           position: 'fixed',
-          top: spacing.sm,
+          top: `calc(${HEADER_HEIGHT}px + ${spacing.sm})`,
           left: spacing.sm,
           bottom: spacing.sm,
-          height: `calc(100vh - ${spacing.sm} - ${spacing.sm})`,
+          height: `calc(100vh - ${HEADER_HEIGHT}px - ${spacing.sm} - ${spacing.sm})`,
           zIndex: zIndex.header,
         }}
       />
@@ -593,24 +656,21 @@ export function StyleguideLayout({
           </button>
         )}
 
-        {/* Header Banner */}
+        {/* Header — plain title/description for all themes (unified format) */}
         <div style={sharedStyles.headerWrapper}>
           <header style={sharedStyles.header}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h1 style={sharedStyles.headerTitle}>{title}</h1>
-                <p style={sharedStyles.headerDescription}>{description}</p>
+                <p style={sharedStyles.headerDescription}>{tagline || description}</p>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                {headerAction}
-                <ThemeSwitcherButton />
-              </div>
+              {headerAction}
             </div>
           </header>
 
           {/* Tabs */}
           {displayTabs.length > 0 && (
-            <nav role="tablist" style={sharedStyles.tabsContainer}>
+            <nav role="tablist" style={{ ...sharedStyles.tabsContainer, marginTop: spacing.md }}>
               {displayTabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -633,6 +693,7 @@ export function StyleguideLayout({
           {children}
         </main>
       </div>
+      </div>{/* end inner shell */}
     </div>
   )
 }
@@ -792,11 +853,8 @@ export function Playground({
       <div style={{
         background: activeTab === 'source' ? colors.surface.darkDarker : previewBackground,
         borderRadius: borderRadius.lg,
-        overflow: 'hidden',
-        // Add border when background is white for visual separation
-        ...(previewBackground === colors.surface.light
-          ? { border: `2px solid ${colors.border.lowEmphasis.onLight}` }
-          : {}),
+        overflow: activeTab === 'preview' ? 'visible' : 'hidden',
+        border: `1px solid ${colors.border.lowEmphasis.onLight}`,
       }}>
         {activeTab === 'preview' ? (
           <div style={{
@@ -946,14 +1004,14 @@ export function StyledCheckbox({ checked, onChange, label, disabled = false }: S
         {checked && (
           <path
             d="M6 10L9 13L14 7"
-            stroke="currentColor"
+            stroke="#FFFFFF"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         )}
       </svg>
-      <span style={typography.body.sm}>{label}</span>
+      <span style={{ ...typography.body.sm, color: colors.text.highEmphasis.onLight }}>{label}</span>
     </label>
   )
 }
@@ -966,7 +1024,7 @@ export function PillButton({ children, isActive = false, onClick, style }: PillB
         padding: '8px 16px',
         border: isActive ? 'none' : `1px solid ${colors.border.lowEmphasis.onLight}`,
         borderRadius: '9999px', // Full pill shape
-        background: isActive ? colors.brand.default : colors.surface.light,
+        background: isActive ? colors.brand.default : colors.buttonToggleBg.onLight,
         color: isActive ? colors.text.highEmphasis.onDark : colors.text.highEmphasis.onLight,
         cursor: 'pointer',
         ...typography.label.sm,
@@ -2006,6 +2064,7 @@ export function ComponentDocumentation({ data }: { data: ComponentDocData }) {
           <h2 style={sharedStyles.sectionTitle}>Notes</h2>
           <div style={{
             background: colors.surface.lightDarker,
+            border: `1px solid ${colors.border.lowEmphasis.onLight}`,
             borderRadius: borderRadius.md,
             padding: '20px 24px',
             display: 'flex',

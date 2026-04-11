@@ -138,6 +138,7 @@ export default function ButtonPage() {
     <StyleguideLayout
       title="Button"
       description="Buttons allow users to take actions and make choices with a single tap. They communicate actions that users can take throughout your UI."
+      tagline="The most important 44px in your interface."
       activeId="button"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -151,7 +152,7 @@ export default function ButtonPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Button, ButtonGroup } from '@metrc/design-system'
+import { Button, ButtonGroup } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Button, ButtonGroup } from '@/components'`}</CodeBlock>

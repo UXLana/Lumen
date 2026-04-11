@@ -112,6 +112,7 @@ export default function UploadPage() {
     <StyleguideLayout
       title="Upload"
       description="Drag-and-drop file upload with progress queue, URL upload, and batch actions."
+      tagline="From their device to your system, seamlessly."
       activeId="upload"
       tabs={componentTabs}
       activeTab={activePageTab}

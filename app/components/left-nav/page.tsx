@@ -150,11 +150,11 @@ export default function LeftNavPage() {
   // Using <img> for SVGs to avoid Next.js Image distortion (SVGs don't need optimization)
   const expandedLogo = (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/assets/Prism-logo-h.svg" alt="Prism Design System" style={{ height: '24px', width: 'auto' }} />
+    <img src="/assets/Lumen-logo-h.svg" alt="Lumen Design System" style={{ height: '24px', width: 'auto' }} />
   )
   const collapsedLogoEl = (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/assets/Prism-logo.svg" alt="Prism" style={{ height: '24px', width: '24px' }} />
+    <img src="/assets/Lumen-logo.svg" alt="Lumen" style={{ height: '24px', width: '24px' }} />
   )
 
   // Theme selector config
@@ -186,6 +186,7 @@ export default function LeftNavPage() {
     <StyleguideLayout
       title="Left Nav"
       description="A collapsible sidebar navigation component with support for sections, icons, tooltips, and responsive behavior."
+      tagline="Wayfinding for the digital world."
       activeId="left-nav"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -269,7 +270,7 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
                             mobileBehavior={mobileBehavior}
                             mobileOpen={mobileOpen}
                             onMobileClose={() => setMobileOpen(false)}
-                            logo={showLogo ? expandedLogo : <span style={{ fontWeight: 600, fontSize: '18px' }}>Metrc</span>}
+                            logo={showLogo ? expandedLogo : <span style={{ fontWeight: 600, fontSize: '18px' }}>Lumen</span>}
                             logoSelector={showLogoSelector ? themeSelector : undefined}
                             onLogoClick={showLogo ? () => setDemoActiveItem('home') : undefined}
                           />
@@ -277,8 +278,8 @@ import type { LeftNavSection, LeftNavItem, LeftNavVariant } from '@/components'`
                       </div>
                     }
                     code={`<LeftNav${showLogo ? `
-  logo={<Image src="/assets/Prism-logo-h.svg" alt="Prism" width={140} height={28} />}
-  collapsedLogo={<Image src="/assets/Prism-logo.svg" alt="Prism" width={24} height={24} />}` : ''}${showLogoSelector ? `
+  logo={<Image src="/assets/Lumen-logo-h.svg" alt="Lumen" width={140} height={28} />}
+  collapsedLogo={<Image src="/assets/Lumen-logo.svg" alt="Lumen" width={24} height={24} />}` : ''}${showLogoSelector ? `
   logoSelector={{
     options: themeOptions,
     value: themeName,
@@ -579,8 +580,8 @@ import { useThemeSwitcher, availableThemes } from '@/styles/themes/theme-provide
 const { themeName, setThemeName } = useThemeSwitcher()
 
 <LeftNav
-  logo={<Image src="/assets/Prism-logo-h.svg" alt="Prism" width={140} height={28} />}
-  collapsedLogo={<Image src="/assets/Prism-logo.svg" alt="Prism" width={24} height={24} />}
+  logo={<Image src="/assets/Lumen-logo-h.svg" alt="Lumen" width={140} height={28} />}
+  collapsedLogo={<Image src="/assets/Lumen-logo.svg" alt="Lumen" width={24} height={24} />}
   logoSelector={{
     options: availableThemes.map((t) => ({ value: t.name, label: t.name })),
     value: themeName,

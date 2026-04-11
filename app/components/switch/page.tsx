@@ -133,6 +133,7 @@ export default function SwitchPage() {
     <StyleguideLayout
       title="Switch"
       description="Switches toggle a single setting on or off. They provide an immediate, visible response to a binary choice."
+      tagline="On. Off. That simple."
       activeId="switch"
       tabs={componentTabs}
       activeTab={activePageTab}

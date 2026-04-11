@@ -70,6 +70,7 @@ export default function DividerPage() {
     <StyleguideLayout
       title="Divider"
       description="Dividers separate content into clearly defined groups. They can be horizontal or vertical, and come in different visual weights."
+      tagline="Creating clarity through separation."
       activeId="divider"
       tabs={componentTabs}
       activeTab={activePageTab}

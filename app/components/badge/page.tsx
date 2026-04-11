@@ -321,6 +321,7 @@ export default function BadgePage() {
     <StyleguideLayout
       title="Badge"
       description="Badges are small status indicators used for labels, categories, and tags. They support multiple variants and semantic colors."
+      tagline="Small labels. Big status energy."
       activeId="badge"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -334,7 +335,7 @@ export default function BadgePage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Badge } from '@metrc/design-system'
+import { Badge } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Badge } from '@/components'`}</CodeBlock>

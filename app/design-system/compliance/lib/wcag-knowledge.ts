@@ -269,7 +269,7 @@ export const wcagKnowledge: Record<string, WCAGCriterionInfo> = {
       { label: 'MDN: title element', url: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title' },
     ],
     commonPatterns: [
-      { issueType: 'Missing or generic page title', fix: 'Add descriptive <title> element that includes page-specific content', effort: 'low', codeExample: '<!-- Problem: generic title -->\n<title>App</title>\n\n<!-- Fix: descriptive, specific title -->\n<title>Label Template Editor - Retail ID - Metrc</title>\n\n<!-- For Next.js/React SPA: update on route change -->\n// app/packages/page.tsx\nexport const metadata = {\n  title: "Packages — Retail ID — Metrc",\n};\n\n// Or dynamically:\nuseEffect(() => {\n  document.title = `${pageTitle} — Metrc`;\n}, [pageTitle]);', testingSteps: ['Check document.title in browser tab', 'Verify title changes on navigation', 'Screen reader: verify page title is announced'] },
+      { issueType: 'Missing or generic page title', fix: 'Add descriptive <title> element that includes page-specific content', effort: 'low', codeExample: '<!-- Problem: generic title -->\n<title>App</title>\n\n<!-- Fix: descriptive, specific title -->\n<title>Label Template Editor - Retail ID - Lumen</title>\n\n<!-- For Next.js/React SPA: update on route change -->\n// app/packages/page.tsx\nexport const metadata = {\n  title: "Packages — Retail ID — Lumen",\n};\n\n// Or dynamically:\nuseEffect(() => {\n  document.title = `${pageTitle} — Lumen`;\n}, [pageTitle]);', testingSteps: ['Check document.title in browser tab', 'Verify title changes on navigation', 'Screen reader: verify page title is announced'] },
     ],
   },
   '2.4.3': {

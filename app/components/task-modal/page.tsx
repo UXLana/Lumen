@@ -436,6 +436,7 @@ export default function TaskModalPage() {
     <StyleguideLayout
       title="Task Modal"
       description="Full-screen, multi-step task flow with horizontal, vertical, and mobile navigation modes."
+      tagline="Guided workflows, zero guesswork."
       activeId="task-modal"
       tabs={[
         { id: 'overview', label: 'Overview' },

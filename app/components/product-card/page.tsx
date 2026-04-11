@@ -138,6 +138,7 @@ export default function ProductCardPage() {
     <StyleguideLayout
       title="Product Card"
       description="Product cards display product information with image, brand, category, potency, and market availability. Available in vertical, horizontal, and compact layouts."
+      tagline="Every product deserves its best angle."
       activeId="product-card"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -151,7 +152,7 @@ export default function ProductCardPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { ProductCard } from '@metrc/design-system'
+import { ProductCard } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { ProductCard } from '@/components'`}</CodeBlock>
@@ -464,7 +465,7 @@ import type { ProductCardProps, MarketBadge } from '@/components'`}</CodeBlock>
                   ['Selection', 'Dedicated checkbox with role="checkbox" and aria-checked — always visible, not hover-gated'],
                   ['Badge groups', 'Wrapped in role="group" with descriptive aria-label per category'],
                   ['Keyboard', 'Tab to card, Enter to navigate, Tab to checkbox, Space to toggle'],
-                  ['Screen reader', 'Full product summary in aria-label including active market codes'],
+                  ['Screen reader', 'Full product'summary in aria-label including active market codes'],
                   ['Contrast', 'All text meets WCAG AA 4.5:1 minimum. Badge text uses #767676 on #E5E5E5 (4.54:1)'],
                 ]}
               />

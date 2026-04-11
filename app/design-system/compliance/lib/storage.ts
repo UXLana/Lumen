@@ -3,11 +3,18 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { StateCompliance, VPATReport, IssueStatus, ComplianceStore } from './types'
 
-const STORAGE_KEY = 'mtr-compliance-dashboard'
+const STORAGE_KEY = 'lumen-compliance-dashboard'
+const LEGACY_STORAGE_KEY = 'mtr-compliance-dashboard' // pre-rebrand
 
 function loadFromStorage(): StateCompliance[] {
   if (typeof window === 'undefined') return []
   try {
+    // Migrate any data stored under the legacy key before the rebrand.
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY)
+    if (legacy && !localStorage.getItem(STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_KEY, legacy)
+      localStorage.removeItem(LEGACY_STORAGE_KEY)
+    }
     const raw = localStorage.getItem(STORAGE_KEY)
     return raw ? JSON.parse(raw) : []
   } catch {

@@ -164,6 +164,7 @@ export default function ChipPage() {
     <StyleguideLayout
       title="Chip"
       description="Chips represent complex entities in small blocks, such as a contact, tag, or filter criteria."
+      tagline="Tiny labels with serious filtering power."
       activeId="chip"
       tabs={componentTabs}
       activeTab={activePageTab}

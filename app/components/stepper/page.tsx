@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Stepper, StepperStep, LinearStepper, NonLinearStepper, DefaultStepIndicator, StepItem, StepStatus, StepIndicatorProps } from '@/components'
-import { colors, typography, stepper as stepperTokens, borderRadius } from '@/styles/design-tokens'
+import { colors, typography, spacing, stepper as stepperTokens, borderRadius } from '@/styles/design-tokens'
 
 // =============================================================================
 // TYPES
@@ -69,8 +69,8 @@ function IconStepIndicator({ status, size = 12 }: StepIndicatorProps) {
 const stepperDocData: ComponentDocData = {
   displayName: 'Stepper',
   importPath: '@/components',
-  importStatement: `import { Stepper, LinearStepper, NonLinearStepper } from '@/components'\nimport type { StepperProps, StepItem, StepStatus, StepperVariant } from '@/components'`,
-  description: 'Steppers guide users through multi-step processes with progress indication.',
+  importStatement: `import { Stepper, LinearStepper, NonLinearStepper, HorizontalStepper } from '@/components'\nimport type { StepperProps, StepItem, StepStatus, StepperVariant, StepperOrientation } from '@/components'`,
+  description: 'Steppers guide users through multi-step processes with progress indication. Supports vertical (inline, content under each step) and horizontal (top bar, content below) orientations.',
   props: [
     { name: 'steps', type: 'StepItem[]', required: true, description: 'Array of step items' },
     { name: 'activeStep', type: 'number', required: true, description: 'Currently active step index (0-based)' },
@@ -81,7 +81,8 @@ const stepperDocData: ComponentDocData = {
     { name: 'onPrimaryClick', type: '() => void', description: 'Primary button callback' },
     { name: 'onSecondaryClick', type: '() => void', description: 'Secondary button callback' },
     { name: 'clickable', type: 'boolean', description: 'Whether steps are clickable' },
-    { name: 'variant', type: "'linear' | 'nonLinear'", description: 'Stepper variant' },
+    { name: 'variant', type: "'linear' | 'nonLinear'", description: 'Stepper variant (default: linear)' },
+    { name: 'orientation', type: "'vertical' | 'horizontal'", description: "Layout direction. 'vertical' (default) expands content inline under each step; 'horizontal' renders a top bar with the active step's content and buttons below." },
     { name: 'className', type: 'string', description: 'Additional CSS class' },
     { name: 'style', type: 'CSSProperties', description: 'Additional inline styles' },
   ],
@@ -89,6 +90,7 @@ const stepperDocData: ComponentDocData = {
     { name: 'StepItem', definition: "interface StepItem {\n  id: string\n  label: string\n  metadata?: string\n  disabled?: boolean\n  icon?: ReactNode\n}" },
     { name: 'StepStatus', definition: "type StepStatus = 'completed' | 'active' | 'pending' | 'disabled'" },
     { name: 'StepperVariant', definition: "type StepperVariant = 'linear' | 'nonLinear'" },
+    { name: 'StepperOrientation', definition: "type StepperOrientation = 'vertical' | 'horizontal'" },
   ],
   accessibility: [
     { feature: 'ARIA', description: 'Steps use aria-current="step" for the active step.' },
@@ -107,6 +109,7 @@ const stepperDocData: ComponentDocData = {
   notes: [
     'Use LinearStepper for sequential flows where order matters.',
     'Use NonLinearStepper when users can jump between steps freely.',
+    'Use HorizontalStepper (or orientation="horizontal") for wide layouts where a top progress bar reads better than a vertical list.',
     'Keep step labels concise - ideally 1-3 words.',
     'Provide step content via the stepContent prop array.',
   ],
@@ -115,6 +118,7 @@ const stepperDocData: ComponentDocData = {
     'Short multi-step forms (2-5 steps) that fit inline on a page without needing a full-screen takeover.',
     'Settings or configuration wizards embedded within a page section.',
     'Progress indication for a sequential process where each step expands in place.',
+    'Wide page sections where a horizontal top-bar stepper (orientation="horizontal") reads better than a stacked vertical list.',
   ],
   whenNotToUse: [
     { scenario: 'Complex workflow with substantial content per step that needs full-screen focus', instead: 'TaskModal — full-screen modal with step navigation, columns, and mobile ProgressBar' },
@@ -133,6 +137,11 @@ const stepperDocData: ComponentDocData = {
       description: 'Use when users need to jump between steps freely (e.g., editing previously completed sections).',
       code: `<Stepper\n  steps={steps}\n  activeStep={step}\n  onStepChange={setStep}\n  variant="nonLinear"\n  clickable\n  stepContent={stepContents}\n/>`,
     },
+    {
+      title: 'Horizontal top-bar stepper',
+      description: 'Lays steps out in a horizontal progress bar with the active step\'s content rendered below. Best for wide page sections, dashboards, or embedded wizards where vertical space is limited.',
+      code: `<HorizontalStepper\n  steps={[\n    { id: 'details', label: 'Details' },\n    { id: 'review', label: 'Review' },\n    { id: 'submit', label: 'Submit' },\n  ]}\n  activeStep={step}\n  onStepChange={setStep}\n  stepContent={[<Details />, <Review />, <Submit />]}\n  onPrimaryClick={handleNext}\n  onSecondaryClick={handlePrev}\n  clickable\n/>`,
+    },
   ],
 }
 
@@ -144,6 +153,7 @@ export default function StepperPage() {
   const [demoActiveStep, setDemoActiveStep] = useState(0)
   const [demoClickable, setDemoClickable] = useState(false)
   const [demoVariant, setDemoVariant] = useState<'linear' | 'nonLinear'>('linear')
+  const [demoOrientation, setDemoOrientation] = useState<'vertical' | 'horizontal'>('vertical')
 
   // Demo steps
   const demoSteps: StepItem[] = [
@@ -175,6 +185,7 @@ export default function StepperPage() {
     <StyleguideLayout
       title="Stepper"
       description="Steppers display progress through a sequence of logical and numbered steps. They guide users through multi-step processes."
+      tagline="Complex journeys, one step at a time."
       activeId="stepper"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -188,7 +199,7 @@ export default function StepperPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Stepper, LinearStepper, NonLinearStepper } from '@metrc/design-system'
+import { Stepper, LinearStepper, NonLinearStepper } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Stepper, LinearStepper, NonLinearStepper } from '@/components'`}</CodeBlock>
@@ -208,9 +219,10 @@ import { Stepper, LinearStepper, NonLinearStepper } from '@/components'`}</CodeB
                 <div>
                   <Playground
                     preview={
-                      <div style={{ width: '100%', maxWidth: '350px' }}>
+                      <div style={{ width: '100%', maxWidth: demoOrientation === 'horizontal' ? '560px' : '350px' }}>
                         <Stepper
                           variant={demoVariant}
+                          orientation={demoOrientation}
                           steps={demoSteps}
                           activeStep={demoActiveStep}
                           onStepChange={demoClickable ? setDemoActiveStep : undefined}
@@ -220,18 +232,18 @@ import { Stepper, LinearStepper, NonLinearStepper } from '@/components'`}</CodeB
                           onSecondaryClick={handlePrevious}
                           clickable={demoClickable}
                           stepContent={[
-                            <div key="1" style={{ padding: '16px', background: '#F5F5F5', borderRadius: '8px' }}>
-                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
+                            <div key="1" style={{ padding: spacing.md, background: colors.surface.light, borderRadius: borderRadius.sm }}>
+                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onDark }}>
                                 Step 1 content goes here
                               </p>
                             </div>,
-                            <div key="2" style={{ padding: '16px', background: '#F5F5F5', borderRadius: '8px' }}>
-                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
+                            <div key="2" style={{ padding: spacing.md, background: colors.surface.light, borderRadius: borderRadius.sm }}>
+                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onDark }}>
                                 Step 2 content goes here
                               </p>
                             </div>,
-                            <div key="3" style={{ padding: '16px', background: '#F5F5F5', borderRadius: '8px' }}>
-                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onLight }}>
+                            <div key="3" style={{ padding: spacing.md, background: colors.surface.light, borderRadius: borderRadius.sm }}>
+                              <p style={{ margin: 0, ...typography.body.sm, color: colors.text.lowEmphasis.onDark }}>
                                 Step 3 content goes here
                               </p>
                             </div>,
@@ -241,6 +253,7 @@ import { Stepper, LinearStepper, NonLinearStepper } from '@/components'`}</CodeB
                     }
                     code={`<Stepper
   variant="${demoVariant}"
+  orientation="${demoOrientation}"
   steps={[
     { id: '1', label: 'Account Setup' },
     { id: '2', label: 'Personal Information' },
@@ -280,6 +293,27 @@ import { Stepper, LinearStepper, NonLinearStepper } from '@/components'`}</CodeB
                           isActive={demoVariant === 'nonLinear'}
                         >
                           Non-Linear
+                        </PillButton>
+                      </div>
+                    </div>
+
+                    {/* Orientation */}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
+                        Orientation
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <PillButton
+                          onClick={() => setDemoOrientation('vertical')}
+                          isActive={demoOrientation === 'vertical'}
+                        >
+                          Vertical
+                        </PillButton>
+                        <PillButton
+                          onClick={() => setDemoOrientation('horizontal')}
+                          isActive={demoOrientation === 'horizontal'}
+                        >
+                          Horizontal
                         </PillButton>
                       </div>
                     </div>
@@ -624,6 +658,7 @@ const stepsWithIcons = [
                   [<code key="steps">steps</code>, <code>StepItem[]</code>, 'Required', 'Array of step items'],
                   [<code key="activeStep">activeStep</code>, <code>number</code>, 'Required', 'Currently active step index (0-based)'],
                   [<code key="variant">variant</code>, <code>&apos;linear&apos; | &apos;nonLinear&apos;</code>, <code>&apos;linear&apos;</code>, 'Stepper variant'],
+                  [<code key="orientation">orientation</code>, <code>&apos;vertical&apos; | &apos;horizontal&apos;</code>, <code>&apos;vertical&apos;</code>, 'Layout direction (top bar vs. stacked)'],
                   [<code key="onStepChange">onStepChange</code>, <code>(index: number) =&gt; void</code>, '-', 'Callback when step changes'],
                   [<code key="stepContent">stepContent</code>, <code>ReactNode[]</code>, '-', 'Content for each step'],
                   [<code key="clickable">clickable</code>, <code>boolean</code>, <code>false</code>, 'Allow clicking steps to navigate'],
@@ -671,6 +706,7 @@ const stepsWithIcons = [
                 rows={[
                   ['LinearStepper', 'Sequential processes: registration, checkout, onboarding wizards'],
                   ['NonLinearStepper', 'Flexible navigation: settings panels, form sections, dashboards'],
+                  ['HorizontalStepper', 'Wide page sections or embedded wizards where a top progress bar reads better than a stacked vertical list'],
                 ]}
               />
             </div>

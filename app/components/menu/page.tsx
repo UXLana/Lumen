@@ -323,6 +323,7 @@ export default function MenuPage() {
     <StyleguideLayout
       title="Menu"
       description="Dropdown menu for actions, multi-select, single-select, and contextual options."
+      tagline="Every option, right where you need it."
       activeId="menu"
       tabs={componentTabs}
       activeTab={activePageTab}

@@ -124,6 +124,7 @@ export default function CheckboxPage() {
     <StyleguideLayout
       title="Checkbox"
       description="Checkboxes allow selection of one or more items from a set. They can be used standalone or in groups."
+      tagline="Binary decisions, beautifully rendered."
       activeId="checkbox"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -137,7 +138,7 @@ export default function CheckboxPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Checkbox, CheckboxGroup } from '@metrc/design-system'
+import { Checkbox, CheckboxGroup } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>

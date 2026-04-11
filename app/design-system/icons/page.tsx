@@ -118,6 +118,8 @@ const iconCategories: IconCategory[] = [
       { name: 'IconApps', component: Icons.IconApps },
       { name: 'IconDrag', component: Icons.IconDrag },
       { name: 'IconCart', component: Icons.IconCart },
+      { name: 'IconColumnManager', component: Icons.IconColumnManager },
+      { name: 'IconColumnManagerToolbar', component: Icons.IconColumnManagerToolbar },
     ],
   },
   {
@@ -141,7 +143,7 @@ const iconCategories: IconCategory[] = [
   },
   {
     name: 'Design System',
-    description: 'Icons used in the MTR Design System navigation.',
+    description: 'Icons used in the LUMEN Design System navigation.',
     icons: [
       { name: 'IconFoundations', component: Icons.IconFoundations },
       { name: 'IconComponents', component: Icons.IconComponents },
@@ -258,9 +260,8 @@ function IconCard({
           color: colors.text.lowEmphasis.onLight,
           textAlign: 'center',
           fontFamily: fontFamilies.mono,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
+          whiteSpace: 'normal',
+          wordBreak: 'break-word',
           width: '100%',
           marginBottom: hovered ? '8px' : '0',
           transition: 'margin 0.15s ease',
@@ -561,7 +562,7 @@ export default function IconsPage() {
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
                     gap: '12px',
                   }}
                 >

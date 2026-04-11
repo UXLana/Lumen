@@ -112,7 +112,7 @@ const sections = [
 const links = [
   {
     label: 'GitHub',
-    href: 'https://github.com/MetrcID/vercel.ux',
+    href: 'https://github.com/UXLana/Lumen',
     icon: <IconGitHub />,
   },
 ]
@@ -282,7 +282,7 @@ export default function Home() {
             textTransform: 'uppercase' as const,
             fontSize: '13px',
           }}>
-            Prism
+            Lumen
           </p>
 
           <h1 style={{
@@ -299,7 +299,7 @@ export default function Home() {
             marginBottom: spacing['3xl'],
             maxWidth: '560px',
           }}>
-            Prism is the shared design system for Metrc products — foundations,
+            Lumen is the shared design system for Lumen products — foundations,
             components, theming, and prototyping tools that help teams ship consistent,
             accessible interfaces across 28+ US states. Components ship accessible
             by default and are designed as a starting point: engineers own the final
@@ -506,7 +506,7 @@ export default function Home() {
             color: colors.text.lowEmphasis.onLight,
             margin: 0,
           }}>
-            Prism Design System · v1.1.0
+            Lumen Design System · v1.1.0
           </p>
           <p style={{
             ...typography.body.sm,

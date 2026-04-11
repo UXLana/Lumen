@@ -176,6 +176,7 @@ export default function ChatPanelPage() {
     <StyleguideLayout
       title="Chat Panel"
       description="Agent chat experience with collapsed and expanded views, structured UI responses, and animated avatar."
+      tagline="AI assistance, always within reach."
       activeId="chat-panel"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -189,7 +190,7 @@ export default function ChatPanelPage() {
               Quick Start
             </h2>
             <CodeBlock>{`// Package import
-import { ChatPanel, ChatFab, ChatSearchTrigger, DotGrid } from '@metrc/design-system'
+import { ChatPanel, ChatFab, ChatSearchTrigger, DotGrid } from '@lumen/design-system'
 
 // Or with path alias
 import { ChatPanel, ChatFab, ChatSearchTrigger, DotGrid } from '@/components'

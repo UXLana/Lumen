@@ -119,6 +119,7 @@ export default function SegmentedControlPage() {
     <StyleguideLayout
       title="Segmented Control"
       description="Segmented controls allow users to select one option from a set of mutually exclusive choices. They're ideal for switching between views, filtering content, or toggling related options."
+      tagline="Mutually exclusive never looked this good."
       activeId="segmented-control"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -132,7 +133,7 @@ export default function SegmentedControlPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { SegmentedControl } from '@metrc/design-system'
+import { SegmentedControl } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { SegmentedControl } from '@/components'`}</CodeBlock>

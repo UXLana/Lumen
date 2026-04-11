@@ -203,6 +203,7 @@ export default function TabPage() {
     <StyleguideLayout
       title="Tab"
       description="Tabs organize content into separate views where only one view can be visible at a time. They enable users to switch between related content quickly without navigating to different pages."
+      tagline="Different views, same destination."
       activeId="tab"
       tabs={componentTabs}
       activeTab={activePageTab}
@@ -216,7 +217,7 @@ export default function TabPage() {
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
             <div style={{ maxWidth: '600px' }}>
               <CodeBlock>{`// Package import
-import { Tab, TabBar } from '@metrc/design-system'
+import { Tab, TabBar } from '@lumen/design-system'
 
 // Or with path alias (requires tsconfig setup)
 import { Tab, TabBar } from '@/components'`}</CodeBlock>

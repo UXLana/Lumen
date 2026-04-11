@@ -76,6 +76,7 @@ export default function LinkPage() {
     <StyleguideLayout
       title="Link"
       description="Links navigate users to another page, resource, or section. They can be inline within text or standalone."
+      tagline="Connections that take you places."
       activeId="link"
       tabs={componentTabs}
       activeTab={activePageTab}
