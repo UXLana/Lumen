@@ -1,11 +1,11 @@
 /**
- * Prism Design System - Theme Interface
+ * Lumen Design System - Theme Interface
  *
  * Every product theme must implement this interface.
- * Color structure matches Figma prism_sys_color_* taxonomy exactly.
+ * Color structure matches Figma lumen_sys_color_* taxonomy exactly.
  *
  * Non-color tokens (typography, radius, elevation, spacing, iconStyle)
- * follow the same CSS custom property pattern — each produces --prism-<category>-*
+ * follow the same CSS custom property pattern — each produces --lumen-<category>-*
  * vars at runtime so themes look visually distinct beyond just color.
  *
  * To create a new theme:
@@ -32,6 +32,14 @@ export interface ThemeColors {
     lightDarker: string;
     dark: string;
     darkDarker: string;
+    /** Subtle highlight surface — used for nav sidebar, elevated chrome.
+     *  Dark themes: white at ~10% opacity. Light themes: black at ~3% opacity. */
+    highlight: string;
+    /** Frosted glass surface — semi-transparent for backdrop-filter blur.
+     *  Light: surface.light at 85% opacity. Dark: surface.light at 60% opacity. */
+    frosted: string;
+    /** Blur radius for frosted surfaces (e.g. '12px'). Set '0px' to disable. */
+    frostedBlur: string;
     disabled: {
       onLight: string;
       onDark: string;
@@ -239,6 +247,15 @@ export interface ThemeColors {
     hover: { onLight: string; onDark: string };
     active: { onLight: string; onDark: string };
   };
+
+  /** Semantic background for navigation sidebar — frosted glass, matches header treatment */
+  navBackground: string;
+  /** Backdrop blur radius for nav (e.g. '12px'). Set '0px' to disable. */
+  navBlur: string;
+  /** Semantic background for app header — nearly transparent with blur for frosted glass effect */
+  headerBackground: string;
+  /** Backdrop blur radius for header (e.g. '12px'). Set '0px' to disable. */
+  headerBlur: string;
 
   navItemText: {
     enabled: { onLight: string; onDark: string };

@@ -1,93 +1,97 @@
 /**
- * Lumen Product Theme
- * Source: mylumen.net brand identity
+ * Eden Product Theme
+ * Source: Eden E-bikes brand identity (eden-website/app/theme/tokens.ts)
  *
- * Brand color:  #FF5722 (Deep Orange) — hue 14°, warm, energetic
- * Accent color: #0097A7 (Teal-Cyan)  — complementary strategy (~194°)
- * Personality:  modern — clean sans-serif, moderate radius, standard spacing
+ * Brand color:   #4496B7 (Teal)         — hue 197°, cool, beach/leisure
+ * Brand darker:  #005A7B (Deep teal)    — user-specified
+ * Accent color:  #B96D4C (Earthy brick) — warm counterpoint strategy;
+ *                                         balances the cool teal brand with
+ *                                         a desaturated terracotta pulled from
+ *                                         Eden's pricing-card border treatment
+ * Personality:   modern + full-pill buttons/inputs (Eden's signature shape)
  *
- * Generated 2026-04-02 by theme-generator skill
+ * Generated 2026-04-11 by theme-generator skill
  */
 
 import type { ProductTheme } from './theme-interface';
 import { buildBorderRadius, buildComponentRadius, buildElevation } from './theme-interface';
 
-export const lumenTheme: ProductTheme = {
-  name: 'lumen',
+export const edenTheme: ProductTheme = {
+  name: 'eden',
   colors: {
     // =========================================================================
-    // BRAND — Deep Orange family
+    // BRAND — Teal family (#4496B7)
     // =========================================================================
     brand: {
-      default: '#FF5722',
-      darker: '#D84315',
-      lighter: '#FF8A65',
+      default: '#4496B7',
+      darker: '#005A7B',
+      lighter: '#7BB5CC',
     },
 
     // =========================================================================
-    // ACCENT — Complementary teal-cyan (~194°)
+    // ACCENT — Earthy brick / terracotta (warm counterpoint to the teal brand)
     // =========================================================================
     accent: {
-      default: '#0097A7',
-      darker: '#00757A',
-      lighter: '#4DB6C4',
+      default: '#B96D4C',
+      darker: '#8C5036',
+      lighter: '#D39579',
     },
 
     // =========================================================================
     // SURFACE
     // =========================================================================
     surface: {
-      light: '#FFFAF8',
-      lightDarker: 'rgba(0, 0, 0, 0.06)',
-      dark: '#4A3E3B',
-      darkDarker: '#322A28',
-      highlight: 'rgba(0, 0, 0, 0.03)',
-      frosted: 'rgba(255, 250, 248, 0.85)',
+      light: '#FDFAF5',
+      lightDarker: 'rgba(140, 80, 54, 0.06)',
+      dark: '#0C2A38',
+      darkDarker: '#06171F',
+      highlight: 'rgba(185, 109, 76, 0.04)',
+      frosted: 'rgba(253, 250, 245, 0.85)',
       frostedBlur: '12px',
       disabled: {
         onLight: 'rgba(0, 0, 0, 0.03)',
         onDark: 'rgba(255, 255, 255, 0.20)',
       },
-      info: '#F0F6FF',
-      success: '#EDF6F1',
-      warning: '#FFF8E1',
-      important: '#FFF3F0',
+      info: '#E8F4FA',
+      success: '#E6F1EB',
+      warning: '#FDF5E6',
+      important: '#FDECEC',
     },
 
     // =========================================================================
     // SURFACE BORDER
     // =========================================================================
     surfaceBorder: {
-      info: '#C8D9FF',
-      success: '#B8DCC8',
-      warning: '#FFE0A0',
-      important: '#FFCABD',
+      info: '#BBDCEC',
+      success: '#B7D6C3',
+      warning: '#F4D9A0',
+      important: '#F5B7B7',
     },
 
     // =========================================================================
-    // TEXT
+    // TEXT — based on Eden's heading #0F142A + body #666666
     // =========================================================================
     text: {
       highEmphasis: {
-        onLight: 'rgba(0, 0, 0, 0.95)',
+        onLight: 'rgba(15, 20, 42, 0.95)',
         onDark: '#FFFFFF',
       },
       lowEmphasis: {
-        onLight: 'rgba(0, 0, 0, 0.60)',
+        onLight: 'rgba(15, 20, 42, 0.60)',
         onDark: 'rgba(255, 255, 255, 0.70)',
       },
       disabled: {
-        onLight: 'rgba(0, 0, 0, 0.30)',
+        onLight: 'rgba(15, 20, 42, 0.30)',
         onDark: 'rgba(255, 255, 255, 0.30)',
       },
       action: {
-        enabled: '#007B8A',
-        hover: '#006270',
-        active: '#004E5A',
+        enabled: '#117BA6',
+        hover: '#0C5D80',
+        active: '#08475F',
       },
-      success: '#006B50',
-      warning: '#A35C00',
-      important: '#C10B1E',
+      success: '#255C3B',
+      warning: '#D97706',
+      important: '#E53E3E',
     },
 
     // =========================================================================
@@ -95,19 +99,19 @@ export const lumenTheme: ProductTheme = {
     // =========================================================================
     border: {
       lowEmphasis: {
-        onLight: 'rgba(0, 0, 0, 0.10)',
+        onLight: 'rgba(15, 20, 42, 0.10)',
         onDark: 'rgba(255, 255, 255, 0.10)',
         hover: {
-          onLight: 'rgba(0, 0, 0, 0.27)',
+          onLight: 'rgba(15, 20, 42, 0.27)',
           onDark: 'rgba(255, 255, 255, 0.27)',
         },
       },
       midEmphasis: {
-        onLight: 'rgba(0, 0, 0, 0.15)',
+        onLight: 'rgba(15, 20, 42, 0.15)',
         onDark: 'rgba(255, 255, 255, 0.15)',
       },
       highEmphasis: {
-        onLight: 'rgba(0, 0, 0, 0.42)',
+        onLight: 'rgba(15, 20, 42, 0.42)',
         onDark: 'rgba(255, 255, 255, 0.43)',
       },
     },
@@ -117,25 +121,25 @@ export const lumenTheme: ProductTheme = {
     // =========================================================================
     icon: {
       enabled: {
-        onLight: 'rgba(0, 0, 0, 0.55)',
+        onLight: 'rgba(15, 20, 42, 0.55)',
         onDark: 'rgba(255, 255, 255, 0.94)',
       },
       hover: {
-        onLight: 'rgba(0, 0, 0, 0.65)',
+        onLight: 'rgba(15, 20, 42, 0.65)',
       },
       active: {
-        onLight: 'rgba(0, 0, 0, 0.75)',
+        onLight: 'rgba(15, 20, 42, 0.75)',
       },
       selected: {
-        onLight: 'rgba(0, 0, 0, 0.85)',
+        onLight: '#117BA6',
       },
       disabled: {
-        onLight: 'rgba(0, 0, 0, 0.20)',
+        onLight: 'rgba(15, 20, 42, 0.20)',
         onDark: 'rgba(255, 255, 255, 0.20)',
       },
       lowEmphasis: {
         enabled: {
-          onLight: 'rgba(0, 0, 0, 0.43)',
+          onLight: 'rgba(15, 20, 42, 0.43)',
           onDark: 'rgba(255, 255, 255, 0.65)',
         },
       },
@@ -145,38 +149,38 @@ export const lumenTheme: ProductTheme = {
     // ICON BACKGROUNDS
     // =========================================================================
     iconBg: {
-      info: '#E3EDFF',
-      info_onDark: 'rgba(122, 145, 255, 0.25)',
-      success: '#DEEDE4',
-      success_onDark: 'rgba(0, 173, 130, 0.25)',
-      warning: '#FFF3CC',
-      warning_onDark: 'rgba(230, 130, 0, 0.25)',
-      important: '#FFE4DB',
-      important_onDark: 'rgba(255, 87, 34, 0.25)',
+      info: '#E8F4FA',
+      info_onDark: 'rgba(68, 150, 183, 0.25)',
+      success: '#E6F1EB',
+      success_onDark: 'rgba(37, 92, 59, 0.25)',
+      warning: '#FDF5E6',
+      warning_onDark: 'rgba(217, 119, 6, 0.25)',
+      important: '#FDECEC',
+      important_onDark: 'rgba(229, 62, 62, 0.25)',
     },
 
     // =========================================================================
-    // ACTION — uses accent (teal) for primary, brand (orange) influences important
+    // ACTION — brand teal for primary, Eden error red for important
     // =========================================================================
     action: {
-      enabled: '#0097A7',
-      hover: '#00757A',
-      active: '#005F66',
+      enabled: '#4496B7',
+      hover: '#1E495E',
+      active: '#143447',
       important: {
-        enabled: '#C10B1E',
-        hover: '#A20919',
-        active: '#850715',
+        enabled: '#E53E3E',
+        hover: '#C53030',
+        active: '#A22525',
       },
       monochrome: {
         onLight: {
-          enabled: 'rgba(0, 0, 0, 0.55)',
-          hover: 'rgba(0, 0, 0, 0.65)',
-          active: 'rgba(0, 0, 0, 0.75)',
-          selected: 'rgba(0, 0, 0, 0.85)',
-          disabled: 'rgba(0, 0, 0, 0.20)',
-          bg: 'rgba(0, 0, 0, 0.08)',
+          enabled: 'rgba(15, 20, 42, 0.55)',
+          hover: 'rgba(15, 20, 42, 0.65)',
+          active: 'rgba(15, 20, 42, 0.75)',
+          selected: 'rgba(15, 20, 42, 0.85)',
+          disabled: 'rgba(15, 20, 42, 0.20)',
+          bg: 'rgba(15, 20, 42, 0.08)',
           lowEmphasis: {
-            enabled: 'rgba(0, 0, 0, 0.43)',
+            enabled: 'rgba(15, 20, 42, 0.43)',
           },
         },
         onDark: {
@@ -194,80 +198,80 @@ export const lumenTheme: ProductTheme = {
     },
 
     // =========================================================================
-    // STATUS — universal semantics, slightly brand-tinted
+    // STATUS — Eden's exact semantic colors
     // =========================================================================
     status: {
-      info: '#617BFF',
-      info_onDark: 'rgba(122, 145, 255, 0.25)',
-      success: '#1B7F66',
-      success_onDark: 'rgba(0, 173, 130, 0.25)',
-      warning: '#CC7300',
-      warningLight: '#FFE0A0',
-      warning_onDark: 'rgba(230, 130, 0, 0.25)',
-      important: '#E53935',
-      important_onDark: 'rgba(255, 87, 34, 0.25)',
+      info: '#117BA6',
+      info_onDark: 'rgba(68, 150, 183, 0.25)',
+      success: '#255C3B',
+      success_onDark: 'rgba(37, 92, 59, 0.25)',
+      warning: '#D97706',
+      warningLight: '#FDF5E6',
+      warning_onDark: 'rgba(217, 119, 6, 0.25)',
+      important: '#E53E3E',
+      important_onDark: 'rgba(229, 62, 62, 0.25)',
     },
 
     // =========================================================================
-    // BADGE — 9 hue-spaced colors harmonized with warm orange brand
+    // BADGE — 9 hue-spaced colors harmonized with cool teal brand
     // =========================================================================
     badge: {
-      info: '#4766FF',
-      infoLight: '#DBE2FF',
-      success: '#19856B',
-      successLight: '#D9EDE6',
-      warning: '#E68200',
-      warningLight: '#FFF3CC',
-      important: '#E53935',
-      importantLight: '#FFE4DB',
-      aqua: '#0097A7',
-      aquaLight: '#B4EAF3',
-      green: '#40851E',
-      greenLight: '#DAF4CD',
-      yellow: '#F59E00',
-      yellowLight: '#FFF3CC',
-      fuschia: '#CF26B8',
-      fuschiaLight: '#FCCFF6',
-      purple: '#A14CE1',
-      purpleLight: '#EDDCF9',
+      info: '#117BA6',
+      infoLight: '#E8F4FA',
+      success: '#255C3B',
+      successLight: '#E6F1EB',
+      warning: '#D97706',
+      warningLight: '#FDF5E6',
+      important: '#E53E3E',
+      importantLight: '#FDECEC',
+      aqua: '#4496B7',
+      aquaLight: '#DAEDF4',
+      green: '#3F8A5C',
+      greenLight: '#DDEDE3',
+      yellow: '#E8A000',
+      yellowLight: '#FFF3D1',
+      fuschia: '#C6407B',
+      fuschiaLight: '#F6D7E3',
+      purple: '#7A4FC2',
+      purpleLight: '#E4DAF4',
       charcoal: '#4F4F4F',
       charcoalLight: '#E3E3E3',
     },
 
     // =========================================================================
-    // AVATAR — warm-shifted pastels
+    // AVATAR — cool-shifted pastels with warm counterpoints
     // =========================================================================
     avatar: {
-      '01': '#FFE0CC',
-      '02': '#FFDBFA',
-      '03': '#EFE0FF',
-      '04': '#D4F0C8',
-      '05': '#B4EAF3',
-      '06': '#FFF3CC',
-      '07': '#FFCABD',
-      '08': '#FFD9B3',
+      '01': '#DAEDF4',
+      '02': '#FCEDD9',
+      '03': '#E6F1EB',
+      '04': '#E4DAF4',
+      '05': '#FDECEC',
+      '06': '#FFF3D1',
+      '07': '#EADFD0',
+      '08': '#F6D7E3',
     },
 
     // =========================================================================
-    // DATA VISUALIZATION — 15 stops: brand orange → accent teal with spread
+    // DATA VISUALIZATION — 15 stops: deep teal → brand teal → warm counterpoint
     // =========================================================================
     dataViz: {
-      border: '#000000',
-      '01': '#7A1800',
-      '02': '#A62800',
-      '03': '#D84315',
-      '04': '#FF5722',
-      '05': '#FF8A65',
-      '06': '#FFAB91',
-      '07': '#FFCCBC',
-      '08': '#FFE0B2',
-      '09': '#E0F2F1',
-      '10': '#B2DFDB',
-      '11': '#80CBC4',
-      '12': '#4DB6AC',
-      '13': '#0097A7',
-      '14': '#00757A',
-      '15': '#004D54',
+      border: '#0F142A',
+      '01': '#0A2634',
+      '02': '#143447',
+      '03': '#1E495E',
+      '04': '#256873',
+      '05': '#117BA6',
+      '06': '#4496B7',
+      '07': '#7BB5CC',
+      '08': '#B3D4E0',
+      '09': '#E8F4FA',
+      '10': '#FCEDD9',
+      '11': '#F0D5AF',
+      '12': '#D9A984',
+      '13': '#B76E46',
+      '14': '#8A4F2F',
+      '15': '#5C3420',
     },
 
     // =========================================================================
@@ -288,81 +292,81 @@ export const lumenTheme: ProductTheme = {
     // UTILITY TOKENS
     // =========================================================================
     hover: {
-      onLight: 'rgba(0, 0, 0, 0.05)',
+      onLight: 'rgba(68, 150, 183, 0.06)',
       onDark: 'rgba(255, 255, 255, 0.15)',
     },
 
     selected: {
-      onLight: 'rgba(0, 0, 0, 0.09)',
+      onLight: 'rgba(68, 150, 183, 0.12)',
     },
 
-    selectedHighlight: '#FFF0EB',
-    selectedHighlight_hover: '#FFE0D4',
+    selectedHighlight: '#E8F4FA',
+    selectedHighlight_hover: '#FCEDD9',
 
     focusBorder: {
-      onLight: '#0097A7',
+      onLight: '#4496B7',
       onDark: 'rgba(255, 255, 255, 0.65)',
     },
 
-    scrim: 'rgba(0, 0, 0, 0.34)',
+    scrim: 'rgba(15, 20, 42, 0.34)',
 
     scrollbar: {
       enabled: {
-        onLight: 'rgba(0, 0, 0, 0.42)',
+        onLight: 'rgba(15, 20, 42, 0.42)',
         onDark: 'rgba(255, 255, 255, 0.43)',
       },
       hover: {
-        onLight: 'rgba(0, 0, 0, 0.57)',
+        onLight: 'rgba(15, 20, 42, 0.57)',
         onDark: 'rgba(255, 255, 255, 0.58)',
       },
       active: {
-        onLight: 'rgba(0, 0, 0, 0.72)',
+        onLight: 'rgba(15, 20, 42, 0.72)',
         onDark: 'rgba(255, 255, 255, 0.73)',
       },
     },
 
-    navBackground: 'rgba(255, 250, 248, 0.85)',
+    navBackground: 'rgba(253, 250, 245, 0.85)',
     navBlur: '12px',
-    headerBackground: 'rgba(255, 250, 248, 0.85)',
+    headerBackground: 'rgba(253, 250, 245, 0.85)',
     headerBlur: '12px',
 
     navItemText: {
       enabled: {
-        onLight: 'rgba(0, 0, 0, 0.72)',
+        onLight: 'rgba(15, 20, 42, 0.72)',
         onDark: 'rgba(255, 255, 255, 0.88)',
       },
     },
 
     buttonToggleBg: {
-      onLight: 'rgba(0, 0, 0, 0.08)',
+      onLight: 'rgba(15, 20, 42, 0.08)',
       onDark: 'rgba(255, 255, 255, 0.08)',
     },
 
     chipBg: {
-      enabled: 'rgba(0, 0, 0, 0.08)',
-      hover: 'rgba(0, 0, 0, 0.13)',
+      enabled: 'rgba(68, 150, 183, 0.10)',
+      hover: 'rgba(68, 150, 183, 0.18)',
     },
 
-    progressIndicatorTrack: 'rgba(0, 0, 0, 0.15)',
+    progressIndicatorTrack: 'rgba(15, 20, 42, 0.15)',
 
     tableCellHighlight: {
-      highEmphasis: '#FFAB91',
-      midEmphasis: '#FFF0EB',
+      highEmphasis: '#B3D4E0',
+      midEmphasis: '#E8F4FA',
     },
 
     grid: {
-      finishedRowText: '#595959',
-      packageIconColor: '#595959',
+      finishedRowText: 'rgba(15, 20, 42, 0.45)',
+      packageIconColor: 'rgba(15, 20, 42, 0.45)',
     },
   },
 
   // ===========================================================================
-  // TYPOGRAPHY — modern personality: DM Sans
+  // TYPOGRAPHY — modern personality: Lato (display) + Inter (body)
   // ===========================================================================
   typography: {
     fontFamilies: {
-      display: 'var(--font-dm-sans), sans-serif',
-      body: 'var(--font-dm-sans), sans-serif',
+      display: 'var(--font-lato), "Lato", Georgia, serif',
+      body: 'var(--font-inter), "Inter", system-ui, -apple-system, sans-serif',
       mono: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     },
     fontWeights: {
@@ -385,9 +389,9 @@ export const lumenTheme: ProductTheme = {
   borderRadius: buildBorderRadius(4),
 
   // ===========================================================================
-  // ELEVATION — brand-tinted shadows (#FF5722)
+  // ELEVATION — brand-tinted shadows (#4496B7)
   // ===========================================================================
-  elevation: buildElevation('#FF5722'),
+  elevation: buildElevation('#4496B7'),
 
   // ===========================================================================
   // SPACING — modern personality
@@ -413,7 +417,10 @@ export const lumenTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // COMPONENT RADIUS — base: 4
+  // COMPONENT RADIUS — base 4 with Eden signature pill override
   // ===========================================================================
-  componentRadius: buildComponentRadius(4),
+  componentRadius: buildComponentRadius(4, {
+    button: '9999px',
+    input: '9999px',
+  }),
 };

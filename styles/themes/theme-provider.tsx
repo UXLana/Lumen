@@ -2,19 +2,22 @@
 
 import { createContext, useContext, useState, useEffect, useLayoutEffect, useMemo, useCallback, type ReactNode } from 'react';
 import type { ProductTheme, ThemeColors, ThemeTypography, ThemeBorderRadius, ThemeElevation, ThemeSpacing, ThemeIconStyle } from './theme-interface';
-import { universityTheme } from './university';
-import { earthTheme } from './earth';
-import { ridTheme } from './rid';
-import { ridDarkTheme } from './rid-dark';
+import { springTheme } from './spring';
+import { fallTheme } from './fall';
+import { foliageTheme } from './foliage';
+import { foliageDarkTheme } from './foliage-dark';
 import { lumenTheme } from './lumen';
 import { lumenDarkTheme } from './lumen-dark';
+import { rainyNightTheme } from './rainy-night';
+import { pampasTheme } from './pampas';
+import { edenTheme } from './eden';
 import { applyAllThemeVars } from './css-vars';
 
 // ---------------------------------------------------------------------------
 // Theme registry
 // ---------------------------------------------------------------------------
 
-const availableThemes: ProductTheme[] = [universityTheme, earthTheme, ridTheme, ridDarkTheme, lumenTheme, lumenDarkTheme];
+const availableThemes: ProductTheme[] = [lumenTheme, lumenDarkTheme, edenTheme, fallTheme, foliageTheme, foliageDarkTheme, springTheme, pampasTheme, rainyNightTheme];
 const themeMap: Record<string, ProductTheme> = Object.fromEntries(
   availableThemes.map((t) => [t.name, t]),
 );
@@ -37,7 +40,7 @@ interface ThemeSwitcherContextValue {
 }
 
 const ThemeSwitcherContext = createContext<ThemeSwitcherContextValue>({
-  themeName: 'trace',
+  themeName: 'lumen',
   setThemeName: () => {},
 });
 
@@ -63,15 +66,44 @@ interface SwitchableThemeProviderProps {
   children: ReactNode;
 }
 
+// Legacy theme name → current name. Two generations of legacy names are
+// covered: (1) original capitalized names like "Lumen-Dark" / "Fall" / "Foliage"
+// and (2) a short-lived intermediate rename to "earth" / "rid" / "university" /
+// "claude-light" that was reverted. All map forward to the current canonical
+// lowercase names.
+const LEGACY_THEME_NAME_MIGRATIONS: Record<string, string> = {
+  // Gen 1 — original capitalized
+  'Lumen-Dark': 'lumen-dark',
+  'Fall': 'fall',
+  'Foliage': 'foliage',
+  'Foliage-Dark': 'foliage-dark',
+  'Spring': 'spring',
+  'Claude-Light': 'pampas',
+  'Rainy-Night': 'rainy-night',
+  // Gen 2 — short-lived intermediate lowercase names
+  'earth': 'fall',
+  'rid': 'foliage',
+  'rid-dark': 'foliage-dark',
+  'university': 'spring',
+  'claude-light': 'pampas',
+};
+
 export function SwitchableThemeProvider({ children }: SwitchableThemeProviderProps) {
-  const [themeName, setThemeNameRaw] = useState('Lumen-Dark');
+  const [themeName, setThemeNameRaw] = useState('lumen-dark');
   const [hydrated, setHydrated] = useState(false);
 
-  // Restore from localStorage on mount
+  // Restore from localStorage on mount, migrating legacy names if needed.
   useEffect(() => {
     const stored = localStorage.getItem('ds-theme');
-    if (stored && themeMap[stored]) {
-      setThemeNameRaw(stored);
+    if (stored) {
+      const migrated = LEGACY_THEME_NAME_MIGRATIONS[stored] ?? stored;
+      if (themeMap[migrated]) {
+        setThemeNameRaw(migrated);
+        // Rewrite localStorage so future loads skip the migration.
+        if (migrated !== stored) {
+          localStorage.setItem('ds-theme', migrated);
+        }
+      }
     }
     setHydrated(true);
   }, []);

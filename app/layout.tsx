@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { DM_Sans, Inter, Playfair_Display, Source_Sans_3, Merriweather, Nunito_Sans, Newsreader } from 'next/font/google'
+import { DM_Sans, Inter, Playfair_Display, Source_Sans_3, Merriweather, Nunito_Sans, Newsreader, Space_Grotesk, Lato } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
@@ -47,6 +47,26 @@ const newsreader = Newsreader({
   variable: '--font-newsreader',
 })
 
+// Lumen theme fonts
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
+})
+
+// Eden theme fonts
+// Lato only ships 100/300/400/700/900 from Google Fonts. 500/600 aren't real —
+// the browser would synthesize-bold them. We load 300/400/700 and let the
+// theme's fontWeight scale (medium/semibold) fall back to 400 consciously.
+const lato = Lato({
+  subsets: ['latin'],
+  weight: ['300', '400', '700'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-lato',
+})
+
 // Earth theme fonts
 const merriweather = Merriweather({
   subsets: ['latin'],
@@ -65,7 +85,7 @@ const nunitoSans = Nunito_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Prism Design System',
+  title: 'Lumen Design System',
   description: 'Design system style guide and documentation',
 }
 
@@ -77,7 +97,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${inter.variable} ${playfairDisplay.variable} ${sourceSans3.variable} ${newsreader.variable} ${merriweather.variable} ${nunitoSans.variable}`}
+      className={`${dmSans.variable} ${inter.variable} ${playfairDisplay.variable} ${sourceSans3.variable} ${newsreader.variable} ${merriweather.variable} ${nunitoSans.variable} ${spaceGrotesk.variable} ${lato.variable}`}
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>

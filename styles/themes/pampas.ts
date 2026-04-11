@@ -16,8 +16,8 @@
 import type { ProductTheme } from './theme-interface';
 import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
-export const claudeLightTheme: ProductTheme = {
-  name: 'Claude-Light',
+export const pampasTheme: ProductTheme = {
+  name: 'pampas',
   colors: {
     brand: {
       default: '#BD5D3A',
@@ -36,6 +36,9 @@ export const claudeLightTheme: ProductTheme = {
       lightDarker: '#ECEAE0',
       dark: '#4A4440',
       darkDarker: '#332F2C',
+      highlight: 'rgba(0, 0, 0, 0.03)',
+      frosted: 'rgba(244, 243, 238, 0.85)',
+      frostedBlur: '12px',
       disabled: {
         onLight: 'rgba(61, 57, 41, 0.03)',
         onDark: 'rgba(255, 255, 255, 0.20)',
@@ -59,11 +62,16 @@ export const claudeLightTheme: ProductTheme = {
         onDark: '#F4F3EE',
       },
       lowEmphasis: {
-        onLight: 'rgba(61, 57, 41, 0.60)',
+        // Was rgba(61, 57, 41, 0.60) — failed 4.5:1 at 3.42 on surface.light.
+        // Switched to solid color derived from base text mixed toward surface at
+        // ~35% to preserve the "muted" feel while clearing 4.5:1.
+        onLight: '#5E5844',
         onDark: 'rgba(244, 243, 238, 0.70)',
       },
       disabled: {
-        onLight: 'rgba(61, 57, 41, 0.30)',
+        // Was rgba(61, 57, 41, 0.30) — failed 3:1 at 1.73. Bumped for
+        // informational-content safety (Amount's pending variant etc).
+        onLight: '#8C8674',
         onDark: 'rgba(244, 243, 238, 0.30)',
       },
       action: {
@@ -77,20 +85,23 @@ export const claudeLightTheme: ProductTheme = {
     },
 
     border: {
+      // Two-tier remediation — see lumen.ts for the full rationale.
+      // lowEmphasis = decorative (WCAG 1.4.11 exempt), midEmphasis + highEmphasis = interactive.
+      // Base color 61,57,41 matches Pampas text base for hue harmony.
       lowEmphasis: {
-        onLight: 'rgba(61, 57, 41, 0.10)',
+        onLight: 'rgba(61, 57, 41, 0.12)', // decorative — warm subtle hairline
         onDark: 'rgba(244, 243, 238, 0.10)',
         hover: {
-          onLight: 'rgba(61, 57, 41, 0.27)',
+          onLight: 'rgba(61, 57, 41, 0.24)',
           onDark: 'rgba(244, 243, 238, 0.27)',
         },
       },
       midEmphasis: {
-        onLight: 'rgba(61, 57, 41, 0.15)',
+        onLight: '#8E8777', // interactive — passes 3:1 for inputs/buttons
         onDark: 'rgba(244, 243, 238, 0.15)',
       },
       highEmphasis: {
-        onLight: 'rgba(61, 57, 41, 0.42)',
+        onLight: '#6B6555', // interactive — focus/selected states
         onDark: 'rgba(244, 243, 238, 0.43)',
       },
     },
@@ -168,14 +179,16 @@ export const claudeLightTheme: ProductTheme = {
     },
 
     status: {
-      info: '#617BFF',
+      // All four status text colors darkened to pass 4.5:1 on both Pampas
+      // (#F4F3EE) AND Cream (#ECEAE0) surfaces. Hues preserved.
+      info: '#2C44B0', // was #617BFF → 3.27:1 on light
       info_onDark: 'rgba(122, 145, 255, 0.25)',
-      success: '#1B7F66',
+      success: '#0E6750', // was #1B7F66 → 4.42:1 on light, 4.07:1 on lightDarker
       success_onDark: 'rgba(0, 173, 130, 0.25)',
-      warning: '#CC7300',
+      warning: '#8A4E00', // was #CC7300 → 3.14:1
       warningLight: '#F3DCBD',
       warning_onDark: 'rgba(230, 130, 0, 0.25)',
-      important: '#DC0C22',
+      important: '#B3001A', // was #DC0C22 → 4.23:1 on lightDarker
       important_onDark: 'rgba(248, 104, 118, 0.25)',
     },
 
@@ -256,7 +269,10 @@ export const claudeLightTheme: ProductTheme = {
     selectedHighlight_hover: '#E6D5CA',
 
     focusBorder: {
-      onLight: '#3A9E8F',
+      // Was #3A9E8F → 2.92:1 (just below 3:1 minimum for focus indicators).
+      // Darkened the muted teal to clear 3:1 while keeping the Claude-palette
+      // split-complementary relationship to the terracotta brand.
+      onLight: '#2B7C71',
       onDark: 'rgba(244, 243, 238, 0.65)',
     },
 
@@ -276,6 +292,11 @@ export const claudeLightTheme: ProductTheme = {
         onDark: 'rgba(244, 243, 238, 0.73)',
       },
     },
+
+    navBackground: 'rgba(244, 243, 238, 0.85)',
+    navBlur: '12px',
+    headerBackground: 'rgba(244, 243, 238, 0.85)',
+    headerBlur: '12px',
 
     navItemText: {
       enabled: {

@@ -12,13 +12,18 @@ export {
   availableThemes,
   themeMap,
 } from './theme-provider';
-export { universityTheme } from './university';
-export { earthTheme } from './earth';
-export { ridTheme } from './rid';
-export { ridDarkTheme } from './rid-dark';
+export { springTheme } from './spring';
+export { fallTheme } from './fall';
+export { foliageTheme } from './foliage';
+export { foliageDarkTheme } from './foliage-dark';
 export { lumenTheme } from './lumen';
 export { lumenDarkTheme } from './lumen-dark';
+export { rainyNightTheme } from './rainy-night';
+export { pampasTheme } from './pampas';
+export { edenTheme } from './eden';
 export { buildBorderRadius, buildComponentRadius } from './theme-interface';
+export { buildTheme, buildColors, hexToOklch, oklchToHex, hexToHsl, hslToHex, hexToRgb, rgbToHex } from './build-theme';
+export type { ThemeBuildOptions, AccentStrategy, Personality, DeepPartial } from './build-theme';
 export type {
   ProductTheme,
   ThemeColors,

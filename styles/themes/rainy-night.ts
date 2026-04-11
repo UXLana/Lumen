@@ -1,93 +1,91 @@
 /**
- * Lumen Dark Theme
- * Dark variant of Lumen — warm neutral dark surfaces with brightened orange brand.
+ * Rainy Night — Bluish-dark theme with warm orange highlights.
  *
- * Brand accent: #FF7043 (brightened deep orange for AA contrast on dark)
- * Accent:       #4DD0E1 (brightened teal-cyan for dark backgrounds)
- * Surfaces:     warm neutral grays (#1E1A18 → #252120 → #302A28 → #3D3533)
+ * Mood: Wet pavement, amber streetlights through rain, neon-reflected puddles.
+ * Base bg: #161A22 (cool blue-black). Brand: #FF7043 (warm orange — the streetlight).
+ * Accent: #7EB4D8 (slate-blue — the rain). All surfaces are cool-shifted.
+ * Borders & overlays: white opacity for consistency across blue-tinted surfaces.
  *
- * DS components reference `onLight` tokens for their primary surfaces.
- * We map dark values INTO the `onLight` slots so components render dark
- * without any CSS overrides.
- *
- * Generated 2026-04-02 by theme-generator skill
+ * Built on the Lumen Dark architecture with surface.highlight for nav/header chrome.
  */
 
 import type { ProductTheme } from './theme-interface';
 import { buildBorderRadius, buildComponentRadius } from './theme-interface';
 
-export const lumenDarkTheme: ProductTheme = {
-  name: 'Lumen-Dark',
+export const rainyNightTheme: ProductTheme = {
+  name: 'rainy-night',
   colors: {
     // =========================================================================
-    // BRAND — Brightened orange for dark backgrounds
+    // BRAND — Warm orange (the streetlight cutting through rain)
     // =========================================================================
     brand: {
       default: '#FF7043',
-      darker: '#FF5722',
+      darker: '#E64A19',
       lighter: '#FF8A65',
     },
 
     // =========================================================================
-    // ACCENT — Brightened teal-cyan for dark backgrounds
+    // ACCENT — Slate blue (the rain itself)
     // =========================================================================
     accent: {
-      default: '#4DD0E1',
-      darker: '#26C6DA',
-      lighter: '#80DEEA',
+      default: '#7EB4D8',
+      darker: '#5A9AC4',
+      lighter: '#A8D0EC',
     },
 
     // =========================================================================
-    // SURFACE — warm neutral dark grays
+    // SURFACE — Cool blue-black solids for modals/dialogs, opacity highlight for chrome
     // =========================================================================
     surface: {
-      light: '#302A28',
-      lightDarker: 'rgba(0, 0, 0, 0.06)',
-      dark: '#252120',
-      darkDarker: '#1E1A18',
-      highlight: 'rgba(255, 255, 255, 0.06)',
-      frosted: 'rgba(48, 42, 40, 0.75)',
+      light: '#1F2530',       // primary surface (cards, modals, dialogs)
+      lightDarker: '#1B2029',  // elevated/secondary surface
+      dark: '#161A22',         // page background — the night sky
+      darkDarker: '#0E1118',   // deepest nested — near black
+      highlight: 'rgba(160, 200, 240, 0.08)', // nav/header chrome — cool blue-white glow
+      frosted: 'rgba(31, 37, 48, 0.60)',
       frostedBlur: '12px',
       disabled: {
-        onLight: 'rgba(255, 255, 255, 0.05)',
-        onDark: 'rgba(255, 255, 255, 0.20)',
+        onLight: 'rgba(180, 210, 240, 0.04)',
+        onDark: 'rgba(180, 210, 240, 0.10)',
       },
-      info: 'rgba(77, 145, 255, 0.15)',
-      success: 'rgba(77, 182, 140, 0.15)',
-      warning: 'rgba(230, 130, 0, 0.15)',
-      important: 'rgba(255, 87, 34, 0.15)',
+      info: 'rgba(100, 160, 240, 0.10)',
+      success: 'rgba(77, 182, 140, 0.10)',
+      warning: 'rgba(230, 150, 50, 0.10)',
+      important: 'rgba(255, 87, 34, 0.10)',
     },
 
     // =========================================================================
-    // SURFACE BORDER
+    // SURFACE BORDER — muted blue-tinted semantic borders
     // =========================================================================
     surfaceBorder: {
-      info: '#3A5070',
-      success: '#2D5E4D',
-      warning: '#6E4A1A',
-      important: '#6E3020',
+      info: '#2E4060',
+      success: '#254E42',
+      warning: '#5C421A',
+      important: '#5C2E1E',
     },
 
     // =========================================================================
-    // TEXT
+    // TEXT — cool-white opacity for consistency against blue surfaces
     // =========================================================================
     text: {
       highEmphasis: {
-        onLight: '#FFFFFF',
-        onDark: '#FFFFFF',
+        onLight: 'rgba(210, 225, 240, 0.95)',
+        onDark: 'rgba(210, 225, 240, 0.95)',
       },
       lowEmphasis: {
-        onLight: '#D1CCCB',
-        onDark: 'rgba(255, 255, 255, 0.70)',
+        // WCAG remediation: was 0.55 → 3.76:1. Bumped to clear 4.5:1.
+        onLight: 'rgba(180, 200, 220, 0.75)',
+        onDark: 'rgba(180, 200, 220, 0.75)',
       },
       disabled: {
-        onLight: 'rgba(255, 255, 255, 0.30)',
-        onDark: 'rgba(255, 255, 255, 0.30)',
+        // WCAG remediation: was 0.25 → 1.82:1. Bumped for informational use.
+        onLight: 'rgba(180, 200, 220, 0.48)',
+        onDark: 'rgba(180, 200, 220, 0.48)',
       },
       action: {
-        enabled: '#4DD0E1',
-        hover: '#80DEEA',
-        active: '#26C6DA',
+        enabled: '#7EB4D8',
+        hover: '#A8D0EC',
+        active: '#5A9AC4',
       },
       success: '#66BB9A',
       warning: '#F0A840',
@@ -95,52 +93,55 @@ export const lumenDarkTheme: ProductTheme = {
     },
 
     // =========================================================================
-    // BORDER
+    // BORDER — cool-white opacity for cohesion across blue surfaces
     // =========================================================================
     border: {
+      // Two-tier remediation — see lumen.ts for the full rationale.
+      // lowEmphasis = decorative (WCAG 1.4.11 exempt), midEmphasis + highEmphasis = interactive.
+      // Base color 180,210,240 matches Rainy Night's cool-white cast.
       lowEmphasis: {
-        onLight: '#5A5250',
-        onDark: 'rgba(255, 255, 255, 0.25)',
+        onLight: 'rgba(180, 210, 240, 0.10)', // decorative — subtle cool hairline
+        onDark: 'rgba(180, 210, 240, 0.18)',
         hover: {
-          onLight: '#6E6562',
-          onDark: 'rgba(255, 255, 255, 0.40)',
+          onLight: 'rgba(180, 210, 240, 0.20)',
+          onDark: 'rgba(180, 210, 240, 0.35)',
         },
       },
       midEmphasis: {
-        onLight: '#6E6562',
-        onDark: 'rgba(255, 255, 255, 0.32)',
+        onLight: 'rgba(180, 210, 240, 0.48)', // interactive — passes 3:1 for inputs/buttons
+        onDark: 'rgba(180, 210, 240, 0.30)',
       },
       highEmphasis: {
-        onLight: '#8A807D',
-        onDark: 'rgba(255, 255, 255, 0.55)',
+        onLight: 'rgba(180, 210, 240, 0.55)', // interactive — focus/selected states
+        onDark: 'rgba(180, 210, 240, 0.50)',
       },
     },
 
     // =========================================================================
-    // ICON
+    // ICON — cool-cast white opacity
     // =========================================================================
     icon: {
       enabled: {
-        onLight: '#D1CCCB',
-        onDark: 'rgba(255, 255, 255, 0.94)',
+        onLight: 'rgba(180, 210, 240, 0.55)',
+        onDark: 'rgba(210, 225, 240, 0.94)',
       },
       hover: {
-        onLight: '#E0DCDB',
+        onLight: 'rgba(200, 220, 240, 0.75)',
       },
       active: {
-        onLight: '#FFFFFF',
+        onLight: 'rgba(210, 225, 240, 0.90)',
       },
       selected: {
-        onLight: '#FFFFFF',
+        onLight: 'rgba(210, 225, 240, 0.95)',
       },
       disabled: {
-        onLight: 'rgba(255, 255, 255, 0.20)',
-        onDark: 'rgba(255, 255, 255, 0.20)',
+        onLight: 'rgba(180, 210, 240, 0.20)',
+        onDark: 'rgba(180, 210, 240, 0.20)',
       },
       lowEmphasis: {
         enabled: {
-          onLight: '#A19A98',
-          onDark: 'rgba(255, 255, 255, 0.65)',
+          onLight: 'rgba(180, 210, 240, 0.35)',
+          onDark: 'rgba(200, 220, 240, 0.60)',
         },
       },
     },
@@ -149,23 +150,23 @@ export const lumenDarkTheme: ProductTheme = {
     // ICON BACKGROUNDS
     // =========================================================================
     iconBg: {
-      info: 'rgba(77, 145, 255, 0.20)',
-      info_onDark: 'rgba(77, 145, 255, 0.25)',
+      info: 'rgba(100, 160, 240, 0.20)',
+      info_onDark: 'rgba(100, 160, 240, 0.25)',
       success: 'rgba(77, 182, 140, 0.20)',
       success_onDark: 'rgba(0, 173, 130, 0.25)',
-      warning: 'rgba(230, 130, 0, 0.20)',
-      warning_onDark: 'rgba(230, 130, 0, 0.25)',
+      warning: 'rgba(230, 150, 50, 0.20)',
+      warning_onDark: 'rgba(230, 150, 50, 0.25)',
       important: 'rgba(255, 112, 67, 0.20)',
       important_onDark: 'rgba(255, 112, 67, 0.25)',
     },
 
     // =========================================================================
-    // ACTION — brightened accent for dark backgrounds
+    // ACTION — slate-blue accent for actions
     // =========================================================================
     action: {
-      enabled: '#4DD0E1',
-      hover: '#26C6DA',
-      active: '#00ACC1',
+      enabled: '#7EB4D8',
+      hover: '#5A9AC4',
+      active: '#4688B0',
       important: {
         enabled: '#FF8A6E',
         hover: '#FF7043',
@@ -173,41 +174,41 @@ export const lumenDarkTheme: ProductTheme = {
       },
       monochrome: {
         onLight: {
-          enabled: 'rgba(255, 255, 255, 0.70)',
-          hover: 'rgba(255, 255, 255, 0.85)',
-          active: 'rgba(255, 255, 255, 1)',
-          selected: 'rgba(255, 255, 255, 1)',
-          disabled: 'rgba(255, 255, 255, 0.20)',
-          bg: 'rgba(255, 255, 255, 0.08)',
+          enabled: 'rgba(210, 225, 240, 0.70)',
+          hover: 'rgba(210, 225, 240, 0.85)',
+          active: 'rgba(210, 225, 240, 1)',
+          selected: 'rgba(210, 225, 240, 1)',
+          disabled: 'rgba(180, 210, 240, 0.20)',
+          bg: 'rgba(180, 210, 240, 0.06)',
           lowEmphasis: {
-            enabled: 'rgba(255, 255, 255, 0.55)',
+            enabled: 'rgba(180, 210, 240, 0.50)',
           },
         },
         onDark: {
-          enabled: 'rgba(255, 255, 255, 0.94)',
-          hover: 'rgba(255, 255, 255, 1)',
-          active: 'rgba(255, 255, 255, 1)',
-          selected: 'rgba(255, 255, 255, 1)',
-          disabled: 'rgba(255, 255, 255, 0.20)',
-          bg: 'rgba(255, 255, 255, 0.09)',
+          enabled: 'rgba(210, 225, 240, 0.94)',
+          hover: 'rgba(210, 225, 240, 1)',
+          active: 'rgba(210, 225, 240, 1)',
+          selected: 'rgba(210, 225, 240, 1)',
+          disabled: 'rgba(180, 210, 240, 0.20)',
+          bg: 'rgba(180, 210, 240, 0.09)',
           lowEmphasis: {
-            enabled: 'rgba(255, 255, 255, 0.65)',
+            enabled: 'rgba(200, 220, 240, 0.65)',
           },
         },
       },
     },
 
     // =========================================================================
-    // STATUS — lightened for dark background readability
+    // STATUS — lightened for dark readability
     // =========================================================================
     status: {
-      info: '#64B5F6',
-      info_onDark: 'rgba(77, 145, 255, 0.25)',
+      info: '#72B0F0',
+      info_onDark: 'rgba(100, 160, 240, 0.25)',
       success: '#66BB9A',
       success_onDark: 'rgba(0, 173, 130, 0.25)',
       warning: '#F0A840',
-      warningLight: '#6E4A1A',
-      warning_onDark: 'rgba(230, 130, 0, 0.25)',
+      warningLight: '#5C421A',
+      warning_onDark: 'rgba(230, 150, 50, 0.25)',
       important: '#FF8A6E',
       important_onDark: 'rgba(255, 112, 67, 0.25)',
     },
@@ -216,16 +217,16 @@ export const lumenDarkTheme: ProductTheme = {
     // BADGE — brightened for dark context
     // =========================================================================
     badge: {
-      info: '#64B5F6',
-      infoLight: 'rgba(100, 181, 246, 0.18)',
+      info: '#72B0F0',
+      infoLight: 'rgba(114, 176, 240, 0.18)',
       success: '#66BB9A',
       successLight: 'rgba(102, 187, 154, 0.18)',
       warning: '#F0A840',
       warningLight: 'rgba(240, 168, 64, 0.18)',
       important: '#FF8A6E',
       importantLight: 'rgba(255, 138, 110, 0.18)',
-      aqua: '#4DD0E1',
-      aquaLight: 'rgba(77, 208, 225, 0.18)',
+      aqua: '#7EB4D8',
+      aquaLight: 'rgba(126, 180, 216, 0.18)',
       green: '#81C784',
       greenLight: 'rgba(129, 199, 132, 0.18)',
       yellow: '#FFD54F',
@@ -239,7 +240,7 @@ export const lumenDarkTheme: ProductTheme = {
     },
 
     // =========================================================================
-    // AVATAR — same as light (pastel backgrounds work in both modes)
+    // AVATAR — pastel backgrounds (universal)
     // =========================================================================
     avatar: {
       '01': '#FFE0CC',
@@ -253,7 +254,7 @@ export const lumenDarkTheme: ProductTheme = {
     },
 
     // =========================================================================
-    // DATA VISUALIZATION — orange → teal gradient, brightened for dark
+    // DATA VISUALIZATION — orange → blue gradient (rainy night spectrum)
     // =========================================================================
     dataViz: {
       border: '#FFFFFF',
@@ -261,21 +262,21 @@ export const lumenDarkTheme: ProductTheme = {
       '02': '#FF8A65',
       '03': '#FFAB91',
       '04': '#FFCCBC',
-      '05': '#FFE0B2',
-      '06': '#FFF8E1',
-      '07': '#E0F7FA',
-      '08': '#B2EBF2',
-      '09': '#80DEEA',
-      '10': '#4DD0E1',
-      '11': '#26C6DA',
-      '12': '#00ACC1',
-      '13': '#0097A7',
-      '14': '#00838F',
-      '15': '#006064',
+      '05': '#FFE0CC',
+      '06': '#E8EEF5',
+      '07': '#C8DAE8',
+      '08': '#A8D0EC',
+      '09': '#7EB4D8',
+      '10': '#5A9AC4',
+      '11': '#4688B0',
+      '12': '#35769C',
+      '13': '#286488',
+      '14': '#1C5274',
+      '15': '#124060',
     },
 
     // =========================================================================
-    // CVD — standard safe palette, charcoal lightened for dark
+    // CVD — standard colorblind-safe palette
     // =========================================================================
     cvd: {
       blue: '#0072B2',
@@ -285,75 +286,77 @@ export const lumenDarkTheme: ProductTheme = {
       orange: '#E69F00',
       vermillion: '#D55E00',
       pink: '#CC79A7',
-      charcoal: '#E0E0E0',
+      charcoal: '#D0D8E0',
     },
 
     // =========================================================================
-    // UTILITY TOKENS
+    // UTILITY TOKENS — cool-blue-tinted opacity system
     // =========================================================================
     hover: {
-      onLight: 'rgba(255, 255, 255, 0.08)',
-      onDark: 'rgba(255, 255, 255, 0.15)',
+      onLight: 'rgba(160, 200, 240, 0.06)',
+      onDark: 'rgba(160, 200, 240, 0.12)',
     },
 
     selected: {
-      onLight: 'rgba(255, 255, 255, 0.12)',
+      onLight: 'rgba(160, 200, 240, 0.10)',
     },
 
+    // Orange highlight — the streetlight warmth
     selectedHighlight: 'rgba(255, 112, 67, 0.15)',
     selectedHighlight_hover: 'rgba(255, 112, 67, 0.25)',
 
     focusBorder: {
-      onLight: '#4DD0E1',
-      onDark: 'rgba(255, 255, 255, 0.65)',
+      onLight: '#7EB4D8',
+      onDark: 'rgba(210, 225, 240, 0.65)',
     },
 
-    scrim: 'rgba(0, 0, 0, 0.50)',
+    scrim: 'rgba(10, 14, 20, 0.65)',
 
     scrollbar: {
-      enabled: { onLight: '#5A5250', onDark: 'rgba(255, 255, 255, 0.43)' },
-      hover: { onLight: '#6E6562', onDark: 'rgba(255, 255, 255, 0.58)' },
-      active: { onLight: '#8A807D', onDark: 'rgba(255, 255, 255, 0.73)' },
+      enabled: { onLight: 'rgba(160, 200, 240, 0.12)', onDark: 'rgba(180, 210, 240, 0.35)' },
+      hover: { onLight: 'rgba(160, 200, 240, 0.22)', onDark: 'rgba(180, 210, 240, 0.50)' },
+      active: { onLight: 'rgba(160, 200, 240, 0.32)', onDark: 'rgba(180, 210, 240, 0.65)' },
     },
 
-    navBackground: 'rgba(48, 42, 40, 0.75)',
+    // Nav/header chrome — uses the cool highlight glow
+    navBackground: 'rgba(160, 200, 240, 0.08)',
     navBlur: '12px',
-    headerBackground: 'rgba(48, 42, 40, 0.75)',
+    headerBackground: 'rgba(160, 200, 240, 0.08)',
     headerBlur: '12px',
 
     navItemText: {
-      enabled: { onLight: 'rgba(255, 255, 255, 0.72)', onDark: 'rgba(255, 255, 255, 0.88)' },
+      enabled: { onLight: 'rgba(180, 210, 240, 0.65)', onDark: 'rgba(210, 225, 240, 0.85)' },
     },
 
     buttonToggleBg: {
-      onLight: 'rgba(255, 255, 255, 0.08)',
-      onDark: 'rgba(255, 255, 255, 0.08)',
+      onLight: 'rgba(160, 200, 240, 0.06)',
+      onDark: 'rgba(160, 200, 240, 0.06)',
     },
 
     chipBg: {
-      enabled: 'rgba(255, 255, 255, 0.08)',
-      hover: 'rgba(255, 255, 255, 0.13)',
+      enabled: 'rgba(160, 200, 240, 0.06)',
+      hover: 'rgba(160, 200, 240, 0.10)',
     },
 
-    progressIndicatorTrack: 'rgba(255, 255, 255, 0.15)',
+    progressIndicatorTrack: 'rgba(160, 200, 240, 0.12)',
 
     tableCellHighlight: {
       highEmphasis: '#FF7043',
-      midEmphasis: 'rgba(255, 112, 67, 0.20)',
+      midEmphasis: 'rgba(255, 112, 67, 0.18)',
     },
 
     grid: {
-      finishedRowText: '#A19A98',
-      packageIconColor: '#A19A98',
+      finishedRowText: 'rgba(180, 210, 240, 0.30)',
+      packageIconColor: 'rgba(180, 210, 240, 0.30)',
     },
   },
 
   // ===========================================================================
-  // TYPOGRAPHY — DM Sans (matches Lumen light)
+  // TYPOGRAPHY — Space Grotesk + DM Sans (matches Lumen family)
   // ===========================================================================
   typography: {
     fontFamilies: {
-      display: 'var(--font-dm-sans), sans-serif',
+      display: 'var(--font-space-grotesk), sans-serif',
       body: 'var(--font-dm-sans), sans-serif',
       mono: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     },
@@ -372,28 +375,28 @@ export const lumenDarkTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // BORDER RADIUS — base: 4px (matches Lumen light)
+  // BORDER RADIUS — base: 4px
   // ===========================================================================
   borderRadius: buildBorderRadius(4),
 
   // ===========================================================================
-  // ELEVATION — pure black shadows at higher opacity for dark context
+  // ELEVATION — deep blue-black shadows for rainy night depth
   // ===========================================================================
   elevation: {
     none: 'none',
-    xs: '0px 1px 2px rgba(0, 0, 0, 0.20)',
-    sm: '0px 1px 3px rgba(0, 0, 0, 0.30), 0px 1px 2px rgba(0, 0, 0, 0.24)',
-    md: '0px 4px 6px -1px rgba(0, 0, 0, 0.30), 0px 2px 4px -1px rgba(0, 0, 0, 0.24)',
-    lg: '0px 10px 15px -3px rgba(0, 0, 0, 0.30), 0px 4px 6px -2px rgba(0, 0, 0, 0.20)',
-    xl: '0px 20px 25px -5px rgba(0, 0, 0, 0.35), 0px 10px 10px -5px rgba(0, 0, 0, 0.20)',
-    '2xl': '0px 25px 50px -12px rgba(0, 0, 0, 0.50)',
-    inner: 'inset 0px 2px 4px rgba(0, 0, 0, 0.25)',
-    brand: '0px 4px 14px rgba(0, 0, 0, 0.35)',
-    brandLg: '0px 10px 25px rgba(0, 0, 0, 0.45)',
+    xs: '0px 1px 2px rgba(10, 14, 20, 0.45)',
+    sm: '0px 1px 3px rgba(10, 14, 20, 0.55), 0px 1px 2px rgba(10, 14, 20, 0.45)',
+    md: '0px 4px 6px -1px rgba(10, 14, 20, 0.55), 0px 2px 4px -1px rgba(10, 14, 20, 0.45)',
+    lg: '0px 10px 15px -3px rgba(10, 14, 20, 0.55), 0px 4px 6px -2px rgba(10, 14, 20, 0.40)',
+    xl: '0px 20px 25px -5px rgba(10, 14, 20, 0.55), 0px 10px 10px -5px rgba(10, 14, 20, 0.40)',
+    '2xl': '0px 25px 50px -12px rgba(10, 14, 20, 0.65)',
+    inner: 'inset 0px 2px 4px rgba(10, 14, 20, 0.45)',
+    brand: '0px 4px 14px rgba(10, 14, 20, 0.50)',
+    brandLg: '0px 10px 25px rgba(10, 14, 20, 0.60)',
   },
 
   // ===========================================================================
-  // SPACING — matches Lumen light
+  // SPACING
   // ===========================================================================
   spacing: {
     unit: '4px',
@@ -405,7 +408,7 @@ export const lumenDarkTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // ICON STYLE — matches Lumen light
+  // ICON STYLE
   // ===========================================================================
   iconStyle: {
     set: 'outlined',
@@ -416,7 +419,7 @@ export const lumenDarkTheme: ProductTheme = {
   },
 
   // ===========================================================================
-  // COMPONENT RADIUS — base: 4 (matches Lumen light)
+  // COMPONENT RADIUS — base: 4
   // ===========================================================================
   componentRadius: buildComponentRadius(4),
 };
