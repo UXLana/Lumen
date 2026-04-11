@@ -1,304 +1,81 @@
 [
   {
-    "id": "canopy-registry",
-    "name": "Canopy Registry",
-    "description": "Canopy product registration prototype built with Gemini.",
+    "id": "vault",
+    "name": "Vault — Business Banking",
+    "description": "Fintech prototype stress-testing LUMEN on dense financial UI: balance hero, transactions ledger with 50+ rows, multi-step send-money flow with typed-amount confirmation, cards, team, accounts. Introduces Amount, AmountConfirmDialog, and LineChart/SparkLine primitives.",
     "owner": "Lana Holston",
     "status": "draft",
     "device": "desktop",
     "fidelity": "high-fi",
-    "created": "2026-03-10",
-    "updated": "2026-03-10",
-    "href": "https://canopy-registry.vercel.app",
-    "devUrl": "http://localhost:5173",
-    "localPath": "/Users/lanaholston/canopy-registry",
-    "screens": 1,
-    "tags": ["canopy", "registry", "external"],
-    "dsComponents": ["ChatPanel", "ChatFab", "ChatSearchTrigger", "DotGrid", "CollectionToolbar"],
-    "openQuestions": [],
-    "lastReviewedBy": null,
-    "lastReviewedDate": null,
-    "prompts": [],
-    "context": null
-  },
-  {
-    "id": "product-registry",
-    "name": "Product Registry (Internal)",
-    "description": "Internal Canopy product catalog prototype with version switching. V1: stats cards + DataTable. V2: category chip tabs, stat pills, streamlined product rows.",
-    "owner": "Lana Holston",
-    "status": "draft",
-    "device": "desktop",
-    "fidelity": "high-fi",
-    "created": "2026-03-10",
-    "updated": "2026-03-23",
-    "href": "/prototypes/product-registry",
-    "screens": 4,
-    "tags": ["canopy", "registry", "internal"],
-    "dsComponents": ["Header", "DataTable", "Badge", "Button", "Input", "Select", "ProductCard", "Skeleton", "EmptyState", "PrototypeToolbar"],
-    "openQuestions": [],
-    "lastReviewedBy": null,
-    "lastReviewedDate": null,
-    "prompts": [
-      {
-        "date": "2026-03-23",
-        "text": "Create version 2 of the canopy-registry catalog with category chip tabs, inline stat pills, streamlined product rows, and PrototypeToolbar version switching with all themes accessible."
-      }
-    ],
-    "versions": [
-      { "id": "v1", "label": "V1 — Original", "description": "Stats cards, inline select filters, DataTable with table/card toggle" },
-      { "id": "v2", "label": "V2 — Category Chips", "description": "Category chip tabs, compact stat pills, streamlined product rows, status toggle buttons" }
-    ],
-    "context": null
-  },
-  {
-    "id": "rid-label-prototype",
-    "name": "RID Label Wizard",
-    "description": "Barcode generation and label printing workflow for cannabis package compliance. Generate-first flow with template/reel configuration and multi-format download.",
-    "owner": "Lana Holston",
-    "status": "in-review",
-    "device": "desktop",
-    "fidelity": "high-fi",
-    "created": "2026-03-10",
-    "updated": "2026-03-18",
-    "href": "https://label-prototype.vercel.app",
-    "devUrl": "http://localhost:4000",
-    "localPath": "/Users/lanaholston/Desktop/CodeWork/RID/label-prototype",
-    "screens": 3,
-    "tags": ["rid", "barcode", "label", "printing", "compliance", "external"],
-    "dsComponents": ["Button", "LinearStepper", "FullScreenModal", "Badge", "Tabs"],
-    "openQuestions": [
-      "V3: How should inline field overrides surface corrections upstream?",
-      "Should operators be able to regenerate barcodes after initial generation?",
-      "Large batch threshold — is 5,000 the right cutoff for phased progress?"
-    ],
-    "lastReviewedBy": null,
-    "lastReviewedDate": null,
-    "prompts": [],
-    "context": null,
-    "versions": [
-      { "id": "v1", "label": "V1 — Original", "description": "Configure everything, then save" },
-      { "id": "v2", "label": "V2 — Generate First", "description": "Generate barcodes first, then configure print" },
-      { "id": "v3", "label": "V3 — Override Flow", "description": "V2 + inline field overrides for upstream corrections (planned)" }
-    ]
-  },
-  {
-    "id": "product-search",
-    "name": "Product Search",
-    "description": "Interactive product search flow with results, selection, and detail view.",
-    "owner": "Lana Holston",
-    "status": "draft",
-    "device": "desktop",
-    "fidelity": "high-fi",
-    "created": "2026-02-01",
-    "updated": "2026-02-20",
-    "href": "/prototypes/product-search",
-    "screens": 1,
-    "tags": ["gcr", "search"],
-    "dsComponents": [],
-    "openQuestions": [
-      "Should search results be paginated or infinite scroll?"
-    ],
-    "lastReviewedBy": null,
-    "lastReviewedDate": null,
-    "prompts": [],
-    "context": null
-  },
-  {
-    "id": "rid-landing-page",
-    "name": "RID Landing Page",
-    "description": "Consumer-facing Retail ID mobile landing page exploring 4 GTM use cases: compliance-first, compliance+brand, brand-forward, and brand-only.",
-    "owner": "Lana Holston",
-    "status": "draft",
-    "device": "mobile",
-    "fidelity": "high-fi",
-    "created": "2026-03-11",
-    "updated": "2026-03-19",
-    "href": "/prototypes/rid-landing-page",
-    "screens": 1,
-    "tags": ["rid", "consumer-facing", "compliance", "gtm"],
-    "dsComponents": ["Badge", "DetailField", "Divider", "Skeleton", "EmptyState", "Button"],
-    "openQuestions": [
-      "How does the state seal/logo get uploaded?",
-      "Should the campaign banner be dismissible by the consumer?",
-      "Which warning messages are required by MA regulation vs. configurable?"
-    ],
-    "lastReviewedBy": null,
-    "lastReviewedDate": null,
-    "prompts": [
-      {
-        "date": "2026-03-11",
-        "text": "Create another version of qr-verify prototype taking Urban Consultants Confluence context into consideration. Need brand-primary, brand-secondary, no-compliance/brand-only options. Research if some states don't need compliance. Use MA, generate fictitious product image.",
-        "links": [
-          { "label": "Confluence: Mobile Landing Page Discussion with Urban + Consultants", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850/Mobile+Landing+Page+Discussion+with+Urban+Consultants" }
-        ]
-      },
-      {
-        "date": "2026-03-17",
-        "text": "Replace the legal banners on top of the page with a CCC + Compliance Passed + Metrc Retail ID branded banner image."
-      },
-      {
-        "date": "2026-03-18",
-        "text": "Remove V1 and replace with V2. Add new V2 with accordion sections (like About Brand). Start V2 on UC2. Add full-width View Full COA button above the accordion. All Tests Passed badge inline under accordion title."
-      },
-      {
-        "date": "2026-03-19",
-        "text": "Make the top compliance banner sticky so it stays visible while scrolling."
-      },
-      {
-        "date": "2026-03-19",
-        "text": "Move the View Full COA button above the datatable; put a read more under product description to show longer text."
-      },
-      {
-        "date": "2026-03-19",
-        "text": "The View Full COA button should have a caret and trigger a bottom sheet for multiple COAs."
-      }
-    ],
-    "context": {
-      "summary": "Explores the consumer-facing mobile landing page for Retail ID across different state adoption models, based on Urban consultant feedback emphasizing compliance-first positioning and state configurability.",
-      "documents": [
-        { "label": "Confluence: Mobile Landing Page Discussion with Urban + Consultants", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/751566850", "type": "confluence" },
-        { "label": "Confluence: 2026 Roadmap and Approach", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/759234565", "type": "confluence" },
-        { "label": "Confluence: State Regulator Management Portal", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/764313602", "type": "confluence" },
-        { "label": "Confluence: Mobile Landing Pages Ideas and Feedback", "url": "https://metrc-tech.atlassian.net/wiki/spaces/RE/pages/762904578", "type": "confluence" }
-      ],
-      "notes": "The 'two flavors' GTM model (mandated vs. non-mandated) from the 2026 Roadmap directly informed the 4 use cases."
-    }
-  },
-  {
-    "id": "transfer-manifest",
-    "name": "Transfer Manifest",
-    "description": "Detail view for cannabis product transfer manifests.",
-    "owner": "Lana Holston",
-    "status": "draft",
-    "device": "desktop",
-    "fidelity": "wireframe",
-    "created": "2026-01-20",
-    "updated": "2026-03-10",
-    "href": "/prototypes/transfer-manifest",
-    "screens": 1,
-    "tags": ["canopy", "logistics"],
-    "dsComponents": ["Badge", "Button", "DataTable", "DetailField", "EmptyState", "Skeleton"],
-    "openQuestions": [
-      "Should there be a list/index view for all manifests?"
-    ],
-    "lastReviewedBy": null,
-    "lastReviewedDate": null,
-    "prompts": [],
-    "context": null
-  },
-  {
-    "id": "rid-tag-generator",
-    "name": "RID Tag Generator",
-    "description": "Guided step-by-step wizard for operators to generate QR-coded tags: select template, configure quantities/reels, generate, and download CSV/PDF.",
-    "owner": "Lana Holston",
-    "status": "draft",
-    "device": "desktop",
-    "fidelity": "high-fi",
-    "created": "2026-03-16",
-    "updated": "2026-03-16",
-    "href": "/prototypes/rid-tag-generator",
-    "screens": 1,
-    "tags": ["rid", "tag-generation", "wizard"],
-    "dsComponents": ["LinearStepper", "Badge", "Banner", "Button", "Input", "Select", "ProgressBar", "EmptyState", "Skeleton", "Divider"],
-    "openQuestions": [
-      "Should the Learn more link on migrated templates go to a Pendo guide or Confluence doc?",
-      "Can the migrated template banner be removed after a couple months?",
-      "What are the maximum tags per reel?",
-      "Should regulators have a batch approve action?",
-      "How long does QR code generation actually take?"
-    ],
-    "lastReviewedBy": null,
-    "lastReviewedDate": null,
-    "prompts": [
-      {
-        "date": "2026-03-16",
-        "text": "Build a RID tag generation wizard — step-by-step flow where operators configure a template, enter quantities, calculate reels, generate QR codes, and download CSV/PDF. Based on meeting transcript with Ryan Andrews, Grant Kemp, and Tanika Tompkins."
-      }
-    ],
-    "versions": [
-      {
-        "label": "v1",
-        "date": "2026-03-16",
-        "description": "Initial wizard flow from March 2026 meeting with Ryan Andrews, Grant Kemp, and Tanika Tompkins"
-      }
-    ],
-    "context": {
-      "summary": "Guided step-by-step wizard for RID tag generation. Operators select templates, configure quantity and reels, generate QR codes with unique IDs, and download CSV (always) + PDF (optional). Regulators get a separate order review view.",
-      "documents": [],
-      "notes": "Ryan Andrews excited about guided step-by-step approach. Grant Kemp noted Learn more link environment issue. Changed print to download per Lana's decision. Migrated template banner planned for eventual removal."
-    }
-  },
-  {
-    "id": "canopy-payments",
-    "name": "CanoPay",
-    "description": "B2B payment facilitation for cannabis product movement through the supply chain. Invoicing, payment processing, and financial reconciliation across organizations.",
-    "owner": "Lana Holston",
-    "status": "draft",
-    "device": "desktop",
-    "fidelity": "high-fi",
-    "created": "2026-03-21",
-    "updated": "2026-03-22",
-    "href": "/prototypes/canopy-payments",
+    "created": "2026-04-05",
+    "updated": "2026-04-05",
+    "href": "/prototypes/vault",
     "screens": 6,
-    "tags": ["canopy", "payments", "b2b", "invoicing"],
-    "dsComponents": ["Header", "DataTable", "Badge", "BrandBanner", "Button", "Input", "Select", "LinearStepper", "TabBar", "DetailField", "Divider", "EmptyState", "Skeleton", "ConfirmDialog", "Toast", "Banner", "Textarea"],
+    "tags": ["fintech", "banking", "dogfooding", "lumen", "recharts"],
+    "dsComponents": [
+      "Amount", "Button", "Badge", "Input", "Select", "Avatar", "DataTable", "ProgressBar", "Stepper", "Icons"
+    ],
+    "newComponents": [
+      "Amount (shipped to components/)",
+      "AmountConfirmDialog (prototype-local at app/prototypes/vault/_components/)",
+      "LineChart + SparkLine (prototype-local at app/prototypes/vault/_components/charts.tsx)",
+      "typography.tabular utility (added to design-tokens.ts)"
+    ],
     "openQuestions": [
-      "How should declined/failed payments surface to the user?",
-      "Should partial payments auto-calculate remaining balance?",
-      "What payment methods will be supported at launch (ACH only, or also wire/check)?",
-      "How does CanoPay integrate with existing Metrc Compliance transfer manifests?"
+      "Should Amount ship with a built-in delta/trend indicator prop or stay pure?",
+      "AmountConfirmDialog: promote to real DS after how many prototypes use it?",
+      "Do the chart wrappers (LineChart/SparkLine) deserve a dedicated @lumen/charts pack, or ship to core?",
+      "Stepper component shows 'Step NaN of 4' aria label — needs a look at required props"
     ],
     "lastReviewedBy": null,
     "lastReviewedDate": null,
     "prompts": [
       {
-        "date": "2026-03-21",
-        "text": "Create CanoPay prototype based on Canopy ecosystem architecture and Confluence Payments specs. MVP scope, high-fi, RID default theme, responsive desktop, following exact DS patterns from Canopy Registry prototype.",
-        "links": [
-          { "label": "Confluence: Payments Canopy Overview", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701650" },
-          { "label": "Confluence: Payments UX Considerations", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701621" },
-          { "label": "Notion: Canopy Repository Architecture", "url": "https://www.notion.so/32957fbfbd0d811db377e29baf424df7" }
-        ]
-      },
-      {
-        "date": "2026-03-21",
-        "text": "Add a brand banner on the dashboard: Hello [Name], see what's going on in CanoPay today!"
-      },
-      {
-        "date": "2026-03-21",
-        "text": "Add cash flow data visualization chart to dashboard — income vs expenses area chart with smooth curves, tooltips, summary cards, and avg monthly stats"
-      },
-      {
-        "date": "2026-03-22",
-        "text": "Create coming soon pages for purchases and transactions"
-      },
-      {
-        "date": "2026-03-21",
-        "text": "Left nav must go all the way down; remove the heading CANOPY on the left nav"
+        "date": "2026-04-05",
+        "text": "Build a fintech prototype (Vault — business banking) to stress-test LUMEN on dense financial UI. Introduces Amount component, AmountConfirmDialog with typed-amount verification, Recharts-based LineChart/SparkLine wrappers, and a tabular-nums typography utility. Dense, precise, trustworthy visual direction. Lumen Dark default theme."
       }
     ],
     "context": {
-      "summary": "B2B payment facilitation for cannabis product movement. Handles invoicing, payment processing, and financial reconciliation across organizations in the Canopy ecosystem. Phase 2 in the Canopy MVP scope.",
-      "documents": [
-        { "label": "Confluence: Payments Canopy (Space Home)", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701524", "type": "confluence" },
-        { "label": "Confluence: Payments Canopy Overview", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701650", "type": "confluence" },
-        { "label": "Confluence: Payments UX Considerations", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701621", "type": "confluence" },
-        { "label": "Confluence: Payments Key Concepts", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701568", "type": "confluence" },
-        { "label": "Confluence: User Access Use Cases", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701585", "type": "confluence" },
-        { "label": "Confluence: User Access Visualization", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701597", "type": "confluence" },
-        { "label": "Confluence: Payments Canopy Relationships", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701608", "type": "confluence" },
-        { "label": "Confluence: Payments Initial Thoughts", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701554", "type": "confluence" },
-        { "label": "Confluence: Transfer Invoices - Research (PM)", "url": "https://metrc-tech.atlassian.net/wiki/spaces/PM/pages/427360257/Transfer+Invoices+-+Research", "type": "confluence" },
-        { "label": "Confluence: Payments Space (Home)", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Payments/overview", "type": "confluence" },
-        { "label": "Confluence: Payments Concept Docs", "url": "https://metrc-tech.atlassian.net/wiki/spaces/Canopy/pages/631701636", "type": "confluence" },
-        { "label": "Jira: PR-84 — Transfer Invoices", "url": "https://metrc-tech.atlassian.net/browse/PR-84", "type": "jira" },
-        { "label": "Notion: Canopy Repository Architecture", "url": "https://www.notion.so/32957fbfbd0d811db377e29baf424df7", "type": "notion" },
-        { "label": "Figma: Canopy Entity Relationships", "url": "https://www.figma.com/board/kJhyUtAzk1wYV81VNXFes4/Canopy", "type": "figma" },
-        { "label": "Figma: Canopy Future Vision - Navigation", "url": "https://www.figma.com/board/nutUCspeocycMXk2MDGrgK/Canopy-Future-Vision?node-id=121-2191", "type": "figma" },
-        { "label": "Figma: Canopy Future Vision - Onboarding", "url": "https://www.figma.com/board/nutUCspeocycMXk2MDGrgK/Canopy-Future-Vision?node-id=123-2876", "type": "figma" },
-        { "label": "Figma Make: Canopy Prototype MVP", "url": "https://www.figma.com/make/en9VAfnNhRa3vhEHMhUvtg/Canopy-Prototype--MVP-", "type": "figma" }
-      ],
-      "notes": "CanoPay is Phase 2 in the Canopy MVP scope. Payments = global payments facilitator for cannabis product movement through the supply chain. Permission-scoped per org/brand/facility/market. David Eagleson authored Canopy ecosystem specs. Kristin Kilroy (PM) authored the detailed Transfer Invoices spec with invoice model, phasing (Crawl/Walk/Run), NY OCM regulatory requirements, credit memos, and COD enforcement. Key rule: 1 Transfer Invoice = 1 Manifest (1:1). Jira: PR-84. Payments space exists but is empty shell. Architecture decision: separate repos per app, DS consumed as file: dependency."
+      "summary": "Second LUMEN stress test — deliberately picked a domain opposite the marketing site: dense numeric UI, real-time data, trust signals, destructive confirmations, tabular alignment. Tests whether 'one system, every product' holds across radically different density and tone.",
+      "documents": [],
+      "notes": "Explicitly built with Recharts as a wrapped primitive — charts are theme-aware via LUMEN tokens. Amount component shipped to real DS; AmountConfirmDialog kept prototype-local until second use validates the API."
+    }
+  },
+  {
+    "id": "lumen-marketing",
+    "name": "LUMEN Marketing Site",
+    "description": "Marketing site for the LUMEN Design System — hero + live 7-theme switcher, component wall, accessibility proof, and component gallery. Dogfoods LUMEN: every pixel is a design system component.",
+    "owner": "Lana Holston",
+    "status": "draft",
+    "device": "desktop",
+    "fidelity": "high-fi",
+    "created": "2026-04-05",
+    "updated": "2026-04-05",
+    "href": "/prototypes/lumen-marketing",
+    "screens": 4,
+    "tags": ["lumen", "marketing", "design-system", "dogfooding"],
+    "dsComponents": [
+      "Button", "Badge", "Chip", "ChipGroup", "Input", "Select", "Avatar", "Switch", "Checkbox",
+      "Radio", "ProgressBar", "StatsCard", "Banner", "Skeleton", "Tab", "TabBar", "Accordion",
+      "AccordionItem", "Divider", "ListItem", "Stepper", "SegmentedControl", "Icons"
+    ],
+    "openQuestions": [
+      "Should the footer link to a real GitHub repo once LUMEN is published?",
+      "Does the Themes page need a 'Bring your own theme' CTA flow?",
+      "Should we add a changelog or release notes page in v2?"
+    ],
+    "lastReviewedBy": null,
+    "lastReviewedDate": null,
+    "prompts": [
+      {
+        "date": "2026-04-05",
+        "text": "Build a LUMEN marketing site with Landing, Themes, Components, and Get Started pages. Editorial/bold direction. Live theme switcher across all 7 showcase themes. Dogfoods the design system — every element must be a LUMEN component or token."
+      }
+    ],
+    "context": {
+      "summary": "First non-Lumen stress test of LUMEN as a general design system. Proves the theme architecture by making it the hero of the site.",
+      "documents": [],
+      "notes": "Built to pressure-test LUMEN in a marketing context (not enterprise/admin). Success criteria: positioning clear in 30s, theme switcher earns an 'oh', 100% DS dogfooding, feels like a product not a doc site."
     }
   }
 ]

@@ -1,12 +1,12 @@
-# MTR Design System
+# Lumen Design System
 
-The official component library and design token system for Metrc products. Built with React, TypeScript, and Next.js.
+A React + TypeScript design system with design tokens, themeable components, and a multi-theme provider. Built with Next.js.
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/MetrcID/vercel.ux.git
-cd vercel.ux
+git clone https://github.com/UXLana/Lumen.git
+cd Lumen
 npm install
 npm run dev
 ```
@@ -17,7 +17,7 @@ Open [http://localhost:3333](http://localhost:3333) to view the documentation si
 
 ### Components (42+)
 
-Accordion, AssistiveMessage, Avatar, Badge, Banner, BrandBanner, Button, ChatPanel, Checkbox, Chip, CollectionToolbar, Combobox, ComplianceBanner, ConfirmDialog, DataTable, DetailField, Divider, EmptyState, FullScreenModal, Header, Icons, ImageCarousel, Input, LeftNav, Link, ListItem, MarketplaceCard, Pagination, ProductCard, ProgressBar, Radio, SegmentedControl, Select, Sidebar, Skeleton, StatsCard, Stepper, Switch, Tab, Textarea, Toast, Upload
+Accordion, AssistiveMessage, Avatar, Badge, Banner, BrandBanner, Button, ChatPanel, Checkbox, Chip, CollectionToolbar, Combobox, ConfirmDialog, DataTable, DetailField, Divider, EmptyState, FullScreenModal, Header, Icons, ImageCarousel, Input, LeftNav, Link, ListItem, MarketplaceCard, Pagination, ProductCard, ProgressBar, Radio, SegmentedControl, Select, Sidebar, Skeleton, StatsCard, Stepper, Switch, Tab, Textarea, Toast, Upload
 
 ### Design Tokens
 
@@ -35,29 +35,28 @@ All tokens are in `styles/design-tokens.ts`:
 
 The system supports multiple product themes via `SwitchableThemeProvider`:
 
-- **Trace** (default) — Core Metrc regulatory platform
-- **University** — Training and education
-- **Earth** — Environmental/sustainability
-- **RID** — Retail ID (light + dark)
+- **Lumen** / **Lumen Dark** — Default
+- **Spring**, **Fall**, **Foliage** / **Foliage Dark**
+- **Pampas**, **Rainy Night**
 
 ## Usage in Your Project
 
 ### Import Components
 
 ```tsx
-import { Button, Input, DataTable } from 'mtr-design-system/components'
+import { Button, Input, DataTable } from '@lumen/design-system/components'
 ```
 
 ### Import Tokens
 
 ```tsx
-import { colors, spacing, typography, borderRadius, shadows } from 'mtr-design-system/styles/design-tokens'
+import { colors, spacing, typography, borderRadius, shadows } from '@lumen/design-system/styles/design-tokens'
 ```
 
 ### Import Themes
 
 ```tsx
-import { SwitchableThemeProvider, useColors, useTheme } from 'mtr-design-system/styles/themes'
+import { SwitchableThemeProvider, useColors, useTheme } from '@lumen/design-system/styles/themes'
 ```
 
 ## Project Structure
@@ -84,4 +83,4 @@ This repo includes a `CLAUDE.md` file that teaches Claude Code how to use the de
 
 ## License
 
-Copyright (c) 2026 Metrc LLC. All rights reserved. See [LICENSE](./LICENSE).
+See [LICENSE](./LICENSE).

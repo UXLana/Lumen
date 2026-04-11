@@ -1,14 +1,15 @@
-# MTR Design System — Claude Code Context
+# Lumen Design System — Claude Code Context
 
-You are working inside the MTR Design System, the official component library for Metrc products.
-Your job is to build UIs using these components and tokens correctly. Do not invent your own
-components or hardcode design values — use what the system provides.
+You are working inside the Lumen Design System, a React + TypeScript component library with
+design tokens and a themeable provider. Your job is to build UIs using these components and
+tokens correctly. Do not invent your own components or hardcode design values — use what the
+system provides.
 
 ## Golden Rules
 
 1. **Always use design tokens.** Never hardcode colors, spacing, font sizes, or radii. Import from `styles/design-tokens.ts`.
 2. **Always use existing components.** Check `components/index.ts` before building anything from scratch.
-3. **Accessibility is non-negotiable.** This is a government compliance platform — WCAG 2.2 AA minimum. Every interactive element needs keyboard support, focus indicators, and ARIA attributes.
+3. **Accessibility is non-negotiable.** WCAG 2.2 AA minimum. Every interactive element needs keyboard support, focus indicators, and ARIA attributes.
 4. **Use the theme system.** Colors come from CSS variables set by the theme provider. Use `useColors()` hook for dynamic theming — never import raw hex values.
 
 ## Active Skills
@@ -68,7 +69,7 @@ import { useColors, useTheme, useTypography, useSpacing } from '@/styles/themes'
 - **LeftNav** — Sidebar navigation with sections, icons, collapse
 - **Tab** / **TabBar** — Horizontal tab navigation
 - **Pagination** — Page navigation for lists/tables
-- **Stepper** — Linear and non-linear step indicators
+- **Stepper** — Linear and non-linear step indicators. Supports `orientation="vertical"` (default, content inline under each step) or `orientation="horizontal"` (top progress bar, active step content below). `HorizontalStepper` is a convenience wrapper.
 
 ### Feedback
 - **Banner** — variant: `"info"` | `"success"` | `"warning"` | `"error"`. Content goes as `children` (not `description`). Optional `title`, `size` (`"sm"` | `"md"`), `primaryAction`, `secondaryAction`. Use `secondaryAction` for dismiss.
@@ -122,7 +123,8 @@ When building a UI, use this guide to pick the right component. If two component
 
 | Scenario | Component | Key Config |
 |----------|-----------|------------|
-| Short inline stepper (2-5 steps, fits on page) | **Stepper** | `steps`, `activeStep`, `variant="linear"` |
+| Short inline stepper (2-5 steps, vertical layout) | **Stepper** | `steps`, `activeStep`, `variant="linear"`, `orientation="vertical"` |
+| Horizontal top-bar stepper (wide sections, embedded wizards) | **HorizontalStepper** / **Stepper** | `orientation="horizontal"`, `stepContent`, `onPrimaryClick`, `onSecondaryClick` |
 | Full-screen guided workflow (3+ steps, substantial content) | **TaskModal** | `steps`, `activeStep`, `open`, `orientation` |
 | Full-screen overlay without step navigation | **FullScreenModal** | `open`, `onClose`, `variant="fullscreen"` (default) |
 | Floating centered dialog (settings, edit forms, detail views) | **FullScreenModal** | `variant="floating"`, `size` (`"sm"` | `"md"` | `"lg"` | `"xl"`). Mobile auto-fullscreen. |
@@ -293,4 +295,5 @@ Key callback signatures and prop types for AI agent code generation:
 - **DataTable**: `rowKey: (row, i) => string`, `onSelectionChange?: (keys: Set<string>) => void`
 - **Toast**: use `useToast()` hook → `addToast({ message, variant, duration, action? })`
 - **TaskModal**: `open`, `onClose`, `steps: TaskStep[]`, `activeStep: number`, `onStepChange: (index: number) => void`, `orientation: 'horizontal' | 'vertical'`, `columns: 1 | 2 | 3`, `clickable`
+- **Stepper**: `steps: StepItem[]`, `activeStep: number`, `onStepChange: (index: number) => void`, `variant: 'linear' | 'nonLinear'` (default `'linear'`), `orientation: 'vertical' | 'horizontal'` (default `'vertical'`), `stepContent: ReactNode[]`, `clickable`. Horizontal layout renders a top progress bar with the active step's content and primary/secondary buttons below. Convenience wrappers: `LinearStepper`, `NonLinearStepper`, `HorizontalStepper`.
 - **Accordion**: `defaultExpandedIds: string[]` — always set at least one ID so content is visible on load

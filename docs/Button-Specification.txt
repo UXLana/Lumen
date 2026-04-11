@@ -1,5 +1,5 @@
 ================================================================================
-METRC DESIGN SYSTEM - BUTTON COMPONENT SPECIFICATION
+LUMEN DESIGN SYSTEM - BUTTON COMPONENT SPECIFICATION
 ================================================================================
 
 Version: 1.0.0

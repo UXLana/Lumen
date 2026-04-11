@@ -2,14 +2,11 @@ import figma from '@figma/code-connect'
 import { DataTable } from './DataTable'
 
 /**
- * Code Connect mapping: Figma Data table → Prism DataTable
+ * Code Connect mapping: Figma Data table → Lumen DataTable
  *
  * Figma variant axes (from Data table 60:22551):
  *   - Type: Default, Sticky header, Horizontal scroll, etc.
  *   - Density: Compact, Default, Comfortable
- *
- * DataTable is the most complex component in Prism — it powers
- * the core Metrc interface (packages, transfers, plants, harvests).
  */
 figma.connect(
   DataTable,

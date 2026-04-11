@@ -1,12 +1,12 @@
 =============================================================================
 ICON SPECIFICATION
-Metrc Design System v1.0.0
+Lumen Design System v1.0.0
 =============================================================================
 
 ICON STYLE: Outline/Stroke-Based (Similar to Heroicons/Feather)
 
 This specification ensures visual consistency when generating icons for the
-Metrc Design System. All icons should follow these guidelines.
+Lumen Design System. All icons should follow these guidelines.
 
 
 =============================================================================
