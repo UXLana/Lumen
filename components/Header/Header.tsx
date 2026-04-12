@@ -15,7 +15,7 @@ import {
 import { useColors } from '../../styles/themes'
 import { useThemeSwitcher, availableThemes } from '../../styles/themes'
 import { usePrefersReducedMotion, useIsMobile } from '../../hooks'
-import { IconSun, IconMoon, IconBell } from '../Icons'
+import { IconSun, IconMoon, IconBell, IconSidebarOpen, IconSidebarClose } from '../Icons'
 
 // =============================================================================
 // TYPES
@@ -44,6 +44,18 @@ export interface HeaderProps {
   showNotifications?: boolean
   /** Whether to show the theme switcher (default: true) */
   showThemeSwitcher?: boolean
+  /** Whether to show a navigation toggle button to the left of the logo.
+   *  Desktop only — hidden on mobile, which typically owns its own nav pattern.
+   *  Default: false */
+  showNavToggle?: boolean
+  /** Called when the nav toggle is clicked. Consumers drive sidebar state. */
+  onNavToggleClick?: () => void
+  /** Current expanded state of the nav the toggle controls. Drives the
+   *  icon swap (sidebar-open vs sidebar-close) and aria-expanded. Default: true */
+  navToggleExpanded?: boolean
+  /** Override the nav toggle's accessible label. Defaults to a generated
+   *  "Collapse navigation" / "Expand navigation" string based on state. */
+  navToggleLabel?: string
   /** Additional actions slot rendered before the toolbar icons */
   actions?: React.ReactNode
   /** Custom styles for the root element */
@@ -138,6 +150,7 @@ interface ToolbarButtonProps {
   'aria-label': string
   'aria-expanded'?: boolean
   'aria-haspopup'?: 'listbox' | 'menu' | 'true'
+  'aria-controls'?: string
   children: React.ReactNode
   isActive?: boolean
   buttonRef?: React.Ref<HTMLButtonElement>
@@ -151,6 +164,7 @@ function ToolbarButton({
   'aria-label': ariaLabel,
   'aria-expanded': ariaExpanded,
   'aria-haspopup': ariaHaspopup,
+  'aria-controls': ariaControls,
   children,
   isActive = false,
   buttonRef,
@@ -168,6 +182,7 @@ function ToolbarButton({
       aria-label={ariaLabel}
       aria-expanded={ariaExpanded}
       aria-haspopup={ariaHaspopup}
+      aria-controls={ariaControls}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -273,6 +288,10 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
     notificationCount = 0,
     showNotifications = true,
     showThemeSwitcher = true,
+    showNavToggle = false,
+    onNavToggleClick,
+    navToggleExpanded = true,
+    navToggleLabel,
     actions,
     style,
     className,
@@ -365,8 +384,27 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
 
   return (
     <header ref={ref} role="banner" style={headerStyle} className={className}>
-      {/* ── Left: Logo ─────────────────────────────────────────── */}
+      {/* ── Left: [optional nav toggle] + Logo ──────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexShrink: 0 }}>
+        {/* Nav toggle — desktop only, left of the logo. Consumers own sidebar state. */}
+        {showNavToggle && !isMobile && (
+          <ToolbarButton
+            onClick={onNavToggleClick}
+            aria-label={
+              navToggleLabel ??
+              (navToggleExpanded ? 'Collapse navigation' : 'Expand navigation')
+            }
+            aria-expanded={navToggleExpanded}
+            aria-controls="nav"
+            {...toolbarBtnProps}
+          >
+            {navToggleExpanded ? (
+              <IconSidebarClose size={20} color={colors.icon.enabled.onLight} />
+            ) : (
+              <IconSidebarOpen size={20} color={colors.icon.enabled.onLight} />
+            )}
+          </ToolbarButton>
+        )}
         <img
           src="/assets/lumen-logo.svg"
           alt="LUMEN Design System"
