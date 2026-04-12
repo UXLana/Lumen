@@ -537,11 +537,14 @@ export function StyleguideLayout({
   // eslint-disable-next-line react-hooks/exhaustive-deps -- state setters are stable
   }, [])
 
-  // On narrow screens (<1280px), only one side panel at a time.
-  // Enforce: if both are open, collapse the sidebar (properties wins).
+  // On narrow screens (<1280px), auto-collapse sidebar when properties panel opens.
+  // Only triggers when panelToggleExpanded changes to true — not continuously.
+  const prevPanelExpanded = useRef(panelToggleExpanded)
   useEffect(() => {
+    const justOpened = panelToggleExpanded && !prevPanelExpanded.current
+    prevPanelExpanded.current = panelToggleExpanded
     if (
-      panelToggleExpanded &&
+      justOpened &&
       !sidebarCollapsed &&
       !isMobile &&
       typeof window !== 'undefined' &&
