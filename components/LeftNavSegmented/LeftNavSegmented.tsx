@@ -681,34 +681,38 @@ export function LeftNavSegmented({
     <nav aria-label="Main navigation" style={navStyle}>
       {!collapsed && <style>{scrollbarCSS}</style>}
 
-      {/* Collapsed: just the toggle button */}
+      {/* Collapsed: toggle button (if shown) */}
       {collapsed ? (
-        <div style={logoContainerStyle}>
-          {showCollapseToggle && (
-            <button
-              onClick={() => onCollapseChange?.(!collapsed)}
-              aria-label="Expand navigation"
-              style={toggleStyle}
-            >
-              <IconSidebarOpen size={18} />
-            </button>
-          )}
-        </div>
-      ) : (
         <>
-          {/* Logo */}
-          <div style={logoContainerStyle}>
-            {logo}
-            {showCollapseToggle && (
+          {showCollapseToggle && (
+            <div style={logoContainerStyle}>
               <button
                 onClick={() => onCollapseChange?.(!collapsed)}
-                aria-label="Collapse navigation"
+                aria-label="Expand navigation"
                 style={toggleStyle}
               >
-                <IconSidebarClose size={18} />
+                <IconSidebarOpen size={18} />
               </button>
-            )}
-          </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {/* Logo + collapse toggle (skip container entirely when both are absent) */}
+          {(logo || showCollapseToggle) && (
+            <div style={logoContainerStyle}>
+              {logo}
+              {showCollapseToggle && (
+                <button
+                  onClick={() => onCollapseChange?.(!collapsed)}
+                  aria-label="Collapse navigation"
+                  style={toggleStyle}
+                >
+                  <IconSidebarClose size={18} />
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Section cards */}
           <div className="segmented-nav-outer" style={scrollAreaStyle}>
