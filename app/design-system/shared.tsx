@@ -562,6 +562,7 @@ export function StyleguideLayout({
         activeItemId={activeId}
         collapsed={sidebarCollapsed}
         onCollapseChange={handleCollapseChange}
+        showCollapseToggle={false}
         mobileBehavior="drawer"
         mobileOpen={isMobile && !sidebarCollapsed}
         onMobileClose={() => setSidebarCollapsed(true)}
