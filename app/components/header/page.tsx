@@ -42,6 +42,10 @@ const headerDocData: ComponentDocData = {
     { name: 'notificationCount', type: 'number', defaultValue: '0', description: 'Badge count on bell icon (0 hides badge)' },
     { name: 'showNotifications', type: 'boolean', defaultValue: 'true', description: 'Whether to show the notifications bell' },
     { name: 'showThemeSwitcher', type: 'boolean', defaultValue: 'true', description: 'Whether to show the theme switcher' },
+    { name: 'showNavToggle', type: 'boolean', defaultValue: 'false', description: 'Show a navigation toggle button to the left of the logo. Desktop only.' },
+    { name: 'onNavToggleClick', type: '() => void', description: 'Called when the nav toggle is clicked. Consumers own sidebar state.' },
+    { name: 'navToggleExpanded', type: 'boolean', defaultValue: 'true', description: 'Current expanded state of the nav. Drives the icon swap and aria-expanded.' },
+    { name: 'navToggleLabel', type: 'string', description: 'Override the nav toggle\'s accessible label. Defaults to "Collapse/Expand navigation" based on state.' },
     { name: 'actions', type: 'ReactNode', description: 'Additional actions slot rendered before toolbar icons' },
     { name: 'style', type: 'React.CSSProperties', description: 'Custom styles for the root element' },
     { name: 'className', type: 'string', description: 'Custom class name' },
@@ -115,6 +119,8 @@ export default function HeaderPage() {
   const [demoShowTheme, setDemoShowTheme] = useState(true)
   const [demoShowAvatar, setDemoShowAvatar] = useState(true)
   const [demoShowBadge, setDemoShowBadge] = useState(true)
+  const [demoShowNavToggle, setDemoShowNavToggle] = useState(false)
+  const [demoNavToggleExpanded, setDemoNavToggleExpanded] = useState(true)
 
   const componentTabs = [
     { id: 'overview', label: 'Overview' },
@@ -131,6 +137,11 @@ export default function HeaderPage() {
     if (demoShowNotifications) {
       lines.push('  onNotificationsClick={() => {}}')
       if (demoShowBadge) lines.push('  notificationCount={3}')
+    }
+    if (demoShowNavToggle) {
+      lines.push('  showNavToggle')
+      lines.push(`  navToggleExpanded={${demoNavToggleExpanded}}`)
+      lines.push('  onNavToggleClick={() => {}}')
     }
     if (demoShowAvatar) {
       lines.push('  userAvatar={<Avatar name="Jane Doe" size="sm" />}')
@@ -193,6 +204,9 @@ export default function HeaderPage() {
                           showNotifications={demoShowNotifications}
                           notificationCount={demoShowBadge ? 3 : 0}
                           onNotificationsClick={() => {}}
+                          showNavToggle={demoShowNavToggle}
+                          navToggleExpanded={demoNavToggleExpanded}
+                          onNavToggleClick={() => setDemoNavToggleExpanded((v) => !v)}
                           userAvatar={demoShowAvatar ? <Avatar name="Jane Doe" size="sm" color={2} /> : undefined}
                           userName={demoShowAvatar ? 'Jane Doe' : undefined}
                           onAvatarClick={demoShowAvatar ? () => {} : undefined}
@@ -236,6 +250,25 @@ export default function HeaderPage() {
                         <StyledCheckbox checked={demoShowBadge} onChange={setDemoShowBadge} label="Show badge" />
                       </div>
                     )}
+                    <div>
+                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing.xs }}>
+                        Navigation
+                      </label>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+                        <StyledCheckbox
+                          checked={demoShowNavToggle}
+                          onChange={setDemoShowNavToggle}
+                          label="Nav toggle (left of logo, desktop)"
+                        />
+                        {demoShowNavToggle && (
+                          <StyledCheckbox
+                            checked={demoNavToggleExpanded}
+                            onChange={setDemoNavToggleExpanded}
+                            label="Nav expanded (icon state)"
+                          />
+                        )}
+                      </div>
+                    </div>
                     <div>
                       <label style={{ ...typography.label.sm, display: 'block', marginBottom: spacing.xs }}>
                         Behavior
