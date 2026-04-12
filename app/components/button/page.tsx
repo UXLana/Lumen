@@ -4,16 +4,146 @@ import React, { useState } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
 import { Button, ButtonGroup, DropdownIcon, ButtonSize, ButtonEmphasis } from '@/components'
 import { IconPlus, IconSettings } from '@/components/Icons'
-import { colors, typography, button, borderRadius } from '@/styles/design-tokens'
+import { colors, typography, spacing, borderRadius, breakpoints, transitionPresets, zIndex, button, header } from '@/styles/design-tokens'
+import { useColors } from '@/styles/themes'
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation' | 'documentation'
+type PageTab = 'overview' | 'specs' | 'implementation' | 'documentation'
 
 // =============================================================================
-// PAGE COMPONENT
+// CONSTANTS
+// =============================================================================
+
+const DRAWER_WIDTH = 260
+const HEADER_HEIGHT = parseInt(header.height)
+
+// =============================================================================
+// PROPERTIES DRAWER (with tabs: Controls / Tokens / Accessibility)
+// =============================================================================
+
+interface PropertiesDrawerProps {
+  open: boolean
+  children: React.ReactNode
+}
+
+function PropertiesDrawer({ open, children }: PropertiesDrawerProps) {
+  const themeColors = useColors()
+
+  return (
+    <aside
+      style={{
+        position: 'fixed',
+        top: `calc(${HEADER_HEIGHT}px + ${spacing.xl})`,
+        right: spacing.xl,
+        bottom: spacing.sm,
+        height: `calc(100vh - ${HEADER_HEIGHT}px - ${spacing.xl} - ${spacing.sm})`,
+        width: open ? `${DRAWER_WIDTH}px` : '0px',
+        zIndex: zIndex.sticky,
+        transition: `width 0.25s ease, opacity 0.25s ease`,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      aria-label="Properties panel"
+    >
+      {/* Inner card — matches LeftNav card styling */}
+      <div style={{
+        width: `${DRAWER_WIDTH}px`,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        background: themeColors.surface.lightDarker,
+        borderRadius: borderRadius.lg,
+        border: `1px solid ${themeColors.border.lowEmphasis.onLight}`,
+        overflow: 'hidden',
+      }}>
+        {/* Drawer header */}
+        <div style={{
+          padding: `${spacing.sm} ${spacing.md}`,
+          flexShrink: 0,
+        }}>
+          <span style={{
+            ...typography.label.sm,
+            fontWeight: 600,
+            textTransform: 'uppercase' as const,
+            letterSpacing: '0.5px',
+            color: themeColors.text.highEmphasis.onLight,
+          }}>
+            Properties
+          </span>
+        </div>
+
+        {/* Content — scrollable */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: `${spacing.xs} ${spacing.md} ${spacing.md}`,
+        }}>
+          {children}
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+// =============================================================================
+// PROPERTY SECTION (Figma-style collapsible group)
+// =============================================================================
+
+interface PropertySectionProps {
+  title: string
+  children: React.ReactNode
+  defaultOpen?: boolean
+}
+
+function PropertySection({ title, children, defaultOpen = true }: PropertySectionProps) {
+  const [open, setOpen] = useState(defaultOpen)
+  const themeColors = useColors()
+  return (
+    <div style={{ marginBottom: spacing.md }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: spacing['2xs'],
+          width: '100%',
+          padding: `${spacing['2xs']} 0`,
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          color: themeColors.text.lowEmphasis.onLight,
+          ...typography.label.sm,
+          fontWeight: 600,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.05em',
+        }}
+      >
+        <svg
+          width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+          style={{
+            transform: open ? 'rotate(90deg)' : 'rotate(0deg)',
+            transition: transitionPresets.fast,
+          }}
+        >
+          <polyline points="9 6 15 12 9 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        {title}
+      </button>
+      {open && (
+        <div style={{ paddingTop: spacing.xs }}>
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// =============================================================================
+// DOC DATA
 // =============================================================================
 
 const buttonDocData: ComponentDocData = {
@@ -77,7 +207,6 @@ import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`,
     'Place low-emphasis (cancel) buttons before high-emphasis (submit) buttons in groups.',
     'Use ButtonGroup with spacing="form" for form action rows.',
   ],
-  // ── Usage Intelligence ──
   whenToUse: [
     'Primary actions that trigger state changes (submit, save, create, delete).',
     'Navigation actions that leave the current context (open modal, go to page).',
@@ -108,13 +237,20 @@ import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`,
   ],
 }
 
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
 export default function ButtonPage() {
   const sizes: ButtonSize[] = ['lg', 'md']
   const emphases: ButtonEmphasis[] = ['high', 'mid', 'low']
-  
+
   // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
-  
+
+  // Properties drawer state
+  const [drawerOpen, setDrawerOpen] = useState(true)
+
   // Interactive state for property manipulation
   const [demoSize, setDemoSize] = useState<ButtonSize>('md')
   const [demoEmphasis, setDemoEmphasis] = useState<ButtonEmphasis>('high')
@@ -129,10 +265,17 @@ export default function ButtonPage() {
 
   // Custom tabs for component pages
   const componentTabs = [
-    { id: 'overview', label: 'Overview' },
+    { id: 'overview', label: 'Playground' },
+    { id: 'specs', label: 'Specs' },
     { id: 'implementation', label: 'Implementation' },
     { id: 'documentation', label: 'Documentation' },
   ]
+
+  // Generate live code string
+  const liveCode = `<Button
+  size="${demoSize}"
+  emphasis="${demoEmphasis}"${demoDestructive ? '\n  destructive' : ''}${demoLoading ? '\n  loading' : ''}${demoDisabled ? '\n  disabled' : ''}${demoOnDark ? '\n  onDark' : ''}${demoFullWidth ? '\n  fullWidth' : ''}${demoIconOnly ? '\n  iconOnly\n  leftIcon={<IconPlus />}\n  aria-label="Add item"' : ''}${demoLeftIcon && !demoIconOnly ? '\n  leftIcon={<IconPlus />}' : ''}${demoRightIcon && !demoIconOnly ? '\n  rightIcon={<DropdownIcon />}' : ''}
+>${demoIconOnly ? '' : '\n  Button\n'}</Button>`
 
   return (
     <StyleguideLayout
@@ -143,172 +286,165 @@ export default function ButtonPage() {
       tabs={componentTabs}
       activeTab={activePageTab}
       onTabChange={(id) => setActivePageTab(id as PageTab)}
+      showPanelToggle={activePageTab === 'overview'}
+      panelToggleExpanded={drawerOpen}
+      onPanelToggleClick={() => setDrawerOpen(!drawerOpen)}
     >
-      {/* ========== OVERVIEW TAB ========== */}
+      {/* ========== FIXED PROPERTIES DRAWER (Col 3) ========== */}
       {activePageTab === 'overview' && (
-        <>
-          {/* ========== QUICK START ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
-            <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`// Package import
-import { Button, ButtonGroup } from '@lumen/design-system'
-
-// Or with path alias (requires tsconfig setup)
-import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
+        <PropertiesDrawer open={drawerOpen}>
+          {/* Size */}
+          <PropertySection title="Size">
+            <div style={{ display: 'flex', gap: spacing['2xs'] }}>
+              {sizes.map(s => (
+                <PillButton
+                  key={s}
+                  onClick={() => setDemoSize(s)}
+                  isActive={demoSize === s}
+                >
+                  {s}
+                </PillButton>
+              ))}
             </div>
-          </section>
+          </PropertySection>
 
-          {/* ========== INTERACTIVE PLAYGROUND ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Manipulate button properties in real-time to see how they affect the component.
-            </p>
+          {/* Emphasis */}
+          <PropertySection title="Emphasis">
+            <div style={{ display: 'flex', gap: spacing['2xs'] }}>
+              {emphases.map(e => (
+                <PillButton
+                  key={e}
+                  onClick={() => setDemoEmphasis(e)}
+                  isActive={demoEmphasis === e}
+                >
+                  {e}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
 
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-                {/* Preview/Code with Tabs */}
-                <div>
-                  <Playground
-                    preview={
-                      <div style={{ width: demoFullWidth ? '100%' : 'auto' }}>
-                        <Button
-                          size={demoSize}
-                          emphasis={demoEmphasis}
-                          destructive={demoDestructive}
-                          loading={demoLoading}
-                          disabled={demoDisabled}
-                          leftIcon={(demoLeftIcon || demoIconOnly) ? <IconPlus size={demoSize === 'lg' ? 'lg' : 'md'} /> : undefined}
-                          rightIcon={demoRightIcon && !demoIconOnly ? <DropdownIcon size={demoSize === 'lg' ? 20 : 16} /> : undefined}
-                          iconOnly={demoIconOnly}
-                          fullWidth={demoFullWidth}
-                          onDark={demoOnDark}
-                          aria-label={demoIconOnly ? 'Add item' : undefined}
-                        >
-                          {demoIconOnly ? undefined : 'Button'}
-                        </Button>
-                      </div>
-                    }
-                    code={`<Button
-  size="${demoSize}"
-  emphasis="${demoEmphasis}"${demoDestructive ? '\n  destructive' : ''}${demoLoading ? '\n  loading' : ''}${demoDisabled ? '\n  disabled' : ''}${demoOnDark ? '\n  onDark' : ''}${demoFullWidth ? '\n  fullWidth' : ''}${demoIconOnly ? '\n  iconOnly\n  leftIcon={<IconPlus />}\n  aria-label="Add item"' : ''}${demoLeftIcon && !demoIconOnly ? '\n  leftIcon={<IconPlus />}' : ''}${demoRightIcon && !demoIconOnly ? '\n  rightIcon={<DropdownIcon />}' : ''}
->${demoIconOnly ? '' : '\n  Button\n'}</Button>`}
-                    previewPadding="56px 24px"
-                    previewBackground={demoOnDark ? colors.brand.default : colors.surface.lightDarker}
-                  />
-                </div>
+          {/* State */}
+          <PropertySection title="State">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <StyledCheckbox
+                checked={demoDestructive}
+                onChange={setDemoDestructive}
+                label="Destructive"
+              />
+              <StyledCheckbox
+                checked={demoLoading}
+                onChange={setDemoLoading}
+                label="Loading"
+              />
+              <StyledCheckbox
+                checked={demoDisabled}
+                onChange={setDemoDisabled}
+                label="Disabled"
+              />
+            </div>
+          </PropertySection>
 
-                {/* Controls */}
-                <div>
-                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                    {/* Size */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Size
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {sizes.map(s => (
-                          <PillButton
-                            key={s}
-                            onClick={() => setDemoSize(s)}
-                            isActive={demoSize === s}
-                          >
-                            {s}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
+          {/* Layout */}
+          <PropertySection title="Layout">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <StyledCheckbox
+                checked={demoIconOnly}
+                onChange={setDemoIconOnly}
+                label="Icon Only"
+              />
+              <StyledCheckbox
+                checked={demoFullWidth}
+                onChange={setDemoFullWidth}
+                label="Full Width"
+              />
+              <StyledCheckbox
+                checked={demoOnDark}
+                onChange={setDemoOnDark}
+                label="On Dark"
+              />
+            </div>
+          </PropertySection>
 
-                    {/* Emphasis */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Emphasis
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {emphases.map(e => (
-                          <PillButton
-                            key={e}
-                            onClick={() => setDemoEmphasis(e)}
-                            isActive={demoEmphasis === e}
-                          >
-                            {e}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Toggles */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <StyledCheckbox
-                        checked={demoDestructive}
-                        onChange={setDemoDestructive}
-                        label="Destructive"
-                      />
-                      <StyledCheckbox
-                        checked={demoLoading}
-                        onChange={setDemoLoading}
-                        label="Loading"
-                      />
-                      <StyledCheckbox
-                        checked={demoDisabled}
-                        onChange={setDemoDisabled}
-                        label="Disabled"
-                      />
-                      <StyledCheckbox
-                        checked={demoIconOnly}
-                        onChange={setDemoIconOnly}
-                        label="Icon Only"
-                      />
-                      <StyledCheckbox
-                        checked={demoFullWidth}
-                        onChange={setDemoFullWidth}
-                        label="Full Width"
-                      />
-                      <StyledCheckbox
-                        checked={demoOnDark}
-                        onChange={setDemoOnDark}
-                        label="On Dark"
-                      />
-                    </div>
-
-                    {/* Icon toggles - only show when not icon only */}
-                    {!demoIconOnly && (
-                      <div>
-                        <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                          Icons
-                        </label>
-                        <div style={{ display: 'flex', gap: '16px' }}>
-                          <StyledCheckbox
-                            checked={demoLeftIcon}
-                            onChange={setDemoLeftIcon}
-                            label="Left Icon"
-                          />
-                          <StyledCheckbox
-                            checked={demoRightIcon}
-                            onChange={setDemoRightIcon}
-                            label="Right Icon"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+          {/* Icons */}
+          {!demoIconOnly && (
+            <PropertySection title="Icons">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+                <StyledCheckbox
+                  checked={demoLeftIcon}
+                  onChange={setDemoLeftIcon}
+                  label="Left Icon"
+                />
+                <StyledCheckbox
+                  checked={demoRightIcon}
+                  onChange={setDemoRightIcon}
+                  label="Right Icon"
+                />
               </div>
-            </div>
-          </section>
+            </PropertySection>
+          )}
+        </PropertiesDrawer>
+      )}
 
+      {/* ========== PLAYGROUND TAB ========== */}
+      {activePageTab === 'overview' && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          marginRight: drawerOpen ? `${DRAWER_WIDTH + 24}px` : 0,
+          transition: 'margin-right 0.25s ease',
+          minHeight: '500px',
+        }}>
+          {/* Preview area — fills the center */}
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: demoOnDark ? colors.brand.default : colors.surface.lightDarker,
+            borderRadius: borderRadius.lg,
+            padding: spacing['4xl'],
+            minHeight: '360px',
+            transition: `background 0.25s ease`,
+          }}>
+            <div style={{ width: demoFullWidth ? '100%' : 'auto' }}>
+              <Button
+                size={demoSize}
+                emphasis={demoEmphasis}
+                destructive={demoDestructive}
+                loading={demoLoading}
+                disabled={demoDisabled}
+                leftIcon={(demoLeftIcon || demoIconOnly) ? <IconPlus size={demoSize === 'lg' ? 'lg' : 'md'} /> : undefined}
+                rightIcon={demoRightIcon && !demoIconOnly ? <DropdownIcon size={demoSize === 'lg' ? 20 : 16} /> : undefined}
+                iconOnly={demoIconOnly}
+                fullWidth={demoFullWidth}
+                onDark={demoOnDark}
+                aria-label={demoIconOnly ? 'Add item' : undefined}
+              >
+                {demoIconOnly ? undefined : 'Button'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Code output — below the preview */}
+          <div style={{ marginTop: spacing.md }}>
+            <CodeBlock>{liveCode}</CodeBlock>
+          </div>
+        </div>
+      )}
+
+      {/* ========== SPECS TAB (Tokens + Accessibility) ========== */}
+      {activePageTab === 'specs' && (
+        <>
           {/* ========== DESIGN TOKENS ========== */}
           <section style={sharedStyles.section}>
-            <CollapsibleSection title="Design Tokens (for custom implementations)">
-              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
-                Typography scale and spacing values used in the button component. Click any token to copy it. Pixel values shown in parentheses are for reference only.
-              </p>
+            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Typography scale, spacing, and color values used in the Button component. Click any token to copy it.
+            </p>
 
-              {/* Typography Tokens */}
+            {/* Typography Tokens */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Typography Tokens</h3>
+              <h3 style={sharedStyles.cardTitle}>Typography</h3>
               <SpecTable
                 headers={['Size', 'Font Size', 'Font Weight', 'Line Height', 'Letter Spacing']}
                 rows={sizes.map(size => [
@@ -339,7 +475,7 @@ import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
 
             {/* Icon Only Button Tokens */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Icon-Only Button Dimensions</h3>
+              <h3 style={sharedStyles.cardTitle}>Icon-Only Dimensions</h3>
               <SpecTable
                 headers={['Size', 'Button Size', 'Icon Size']}
                 rows={sizes.map(size => [
@@ -350,149 +486,145 @@ import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
               />
             </div>
 
+            {/* Shape & Animation */}
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Shape & Animation</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Border Radius', <CopyableToken key="br" token="button.borderRadius" />, <PixelValue key="brv" value={button.borderRadius} />],
+                  ['Transition', <CopyableToken key="tr" token="button.transition" />, <PixelValue key="trv" value={button.transition} />],
+                  ['Focus Color', <CopyableToken key="fc" token="button.focus.color" />, <PixelValue key="fcv" value={button.focus.color} />],
+                  ['Focus Width', <CopyableToken key="fw" token="button.focus.width" />, <PixelValue key="fwv" value={button.focus.width} />],
+                  ['Focus Offset', <CopyableToken key="fo" token="button.focus.offset" />, <PixelValue key="fov" value={button.focus.offset} />],
+                ]}
+              />
+            </div>
+
             {/* Colors - High Emphasis */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Colors - High Emphasis (Light Mode)</h3>
+              <h3 style={sharedStyles.cardTitle}>Colors — High Emphasis</h3>
               <SpecTable
                 headers={['State', 'Background', 'Text', 'Border']}
                 rows={[
-                  [
-                    'Enabled',
+                  ['Enabled',
                     <TokenValue key="he-bg" token="button.emphasis.high.enabled.background" value={button.emphasis.high.enabled.background} />,
                     <TokenValue key="he-txt" token="button.emphasis.high.enabled.text" value={button.emphasis.high.enabled.text} />,
-                    <PixelValue key="he-bdr" value={button.emphasis.high.enabled.border} />,
-                  ],
-                  [
-                    'Hover',
+                    <PixelValue key="he-bdr" value={button.emphasis.high.enabled.border} />],
+                  ['Hover',
                     <TokenValue key="hh-bg" token="button.emphasis.high.hover.background" value={button.emphasis.high.hover.background} />,
                     <TokenValue key="hh-txt" token="button.emphasis.high.hover.text" value={button.emphasis.high.hover.text} />,
-                    <PixelValue key="hh-bdr" value={button.emphasis.high.hover.border} />,
-                  ],
-                  [
-                    'Pressed',
+                    <PixelValue key="hh-bdr" value={button.emphasis.high.hover.border} />],
+                  ['Pressed',
                     <TokenValue key="hp-bg" token="button.emphasis.high.pressed.background" value={button.emphasis.high.pressed.background} />,
                     <TokenValue key="hp-txt" token="button.emphasis.high.pressed.text" value={button.emphasis.high.pressed.text} />,
-                    <PixelValue key="hp-bdr" value={button.emphasis.high.pressed.border} />,
-                  ],
-                  [
-                    'Disabled',
+                    <PixelValue key="hp-bdr" value={button.emphasis.high.pressed.border} />],
+                  ['Disabled',
                     <TokenValue key="hd-bg" token="button.emphasis.high.disabled.background" value={button.emphasis.high.disabled.background} />,
                     <TokenValue key="hd-txt" token="button.emphasis.high.disabled.text" value={button.emphasis.high.disabled.text} />,
-                    <PixelValue key="hd-bdr" value={button.emphasis.high.disabled.border} />,
-                  ],
+                    <PixelValue key="hd-bdr" value={button.emphasis.high.disabled.border} />],
                 ]}
               />
             </div>
 
             {/* Colors - Mid Emphasis */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Colors - Mid Emphasis (Light Mode)</h3>
+              <h3 style={sharedStyles.cardTitle}>Colors — Mid Emphasis</h3>
               <SpecTable
                 headers={['State', 'Background', 'Text', 'Border']}
                 rows={[
-                  [
-                    'Enabled',
+                  ['Enabled',
                     <TokenValue key="me-bg" token="button.emphasis.mid.enabled.background" value={button.emphasis.mid.enabled.background} />,
                     <TokenValue key="me-txt" token="button.emphasis.mid.enabled.text" value={button.emphasis.mid.enabled.text} />,
-                    <PixelValue key="me-bdr" value={button.emphasis.mid.enabled.border} />,
-                  ],
-                  [
-                    'Hover',
+                    <PixelValue key="me-bdr" value={button.emphasis.mid.enabled.border} />],
+                  ['Hover',
                     <TokenValue key="mh-bg" token="button.emphasis.mid.hover.background" value={button.emphasis.mid.hover.background} />,
                     <TokenValue key="mh-txt" token="button.emphasis.mid.hover.text" value={button.emphasis.mid.hover.text} />,
-                    <PixelValue key="mh-bdr" value={button.emphasis.mid.hover.border} />,
-                  ],
-                  [
-                    'Pressed',
+                    <PixelValue key="mh-bdr" value={button.emphasis.mid.hover.border} />],
+                  ['Pressed',
                     <TokenValue key="mp-bg" token="button.emphasis.mid.pressed.background" value={button.emphasis.mid.pressed.background} />,
                     <TokenValue key="mp-txt" token="button.emphasis.mid.pressed.text" value={button.emphasis.mid.pressed.text} />,
-                    <PixelValue key="mp-bdr" value={button.emphasis.mid.pressed.border} />,
-                  ],
-                  [
-                    'Disabled',
+                    <PixelValue key="mp-bdr" value={button.emphasis.mid.pressed.border} />],
+                  ['Disabled',
                     <TokenValue key="md-bg" token="button.emphasis.mid.disabled.background" value={button.emphasis.mid.disabled.background} />,
                     <TokenValue key="md-txt" token="button.emphasis.mid.disabled.text" value={button.emphasis.mid.disabled.text} />,
-                    <PixelValue key="md-bdr" value={button.emphasis.mid.disabled.border} />,
-                  ],
+                    <PixelValue key="md-bdr" value={button.emphasis.mid.disabled.border} />],
                 ]}
               />
             </div>
 
             {/* Colors - Low Emphasis */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Colors - Low Emphasis (Light Mode)</h3>
+              <h3 style={sharedStyles.cardTitle}>Colors — Low Emphasis</h3>
               <SpecTable
                 headers={['State', 'Background', 'Text', 'Border']}
                 rows={[
-                  [
-                    'Enabled',
+                  ['Enabled',
                     <TokenValue key="le-bg" token="button.emphasis.low.enabled.background" value={button.emphasis.low.enabled.background} />,
                     <TokenValue key="le-txt" token="button.emphasis.low.enabled.text" value={button.emphasis.low.enabled.text} />,
-                    <PixelValue key="le-bdr" value={button.emphasis.low.enabled.border} />,
-                  ],
-                  [
-                    'Hover',
+                    <PixelValue key="le-bdr" value={button.emphasis.low.enabled.border} />],
+                  ['Hover',
                     <TokenValue key="lh-bg" token="button.emphasis.low.hover.background" value={button.emphasis.low.hover.background} />,
                     <TokenValue key="lh-txt" token="button.emphasis.low.hover.text" value={button.emphasis.low.hover.text} />,
-                    <PixelValue key="lh-bdr" value={button.emphasis.low.hover.border} />,
-                  ],
-                  [
-                    'Pressed',
+                    <PixelValue key="lh-bdr" value={button.emphasis.low.hover.border} />],
+                  ['Pressed',
                     <TokenValue key="lp-bg" token="button.emphasis.low.pressed.background" value={button.emphasis.low.pressed.background} />,
                     <TokenValue key="lp-txt" token="button.emphasis.low.pressed.text" value={button.emphasis.low.pressed.text} />,
-                    <PixelValue key="lp-bdr" value={button.emphasis.low.pressed.border} />,
-                  ],
-                  [
-                    'Disabled',
+                    <PixelValue key="lp-bdr" value={button.emphasis.low.pressed.border} />],
+                  ['Disabled',
                     <TokenValue key="ld-bg" token="button.emphasis.low.disabled.background" value={button.emphasis.low.disabled.background} />,
                     <TokenValue key="ld-txt" token="button.emphasis.low.disabled.text" value={button.emphasis.low.disabled.text} />,
-                    <PixelValue key="ld-bdr" value={button.emphasis.low.disabled.border} />,
-                  ],
+                    <PixelValue key="ld-bdr" value={button.emphasis.low.disabled.border} />],
                 ]}
               />
             </div>
+          </section>
 
-            {/* Border Radius Token */}
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Border Radius</h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{
-                  width: '100px',
-                  height: '48px',
-                  background: colors.brand.default,
-                  borderRadius: button.borderRadius,
-                }} />
-                <div>
-                  <div style={{ ...typography.label.md, marginBottom: '4px' }}>Pill Shape</div>
-                  <TokenValue token="button.borderRadius" value={button.borderRadius} />
-                </div>
-              </div>
-            </div>
+          {/* ========== ACCESSIBILITY ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
+            <p style={sharedStyles.sectionDescription}>
+              WCAG 2.2 AA compliance details for the Button component.
+            </p>
 
-            {/* Focus Ring */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Focus Ring</h3>
+              <h3 style={sharedStyles.cardTitle}>Keyboard Interaction</h3>
               <SpecTable
-                headers={['Property', 'Token', 'Value']}
+                headers={['Key', 'Action']}
                 rows={[
-                  ['Color', <CopyableToken key="fc" token="button.focus.color" />, <PixelValue key="fcv" value={button.focus.color} />],
-                  ['Width', <CopyableToken key="fw" token="button.focus.width" />, <PixelValue key="fwv" value={button.focus.width} />],
-                  ['Offset', <CopyableToken key="fo" token="button.focus.offset" />, <PixelValue key="fov" value={button.focus.offset} />],
+                  [<kbd>Tab</kbd>, 'Move focus to / from the button'],
+                  [<kbd>Enter</kbd>, 'Activate the button'],
+                  [<kbd>Space</kbd>, 'Activate the button'],
                 ]}
               />
             </div>
 
-            {/* Animation */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Animation</h3>
+              <h3 style={sharedStyles.cardTitle}>ARIA Attributes</h3>
               <SpecTable
-                headers={['Property', 'Token', 'Value']}
+                headers={['Attribute', 'When', 'Purpose']}
                 rows={[
-                  ['Transition', <CopyableToken key="tr" token="button.transition" />, <PixelValue key="trv" value={button.transition} />],
+                  [<code>role="button"</code>, 'Always (native)', 'Implicit from <button> element'],
+                  [<code>aria-disabled="true"</code>, 'When disabled', 'Communicates non-interactive state'],
+                  [<code>aria-label</code>, 'Icon-only buttons', 'Provides accessible name when no visible text'],
+                  [<code>aria-busy="true"</code>, 'When loading', 'Indicates pending operation'],
                 ]}
               />
             </div>
-            </CollapsibleSection>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Visual Requirements</h3>
+              <SpecTable
+                headers={['Requirement', 'Standard', 'Status']}
+                rows={[
+                  ['Text contrast ratio', 'WCAG 1.4.3 — minimum 4.5:1', 'Pass'],
+                  ['Focus indicator', 'WCAG 2.4.7 — visible focus ring', 'Pass (2px brand ring with offset)'],
+                  ['Touch target size', 'WCAG 2.5.8 — minimum 44×44px', 'Pass (lg: 48px, md: 36px with padding)'],
+                  ['Color not sole indicator', 'WCAG 1.4.1 — not only visual cue', 'Pass (text + shape differentiate emphasis)'],
+                  ['Reduced motion', 'WCAG 2.3.3 — prefers-reduced-motion', 'Pass (transitions disabled)'],
+                ]}
+              />
+            </div>
           </section>
         </>
       )}
@@ -500,17 +632,21 @@ import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
       {/* ========== IMPLEMENTATION TAB ========== */}
       {activePageTab === 'implementation' && (
         <>
+          {/* ========== QUICK START ========== */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
+            <div style={{ maxWidth: breakpoints.sm }}>
+              <CodeBlock>{`// Package import
+import { Button, ButtonGroup } from '@lumen/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
+            </div>
+          </section>
+
           {/* ========== USAGE ========== */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Usage</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Import</h3>
-              <CodeBlock>
-{`import { Button, ButtonGroup, DropdownIcon } from '@/components'
-import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`}
-              </CodeBlock>
-            </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>

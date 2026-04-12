@@ -15,7 +15,7 @@ import {
 import { useColors } from '../../styles/themes'
 import { useThemeSwitcher, availableThemes } from '../../styles/themes'
 import { usePrefersReducedMotion, useIsMobile } from '../../hooks'
-import { IconSun, IconMoon, IconBell, IconSidebarOpen, IconSidebarClose } from '../Icons'
+import { IconSun, IconMoon, IconBell, IconSidebarOpen, IconSidebarClose, IconPanelRightOpen, IconPanelRightClose } from '../Icons'
 
 // =============================================================================
 // TYPES
@@ -56,6 +56,17 @@ export interface HeaderProps {
   /** Override the nav toggle's accessible label. Defaults to a generated
    *  "Collapse navigation" / "Expand navigation" string based on state. */
   navToggleLabel?: string
+  /** Whether to show a right-side panel toggle (e.g. properties panel).
+   *  Mirrors the nav toggle on the left. Default: false */
+  showPanelToggle?: boolean
+  /** Called when the panel toggle is clicked. Consumers drive panel state. */
+  onPanelToggleClick?: () => void
+  /** Current expanded state of the panel the toggle controls. Drives the
+   *  icon swap and aria-expanded. Default: true */
+  panelToggleExpanded?: boolean
+  /** Override the panel toggle's accessible label. Defaults to a generated
+   *  "Collapse panel" / "Expand panel" string based on state. */
+  panelToggleLabel?: string
   /** Additional actions slot rendered before the toolbar icons */
   actions?: React.ReactNode
   /** Custom styles for the root element */
@@ -292,6 +303,10 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
     onNavToggleClick,
     navToggleExpanded = true,
     navToggleLabel,
+    showPanelToggle = false,
+    onPanelToggleClick,
+    panelToggleExpanded = true,
+    panelToggleLabel,
     actions,
     style,
     className,
@@ -595,6 +610,25 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
           >
             {userAvatar}
           </button>
+        )}
+
+        {/* Panel toggle — right-side panel (e.g. properties). After avatar, far right. */}
+        {showPanelToggle && !isMobile && (
+          <ToolbarButton
+            onClick={onPanelToggleClick}
+            aria-label={
+              panelToggleLabel ??
+              (panelToggleExpanded ? 'Collapse panel' : 'Expand panel')
+            }
+            aria-expanded={panelToggleExpanded}
+            {...toolbarBtnProps}
+          >
+            {panelToggleExpanded ? (
+              <IconPanelRightClose size={20} color={colors.icon.enabled.onLight} />
+            ) : (
+              <IconPanelRightOpen size={20} color={colors.icon.enabled.onLight} />
+            )}
+          </ToolbarButton>
         )}
       </div>
     </header>

@@ -199,9 +199,9 @@ export const sharedStyles = {
 
   tabsContainer: {
     display: 'flex',
-    gap: '8px',
-    marginTop: '24px',
-    borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
+    gap: spacing.xs,
+    marginTop: spacing.xl,
+    borderBottom: 'none',
     paddingBottom: '0',
   },
 
@@ -226,7 +226,6 @@ export const sharedStyles = {
 
   main: {
     padding: '40px 0',
-    maxWidth: '1400px',
     margin: '0',
   },
   
@@ -458,6 +457,12 @@ interface StyleguideLayoutProps {
   activeTab?: string
   onTabChange?: (tabId: string) => void
   headerAction?: React.ReactNode
+  /** Show a right-side panel toggle in the Header */
+  showPanelToggle?: boolean
+  /** Called when the panel toggle is clicked */
+  onPanelToggleClick?: () => void
+  /** Current expanded state of the right panel */
+  panelToggleExpanded?: boolean
 }
 
 export function StyleguideLayout({
@@ -471,6 +476,9 @@ export function StyleguideLayout({
   activeTab,
   onTabChange,
   headerAction,
+  showPanelToggle,
+  onPanelToggleClick,
+  panelToggleExpanded,
 }: StyleguideLayoutProps) {
   // Default tabs if none provided
   const displayTabs = tabs || innerPageTabs
@@ -544,6 +552,9 @@ export function StyleguideLayout({
         showNavToggle
         navToggleExpanded={!sidebarCollapsed}
         onNavToggleClick={() => setSidebarCollapsed((v) => !v)}
+        showPanelToggle={showPanelToggle}
+        panelToggleExpanded={panelToggleExpanded}
+        onPanelToggleClick={onPanelToggleClick}
         userAvatar={<Avatar name="Lana Holston" size="sm" color={2} />}
         userName="Lana Holston"
         showNotifications
@@ -1211,18 +1222,50 @@ export function PixelValue({ value }: { value: string }) {
 
 export function SpecTable({
   headers,
-  rows
+  rows,
+  stickyFirstColumn = false,
 }: {
   headers: string[]
   rows: (string | React.ReactNode)[][]
+  /** Pin the first column so it stays visible when scrolling wide tables */
+  stickyFirstColumn?: boolean
 }) {
+  const stickyTh: React.CSSProperties = stickyFirstColumn ? {
+    position: 'sticky',
+    left: 0,
+    zIndex: 2,
+    background: colors.surface.lightDarker,
+  } : {}
+
+  const stickyTd: React.CSSProperties = stickyFirstColumn ? {
+    position: 'sticky',
+    left: 0,
+    zIndex: 1,
+    background: colors.surface.light,
+  } : {}
+
   return (
-    <div style={sharedStyles.tableContainer}>
-      <table style={sharedStyles.table}>
+    <div style={{
+      ...sharedStyles.tableContainer,
+      ...(stickyFirstColumn ? { overflowX: 'auto' as const } : {}),
+    }}>
+      <table style={{
+        ...sharedStyles.table,
+        ...(stickyFirstColumn ? { minWidth: '600px' } : {}),
+      }}>
         <thead>
           <tr>
             {headers.map((h, i) => (
-              <th key={i} style={sharedStyles.th}>{h}</th>
+              <th
+                key={i}
+                style={{
+                  ...sharedStyles.th,
+                  ...(i === 0 ? stickyTh : {}),
+                  whiteSpace: stickyFirstColumn ? 'nowrap' : undefined,
+                }}
+              >
+                {h}
+              </th>
             ))}
           </tr>
         </thead>
@@ -1234,8 +1277,9 @@ export function SpecTable({
                   key={j}
                   style={{
                     ...sharedStyles.td,
-                    // Remove bottom border on last row
                     ...(i === rows.length - 1 ? { borderBottom: 'none' } : {}),
+                    ...(j === 0 ? stickyTd : {}),
+                    ...(j === 0 && stickyFirstColumn ? { fontWeight: 600 } : {}),
                   }}
                 >
                   {cell}

@@ -111,6 +111,24 @@ export const IconSidebarClose: React.FC<IconProps> = (props) => (
 )
 IconSidebarClose.displayName = 'IconSidebarClose'
 
+export const IconPanelRightOpen: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <line x1="15" y1="3" x2="15" y2="21" />
+    <polyline points="10 15 7 12 10 9" />
+  </BaseIcon>
+)
+IconPanelRightOpen.displayName = 'IconPanelRightOpen'
+
+export const IconPanelRightClose: React.FC<IconProps> = (props) => (
+  <BaseIcon {...props}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <line x1="15" y1="3" x2="15" y2="21" />
+    <polyline points="8 9 11 12 8 15" />
+  </BaseIcon>
+)
+IconPanelRightClose.displayName = 'IconPanelRightClose'
+
 export const IconSearch: React.FC<IconProps> = (props) => (
   <BaseIcon {...props}>
     <circle cx="11" cy="11" r="8" />
