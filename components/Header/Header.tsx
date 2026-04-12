@@ -15,7 +15,7 @@ import {
 import { useColors } from '../../styles/themes'
 import { useThemeSwitcher, availableThemes } from '../../styles/themes'
 import { usePrefersReducedMotion, useIsMobile } from '../../hooks'
-import { IconSun, IconMoon, IconBell, IconSidebarOpen, IconSidebarClose, IconPanelRightOpen, IconPanelRightClose } from '../Icons'
+import { IconSun, IconMoon, IconBell, IconMenu, IconSidebarOpen, IconSidebarClose, IconPanelRightOpen, IconPanelRightClose } from '../Icons'
 
 // =============================================================================
 // TYPES
@@ -401,8 +401,8 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
     <header ref={ref} role="banner" style={headerStyle} className={className}>
       {/* ── Left: [optional nav toggle] + Logo ──────────────────── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexShrink: 0 }}>
-        {/* Nav toggle — desktop only, left of the logo. Consumers own sidebar state. */}
-        {showNavToggle && !isMobile && (
+        {/* Nav toggle — same sidebar icons on mobile and desktop */}
+        {showNavToggle && (
           <ToolbarButton
             onClick={onNavToggleClick}
             aria-label={
@@ -427,19 +427,17 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
           height={isMobile ? 32 : 36}
           style={{ flexShrink: 0 }}
         />
-        {!isMobile && (
-          <span
-            style={{
-              ...typography.label.lg,
-              fontFamily: fontFamilies.display,
-              fontWeight: 600,
-              color: colors.text.highEmphasis.onLight,
-              letterSpacing: '0.02em',
-            }}
-          >
-            LUMEN
-          </span>
-        )}
+        <span
+          style={{
+            ...typography.label.lg,
+            fontFamily: fontFamilies.display,
+            fontWeight: 600,
+            color: colors.text.highEmphasis.onLight,
+            letterSpacing: '0.02em',
+          }}
+        >
+          LUMEN
+        </span>
       </div>
 
       {/* ── Right: Toolbar ───────────────────────────────────── */}

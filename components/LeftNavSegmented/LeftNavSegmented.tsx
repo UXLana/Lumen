@@ -24,6 +24,7 @@ import {
   button,
   breakpoints,
   borderRadius,
+  header as headerTokens,
   getSidebarColors,
 } from '../../styles/design-tokens'
 import { useColors } from '../../styles/themes/theme-provider'
@@ -566,48 +567,45 @@ export function LeftNavSegmented({
   if (isMobileDrawer) {
     return (
       <>
-        {/* Scrim */}
-        {mobileOpen && (
-          <div
-            onClick={onMobileClose}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: themeColors.scrim,
-              zIndex: zIndexTokens.overlay,
-              transition: `opacity ${transitionPresets.default}`,
-            }}
-            aria-hidden="true"
-          />
-        )}
-        {/* Drawer */}
+        {/* Scrim — below header */}
+        <div
+          onClick={onMobileClose}
+          style={{
+            position: 'fixed',
+            top: headerTokens.height,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: themeColors.scrim,
+            zIndex: zIndexTokens.overlay,
+            opacity: mobileOpen ? 1 : 0,
+            pointerEvents: mobileOpen ? 'auto' : 'none',
+            transition: `opacity ${transitionPresets.slow}`,
+          }}
+          aria-hidden="true"
+        />
+        {/* Drawer — full width, below the header */}
         <nav
           aria-label="Main navigation"
           style={{
             ...navStyle,
             position: 'fixed',
-            top: style?.top ?? 0,
-            left: style?.left ?? 0,
-            height: style?.height ?? '100vh',
-            width: `${SIDEBAR_WIDTH}px`,
+            top: headerTokens.height,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: `calc(100vh - ${headerTokens.height})`,
             backgroundColor: themeColors.surface.light,
-            transform: mobileOpen ? 'translateX(0)' : `translateX(-${SIDEBAR_WIDTH}px)`,
-            transition: `transform ${transitionPresets.default}`,
+            opacity: mobileOpen ? 1 : 0,
+            transform: mobileOpen ? 'translateY(0)' : 'translateY(-12px)',
+            pointerEvents: mobileOpen ? 'auto' : 'none',
+            transition: `opacity ${transitionPresets.slow}, transform ${transitionPresets.slow}`,
             zIndex: zIndexTokens.overlay + 1,
-            padding: `${sidebar.padding.y} ${spacing.xs}`,
+            padding: `${spacing.md} ${spacing.md}`,
+            borderRadius: 0,
           }}
         >
-          {/* Close button */}
-          <div style={{ ...logoContainerStyle, justifyContent: 'space-between' }}>
-            {logo}
-            <button
-              onClick={onMobileClose}
-              aria-label="Close navigation"
-              style={toggleStyle}
-            >
-              <IconX size={20} />
-            </button>
-          </div>
 
           <div style={scrollAreaStyle}>
             {sections.map((section) => (

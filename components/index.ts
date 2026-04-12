@@ -35,6 +35,10 @@ export type { AvatarProps, AvatarGroupProps, AvatarSize, AvatarColor } from './A
 export { Badge } from './Badge'
 export type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from './Badge'
 
+// BottomSheet
+export { BottomSheet } from './BottomSheet'
+export type { BottomSheetProps, BottomSheetHeight } from './BottomSheet'
+
 // Banner
 export { Banner, InfoIcon, SuccessIcon, WarningIcon, ErrorIcon, CloseIcon } from './Banner'
 export type {

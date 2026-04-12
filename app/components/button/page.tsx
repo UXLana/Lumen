@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
-import { Button, ButtonGroup, DropdownIcon, ButtonSize, ButtonEmphasis } from '@/components'
+import { Button, ButtonGroup, DropdownIcon, ButtonSize, ButtonEmphasis, BottomSheet } from '@/components'
 import { IconPlus, IconSettings } from '@/components/Icons'
-import { colors, typography, spacing, borderRadius, breakpoints, transitionPresets, zIndex, button, header } from '@/styles/design-tokens'
+import { colors, typography, spacing, borderRadius, breakpoints, transitionPresets, zIndex, shadows, button, header } from '@/styles/design-tokens'
 import { useColors } from '@/styles/themes'
+import { useIsMobile } from '@/hooks'
 
 // =============================================================================
 // TYPES
@@ -26,12 +27,30 @@ const HEADER_HEIGHT = parseInt(header.height)
 
 interface PropertiesDrawerProps {
   open: boolean
+  isMobile: boolean
+  onClose: () => void
   children: React.ReactNode
 }
 
-function PropertiesDrawer({ open, children }: PropertiesDrawerProps) {
+function PropertiesDrawer({ open, isMobile, onClose, children }: PropertiesDrawerProps) {
   const themeColors = useColors()
 
+  // ── Mobile: use BottomSheet component ──
+  if (isMobile) {
+    return (
+      <BottomSheet
+        open={open}
+        onClose={onClose}
+        title="Properties"
+        height="half"
+        aria-label="Properties panel"
+      >
+        {children}
+      </BottomSheet>
+    )
+  }
+
+  // ── Desktop: fixed right panel ──
   return (
     <aside
       style={{
@@ -244,12 +263,19 @@ import type { ButtonProps, ButtonSize, ButtonEmphasis } from '@/components'`,
 export default function ButtonPage() {
   const sizes: ButtonSize[] = ['lg', 'md']
   const emphases: ButtonEmphasis[] = ['high', 'mid', 'low']
+  const isMobile = useIsMobile()
+  const themeColors = useColors()
 
   // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
 
-  // Properties drawer state
-  const [drawerOpen, setDrawerOpen] = useState(true)
+  // Properties drawer state — start closed, open on desktop after mount
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  // Sync drawer state with viewport: open on desktop, closed on mobile
+  useEffect(() => {
+    setDrawerOpen(!isMobile)
+  }, [isMobile])
 
   // Interactive state for property manipulation
   const [demoSize, setDemoSize] = useState<ButtonSize>('md')
@@ -286,13 +312,13 @@ export default function ButtonPage() {
       tabs={componentTabs}
       activeTab={activePageTab}
       onTabChange={(id) => setActivePageTab(id as PageTab)}
-      showPanelToggle={activePageTab === 'overview'}
+      showPanelToggle={activePageTab === 'overview' && !isMobile}
       panelToggleExpanded={drawerOpen}
       onPanelToggleClick={() => setDrawerOpen(!drawerOpen)}
     >
       {/* ========== FIXED PROPERTIES DRAWER (Col 3) ========== */}
       {activePageTab === 'overview' && (
-        <PropertiesDrawer open={drawerOpen}>
+        <PropertiesDrawer open={drawerOpen} isMobile={isMobile} onClose={() => setDrawerOpen(false)}>
           {/* Size */}
           <PropertySection title="Size">
             <div style={{ display: 'flex', gap: spacing['2xs'] }}>
@@ -390,9 +416,11 @@ export default function ButtonPage() {
         <div style={{
           display: 'flex',
           flexDirection: 'column',
-          marginRight: drawerOpen ? `${DRAWER_WIDTH + 24}px` : 0,
+          marginRight: !isMobile && drawerOpen ? `${DRAWER_WIDTH + 24}px` : 0,
           transition: 'margin-right 0.25s ease',
-          minHeight: '500px',
+          minHeight: isMobile ? '300px' : '500px',
+          // On mobile, pull the playground flush to content edges
+          ...(isMobile ? { margin: `0 -${spacing.md}` } : {}),
         }}>
           {/* Preview area — fills the center */}
           <div style={{
@@ -401,9 +429,10 @@ export default function ButtonPage() {
             alignItems: 'center',
             justifyContent: 'center',
             background: demoOnDark ? colors.brand.default : colors.surface.lightDarker,
-            borderRadius: borderRadius.lg,
-            padding: spacing['4xl'],
-            minHeight: '360px',
+            // No rounded corners on mobile — full bleed
+            borderRadius: isMobile ? 0 : borderRadius.lg,
+            padding: isMobile ? spacing.xl : spacing['4xl'],
+            minHeight: isMobile ? '200px' : '360px',
             transition: `background 0.25s ease`,
           }}>
             <div style={{ width: demoFullWidth ? '100%' : 'auto' }}>
@@ -426,9 +455,42 @@ export default function ButtonPage() {
           </div>
 
           {/* Code output — below the preview */}
-          <div style={{ marginTop: spacing.md }}>
+          <div style={{ marginTop: spacing.md, ...(isMobile ? { padding: `0 ${spacing.md}` } : {}) }}>
             <CodeBlock>{liveCode}</CodeBlock>
           </div>
+
+          {/* ── Mobile FAB: high-emphasis "Properties" button ── */}
+          {isMobile && !drawerOpen && (
+            <button
+              onClick={() => setDrawerOpen(true)}
+              aria-label="Open properties panel"
+              style={{
+                position: 'fixed',
+                bottom: spacing.xl,
+                right: spacing.md,
+                zIndex: zIndex.sticky,
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing['2xs'],
+                height: '48px',
+                padding: `0 ${spacing.md} 0 ${spacing.sm}`,
+                background: colors.brand.default,
+                color: colors.text.highEmphasis.onDark,
+                border: 'none',
+                borderRadius: borderRadius.full,
+                boxShadow: shadows.lg,
+                cursor: 'pointer',
+                ...typography.label.sm,
+                fontWeight: 600,
+                letterSpacing: '0.02em',
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 8v8M8 12h8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+              Properties
+            </button>
+          )}
         </div>
       )}
 
@@ -446,6 +508,7 @@ export default function ButtonPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Typography</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Size', 'Font Size', 'Font Weight', 'Line Height', 'Letter Spacing']}
                 rows={sizes.map(size => [
                   <code key={size}>{size}</code>,
@@ -461,6 +524,7 @@ export default function ButtonPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Spacing & Dimensions</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Size', 'Height', 'Min Width', 'Padding X', 'Padding Y', 'Gap']}
                 rows={sizes.map(size => [
                   <code key={size}>{size}</code>,
@@ -505,6 +569,7 @@ export default function ButtonPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Colors — High Emphasis</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['State', 'Background', 'Text', 'Border']}
                 rows={[
                   ['Enabled',
@@ -531,6 +596,7 @@ export default function ButtonPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Colors — Mid Emphasis</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['State', 'Background', 'Text', 'Border']}
                 rows={[
                   ['Enabled',
@@ -557,6 +623,7 @@ export default function ButtonPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Colors — Low Emphasis</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['State', 'Background', 'Text', 'Border']}
                 rows={[
                   ['Enabled',
@@ -602,6 +669,7 @@ export default function ButtonPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>ARIA Attributes</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Attribute', 'When', 'Purpose']}
                 rows={[
                   [<code>role="button"</code>, 'Always (native)', 'Implicit from <button> element'],
@@ -615,6 +683,7 @@ export default function ButtonPage() {
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Visual Requirements</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Requirement', 'Standard', 'Status']}
                 rows={[
                   ['Text contrast ratio', 'WCAG 1.4.3 — minimum 4.5:1', 'Pass'],
@@ -735,6 +804,7 @@ import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Button Props</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
                   [<code>size</code>, <code>'lg' | 'md'</code>, <code>'md'</code>, 'Size of the button'],
@@ -757,6 +827,7 @@ import { Button, ButtonGroup } from '@/components'`}</CodeBlock>
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>ButtonGroup Props</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
                   [<code>spacing</code>, <code>'default' | 'form' | 'formMobile' | 'inline'</code>, <code>'default'</code>, 'Spacing preset'],

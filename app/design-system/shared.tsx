@@ -34,6 +34,7 @@ import { useThemeSwitcher, availableThemes } from '@/styles/themes'
 const SIDEBAR_WIDTH = parseInt(sidebar.width) // 278px
 const SIDEBAR_COLLAPSED_WIDTH = 40 // toggle-only strip (no icon-only mid-state)
 const MOBILE_BREAKPOINT = parseInt(breakpoints.md) // 768px
+const DUAL_PANEL_BREAKPOINT = parseInt(breakpoints.xl) // 1280px — below this, only one panel at a time
 const HEADER_HEIGHT = parseInt(header.height) // 64px
 
 // =============================================================================
@@ -92,6 +93,7 @@ export const navSections: LeftNavSection[] = [
       { id: 'avatar', label: 'Avatar', href: '/components/avatar' },
       { id: 'badge', label: 'Badge', href: '/components/badge' },
       { id: 'banner', label: 'Banner', href: '/components/banner' },
+      { id: 'bottom-sheet', label: 'Bottom Sheet', href: '/components/bottom-sheet' },
       { id: 'brand-banner', label: 'Brand Banner', href: '/components/brand-banner' },
       { id: 'button', label: 'Button', href: '/components/button' },
       { id: 'checkbox', label: 'Checkbox', href: '/components/checkbox' },
@@ -171,6 +173,9 @@ export const sharedStyles = {
   contentHidden: {
     marginLeft: 0,
     maxWidth: '100%',
+    padding: `${spacing.md} ${spacing.md}`,
+    background: colors.surface.light,
+    minHeight: '100vh',
   },
 
   headerWrapper: {
@@ -203,6 +208,10 @@ export const sharedStyles = {
     marginTop: spacing.xl,
     borderBottom: 'none',
     paddingBottom: '0',
+    overflowX: 'auto' as const,
+    WebkitOverflowScrolling: 'touch',
+    scrollbarWidth: 'none' as const,
+    msOverflowStyle: 'none' as const,
   },
 
   tab: {
@@ -217,6 +226,8 @@ export const sharedStyles = {
     marginBottom: '-1px',
     textDecoration: 'none',
     outline: 'none',
+    whiteSpace: 'nowrap' as const,
+    flexShrink: 0,
   },
 
   tabActive: {
@@ -526,6 +537,20 @@ export function StyleguideLayout({
   // eslint-disable-next-line react-hooks/exhaustive-deps -- state setters are stable
   }, [])
 
+  // On narrow screens (<1280px), only one side panel at a time.
+  // Enforce: if both are open, collapse the sidebar (properties wins).
+  useEffect(() => {
+    if (
+      panelToggleExpanded &&
+      !sidebarCollapsed &&
+      !isMobile &&
+      typeof window !== 'undefined' &&
+      window.innerWidth < DUAL_PANEL_BREAKPOINT
+    ) {
+      setSidebarCollapsed(true)
+    }
+  }, [panelToggleExpanded, sidebarCollapsed, isMobile])
+
   const handleCollapseChange = useCallback((collapsed: boolean) => {
     setSidebarCollapsed(collapsed)
   }, [])
@@ -544,7 +569,7 @@ export function StyleguideLayout({
   const pageBg = useDarkCanvas ? colors.surface.dark : colors.surface.light
 
   return (
-    <div style={{ ...sharedStyles.page, backgroundColor: pageBg, flexDirection: 'column' }}>
+    <div style={{ ...sharedStyles.page, backgroundColor: pageBg, flexDirection: 'column', overflowX: 'hidden' }}>
       {/* App Header - full width, fixed at top */}
       <Header
         variant="full"
@@ -585,6 +610,8 @@ export function StyleguideLayout({
           bottom: spacing.sm,
           height: `calc(100vh - ${HEADER_HEIGHT}px - ${spacing.sm})`,
           zIndex: zIndex.header,
+          // On mobile, hide the collapsed sidebar strip entirely
+          ...(isMobile && sidebarCollapsed ? { display: 'none' } : {}),
         }}
       />
 
@@ -597,34 +624,6 @@ export function StyleguideLayout({
         }}
         data-content
       >
-        {/* Mobile menu toggle */}
-        {isMobile && sidebarCollapsed && (
-          <button
-            type="button"
-            onClick={() => setSidebarCollapsed(false)}
-            aria-label="Open navigation"
-            style={{
-              position: 'fixed',
-              top: spacing.sm,
-              left: spacing.sm,
-              zIndex: zIndex.header - 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: spacing['3xl'],
-              height: spacing['3xl'],
-              borderRadius: borderRadius.sm,
-              border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-              background: colors.surface.light,
-              cursor: 'pointer',
-              color: colors.text.highEmphasis.onLight,
-              boxShadow: shadows.sm,
-            }}
-          >
-            <IconSidebarOpen size={20} />
-          </button>
-        )}
-
         {/* Header — plain title/description for all themes (unified format) */}
         <div style={sharedStyles.headerWrapper}>
           <header style={sharedStyles.header}>
