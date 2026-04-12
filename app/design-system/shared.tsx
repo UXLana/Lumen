@@ -530,49 +530,6 @@ export function StyleguideLayout({
     }
   }, [isMobile])
 
-  // Logo — expanded state
-  const logoElement = (
-    <div>
-      <p style={{
-        fontSize: '10px',
-        fontWeight: 600,
-        letterSpacing: '0.8px',
-        textTransform: 'uppercase' as const,
-        color: colors.text.lowEmphasis.onLight,
-        margin: '0 0 2px 0',
-        fontFamily: fontFamilies.body,
-      }}>
-        LUMEN
-      </p>
-      <Link href="/" style={{
-        ...typography.heading.h5,
-        color: colors.text.highEmphasis.onLight,
-        marginBottom: '4px',
-        textDecoration: 'none',
-        display: 'block',
-      }}>
-        Build it right.
-      </Link>
-      <p style={{
-        ...typography.body.sm,
-        color: colors.text.lowEmphasis.onLight,
-        margin: 0,
-      }}>v1.0.0</p>
-    </div>
-  )
-
-  // Logo — collapsed state (just the P mark)
-  const collapsedLogoElement = (
-    <Link href="/" style={{ textDecoration: 'none', display: 'block', textAlign: 'center' }}>
-      <span style={{
-        ...typography.heading.h4,
-        color: colors.brand.default,
-      }}>
-        L
-      </span>
-    </Link>
-  )
-
   // Detect dark themes: used to choose the page background surface.
   // Dark themes: page bg uses surface.dark (darkest). Light themes: page bg uses surface.light.
   const useDarkCanvas = themeName.includes('Dark') || themeName.includes('Night') || themeName.includes('dark')
@@ -584,6 +541,9 @@ export function StyleguideLayout({
       <Header
         variant="full"
         sticky
+        showNavToggle
+        navToggleExpanded={!sidebarCollapsed}
+        onNavToggleClick={() => setSidebarCollapsed((v) => !v)}
         userAvatar={<Avatar name="Lana Holston" size="sm" color={2} />}
         userName="Lana Holston"
         showNotifications
@@ -598,13 +558,10 @@ export function StyleguideLayout({
       <div style={{ display: 'flex', flex: 1, position: 'relative' }}>
       {/* Segmented LeftNav — each section in its own card */}
       <LeftNavSegmented
-        logo={logoElement}
-        collapsedLogo={collapsedLogoElement}
         sections={sections}
         activeItemId={activeId}
         collapsed={sidebarCollapsed}
         onCollapseChange={handleCollapseChange}
-        showCollapseToggle
         mobileBehavior="drawer"
         mobileOpen={isMobile && !sidebarCollapsed}
         onMobileClose={() => setSidebarCollapsed(true)}
