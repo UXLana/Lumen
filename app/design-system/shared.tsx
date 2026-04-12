@@ -569,10 +569,10 @@ export function StyleguideLayout({
         onItemClick={handleItemClick}
         style={{
           position: 'fixed',
-          top: `calc(${HEADER_HEIGHT}px + ${spacing.sm})`,
+          top: `${HEADER_HEIGHT}px`,
           left: spacing.sm,
           bottom: spacing.sm,
-          height: `calc(100vh - ${HEADER_HEIGHT}px - ${spacing.sm} - ${spacing.sm})`,
+          height: `calc(100vh - ${HEADER_HEIGHT}px - ${spacing.sm})`,
           zIndex: zIndex.header,
         }}
       />
