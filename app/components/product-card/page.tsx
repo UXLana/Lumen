@@ -465,7 +465,7 @@ import type { ProductCardProps, MarketBadge } from '@/components'`}</CodeBlock>
                   ['Selection', 'Dedicated checkbox with role="checkbox" and aria-checked — always visible, not hover-gated'],
                   ['Badge groups', 'Wrapped in role="group" with descriptive aria-label per category'],
                   ['Keyboard', 'Tab to card, Enter to navigate, Tab to checkbox, Space to toggle'],
-                  ['Screen reader', 'Full product'summary in aria-label including active market codes'],
+                  ['Screen reader', 'Full product summary in aria-label including active market codes'],
                   ['Contrast', 'All text meets WCAG AA 4.5:1 minimum. Badge text uses #767676 on #E5E5E5 (4.54:1)'],
                 ]}
               />

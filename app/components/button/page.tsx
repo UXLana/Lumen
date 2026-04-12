@@ -451,7 +451,7 @@ export default function ButtonPage() {
                   <code key={size}>{size}</code>,
                   <TokenValue key={`fs-${size}`} token={`button.typography.${size}.fontSize`} value={button.typography[size].fontSize} />,
                   <TokenValue key={`fw-${size}`} token={`button.typography.${size}.fontWeight`} value={button.typography[size].fontWeight.toString()} />,
-                  <TokenValue key={`lh-${size}`} token={`button.typography.${size}.lineHeight`} value={button.typography[size].lineHeight} />,
+                  <TokenValue key={`lh-${size}`} token={`button.typography.${size}.lineHeight`} value={String(button.typography[size].lineHeight)} />,
                   <TokenValue key={`ls-${size}`} token={`button.typography.${size}.letterSpacing`} value={button.typography[size].letterSpacing} />,
                 ])}
               />

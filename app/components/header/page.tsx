@@ -14,7 +14,7 @@ import {
   ComponentDocumentation,
   ComponentDocData,
 } from '../../design-system/shared'
-import { Header, SegmentedControl, Avatar, type HeaderVariant } from '@/components'
+import { Header, SegmentedControl, Avatar } from '@/components'
 import { colors, typography, spacing, header as headerTokens } from '@/styles/design-tokens'
 
 // =============================================================================
@@ -33,18 +33,18 @@ const headerDocData: ComponentDocData = {
   importStatement: `import { Header, Avatar } from '@/components'\nimport type { HeaderProps } from '@/components'`,
   description: 'App header with LUMEN logo on the left and a right-side toolbar with theme switcher, notifications, and avatar. Supports full-width and rounded variants with mobile responsiveness.',
   props: [
-    { name: 'variant', type: "'full' | 'rounded'", defaultValue: "'full'", description: 'Full-width with bottom border, or inset with border-radius and solid surface background' },
-    { name: 'sticky', type: 'boolean', defaultValue: 'false', description: 'Pin header to top of viewport' },
+    { name: 'variant', type: "'full' | 'rounded'", default: "'full'", description: 'Full-width with bottom border, or inset with border-radius and solid surface background' },
+    { name: 'sticky', type: 'boolean', default: 'false', description: 'Pin header to top of viewport' },
     { name: 'userAvatar', type: 'ReactNode', description: 'Avatar element rendered in the toolbar (e.g. <Avatar name="Jane" size="sm" />)' },
     { name: 'userName', type: 'string', description: 'User name for avatar aria-label' },
     { name: 'onAvatarClick', type: '() => void', description: 'Callback when avatar area is clicked' },
     { name: 'onNotificationsClick', type: '() => void', description: 'Callback when notifications bell is clicked' },
-    { name: 'notificationCount', type: 'number', defaultValue: '0', description: 'Badge count on bell icon (0 hides badge)' },
-    { name: 'showNotifications', type: 'boolean', defaultValue: 'true', description: 'Whether to show the notifications bell' },
-    { name: 'showThemeSwitcher', type: 'boolean', defaultValue: 'true', description: 'Whether to show the theme switcher' },
-    { name: 'showNavToggle', type: 'boolean', defaultValue: 'false', description: 'Show a navigation toggle button to the left of the logo. Desktop only.' },
+    { name: 'notificationCount', type: 'number', default: '0', description: 'Badge count on bell icon (0 hides badge)' },
+    { name: 'showNotifications', type: 'boolean', default: 'true', description: 'Whether to show the notifications bell' },
+    { name: 'showThemeSwitcher', type: 'boolean', default: 'true', description: 'Whether to show the theme switcher' },
+    { name: 'showNavToggle', type: 'boolean', default: 'false', description: 'Show a navigation toggle button to the left of the logo. Desktop only.' },
     { name: 'onNavToggleClick', type: '() => void', description: 'Called when the nav toggle is clicked. Consumers own sidebar state.' },
-    { name: 'navToggleExpanded', type: 'boolean', defaultValue: 'true', description: 'Current expanded state of the nav. Drives the icon swap and aria-expanded.' },
+    { name: 'navToggleExpanded', type: 'boolean', default: 'true', description: 'Current expanded state of the nav. Drives the icon swap and aria-expanded.' },
     { name: 'navToggleLabel', type: 'string', description: 'Override the nav toggle\'s accessible label. Defaults to "Collapse/Expand navigation" based on state.' },
     { name: 'actions', type: 'ReactNode', description: 'Additional actions slot rendered before toolbar icons' },
     { name: 'style', type: 'React.CSSProperties', description: 'Custom styles for the root element' },
@@ -113,7 +113,7 @@ const headerDocData: ComponentDocData = {
 
 export default function HeaderPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
-  const [demoVariant, setDemoVariant] = useState<HeaderVariant>('full')
+  const [demoVariant, setDemoVariant] = useState<'full' | 'rounded'>('full')
   const [demoSticky, setDemoSticky] = useState(false)
   const [demoShowNotifications, setDemoShowNotifications] = useState(true)
   const [demoShowTheme, setDemoShowTheme] = useState(true)
@@ -231,7 +231,7 @@ export default function HeaderPage() {
                           { id: 'rounded', label: 'Rounded' },
                         ]}
                         value={demoVariant}
-                        onChange={(id) => setDemoVariant(id as HeaderVariant)}
+                        onChange={(id) => setDemoVariant(id as 'full' | 'rounded')}
                         size="sm"
                       />
                     </div>

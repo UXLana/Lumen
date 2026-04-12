@@ -120,6 +120,7 @@ export default function AmountPage() {
     <StyleguideLayout
       title="Amount"
       description="Currency and numeric value display with tabular alignment and intelligent accessible labels."
+      activeId="amount"
       tabs={componentTabs}
       activeTab={activePageTab}
       onTabChange={(id) => setActivePageTab(id as PageTab)}
@@ -127,7 +128,7 @@ export default function AmountPage() {
       {activePageTab === 'overview' && (
         <>
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.h2}>Preview</h2>
+            <h2 style={sharedStyles.sectionTitle}>Preview</h2>
             <div
               style={{
                 padding: spacing['2xl'],
@@ -178,7 +179,7 @@ export default function AmountPage() {
           </section>
 
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.h2}>Sizes</h2>
+            <h2 style={sharedStyles.sectionTitle}>Sizes</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, alignItems: 'flex-start' }}>
               <Amount value={1234.56} size="xs" />
               <Amount value={1234.56} size="sm" />
@@ -190,7 +191,7 @@ export default function AmountPage() {
           </section>
 
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.h2}>Variants</h2>
+            <h2 style={sharedStyles.sectionTitle}>Variants</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, alignItems: 'flex-start' }}>
               <Amount value={500} variant="default" size="lg" />
               <Amount value={500} variant="credit" size="lg" />
@@ -201,7 +202,7 @@ export default function AmountPage() {
           </section>
 
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.h2}>International</h2>
+            <h2 style={sharedStyles.sectionTitle}>International</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, alignItems: 'flex-start' }}>
               <Amount value={5000} currency="EUR" locale="de-DE" size="lg" />
               <Amount value={5000} currency="GBP" locale="en-GB" size="lg" />
@@ -214,18 +215,14 @@ export default function AmountPage() {
       {activePageTab === 'implementation' && (
         <>
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.h2}>Import</h2>
-            <CodeBlock
-              code={`import { Amount } from '@/components'
-import type { AmountProps, AmountSize, AmountVariant } from '@/components'`}
-              language="tsx"
-            />
+            <h2 style={sharedStyles.sectionTitle}>Import</h2>
+            <CodeBlock>{`import { Amount } from '@/components'
+import type { AmountProps, AmountSize, AmountVariant } from '@/components'`}</CodeBlock>
           </section>
 
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.h2}>Basic usage</h2>
-            <CodeBlock
-              code={`// Default: USD, medium size, auto sign
+            <h2 style={sharedStyles.sectionTitle}>Basic usage</h2>
+            <CodeBlock>{`// Default: USD, medium size, auto sign
 <Amount value={1234.56} />
 
 // Large balance hero
@@ -235,15 +232,12 @@ import type { AmountProps, AmountSize, AmountVariant } from '@/components'`}
 <Amount value={250.00} variant="credit" />
 
 // Debit (outgoing) — error red
-<Amount value={-89.42} variant="debit" />`}
-              language="tsx"
-            />
+<Amount value={-89.42} variant="debit" />`}</CodeBlock>
           </section>
 
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.h2}>In a data table</h2>
-            <CodeBlock
-              code={`<table>
+            <h2 style={sharedStyles.sectionTitle}>In a data table</h2>
+            <CodeBlock>{`<table>
   <tbody>
     {transactions.map((tx) => (
       <tr key={tx.id}>
@@ -254,19 +248,14 @@ import type { AmountProps, AmountSize, AmountVariant } from '@/components'`}
       </tr>
     ))}
   </tbody>
-</table>`}
-              language="tsx"
-            />
+</table>`}</CodeBlock>
           </section>
 
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.h2}>Accounting format</h2>
-            <CodeBlock
-              code={`// Parentheses around negatives — standard bookkeeping style
+            <h2 style={sharedStyles.sectionTitle}>Accounting format</h2>
+            <CodeBlock>{`// Parentheses around negatives — standard bookkeeping style
 <Amount value={-1240.50} sign="accounting" />
-// Renders: (1,240.50)`}
-              language="tsx"
-            />
+// Renders: (1,240.50)`}</CodeBlock>
           </section>
         </>
       )}

@@ -1132,7 +1132,7 @@ export function buildColors(
 
   // Apply color overrides last
   if (options.colorOverrides) {
-    return deepMerge(colors, options.colorOverrides as DeepPartial<Record<string, unknown>>) as ThemeColors;
+    return deepMerge(colors as unknown as Record<string, unknown>, options.colorOverrides as DeepPartial<Record<string, unknown>>) as unknown as ThemeColors;
   }
 
   return colors;
@@ -1157,7 +1157,7 @@ export function buildTheme(
   // --- Typography (personality preset + overrides) ---
   const typographyBase = TYPOGRAPHY_PRESETS[personality];
   const typography = options.typography
-    ? deepMerge(typographyBase, options.typography as DeepPartial<Record<string, unknown>>) as ThemeTypography
+    ? deepMerge(typographyBase as unknown as Record<string, unknown>, options.typography as DeepPartial<Record<string, unknown>>) as unknown as ThemeTypography
     : typographyBase;
 
   // --- Spacing (personality preset + overrides) ---
