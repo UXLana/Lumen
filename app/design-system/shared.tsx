@@ -537,34 +537,46 @@ export function StyleguideLayout({
   // eslint-disable-next-line react-hooks/exhaustive-deps -- state setters are stable
   }, [])
 
-  // On narrow screens (<1280px), auto-collapse sidebar when properties panel opens.
-  // Only triggers when panelToggleExpanded changes to true — not continuously.
+  // Track whether the panel was open before the sidebar was expanded,
+  // so we can restore it after a nav item is selected.
+  const panelWasOpenBeforeSidebar = useRef(false)
+
+  const isNarrowScreen = () =>
+    typeof window !== 'undefined' && window.innerWidth < DUAL_PANEL_BREAKPOINT
+
+  // When properties panel opens on narrow screen → collapse sidebar
   const prevPanelExpanded = useRef(panelToggleExpanded)
   useEffect(() => {
     const justOpened = panelToggleExpanded && !prevPanelExpanded.current
     prevPanelExpanded.current = panelToggleExpanded
-    if (
-      justOpened &&
-      !sidebarCollapsed &&
-      !isMobile &&
-      typeof window !== 'undefined' &&
-      window.innerWidth < DUAL_PANEL_BREAKPOINT
-    ) {
+    if (justOpened && !sidebarCollapsed && !isMobile && isNarrowScreen()) {
       setSidebarCollapsed(true)
     }
   }, [panelToggleExpanded, sidebarCollapsed, isMobile])
 
   const handleCollapseChange = useCallback((collapsed: boolean) => {
+    // Expanding sidebar on narrow screen → close properties panel, remember it was open
+    if (!collapsed && panelToggleExpanded && !isMobile && isNarrowScreen()) {
+      panelWasOpenBeforeSidebar.current = true
+      onPanelToggleClick?.() // close properties
+    }
     setSidebarCollapsed(collapsed)
-  }, [])
+  }, [panelToggleExpanded, isMobile, onPanelToggleClick])
 
   const handleItemClick = useCallback((_item: LeftNavItem) => {
-    // Let Next.js <Link> handle navigation (client-side, no full reload)
+    // Close sidebar after selection
+    setSidebarCollapsed(true)
+    // On narrow screens, restore properties panel if it was open before
+    if (!isMobile && isNarrowScreen() && panelWasOpenBeforeSidebar.current) {
+      panelWasOpenBeforeSidebar.current = false
+      // Small delay so sidebar collapses first
+      requestAnimationFrame(() => onPanelToggleClick?.())
+    }
     // Close mobile drawer on navigation
     if (isMobile) {
       setSidebarCollapsed(true)
     }
-  }, [isMobile])
+  }, [isMobile, onPanelToggleClick])
 
   // Detect dark themes: used to choose the page background surface.
   // Dark themes: page bg uses surface.dark (darkest). Light themes: page bg uses surface.light.
