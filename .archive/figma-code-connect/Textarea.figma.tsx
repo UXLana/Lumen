@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Textarea } from './Textarea'
 
 /**
- * Code Connect mapping: Figma Textarea → Prism Textarea
+ * Code Connect mapping: Figma Textarea → Lumen Textarea
  *
  * Figma variant axes (from Textarea 40:63743):
  *   - Height: Labeled, Small (36px), Default (40px), Large (48px)

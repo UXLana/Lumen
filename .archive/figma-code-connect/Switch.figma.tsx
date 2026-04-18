@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Switch } from './Switch'
 
 /**
- * Code Connect mapping: Figma Switch → Prism Switch
+ * Code Connect mapping: Figma Switch → Lumen Switch
  *
  * Figma variant axes (from Switch 59:32736):
  *   - State: On, Off, Disabled On, Disabled Off

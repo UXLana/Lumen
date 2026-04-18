@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Link } from './Link'
 
 /**
- * Code Connect mapping: Figma Link → Prism Link
+ * Code Connect mapping: Figma Link → Lumen Link
  *
  * Figma variant axes (from Link 40:65943):
  *   - Size: Small, Medium, Large

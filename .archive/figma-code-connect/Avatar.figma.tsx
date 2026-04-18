@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Avatar } from './Avatar'
 
 /**
- * Code Connect mapping: Figma Avatar → Prism Avatar
+ * Code Connect mapping: Figma Avatar → Lumen Avatar
  *
  * Figma variant axes:
  *   - size: XL (96), Large (72), Medium (40), Small (32), XS (24)

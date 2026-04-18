@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Button } from './Button'
 
 /**
- * Code Connect mapping: Figma Button → Prism Button
+ * Code Connect mapping: Figma Button → Lumen Button
  *
  * Figma variant axes:
  *   - size: Large, Medium (maps to lg, md)

@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Chip } from './Chip'
 
 /**
- * Code Connect mapping: Figma Chip → Prism Chip
+ * Code Connect mapping: Figma Chip → Lumen Chip
  *
  * Figma variant axes (from Chip 32:36400):
  *   - State: Enabled, Hover, Disabled, Dragged, Error

@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { AssistiveMessage } from './AssistiveMessage'
 
 /**
- * Code Connect mapping: Figma Assistive message → Prism AssistiveMessage
+ * Code Connect mapping: Figma Assistive message → Lumen AssistiveMessage
  *
  * Figma variant axes (from Assistive message 32:10882):
  *   - Type: Assistive, Disabled, Error, Error overflow, Warning, Success, Info

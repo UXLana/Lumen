@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Select } from './Select'
 
 /**
- * Code Connect mapping: Figma Select → Prism Select
+ * Code Connect mapping: Figma Select → Lumen Select
  *
  * Figma variant axes (from Select component 58:16233):
  *   - Height: Small (36px), Default (40px), Large (48px), Labeled

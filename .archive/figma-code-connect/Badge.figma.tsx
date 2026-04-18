@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Badge } from './Badge'
 
 /**
- * Code Connect mapping: Figma Badge → Prism Badge
+ * Code Connect mapping: Figma Badge → Lumen Badge
  *
  * Note: Figma file doesn't have a standalone Badge componentSet
  * in the search results. Badges appear within other components

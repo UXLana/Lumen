@@ -18,7 +18,10 @@
  */
 
 import React from 'react'
-import { Button, Input, Amount, Banner } from '@/components'
+import { Button } from '../Button'
+import { Input } from '../Input'
+import { Amount } from '../Amount'
+import { Banner } from '../Banner'
 import {
   colors,
   spacing,
@@ -379,7 +382,7 @@ export function AmountConfirmDialog({
                 label={resolvedLabel}
                 placeholder={verificationMode === 'type-amount' ? expectedFormatted : verificationWord}
                 value={typedValue}
-                onChange={(v) => setTypedValue(v)}
+                onChange={(v: string) => setTypedValue(v)}
                 fullWidth
                 autoComplete="off"
                 aria-describedby={statusId}

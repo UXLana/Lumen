@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { ListItem } from './ListItem'
 
 /**
- * Code Connect mapping: Figma List item → Prism ListItem
+ * Code Connect mapping: Figma List item → Lumen ListItem
  *
  * Figma variant axes (from List item 57:69042):
  *   - State: Enabled, Hover, Pressed, Focused, Disabled, Selected

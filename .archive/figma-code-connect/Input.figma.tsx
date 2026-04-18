@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Input } from './Input'
 
 /**
- * Code Connect mapping: Figma Input → Prism Input
+ * Code Connect mapping: Figma Input → Lumen Input
  *
  * Figma variant axes:
  *   - Height: Labeled, Small (36px), Default (40px), Large (48px)

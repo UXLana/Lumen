@@ -2,10 +2,10 @@ import figma from '@figma/code-connect'
 import { Banner } from './Banner'
 
 /**
- * Code Connect mapping: Figma Assistive message → Prism Banner
+ * Code Connect mapping: Figma Assistive message → Lumen Banner
  *
  * Note: The Figma "Assistive message" component (32:10882) maps
- * closest to Prism's Banner component for inline feedback messages.
+ * closest to Lumen's Banner component for inline feedback messages.
  * Figma variant axes:
  *   - Type: Assistive, Disabled, Error, Error overflow, Warning, Success, Info
  */

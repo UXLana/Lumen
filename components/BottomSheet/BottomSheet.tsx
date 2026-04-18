@@ -11,7 +11,7 @@ import {
   transitionPresets,
 } from '@/styles/design-tokens'
 import { useColors } from '@/styles/themes'
-import { usePrefersReducedMotion } from '@/hooks'
+import { usePrefersReducedMotion } from '../../hooks'
 
 // =============================================================================
 // TYPES

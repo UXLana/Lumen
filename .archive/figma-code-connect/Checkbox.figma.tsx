@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Checkbox } from './Checkbox'
 
 /**
- * Code Connect mapping: Figma Checkbox Item → Prism Checkbox
+ * Code Connect mapping: Figma Checkbox Item → Lumen Checkbox
  *
  * Figma variant axes (from Checkbox Item 32:31409):
  *   - State: Enabled, Hover, Active, Focused, Disabled, Error

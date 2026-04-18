@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Radio } from './Radio'
 
 /**
- * Code Connect mapping: Figma Radio item → Prism Radio
+ * Code Connect mapping: Figma Radio item → Lumen Radio
  *
  * Figma variant axes (from Radio item 58:6268):
  *   - State: Enabled, Hover, Active, Focused, Disabled, Error

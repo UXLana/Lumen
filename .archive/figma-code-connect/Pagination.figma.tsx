@@ -2,7 +2,7 @@ import figma from '@figma/code-connect'
 import { Pagination } from './Pagination'
 
 /**
- * Code Connect mapping: Figma Paginator → Prism Pagination
+ * Code Connect mapping: Figma Paginator → Lumen Pagination
  *
  * Figma variant axes (from Paginator 57:91565):
  *   - Type: Default, Compact, Mini
