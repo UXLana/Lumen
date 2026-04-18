@@ -1,18 +1,22 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, TweakPanel, TweakField, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
+import React, { useState, useEffect } from 'react'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData, PropertiesDrawer, PropertySection, MobileFab, DRAWER_WIDTH } from '../../design-system/shared'
 import { Badge, BadgeVariant, BadgeColor, BadgeSize } from '@/components'
 import { IconCheck, IconAlertCircle, IconInfo } from '@/components/Icons'
-import { colors, typography, spacing, borderRadius } from '@/styles/design-tokens'
-
-const BADGE_COMPONENT_PATH = 'components/Badge/Badge.tsx'
+import { colors, typography, spacing, borderRadius, breakpoints } from '@/styles/design-tokens'
+import { useColors } from '@/styles/themes'
+import { useIsMobile } from '@/hooks'
 
 // =============================================================================
-// PAGE COMPONENT
+// TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation' | 'documentation'
+type PageTab = 'overview' | 'specs' | 'implementation' | 'documentation'
+
+// =============================================================================
+// DOC DATA
+// =============================================================================
 
 const badgeDocData: ComponentDocData = {
   displayName: 'Badge',
@@ -52,7 +56,6 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
     'Always pair color with an icon for accessibility - do not rely on color alone.',
     'Keep badge text concise - ideally 1-2 words or a short number.',
   ],
-  // ── Usage Intelligence ──
   whenToUse: [
     'Static, read-only status indicators on data rows or cards (e.g., "Active", "Pending", "Expired").',
     'Categorical labels that help users scan and identify item types at a glance.',
@@ -73,18 +76,32 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
     {
       title: 'Category label on a card',
       description: 'Use subtle variant for secondary classification labels that should not compete with primary content.',
-      code: `<Badge variant="neutral" appearance="subtle">\n  {item.category}\n</Badge>`,
+      code: `<Badge variant="subtle" color="neutral">\n  {item.category}\n</Badge>`,
     },
   ],
 }
+
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
 
 export default function BadgePage() {
   const variants: BadgeVariant[] = ['filled', 'outlined', 'subtle']
   const badgeColors: BadgeColor[] = ['neutral', 'success', 'warning', 'error', 'info', 'brand']
   const sizes: BadgeSize[] = ['sm', 'md']
+  const isMobile = useIsMobile()
+  const themeColors = useColors()
 
   // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
+
+  // Properties drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  // Sync drawer state with viewport
+  useEffect(() => {
+    setDrawerOpen(!isMobile)
+  }, [isMobile])
 
   // Interactive playground state
   const [demoVariant, setDemoVariant] = useState<BadgeVariant>('filled')
@@ -92,217 +109,9 @@ export default function BadgePage() {
   const [demoSize, setDemoSize] = useState<BadgeSize>('sm')
   const [demoShowIcon, setDemoShowIcon] = useState(false)
 
-  // Tweak mode state
-  const [tweakMode, setTweakMode] = useState(false)
-  const [componentSource, setComponentSource] = useState<string>('')
-  const [sourceVersion, setSourceVersion] = useState(0)
-
-  // Live tweak overrides (applied to preview without saving)
-  const [tweakOverrides, setTweakOverrides] = useState({
-    borderRadius: '9999px',
-    smPaddingY: '2',
-    smPaddingX: '8',
-    mdPaddingY: '4',
-    mdPaddingX: '10',
-    fontWeight: '500',
-    borderWidth: '1',
-  })
-
-  // Fetch component source and parse current values from it
-  const fetchSource = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/tweak/read?path=${BADGE_COMPONENT_PATH}`)
-      if (res.ok) {
-        const data = await res.json()
-        setComponentSource(data.source)
-
-        // Parse current values from the source
-        const src = data.source as string
-
-        // Border radius — match borderRadius: borderRadius.full or borderRadius: '...'
-        const brMatch = src.match(/borderRadius:\s*(?:borderRadius\.full|'([^']*)')/)
-        if (brMatch) {
-          setTweakOverrides(prev => ({
-            ...prev,
-            borderRadius: brMatch[1] || '9999px',
-          }))
-        }
-
-        // SM padding — match first padding in sizeConfig sm block
-        const smSection = src.match(new RegExp("sm:\\s*\\{[^}]*padding:\\s*[`']([^`']*)[`']", "s"))
-        if (smSection) {
-          const padMatch = smSection[1].match(/(\d+)px\s+(?:\$\{spacing\[2\]\}|(\d+)px)/)
-          if (padMatch) {
-            setTweakOverrides(prev => ({
-              ...prev,
-              smPaddingY: padMatch[1],
-              ...(padMatch[2] ? { smPaddingX: padMatch[2] } : {}),
-            }))
-          }
-        }
-
-        // MD padding
-        const mdSection = src.match(new RegExp("md:\\s*\\{[^}]*padding:\\s*[`']([^`']*)[`']", "s"))
-        if (mdSection) {
-          const padMatch = mdSection[1].match(/(?:\$\{spacing\[1\]\}|(\d+)px)\s+(\d+)px/)
-          if (padMatch) {
-            setTweakOverrides(prev => ({
-              ...prev,
-              ...(padMatch[1] ? { mdPaddingY: padMatch[1] } : {}),
-              mdPaddingX: padMatch[2],
-            }))
-          }
-        }
-
-        // Border width
-        const bwMatch = src.match(/border:\s*`(\d+)px solid/)
-        if (bwMatch) {
-          setTweakOverrides(prev => ({ ...prev, borderWidth: bwMatch[1] }))
-        }
-      }
-    } catch {
-      // silently handle
-    }
-  }, [])
-
-  useEffect(() => {
-    fetchSource()
-  }, [fetchSource, sourceVersion])
-
-  // Build tweak fields for the TweakPanel
-  const tweakFields: TweakField[] = [
-    {
-      label: 'Border Radius',
-      value: tweakOverrides.borderRadius,
-      type: 'text',
-      group: 'Shape',
-    },
-    {
-      label: 'Border Width',
-      value: tweakOverrides.borderWidth,
-      type: 'number',
-      unit: 'px',
-      group: 'Shape',
-    },
-    {
-      label: 'Padding Y',
-      value: tweakOverrides.smPaddingY,
-      type: 'number',
-      unit: 'px',
-      group: 'Size: SM',
-    },
-    {
-      label: 'Padding X',
-      value: tweakOverrides.smPaddingX,
-      type: 'number',
-      unit: 'px',
-      group: 'Size: SM',
-    },
-    {
-      label: 'Padding Y',
-      value: tweakOverrides.mdPaddingY,
-      type: 'number',
-      unit: 'px',
-      group: 'Size: MD',
-    },
-    {
-      label: 'Padding X',
-      value: tweakOverrides.mdPaddingX,
-      type: 'number',
-      unit: 'px',
-      group: 'Size: MD',
-    },
-    {
-      label: 'Font Weight',
-      value: tweakOverrides.fontWeight,
-      type: 'select',
-      options: ['400', '500', '600', '700'],
-      group: 'Typography',
-    },
-  ]
-
-  const handleTweakChange = (index: number, value: string) => {
-    const keys = ['borderRadius', 'borderWidth', 'smPaddingY', 'smPaddingX', 'mdPaddingY', 'mdPaddingX', 'fontWeight'] as const
-    setTweakOverrides(prev => ({ ...prev, [keys[index]]: value }))
-  }
-
-  // Save tweaks by writing full modified source
-  const handleTweakSave = async (): Promise<{ success: boolean; error?: string }> => {
-    try {
-      // Fetch fresh source
-      const readRes = await fetch(`/api/tweak/read?path=${BADGE_COMPONENT_PATH}`)
-      if (!readRes.ok) return { success: false, error: 'Could not read component' }
-      const { source } = await readRes.json()
-
-      let modified = source as string
-
-      // Replace borderRadius in baseStyles
-      modified = modified.replace(
-        /borderRadius:\s*(?:borderRadius\.\w+|'[^']*')/,
-        `borderRadius: '${tweakOverrides.borderRadius}'`
-      )
-
-      // Replace border width
-      modified = modified.replace(
-        /border:\s*`\d+px solid/g,
-        `border: \`${tweakOverrides.borderWidth}px solid`
-      )
-
-      // Replace SM padding — find the sm block in sizeConfig
-      modified = modified.replace(
-        new RegExp("(sm:\\s*\\{[^}]*padding:\\s*)[`'][^`']*[`']", "s"),
-        `$1\`${tweakOverrides.smPaddingY}px ${tweakOverrides.smPaddingX}px\``
-      )
-
-      // Replace MD padding — find the md block in sizeConfig
-      modified = modified.replace(
-        new RegExp("(md:\\s*\\{[^}]*padding:\\s*)[`'][^`']*[`']", "s"),
-        `$1\`${tweakOverrides.mdPaddingY}px ${tweakOverrides.mdPaddingX}px\``
-      )
-
-      // Replace font weight
-      const weightMap: Record<string, string> = {
-        '400': 'fontWeights.regular',
-        '500': 'fontWeights.medium',
-        '600': 'fontWeights.semibold',
-        '700': 'fontWeights.bold',
-      }
-      modified = modified.replace(
-        /fontWeight:\s*fontWeights\.\w+/,
-        `fontWeight: ${weightMap[tweakOverrides.fontWeight] || tweakOverrides.fontWeight}`
-      )
-
-      // Write back
-      const writeRes = await fetch('/api/tweak/source', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ componentPath: BADGE_COMPONENT_PATH, source: modified }),
-      })
-
-      if (!writeRes.ok) {
-        const data = await writeRes.json()
-        return { success: false, error: data.error }
-      }
-
-      setSourceVersion(v => v + 1)
-      return { success: true }
-    } catch (err: unknown) {
-      return { success: false, error: err instanceof Error ? err.message : 'Save failed' }
-    }
-  }
-
-  // Build live preview style overrides
-  const previewStyleOverrides: React.CSSProperties = tweakMode ? {
-    borderRadius: tweakOverrides.borderRadius,
-    ...(demoSize === 'sm'
-      ? { padding: `${tweakOverrides.smPaddingY}px ${tweakOverrides.smPaddingX}px` }
-      : { padding: `${tweakOverrides.mdPaddingY}px ${tweakOverrides.mdPaddingX}px` }),
-    fontWeight: Number(tweakOverrides.fontWeight),
-  } : {}
-
-  // Custom tabs for component pages
   const componentTabs = [
-    { id: 'overview', label: 'Overview' },
+    { id: 'overview', label: 'Playground' },
+    { id: 'specs', label: 'Specs' },
     { id: 'implementation', label: 'Implementation' },
     { id: 'documentation', label: 'Documentation' },
   ]
@@ -317,6 +126,26 @@ export default function BadgePage() {
     }
   }
 
+  const getBadgeLabel = (color: BadgeColor) => {
+    switch (color) {
+      case 'success': return 'Verified'
+      case 'error': return 'Error'
+      case 'warning': return 'Warning'
+      case 'info': return 'Info'
+      case 'brand': return 'New'
+      default: return 'Label'
+    }
+  }
+
+  // Generate live code string
+  const liveCode = `<Badge
+  variant="${demoVariant}"
+  color="${demoColor}"
+  size="${demoSize}"${demoShowIcon ? `\n  icon={<IconCheck size={12} />}` : ''}
+>
+  ${getBadgeLabel(demoColor)}
+</Badge>`
+
   return (
     <StyleguideLayout
       title="Badge"
@@ -326,201 +155,142 @@ export default function BadgePage() {
       tabs={componentTabs}
       activeTab={activePageTab}
       onTabChange={(id) => setActivePageTab(id as PageTab)}
+      showPanelToggle={activePageTab === 'overview' && !isMobile}
+      panelToggleExpanded={drawerOpen}
+      onPanelToggleClick={() => setDrawerOpen(!drawerOpen)}
     >
-      {/* ========== OVERVIEW TAB ========== */}
+      {/* ========== FIXED PROPERTIES DRAWER ========== */}
       {activePageTab === 'overview' && (
+        <PropertiesDrawer open={drawerOpen} isMobile={isMobile} onClose={() => setDrawerOpen(false)}>
+          {/* Variant */}
+          <PropertySection title="Variant">
+            <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap' }}>
+              {variants.map(v => (
+                <PillButton
+                  key={v}
+                  onClick={() => setDemoVariant(v)}
+                  isActive={demoVariant === v}
+                >
+                  {v}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
+
+          {/* Color */}
+          <PropertySection title="Color">
+            <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap' }}>
+              {badgeColors.map(c => (
+                <PillButton
+                  key={c}
+                  onClick={() => setDemoColor(c)}
+                  isActive={demoColor === c}
+                >
+                  {c}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
+
+          {/* Size */}
+          <PropertySection title="Size">
+            <div style={{ display: 'flex', gap: spacing['2xs'] }}>
+              {sizes.map(s => (
+                <PillButton
+                  key={s}
+                  onClick={() => setDemoSize(s)}
+                  isActive={demoSize === s}
+                >
+                  {s}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
+
+          {/* Options */}
+          <PropertySection title="Options">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <StyledCheckbox
+                checked={demoShowIcon}
+                onChange={setDemoShowIcon}
+                label="Show Icon"
+              />
+            </div>
+          </PropertySection>
+        </PropertiesDrawer>
+      )}
+
+      {/* ========== PLAYGROUND TAB ========== */}
+      {activePageTab === 'overview' && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          marginRight: !isMobile && drawerOpen ? `${DRAWER_WIDTH + 24}px` : 0,
+          transition: 'margin-right 0.25s ease',
+          minHeight: isMobile ? '300px' : '500px',
+          ...(isMobile ? { margin: `0 -${spacing.md}` } : {}),
+        }}>
+          {/* Preview area */}
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: colors.surface.lightDarker,
+            borderRadius: isMobile ? 0 : borderRadius.lg,
+            padding: isMobile ? spacing.xl : spacing['4xl'],
+            minHeight: isMobile ? '200px' : '360px',
+          }}>
+            <Badge
+              variant={demoVariant}
+              color={demoColor}
+              size={demoSize}
+              icon={demoShowIcon ? getIconForColor(demoColor) : undefined}
+            >
+              {getBadgeLabel(demoColor)}
+            </Badge>
+          </div>
+
+          {/* Code output */}
+          <div style={{ marginTop: spacing.md, ...(isMobile ? { padding: `0 ${spacing.md}` } : {}) }}>
+            <CodeBlock>{liveCode}</CodeBlock>
+          </div>
+
+          {/* Mobile FAB */}
+          {isMobile && !drawerOpen && (
+            <MobileFab onClick={() => setDrawerOpen(true)} />
+          )}
+        </div>
+      )}
+
+      {/* ========== SPECS TAB ========== */}
+      {activePageTab === 'specs' && (
         <>
-          {/* ========== QUICK START ========== */}
+          {/* Design Tokens */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
-            <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`// Package import
-import { Badge } from '@lumen/design-system'
-
-// Or with path alias (requires tsconfig setup)
-import { Badge } from '@/components'`}</CodeBlock>
-            </div>
-          </section>
-
-          {/* ========== INTERACTIVE PLAYGROUND ========== */}
-          <section style={sharedStyles.section}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <h2 style={{ ...sharedStyles.sectionTitle, marginBottom: 0 }}>Interactive Playground</h2>
-              <button
-                onClick={() => {
-                  setTweakMode(!tweakMode)
-                  if (!tweakMode && !componentSource) fetchSource()
-                }}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 14px',
-                  borderRadius: borderRadius.full,
-                  border: tweakMode
-                    ? `2px solid ${colors.brand.default}`
-                    : `1px solid ${colors.border.lowEmphasis.onLight}`,
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  fontFamily: typography.label.sm.fontFamily,
-                  background: tweakMode ? colors.brand.default : 'transparent',
-                  color: tweakMode ? '#FFFFFF' : colors.text.lowEmphasis.onLight,
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 20h9" />
-                  <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
-                </svg>
-                {tweakMode ? 'Tweaking' : 'Tweak'}
-              </button>
-            </div>
+            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
             <p style={sharedStyles.sectionDescription}>
-              {tweakMode
-                ? 'Adjust values below for a live preview, then save changes directly to the component file.'
-                : 'Experiment with badge properties to see how they affect the component.'}
+              Size, typography, and color values used in the Badge component. Click any token to copy it.
             </p>
 
             <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-                {/* Preview/Code with Tabs */}
-                <div>
-                  <Playground
-                    preview={
-                      <Badge
-                        variant={demoVariant}
-                        color={demoColor}
-                        size={demoSize}
-                        icon={demoShowIcon ? getIconForColor(demoColor) : undefined}
-                        style={previewStyleOverrides}
-                      >
-                        {demoColor === 'success' ? 'Verified' :
-                         demoColor === 'error' ? 'Error' :
-                         demoColor === 'warning' ? 'Warning' :
-                         demoColor === 'info' ? 'Info' :
-                         demoColor === 'brand' ? 'New' : 'Label'}
-                      </Badge>
-                    }
-                    code={`<Badge
-  variant="${demoVariant}"
-  color="${demoColor}"
-  size="${demoSize}"${demoShowIcon ? `
-  icon={<IconCheck size={12} />}` : ''}
->
-  Label
-</Badge>`}
-                    previewPadding="56px 24px"
-                    previewBackground={colors.surface.lightDarker}
-                    sourceCode={componentSource || undefined}
-                    componentPath={BADGE_COMPONENT_PATH}
-                    onSourceSaved={() => setSourceVersion(v => v + 1)}
-                  />
-                </div>
-
-                {/* Controls */}
-                <div>
-                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                    {/* Variant */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Variant
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {variants.map(v => (
-                          <PillButton
-                            key={v}
-                            onClick={() => setDemoVariant(v)}
-                            isActive={demoVariant === v}
-                          >
-                            {v}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Color */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Color
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {badgeColors.map(c => (
-                          <PillButton
-                            key={c}
-                            onClick={() => setDemoColor(c)}
-                            isActive={demoColor === c}
-                          >
-                            {c}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Size */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Size
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {sizes.map(s => (
-                          <PillButton
-                            key={s}
-                            onClick={() => setDemoSize(s)}
-                            isActive={demoSize === s}
-                          >
-                            {s}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Icon Toggle */}
-                    <StyledCheckbox
-                      checked={demoShowIcon}
-                      onChange={setDemoShowIcon}
-                      label="Show Icon"
-                    />
-                  </div>
-
-                  {/* Tweak Panel — shown when tweak mode is on */}
-                  {tweakMode && (
-                    <div style={{ marginTop: '32px' }}>
-                      <TweakPanel
-                        fields={tweakFields}
-                        onChange={handleTweakChange}
-                        onSave={handleTweakSave}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ========== DESIGN TOKENS ========== */}
-          <section style={sharedStyles.section}>
-            <CollapsibleSection title="Design Tokens (for custom implementations)">
-              <div style={sharedStyles.card}>
-                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Size Specifications</h3>
+              <h3 style={sharedStyles.cardTitle}>Size Specifications</h3>
               <SpecTable
-                headers={['Size', 'Token', 'Padding Y', 'Padding X', 'Font Size', 'Icon Size']}
+                stickyFirstColumn={isMobile}
+                headers={['Size', 'Padding Y', 'Padding X', 'Font Size', 'Icon Size']}
                 rows={[
                   [
-                    'sm',
-                    <CopyableToken key="sm-py" token="spacing.1" />,
-                    <PixelValue key="sm-pyv" value="2px" />,
-                    <PixelValue key="sm-pxv" value="8px" />,
-                    <PixelValue key="sm-fs" value="12px" />,
+                    <code key="sm">sm</code>,
+                    <PixelValue key="sm-py" value="2px" />,
+                    <PixelValue key="sm-px" value="8px" />,
+                    <TokenValue key="sm-fs" token="typography.body.xs.fontSize" value="12px" />,
                     <PixelValue key="sm-is" value="12px" />,
                   ],
                   [
-                    'md',
-                    <CopyableToken key="md-py" token="spacing.2" />,
-                    <PixelValue key="md-pyv" value="4px" />,
-                    <PixelValue key="md-pxv" value="10px" />,
-                    <PixelValue key="md-fs" value="14px" />,
+                    <code key="md">md</code>,
+                    <PixelValue key="md-py" value="4px" />,
+                    <PixelValue key="md-px" value="10px" />,
+                    <TokenValue key="md-fs" token="typography.body.sm.fontSize" value="14px" />,
                     <PixelValue key="md-is" value="14px" />,
                   ],
                 ]}
@@ -540,11 +310,11 @@ import { Badge } from '@/components'`}</CodeBlock>
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Border Radius</h3>
+              <h3 style={sharedStyles.cardTitle}>Shape</h3>
               <SpecTable
                 headers={['Property', 'Token', 'Value']}
                 rows={[
-                  ['Badge Radius', <PixelValue key="br" value="8px (hardcoded)" />, <PixelValue key="brv" value="8px" />],
+                  ['Border Radius', <CopyableToken key="br" token="borderRadius (8px)" />, <PixelValue key="brv" value="8px" />],
                 ]}
               />
             </div>
@@ -552,6 +322,7 @@ import { Badge } from '@/components'`}</CodeBlock>
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Variant Styles</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Variant', 'Background', 'Border', 'Use Case']}
                 rows={[
                   ['filled', 'Solid color', 'Same as background', 'High emphasis, primary status'],
@@ -564,6 +335,7 @@ import { Badge } from '@/components'`}</CodeBlock>
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Color Tokens</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Color', 'Filled BG Token', 'Subtle BG Token', 'Text on Filled']}
                 rows={[
                   ['neutral', <CopyableToken key="n-bg" token="colors.badge.charcoal" />, <CopyableToken key="n-sbg" token="colors.badge.charcoalLight" />, <PixelValue key="n-txt" value="#FFFFFF" />],
@@ -575,41 +347,38 @@ import { Badge } from '@/components'`}</CodeBlock>
                 ]}
               />
             </div>
-            </CollapsibleSection>
           </section>
 
-          {/* ========== USE CASES ========== */}
+          {/* Accessibility */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Common Use Cases</h2>
+            <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
+            <p style={sharedStyles.sectionDescription}>
+              WCAG 2.2 AA compliance details for the Badge component.
+            </p>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Status Indicators</h3>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <Badge variant="subtle" color="success">Installed</Badge>
-                <Badge variant="outlined" color="neutral">Uninstalled</Badge>
-                <Badge variant="subtle" color="info">Update Available</Badge>
-                <Badge variant="subtle" color="error">Deprecated</Badge>
-              </div>
+              <h3 style={sharedStyles.cardTitle}>ARIA Attributes</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Attribute', 'When', 'Purpose']}
+                rows={[
+                  [<code key="al">aria-label</code>, 'When used alone (no surrounding text)', 'Provides accessible name for standalone badges'],
+                  [<code key="role">role="status"</code>, 'Dynamic badge updates', 'Announces changes to screen readers'],
+                ]}
+              />
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Categories & Tags</h3>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <Badge variant="outlined" color="neutral">Compliance</Badge>
-                <Badge variant="outlined" color="neutral">Analytics</Badge>
-                <Badge variant="outlined" color="neutral">Integration</Badge>
-                <Badge variant="outlined" color="neutral">Reporting</Badge>
-              </div>
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Verification</h3>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <Badge variant="subtle" color="success" icon={<IconCheck size={12} />}>
-                  Verified Application
-                </Badge>
-                <Badge variant="filled" color="brand">Official</Badge>
-              </div>
+              <h3 style={sharedStyles.cardTitle}>Visual Requirements</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Requirement', 'Standard', 'Status']}
+                rows={[
+                  ['Text contrast ratio', 'WCAG 1.4.3 — minimum 4.5:1', 'Pass'],
+                  ['Color not sole indicator', 'WCAG 1.4.1 — not only visual cue', 'Pass (pair with icon for status)'],
+                  ['Minimum text size', 'WCAG 1.4.4 — resizable text', 'Pass (12px sm, 14px md)'],
+                ]}
+              />
             </div>
           </section>
         </>
@@ -618,16 +387,21 @@ import { Badge } from '@/components'`}</CodeBlock>
       {/* ========== IMPLEMENTATION TAB ========== */}
       {activePageTab === 'implementation' && (
         <>
+          {/* Quick Start */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
+            <div style={{ maxWidth: breakpoints.sm }}>
+              <CodeBlock>{`// Package import
+import { Badge } from '@lumen/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Badge } from '@/components'`}</CodeBlock>
+            </div>
+          </section>
+
+          {/* Usage */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Usage</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Import</h3>
-              <CodeBlock>
-{`import { Badge } from '@/components'
-import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/components'`}
-              </CodeBlock>
-            </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
@@ -650,18 +424,31 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
 </Badge>`}
               </CodeBlock>
             </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Status Indicators</h3>
+              <CodeBlock>
+{`<Badge variant="subtle" color="success">Installed</Badge>
+<Badge variant="outlined" color="neutral">Uninstalled</Badge>
+<Badge variant="subtle" color="info">Update Available</Badge>
+<Badge variant="subtle" color="error">Deprecated</Badge>`}
+              </CodeBlock>
+            </div>
           </section>
 
+          {/* Props */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Props</h2>
 
             <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Badge Props</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
-                  [<code key="v">variant</code>, <code key="vt">'filled' | 'outlined' | 'subtle'</code>, <code key="vd">'filled'</code>, 'Visual style'],
-                  [<code key="c">color</code>, <code key="ct">'neutral' | 'success' | 'warning' | 'error' | 'info' | 'brand'</code>, <code key="cd">'neutral'</code>, 'Semantic color'],
-                  [<code key="s">size</code>, <code key="st">'sm' | 'md'</code>, <code key="sd">'sm'</code>, 'Badge size'],
+                  [<code key="v">variant</code>, <code key="vt">&apos;filled&apos; | &apos;outlined&apos; | &apos;subtle&apos;</code>, <code key="vd">&apos;filled&apos;</code>, 'Visual style'],
+                  [<code key="c">color</code>, <code key="ct">&apos;neutral&apos; | &apos;success&apos; | &apos;warning&apos; | &apos;error&apos; | &apos;info&apos; | &apos;brand&apos;</code>, <code key="cd">&apos;neutral&apos;</code>, 'Semantic color'],
+                  [<code key="s">size</code>, <code key="st">&apos;sm&apos; | &apos;md&apos;</code>, <code key="sd">&apos;sm&apos;</code>, 'Badge size'],
                   [<code key="i">icon</code>, <code key="it">ReactNode</code>, '-', 'Optional leading icon'],
                   [<code key="ch">children</code>, <code key="cht">ReactNode</code>, 'required', 'Badge content'],
                 ]}
@@ -669,6 +456,7 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
             </div>
           </section>
 
+          {/* Design Guidance */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Design Guidance</h2>
 
@@ -695,6 +483,19 @@ import type { BadgeProps, BadgeVariant, BadgeColor, BadgeSize } from '@/componen
                   [<code key="e">error</code>, 'Failed, error, critical'],
                   [<code key="i">info</code>, 'Informational, updates available'],
                   [<code key="b">brand</code>, 'New, featured, promotional'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
+              <SpecTable
+                headers={['Do', "Don't"]}
+                rows={[
+                  ['Pair color with an icon for accessibility', 'Rely on color alone to convey status'],
+                  ['Keep text to 1-2 words', 'Put long sentences in a badge'],
+                  ['Use filled for primary, subtle for secondary', 'Use all filled badges in the same row'],
+                  ['Add aria-label for standalone badges', 'Omit accessible names for decorative status'],
                 ]}
               />
             </div>

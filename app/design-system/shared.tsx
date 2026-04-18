@@ -15,7 +15,7 @@ import {
   sidebar,
   header,
 } from '@/styles/design-tokens'
-import { SegmentedControl, Avatar, Header } from '@/components'
+import { SegmentedControl, Avatar, Header, BottomSheet } from '@/components'
 import {
   IconFoundations,
   IconComponents,
@@ -25,7 +25,186 @@ import {
 } from '@/components/Icons'
 import { type LeftNavSection, type LeftNavItem } from '@/components/LeftNav'
 import { LeftNavSegmented } from '@/components/LeftNavSegmented'
-import { useThemeSwitcher, availableThemes } from '@/styles/themes'
+import { useThemeSwitcher, availableThemes, useColors } from '@/styles/themes'
+
+// =============================================================================
+// SHARED CONSTANTS (for component pages)
+// =============================================================================
+
+export const DRAWER_WIDTH = 260
+export const COMPONENT_HEADER_HEIGHT = parseInt(header.height)
+
+// =============================================================================
+// PROPERTIES DRAWER (Figma-style right panel / BottomSheet on mobile)
+// =============================================================================
+
+interface PropertiesDrawerProps {
+  open: boolean
+  isMobile: boolean
+  onClose: () => void
+  children: React.ReactNode
+}
+
+export function PropertiesDrawer({ open, isMobile, onClose, children }: PropertiesDrawerProps) {
+  const themeColors = useColors()
+
+  if (isMobile) {
+    return (
+      <BottomSheet
+        open={open}
+        onClose={onClose}
+        title="Properties"
+        height="half"
+        aria-label="Properties panel"
+      >
+        {children}
+      </BottomSheet>
+    )
+  }
+
+  return (
+    <aside
+      style={{
+        position: 'fixed',
+        top: `calc(${COMPONENT_HEADER_HEIGHT}px + ${spacing.xl})`,
+        right: spacing.xl,
+        bottom: spacing.sm,
+        height: `calc(100vh - ${COMPONENT_HEADER_HEIGHT}px - ${spacing.xl} - ${spacing.sm})`,
+        width: open ? `${DRAWER_WIDTH}px` : '0px',
+        zIndex: zIndex.sticky,
+        transition: `width 0.25s ease, opacity 0.25s ease`,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      aria-label="Properties panel"
+    >
+      <div style={{
+        width: `${DRAWER_WIDTH}px`,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        background: themeColors.surface.lightDarker,
+        borderRadius: borderRadius.lg,
+        border: `1px solid ${themeColors.border.lowEmphasis.onLight}`,
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          padding: `${spacing.sm} ${spacing.md}`,
+          flexShrink: 0,
+        }}>
+          <span style={{
+            ...typography.label.sm,
+            fontWeight: 600,
+            textTransform: 'uppercase' as const,
+            letterSpacing: '0.5px',
+            color: themeColors.text.highEmphasis.onLight,
+          }}>
+            Properties
+          </span>
+        </div>
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: `${spacing.xs} ${spacing.md} ${spacing.md}`,
+        }}>
+          {children}
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+// =============================================================================
+// PROPERTY SECTION (Figma-style collapsible group inside PropertiesDrawer)
+// =============================================================================
+
+interface PropertySectionProps {
+  title: string
+  children: React.ReactNode
+  defaultOpen?: boolean
+}
+
+export function PropertySection({ title, children, defaultOpen = true }: PropertySectionProps) {
+  const [open, setOpen] = useState(defaultOpen)
+  const themeColors = useColors()
+  return (
+    <div style={{ marginBottom: spacing.md }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: spacing['2xs'],
+          width: '100%',
+          padding: `${spacing['2xs']} 0`,
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          color: themeColors.text.lowEmphasis.onLight,
+          ...typography.label.sm,
+          fontWeight: 600,
+          textTransform: 'uppercase' as const,
+          letterSpacing: '0.05em',
+        }}
+      >
+        <svg
+          width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+          style={{
+            transform: open ? 'rotate(90deg)' : 'rotate(0deg)',
+            transition: transitionPresets.fast,
+          }}
+        >
+          <polyline points="9 6 15 12 9 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        {title}
+      </button>
+      {open && (
+        <div style={{ paddingTop: spacing.xs }}>
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// =============================================================================
+// MOBILE FAB (Properties toggle for mobile)
+// =============================================================================
+
+export function MobileFab({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Open properties panel"
+      style={{
+        position: 'fixed',
+        bottom: spacing.xl,
+        right: spacing.md,
+        zIndex: zIndex.sticky,
+        display: 'flex',
+        alignItems: 'center',
+        gap: spacing['2xs'],
+        height: '48px',
+        padding: `0 ${spacing.md} 0 ${spacing.sm}`,
+        background: colors.brand.default,
+        color: colors.text.highEmphasis.onDark,
+        border: 'none',
+        borderRadius: borderRadius.full,
+        boxShadow: shadows.lg,
+        cursor: 'pointer',
+        ...typography.label.sm,
+        fontWeight: 600,
+        letterSpacing: '0.02em',
+      }}
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 8v8M8 12h8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+      </svg>
+      Properties
+    </button>
+  )
+}
 
 // =============================================================================
 // CONSTANTS

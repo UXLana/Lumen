@@ -1,18 +1,20 @@
 'use client'
 
-import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
+import React, { useState, useEffect } from 'react'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData, PropertiesDrawer, PropertySection, MobileFab, DRAWER_WIDTH } from '../../design-system/shared'
 import { Checkbox, CheckboxGroup } from '@/components'
-import { colors, spacing, typography, borderRadius, fontFamilies, fontWeights, transitionPresets } from '@/styles/design-tokens'
+import { colors, spacing, typography, borderRadius, fontFamilies, fontWeights, transitionPresets, breakpoints } from '@/styles/design-tokens'
+import { useColors } from '@/styles/themes'
+import { useIsMobile } from '@/hooks'
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation' | 'documentation'
+type PageTab = 'overview' | 'specs' | 'implementation' | 'documentation'
 
 // =============================================================================
-// PAGE COMPONENT
+// DOC DATA
 // =============================================================================
 
 const checkboxDocData: ComponentDocData = {
@@ -95,8 +97,23 @@ import type { CheckboxProps, CheckboxGroupProps } from '@/components'`,
   ],
 }
 
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
 export default function CheckboxPage() {
+  const isMobile = useIsMobile()
+  const themeColors = useColors()
+
+  // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
+
+  // Properties drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  useEffect(() => {
+    setDrawerOpen(!isMobile)
+  }, [isMobile])
 
   // Playground state
   const [demoChecked, setDemoChecked] = useState(false)
@@ -107,18 +124,19 @@ export default function CheckboxPage() {
   const [demoIsChild, setDemoIsChild] = useState(false)
   const [demoFullWidth, setDemoFullWidth] = useState(false)
 
-  // Group demo state
-  const [groupValues, setGroupValues] = useState({
-    option1: true,
-    option2: false,
-    option3: false,
-  })
-
   const componentTabs = [
-    { id: 'overview', label: 'Overview' },
+    { id: 'overview', label: 'Playground' },
+    { id: 'specs', label: 'Specs' },
     { id: 'implementation', label: 'Implementation' },
     { id: 'documentation', label: 'Documentation' },
   ]
+
+  // Generate live code string
+  const liveCode = `<Checkbox
+  label="Option label"${demoShowMetadata ? '\n  metadata="Helpful metadata text"' : ''}
+  checked={${demoChecked}}${demoIndeterminate ? '\n  indeterminate' : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error' : ''}${demoIsChild ? '\n  isChild' : ''}${demoFullWidth ? '\n  fullWidth' : ''}
+  onChange={(checked) => setChecked(checked)}
+/>`
 
   return (
     <StyleguideLayout
@@ -129,309 +147,210 @@ export default function CheckboxPage() {
       tabs={componentTabs}
       activeTab={activePageTab}
       onTabChange={(id) => setActivePageTab(id as PageTab)}
+      showPanelToggle={activePageTab === 'overview' && !isMobile}
+      panelToggleExpanded={drawerOpen}
+      onPanelToggleClick={() => setDrawerOpen(!drawerOpen)}
     >
-      {/* ========== OVERVIEW TAB ========== */}
+      {/* ========== FIXED PROPERTIES DRAWER ========== */}
       {activePageTab === 'overview' && (
-        <>
-          {/* ========== QUICK START ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
-            <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`// Package import
-import { Checkbox, CheckboxGroup } from '@lumen/design-system'
-
-// Or with path alias (requires tsconfig setup)
-import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
+        <PropertiesDrawer open={drawerOpen} isMobile={isMobile} onClose={() => setDrawerOpen(false)}>
+          {/* State */}
+          <PropertySection title="State">
+            <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap' }}>
+              <PillButton isActive={demoChecked && !demoIndeterminate} onClick={() => { setDemoChecked(true); setDemoIndeterminate(false) }}>Checked</PillButton>
+              <PillButton isActive={!demoChecked && !demoIndeterminate} onClick={() => { setDemoChecked(false); setDemoIndeterminate(false) }}>Unchecked</PillButton>
+              <PillButton isActive={demoIndeterminate} onClick={() => { setDemoIndeterminate(true); setDemoChecked(false) }}>Indeterminate</PillButton>
             </div>
-          </section>
+          </PropertySection>
 
-          {/* ========== INTERACTIVE PLAYGROUND ========== */}
+          {/* Options */}
+          <PropertySection title="Options">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
+              <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
+              <StyledCheckboxControl checked={demoShowMetadata} onChange={() => setDemoShowMetadata(!demoShowMetadata)} label="Metadata" />
+              <StyledCheckboxControl checked={demoIsChild} onChange={() => setDemoIsChild(!demoIsChild)} label="Child" />
+              <StyledCheckboxControl checked={demoFullWidth} onChange={() => setDemoFullWidth(!demoFullWidth)} label="Full Width" />
+            </div>
+          </PropertySection>
+        </PropertiesDrawer>
+      )}
+
+      {/* ========== PLAYGROUND TAB ========== */}
+      {activePageTab === 'overview' && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          marginRight: !isMobile && drawerOpen ? `${DRAWER_WIDTH + 24}px` : 0,
+          transition: 'margin-right 0.25s ease',
+          minHeight: isMobile ? '300px' : '500px',
+          ...(isMobile ? { margin: `0 -${spacing.md}` } : {}),
+        }}>
+          {/* Preview area */}
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: colors.surface.lightDarker,
+            borderRadius: isMobile ? 0 : borderRadius.lg,
+            padding: isMobile ? spacing.xl : spacing['4xl'],
+            minHeight: isMobile ? '200px' : '360px',
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, width: demoFullWidth ? '100%' : 'auto' }}>
+              <Checkbox
+                label="Option label"
+                metadata={demoShowMetadata ? 'Helpful metadata text' : undefined}
+                checked={demoChecked}
+                indeterminate={demoIndeterminate}
+                disabled={demoDisabled}
+                error={demoError}
+                isChild={demoIsChild}
+                fullWidth={demoFullWidth}
+                onChange={(checked) => {
+                  setDemoChecked(checked)
+                  if (demoIndeterminate) setDemoIndeterminate(false)
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Code output */}
+          <div style={{ marginTop: spacing.md, ...(isMobile ? { padding: `0 ${spacing.md}` } : {}) }}>
+            <CodeBlock>{liveCode}</CodeBlock>
+          </div>
+
+          {/* Mobile FAB */}
+          {isMobile && !drawerOpen && (
+            <MobileFab onClick={() => setDrawerOpen(true)} />
+          )}
+        </div>
+      )}
+
+      {/* ========== SPECS TAB ========== */}
+      {activePageTab === 'specs' && (
+        <>
+          {/* Design Tokens */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
+            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
             <p style={sharedStyles.sectionDescription}>
-              Manipulate checkbox properties in real-time to see how they affect the component.
+              Spacing, color, and typography values used in the Checkbox component. Click any token to copy it.
             </p>
 
             <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-                {/* Preview/Code */}
-                <div>
-                  <Playground
-                    preview={
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, width: demoFullWidth ? '100%' : 'auto' }}>
-                        <Checkbox
-                          label="Option label"
-                          metadata={demoShowMetadata ? 'Helpful metadata text' : undefined}
-                          checked={demoChecked}
-                          indeterminate={demoIndeterminate}
-                          disabled={demoDisabled}
-                          error={demoError}
-                          isChild={demoIsChild}
-                          fullWidth={demoFullWidth}
-                          onChange={(checked) => {
-                            setDemoChecked(checked)
-                            if (demoIndeterminate) setDemoIndeterminate(false)
-                          }}
-                        />
-                      </div>
-                    }
-                    code={`<Checkbox
-  label="Option label"${demoShowMetadata ? '\n  metadata="Helpful metadata text"' : ''}
-  checked={${demoChecked}}${demoIndeterminate ? '\n  indeterminate' : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error' : ''}${demoIsChild ? '\n  isChild' : ''}${demoFullWidth ? '\n  fullWidth' : ''}
-  onChange={(checked) => setChecked(checked)}
-/>`}
-                    previewPadding={spacing.xl}
-                    previewBackground={colors.surface.lightDarker}
-                  />
-                </div>
+              <h3 style={sharedStyles.cardTitle}>Spacing & Dimensions</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Checkbox size', <CopyableToken key="cs" token="18px (fixed)" />, <PixelValue key="csv" value="18px" />],
+                  ['Border radius', <CopyableToken key="br" token="borderRadius.xs" />, <PixelValue key="brv" value={borderRadius.xs} />],
+                  ['Border width', <CopyableToken key="bw" token="1.5px (fixed)" />, <PixelValue key="bwv" value="1.5px" />],
+                  ['Container padding', <CopyableToken key="cp" token={`spacing.xs spacing.sm`} />, <PixelValue key="cpv" value={`${spacing.xs} ${spacing.sm}`} />],
+                  ['Child indent', <CopyableToken key="ci" token="spacing['2xl']" />, <PixelValue key="civ" value={spacing['2xl']} />],
+                  ['Label gap', <CopyableToken key="lg" token="spacing.xs" />, <PixelValue key="lgv" value={spacing.xs} />],
+                  ['Group bottom margin', <CopyableToken key="gm" token="spacing.md" />, <PixelValue key="gmv" value={spacing.md} />],
+                ]}
+              />
+            </div>
 
-                {/* Controls */}
-                <div>
-                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                    {/* State */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        State
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        <PillButton isActive={demoChecked && !demoIndeterminate} onClick={() => { setDemoChecked(true); setDemoIndeterminate(false) }}>Checked</PillButton>
-                        <PillButton isActive={!demoChecked && !demoIndeterminate} onClick={() => { setDemoChecked(false); setDemoIndeterminate(false) }}>Unchecked</PillButton>
-                        <PillButton isActive={demoIndeterminate} onClick={() => { setDemoIndeterminate(true); setDemoChecked(false) }}>Indeterminate</PillButton>
-                      </div>
-                    </div>
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Typography</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Element', 'Font Size', 'Font Weight', 'Line Height']}
+                rows={[
+                  ['Label', <TokenValue key="lfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />, <TokenValue key="lfw" token="fontWeights.regular" value="400" />, <TokenValue key="llh" token="typography.body.sm.lineHeight" value={typography.body.sm.lineHeight} />],
+                  ['Metadata', <TokenValue key="mfs" token="typography.body.xs.fontSize" value={typography.body.xs.fontSize} />, <TokenValue key="mfw" token="fontWeights.regular" value="400" />, <TokenValue key="mlh" token="typography.body.xs.lineHeight" value={typography.body.xs.lineHeight} />],
+                  ['Group label', <TokenValue key="gfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />, <TokenValue key="gfw" token="fontWeights.medium" value="500" />, <TokenValue key="glh" token="typography.body.sm.lineHeight" value={typography.body.sm.lineHeight} />],
+                  ['Error message', <TokenValue key="efs" token="typography.body.xs.fontSize" value={typography.body.xs.fontSize} />, <TokenValue key="efw" token="fontWeights.regular" value="400" />, <TokenValue key="elh" token="typography.body.xs.lineHeight" value={typography.body.xs.lineHeight} />],
+                ]}
+              />
+            </div>
 
-                    {/* Options */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-                      <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
-                      <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
-                      <StyledCheckboxControl checked={demoShowMetadata} onChange={() => setDemoShowMetadata(!demoShowMetadata)} label="Metadata" />
-                      <StyledCheckboxControl checked={demoIsChild} onChange={() => setDemoIsChild(!demoIsChild)} label="Child" />
-                      <StyledCheckboxControl checked={demoFullWidth} onChange={() => setDemoFullWidth(!demoFullWidth)} label="Full Width" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Colors</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['State', 'Border', 'Background', 'Icon']}
+                rows={[
+                  ['Unchecked', <TokenValue key="ub" token="colors.border.midEmphasis.onLight" value={colors.border.midEmphasis.onLight} />, <PixelValue key="ubg" value="transparent" />, '—'],
+                  ['Checked', <TokenValue key="cb" token="colors.brand.default" value={colors.brand.default} />, <TokenValue key="cbg" token="colors.brand.default" value={colors.brand.default} />, <PixelValue key="ci2" value="#FFFFFF" />],
+                  ['Indeterminate', <TokenValue key="ib" token="colors.brand.default" value={colors.brand.default} />, <TokenValue key="ibg" token="colors.brand.default" value={colors.brand.default} />, <PixelValue key="ii" value="#FFFFFF" />],
+                  ['Error', <TokenValue key="eb" token="colors.status.important" value={colors.status.important} />, <PixelValue key="ebg" value="transparent" />, '—'],
+                  ['Disabled (unchecked)', <TokenValue key="dub" token="colors.border.lowEmphasis.onLight" value={colors.border.lowEmphasis.onLight} />, <PixelValue key="dubg" value="transparent" />, '—'],
+                  ['Disabled (checked)', <TokenValue key="dcb" token="colors.border.lowEmphasis.onLight" value={colors.border.lowEmphasis.onLight} />, <TokenValue key="dcbg" token="colors.surface.disabled.onLight" value={colors.surface.disabled.onLight} />, <TokenValue key="dci" token="colors.text.disabled.onLight" value={colors.text.disabled.onLight} />],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Focus Ring</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Color', <CopyableToken key="fc" token="colors.focusBorder.onLight" />, <PixelValue key="fcv" value={colors.focusBorder.onLight} />],
+                  ['Width', <CopyableToken key="fw" token="2px" />, <PixelValue key="fwv" value="2px" />],
+                  ['Offset', <CopyableToken key="fo" token="2px" />, <PixelValue key="fov" value="2px" />],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Animation</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Transition', <CopyableToken key="tr" token="transitionPresets.default" />, <PixelValue key="trv" value={transitionPresets.default} />],
+                ]}
+              />
             </div>
           </section>
 
-          {/* ========== CHECKBOX GROUP EXAMPLE ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Checkbox Group</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Use CheckboxGroup to group related checkboxes with a shared label and error handling.
-            </p>
-            <Playground
-              preview={
-                <CheckboxGroup label="Label" error={demoError} errorMessage="Please select at least one option">
-                  <Checkbox label="Option 1" checked={groupValues.option1} onChange={(checked) => setGroupValues(prev => ({ ...prev, option1: checked }))} />
-                  <Checkbox label="Option 2" checked={groupValues.option2} onChange={(checked) => setGroupValues(prev => ({ ...prev, option2: checked }))} />
-                  <Checkbox label="Option 3" checked={groupValues.option3} onChange={(checked) => setGroupValues(prev => ({ ...prev, option3: checked }))} />
-                </CheckboxGroup>
-              }
-              code={`<CheckboxGroup label="Label" error={hasError} errorMessage="Please select at least one option">
-  <Checkbox label="Option 1" checked={values.opt1} onChange={...} />
-  <Checkbox label="Option 2" checked={values.opt2} onChange={...} />
-  <Checkbox label="Option 3" checked={values.opt3} onChange={...} />
-</CheckboxGroup>`}
-              previewPadding={spacing.xl}
-            />
-          </section>
-
-          {/* ========== INDETERMINATE EXAMPLE ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Indeterminate (Parent/Child)</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Use the indeterminate state for parent checkboxes that represent a partially selected group of children.
-            </p>
-            <Playground
-              preview={
-                <div>
-                  <Checkbox
-                    label="Parent Option"
-                    checked={groupValues.option1 && groupValues.option2}
-                    indeterminate={(groupValues.option1 || groupValues.option2) && !(groupValues.option1 && groupValues.option2)}
-                    onChange={(checked) => setGroupValues({ option1: checked, option2: checked, option3: groupValues.option3 })}
-                  />
-                  <Checkbox
-                    label="Child 1"
-                    isChild
-                    checked={groupValues.option1}
-                    onChange={(checked) => setGroupValues(prev => ({ ...prev, option1: checked }))}
-                  />
-                  <Checkbox
-                    label="Child 2"
-                    isChild
-                    checked={groupValues.option2}
-                    onChange={(checked) => setGroupValues(prev => ({ ...prev, option2: checked }))}
-                  />
-                </div>
-              }
-              code={`<Checkbox
-  label="Parent Option"
-  checked={allChecked}
-  indeterminate={someChecked && !allChecked}
-  onChange={(checked) => setAll(checked)}
-/>
-<Checkbox label="Child 1" isChild checked={child1} onChange={...} />
-<Checkbox label="Child 2" isChild checked={child2} onChange={...} />`}
-              previewPadding={spacing.xl}
-            />
-          </section>
-
-          {/* ========== DESIGN TOKENS ========== */}
-          <section style={sharedStyles.section}>
-            <CollapsibleSection title="Design Tokens (for custom implementations)">
-              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
-                Spacing, color, and typography values used in the Checkbox component. Click any token to copy it.
-              </p>
-
-              {/* Spacing & Dimensions */}
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Spacing & Dimensions</h3>
-                <SpecTable
-                  headers={['Property', 'Token', 'Value']}
-                  rows={[
-                    ['Checkbox size', <CopyableToken key="cs" token="18px (fixed)" />, <PixelValue key="csv" value="18px" />],
-                    ['Border radius', <CopyableToken key="br" token="borderRadius.xs" />, <PixelValue key="brv" value={borderRadius.xs} />],
-                    ['Border width', <CopyableToken key="bw" token="1.5px (fixed)" />, <PixelValue key="bwv" value="1.5px" />],
-                    ['Container padding', <CopyableToken key="cp" token={`spacing.xs spacing.sm`} />, <PixelValue key="cpv" value={`${spacing.xs} ${spacing.sm}`} />],
-                    ['Child indent', <CopyableToken key="ci" token="spacing['2xl']" />, <PixelValue key="civ" value={spacing['2xl']} />],
-                    ['Label gap', <CopyableToken key="lg" token="spacing.xs" />, <PixelValue key="lgv" value={spacing.xs} />],
-                    ['Metadata margin', <CopyableToken key="mm" token="2px (fixed)" />, <PixelValue key="mmv" value="2px" />],
-                    ['Group bottom margin', <CopyableToken key="gm" token="spacing.md" />, <PixelValue key="gmv" value={spacing.md} />],
-                    ['Error icon size', <CopyableToken key="ei" token="14px (fixed)" />, <PixelValue key="eiv" value="14px" />],
-                  ]}
-                />
-              </div>
-
-              {/* Typography */}
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Typography</h3>
-                <SpecTable
-                  headers={['Element', 'Font Size', 'Font Weight', 'Line Height']}
-                  rows={[
-                    [
-                      'Label',
-                      <TokenValue key="lfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />,
-                      <TokenValue key="lfw" token="fontWeights.regular" value="400" />,
-                      <TokenValue key="llh" token="typography.body.sm.lineHeight" value={typography.body.sm.lineHeight} />,
-                    ],
-                    [
-                      'Metadata',
-                      <TokenValue key="mfs" token="typography.body.xs.fontSize" value={typography.body.xs.fontSize} />,
-                      <TokenValue key="mfw" token="fontWeights.regular" value="400" />,
-                      <TokenValue key="mlh" token="typography.body.xs.lineHeight" value={typography.body.xs.lineHeight} />,
-                    ],
-                    [
-                      'Group label',
-                      <TokenValue key="gfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />,
-                      <TokenValue key="gfw" token="fontWeights.medium" value="500" />,
-                      <TokenValue key="glh" token="typography.body.sm.lineHeight" value={typography.body.sm.lineHeight} />,
-                    ],
-                    [
-                      'Error message',
-                      <TokenValue key="efs" token="typography.body.xs.fontSize" value={typography.body.xs.fontSize} />,
-                      <TokenValue key="efw" token="fontWeights.regular" value="400" />,
-                      <TokenValue key="elh" token="typography.body.xs.lineHeight" value={typography.body.xs.lineHeight} />,
-                    ],
-                  ]}
-                />
-              </div>
-
-              {/* Colors */}
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Colors</h3>
-                <SpecTable
-                  headers={['State', 'Border', 'Background', 'Icon']}
-                  rows={[
-                    [
-                      'Unchecked',
-                      <TokenValue key="ub" token="colors.border.midEmphasis.onLight" value={colors.border.midEmphasis.onLight} />,
-                      <PixelValue key="ubg" value="transparent" />,
-                      '—',
-                    ],
-                    [
-                      'Unchecked (hover)',
-                      <TokenValue key="uhb" token="colors.border.highEmphasis.onLight" value={colors.border.highEmphasis.onLight} />,
-                      <PixelValue key="uhbg" value="transparent" />,
-                      '—',
-                    ],
-                    [
-                      'Checked',
-                      <TokenValue key="cb" token="colors.brand.default" value={colors.brand.default} />,
-                      <TokenValue key="cbg" token="colors.brand.default" value={colors.brand.default} />,
-                      <PixelValue key="ci2" value="#FFFFFF" />,
-                    ],
-                    [
-                      'Indeterminate',
-                      <TokenValue key="ib" token="colors.brand.default" value={colors.brand.default} />,
-                      <TokenValue key="ibg" token="colors.brand.default" value={colors.brand.default} />,
-                      <PixelValue key="ii" value="#FFFFFF" />,
-                    ],
-                    [
-                      'Error',
-                      <TokenValue key="eb" token="colors.status.important" value={colors.status.important} />,
-                      <PixelValue key="ebg" value="transparent" />,
-                      '—',
-                    ],
-                    [
-                      'Disabled (unchecked)',
-                      <TokenValue key="dub" token="colors.border.lowEmphasis.onLight" value={colors.border.lowEmphasis.onLight} />,
-                      <PixelValue key="dubg" value="transparent" />,
-                      '—',
-                    ],
-                    [
-                      'Disabled (checked)',
-                      <TokenValue key="dcb" token="colors.border.lowEmphasis.onLight" value={colors.border.lowEmphasis.onLight} />,
-                      <TokenValue key="dcbg" token="colors.surface.disabled.onLight" value={colors.surface.disabled.onLight} />,
-                      <TokenValue key="dci" token="colors.text.disabled.onLight" value={colors.text.disabled.onLight} />,
-                    ],
-                  ]}
-                />
-              </div>
-
-              {/* Focus Ring */}
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Focus Ring</h3>
-                <SpecTable
-                  headers={['Property', 'Token', 'Value']}
-                  rows={[
-                    ['Color', <CopyableToken key="fc" token="colors.focusBorder.onLight" />, <PixelValue key="fcv" value={colors.focusBorder.onLight} />],
-                    ['Width', <CopyableToken key="fw" token="2px" />, <PixelValue key="fwv" value="2px" />],
-                    ['Offset', <CopyableToken key="fo" token="2px" />, <PixelValue key="fov" value="2px" />],
-                  ]}
-                />
-              </div>
-
-              {/* Animation */}
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Animation</h3>
-                <SpecTable
-                  headers={['Property', 'Token', 'Value']}
-                  rows={[
-                    ['Transition', <CopyableToken key="tr" token="transitionPresets.default" />, <PixelValue key="trv" value={transitionPresets.default} />],
-                  ]}
-                />
-              </div>
-            </CollapsibleSection>
-          </section>
-
-          {/* ========== ACCESSIBILITY ========== */}
+          {/* Accessibility */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
+            <p style={sharedStyles.sectionDescription}>
+              WCAG 2.2 AA compliance details for the Checkbox component.
+            </p>
+
             <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Keyboard Interaction</h3>
               <SpecTable
-                headers={['Feature', 'Implementation']}
+                headers={['Key', 'Action']}
                 rows={[
-                  ['Native Element', <span key="ne">Uses <code>&lt;input type=&quot;checkbox&quot;&gt;</code> for full keyboard and screen reader support</span>],
-                  ['Custom Indicator', 'Visually hidden input with styled SVG indicator — maintains native semantics'],
-                  ['Focus Ring', <span key="fr">Focus-visible ring using <code>colors.focusBorder.onLight</code> for keyboard navigation</span>],
-                  ['Error State', <span key="es"><code>aria-invalid</code> set on error state for assistive technology</span>],
-                  ['Error Messages', <span key="em"><code>aria-describedby</code> links error messages to checkbox groups; errors use <code>role=&quot;alert&quot;</code></span>],
-                  ['Group Semantics', <span key="gs"><code>role=&quot;group&quot;</code> with <code>aria-labelledby</code> for checkbox groups</span>],
-                  ['Indeterminate', <span key="in">Communicated via native <code>input.indeterminate</code> property</span>],
-                  ['Accessible Name', <span key="an">When <code>label</code> is omitted, provide <code>aria-label</code> for an accessible name</span>],
+                  [<kbd key="tab">Tab</kbd>, 'Move focus to / from the checkbox'],
+                  [<kbd key="space">Space</kbd>, 'Toggle checkbox checked state'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>ARIA Attributes</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Attribute', 'When', 'Purpose']}
+                rows={[
+                  [<code key="role">role="group"</code>, 'CheckboxGroup', 'Groups related checkboxes'],
+                  [<code key="alb">aria-labelledby</code>, 'CheckboxGroup', 'Associates group with its label'],
+                  [<code key="inv">aria-invalid="true"</code>, 'Error state', 'Communicates validation error'],
+                  [<code key="desc">aria-describedby</code>, 'Error message present', 'Links error message to checkbox'],
+                  [<code key="ind">indeterminate</code>, 'Parent checkbox', 'Native property for partial selection'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Visual Requirements</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Requirement', 'Standard', 'Status']}
+                rows={[
+                  ['Text contrast ratio', 'WCAG 1.4.3 — minimum 4.5:1', 'Pass'],
+                  ['Focus indicator', 'WCAG 2.4.7 — visible focus ring', 'Pass (2px brand ring with offset)'],
+                  ['Touch target size', 'WCAG 2.5.8 — minimum 44x44px', 'Pass (padding creates adequate target)'],
+                  ['Color not sole indicator', 'WCAG 1.4.1 — not only visual cue', 'Pass (checkmark icon + color)'],
+                  ['Reduced motion', 'WCAG 2.3.3 — prefers-reduced-motion', 'Pass (transitions disabled)'],
                 ]}
               />
             </div>
@@ -442,15 +361,21 @@ import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
       {/* ========== IMPLEMENTATION TAB ========== */}
       {activePageTab === 'implementation' && (
         <>
-          {/* ========== USAGE ========== */}
+          {/* Quick Start */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
+            <div style={{ maxWidth: breakpoints.sm }}>
+              <CodeBlock>{`// Package import
+import { Checkbox, CheckboxGroup } from '@lumen/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Checkbox, CheckboxGroup } from '@/components'`}</CodeBlock>
+            </div>
+          </section>
+
+          {/* Usage */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Usage</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Import</h3>
-              <CodeBlock>{`import { Checkbox, CheckboxGroup } from '@/components'
-import type { CheckboxProps, CheckboxGroupProps } from '@/components'`}</CodeBlock>
-            </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
@@ -492,25 +417,25 @@ import type { CheckboxProps, CheckboxGroupProps } from '@/components'`}</CodeBlo
             </div>
           </section>
 
-          {/* ========== PROPS ========== */}
+          {/* Props */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Props</h2>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Checkbox Props</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
-                  [<code>label</code>, <code>string</code>, '—', 'Label text displayed next to the checkbox'],
-                  [<code>metadata</code>, <code>string</code>, '—', 'Description text below the label'],
-                  [<code>checked</code>, <code>boolean</code>, <code>false</code>, 'Controlled checked state'],
-                  [<code>indeterminate</code>, <code>boolean</code>, <code>false</code>, 'Indeterminate state (overrides checked visually)'],
-                  [<code>onChange</code>, <code>{'(checked: boolean, event) => void'}</code>, '—', 'Change handler'],
-                  [<code>disabled</code>, <code>boolean</code>, <code>false</code>, 'Disables the checkbox'],
-                  [<code>error</code>, <code>boolean</code>, <code>false</code>, 'Shows error border color'],
-                  [<code>isChild</code>, <code>boolean</code>, <code>false</code>, 'Indents the checkbox (for parent/child patterns)'],
-                  [<code>fullWidth</code>, <code>boolean</code>, <code>false</code>, 'Makes checkbox take full container width'],
-                  [<code>noRoundedCorners</code>, <code>boolean</code>, <code>false</code>, 'Removes border radius for custom patterns'],
+                  [<code key="l">label</code>, <code key="lt">string</code>, '—', 'Label text'],
+                  [<code key="m">metadata</code>, <code key="mt">string</code>, '—', 'Description text below the label'],
+                  [<code key="c">checked</code>, <code key="ct">boolean</code>, <code key="cd">false</code>, 'Controlled checked state'],
+                  [<code key="i">indeterminate</code>, <code key="it">boolean</code>, <code key="id">false</code>, 'Indeterminate state'],
+                  [<code key="oc">onChange</code>, <code key="oct">(checked, event) =&gt; void</code>, '—', 'Change handler'],
+                  [<code key="d">disabled</code>, <code key="dt">boolean</code>, <code key="dd">false</code>, 'Disables the checkbox'],
+                  [<code key="e">error</code>, <code key="et">boolean</code>, <code key="ed">false</code>, 'Error border color'],
+                  [<code key="ic">isChild</code>, <code key="ict">boolean</code>, <code key="icd">false</code>, 'Indents for parent/child patterns'],
+                  [<code key="fw">fullWidth</code>, <code key="fwt">boolean</code>, <code key="fwd">false</code>, 'Full container width'],
                 ]}
               />
             </div>
@@ -518,43 +443,22 @@ import type { CheckboxProps, CheckboxGroupProps } from '@/components'`}</CodeBlo
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>CheckboxGroup Props</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
-                  [<code>label</code>, <code>string</code>, '—', 'Group label text'],
-                  [<code>error</code>, <code>boolean</code>, <code>false</code>, 'Shows error state'],
-                  [<code>errorMessage</code>, <code>string</code>, '—', 'Error message text (shown when error is true)'],
-                  [<code>fullWidth</code>, <code>boolean</code>, <code>false</code>, 'Makes the group take full container width'],
-                  [<code>children</code>, <code>ReactNode</code>, '—', 'Checkbox components'],
+                  [<code key="gl">label</code>, <code key="glt">string</code>, '—', 'Group label text'],
+                  [<code key="ge">error</code>, <code key="get">boolean</code>, <code key="ged">false</code>, 'Shows error state'],
+                  [<code key="gem">errorMessage</code>, <code key="gemt">string</code>, '—', 'Error message text'],
+                  [<code key="gfw">fullWidth</code>, <code key="gfwt">boolean</code>, <code key="gfwd">false</code>, 'Full container width'],
+                  [<code key="gch">children</code>, <code key="gcht">ReactNode</code>, '—', 'Checkbox components'],
                 ]}
               />
             </div>
           </section>
 
-          {/* ========== DESIGN GUIDANCE ========== */}
+          {/* Design Guidance */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Design Guidance</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>When to Use</h3>
-              <ul style={{ paddingLeft: '20px', listStyleType: 'disc', color: colors.text.highEmphasis.onLight, lineHeight: '1.8', marginBottom: 0 }}>
-                <li>Allow users to select one or more options from a set</li>
-                <li>Toggle a single setting on/off (standalone checkbox)</li>
-                <li>Present a list of options where multiple can be selected</li>
-                <li>Parent/child selection patterns (with indeterminate state)</li>
-              </ul>
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>When Not to Use</h3>
-              <SpecTable
-                headers={['Scenario', 'Use Instead']}
-                rows={[
-                  ['Only one option can be selected', 'Radio'],
-                  ['Instant on/off toggles', 'Switch'],
-                  ['Filtering with many options', 'Multi-select dropdown'],
-                ]}
-              />
-            </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
@@ -569,7 +473,6 @@ import type { CheckboxProps, CheckboxGroupProps } from '@/components'`}</CodeBlo
                 ]}
               />
             </div>
-
           </section>
         </>
       )}

@@ -1,16 +1,22 @@
 'use client'
 
-import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
+import React, { useState, useEffect } from 'react'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData, PropertiesDrawer, PropertySection, MobileFab, DRAWER_WIDTH } from '../../design-system/shared'
 import { Banner, BannerVariant, BannerSurface, BannerButtonAlignment } from '@/components'
-import { colors, typography, spacing, borderRadius, bannerIcon, banner } from '@/styles/design-tokens'
+import { colors, typography, spacing, borderRadius, bannerIcon, banner, breakpoints } from '@/styles/design-tokens'
+import { useColors } from '@/styles/themes'
+import { useIsMobile } from '@/hooks'
 
 // =============================================================================
-// PAGE COMPONENT
+// TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation' | 'documentation'
+type PageTab = 'overview' | 'specs' | 'implementation' | 'documentation'
 type ButtonOption = 'none' | 'one' | 'both'
+
+// =============================================================================
+// DOC DATA
+// =============================================================================
 
 const bannerDocData: ComponentDocData = {
   displayName: 'Banner',
@@ -35,7 +41,6 @@ const bannerDocData: ComponentDocData = {
   typeDefinitions: [
     { name: 'BannerVariant', definition: "type BannerVariant = 'info' | 'success' | 'warning' | 'error'" },
     { name: 'BannerSize', definition: "type BannerSize = 'md' | 'lg'" },
-    { name: 'BannerStyle', definition: "type BannerStyle = 'inline'" },
     { name: 'BannerSurface', definition: "type BannerSurface = 'color' | 'light'" },
   ],
   accessibility: [
@@ -58,7 +63,6 @@ const bannerDocData: ComponentDocData = {
     'Always include an icon for accessibility - do not rely on color alone.',
     'Banners with actions should have clear, descriptive action labels.',
   ],
-  // ── Usage Intelligence ──
   whenToUse: [
     'Persistent, page-level or section-level messages that stay visible until dismissed or resolved.',
     'System status changes that affect the entire page (e.g., "License application submitted successfully").',
@@ -91,6 +95,10 @@ const bannerDocData: ComponentDocData = {
   ],
 }
 
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
 export default function BannerPage() {
   const variants: BannerVariant[] = ['info', 'success', 'warning', 'error']
   const surfaces: BannerSurface[] = ['color', 'light']
@@ -100,11 +108,21 @@ export default function BannerPage() {
     { value: 'one', label: '1 Button' },
     { value: 'both', label: '2 Buttons' },
   ]
+  const isMobile = useIsMobile()
+  const themeColors = useColors()
 
   // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
 
-  // Interactive state for property manipulation
+  // Properties drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  // Sync drawer state with viewport
+  useEffect(() => {
+    setDrawerOpen(!isMobile)
+  }, [isMobile])
+
+  // Interactive state
   const [demoVariant, setDemoVariant] = useState<BannerVariant>('info')
   const [demoSurface, setDemoSurface] = useState<BannerSurface>('color')
   const [demoButtonAlignment, setDemoButtonAlignment] = useState<BannerButtonAlignment>('side')
@@ -113,58 +131,39 @@ export default function BannerPage() {
   const [demoMessage, setDemoMessage] = useState('')
   const [demoOnDark, setDemoOnDark] = useState(false)
 
-  // Custom tabs for component pages
   const componentTabs = [
-    { id: 'overview', label: 'Overview' },
+    { id: 'overview', label: 'Playground' },
+    { id: 'specs', label: 'Specs' },
     { id: 'implementation', label: 'Implementation' },
     { id: 'documentation', label: 'Documentation' },
   ]
 
-  // Generate action props based on button option
-  // Note: onClick handlers are intentionally empty for playground demonstration
+  // Generate action props
   const getActionProps = () => {
-    if (demoButtonOption === 'none') {
-      return {}
-    }
+    if (demoButtonOption === 'none') return {}
     if (demoButtonOption === 'one') {
-      return {
-        primaryAction: {
-          label: 'Button',
-          onClick: () => { /* Playground demo - no action */ },
-        },
-      }
+      return { primaryAction: { label: 'Button', onClick: () => {} } }
     }
-    // both
     return {
-      primaryAction: {
-        label: 'Button',
-        onClick: () => { /* Playground demo - no action */ },
-      },
-      secondaryAction: {
-        label: 'Button',
-        onClick: () => { /* Playground demo - no action */ },
-      },
+      primaryAction: { label: 'Button', onClick: () => {} },
+      secondaryAction: { label: 'Button', onClick: () => {} },
     }
   }
 
-  // Generate code string based on current settings
+  // Generate live code string
   const generateCode = () => {
     const lines = ['<Banner']
     lines.push(`  variant="${demoVariant}"`)
     if (demoSurface !== 'color') lines.push(`  surface="${demoSurface}"`)
     if (demoButtonAlignment !== 'side') lines.push(`  buttonAlignment="${demoButtonAlignment}"`)
-    // Escape quotes in title to generate valid JSX
     if (demoTitle) lines.push(`  title="${demoTitle.replace(/"/g, '\\"')}"`)
     if (demoOnDark) lines.push('  onDark={true}')
-
     if (demoButtonOption === 'one') {
       lines.push('  primaryAction={{ label: "Button", onClick: () => {} }}')
     } else if (demoButtonOption === 'both') {
       lines.push('  primaryAction={{ label: "Button", onClick: () => {} }}')
       lines.push('  secondaryAction={{ label: "Button", onClick: () => {} }}')
     }
-
-    // Escape special characters in message for valid JSX
     if (demoMessage) {
       lines.push('>')
       lines.push(`  ${demoMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;')}`)
@@ -172,7 +171,6 @@ export default function BannerPage() {
     } else {
       lines.push('/>')
     }
-
     return lines.join('\n')
   }
 
@@ -185,246 +183,206 @@ export default function BannerPage() {
       tabs={componentTabs}
       activeTab={activePageTab}
       onTabChange={(id) => setActivePageTab(id as PageTab)}
+      showPanelToggle={activePageTab === 'overview' && !isMobile}
+      panelToggleExpanded={drawerOpen}
+      onPanelToggleClick={() => setDrawerOpen(!drawerOpen)}
     >
-      {/* ========== OVERVIEW TAB ========== */}
+      {/* ========== FIXED PROPERTIES DRAWER ========== */}
       {activePageTab === 'overview' && (
-        <>
-          {/* ========== QUICK START ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
-            <div style={{ maxWidth: '600px' }}>
-              <CodeBlock>{`// Package import
-import { Banner } from '@lumen/design-system'
-
-// Or with path alias (requires tsconfig setup)
-import { Banner } from '@/components'`}</CodeBlock>
+        <PropertiesDrawer open={drawerOpen} isMobile={isMobile} onClose={() => setDrawerOpen(false)}>
+          {/* Variant */}
+          <PropertySection title="Variant">
+            <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap' }}>
+              {variants.map(v => (
+                <PillButton key={v} onClick={() => setDemoVariant(v)} isActive={demoVariant === v}>
+                  {v}
+                </PillButton>
+              ))}
             </div>
-          </section>
+          </PropertySection>
 
-          {/* ========== INTERACTIVE PLAYGROUND ========== */}
+          {/* Surface */}
+          <PropertySection title="Surface">
+            <div style={{ display: 'flex', gap: spacing['2xs'] }}>
+              {surfaces.map(s => (
+                <PillButton key={s} onClick={() => setDemoSurface(s)} isActive={demoSurface === s}>
+                  {s}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
+
+          {/* Button Alignment */}
+          <PropertySection title="Button Alignment">
+            <div style={{ display: 'flex', gap: spacing['2xs'] }}>
+              {buttonAlignments.map(a => (
+                <PillButton key={a} onClick={() => setDemoButtonAlignment(a)} isActive={demoButtonAlignment === a}>
+                  {a}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
+
+          {/* Buttons */}
+          <PropertySection title="Buttons">
+            <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap' }}>
+              {buttonOptions.map(opt => (
+                <PillButton key={opt.value} onClick={() => setDemoButtonOption(opt.value)} isActive={demoButtonOption === opt.value}>
+                  {opt.label}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
+
+          {/* Content */}
+          <PropertySection title="Content">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <label style={{ ...typography.label.sm }}>Title</label>
+              <input
+                type="text"
+                value={demoTitle}
+                onChange={(e) => setDemoTitle(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: spacing['2xs'],
+                  border: `1px solid ${themeColors.border.lowEmphasis.onLight}`,
+                  borderRadius: borderRadius.sm,
+                  boxSizing: 'border-box',
+                  ...typography.body.sm,
+                }}
+              />
+              <label style={{ ...typography.label.sm, marginTop: spacing['2xs'] }}>Description</label>
+              <textarea
+                value={demoMessage}
+                onChange={(e) => setDemoMessage(e.target.value)}
+                rows={2}
+                placeholder="Add a description..."
+                style={{
+                  width: '100%',
+                  padding: spacing['2xs'],
+                  border: `1px solid ${themeColors.border.lowEmphasis.onLight}`,
+                  borderRadius: borderRadius.sm,
+                  boxSizing: 'border-box',
+                  ...typography.body.sm,
+                  resize: 'vertical',
+                }}
+              />
+            </div>
+          </PropertySection>
+
+          {/* State */}
+          <PropertySection title="State">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <StyledCheckbox checked={demoOnDark} onChange={setDemoOnDark} label="On Dark" />
+            </div>
+          </PropertySection>
+        </PropertiesDrawer>
+      )}
+
+      {/* ========== PLAYGROUND TAB ========== */}
+      {activePageTab === 'overview' && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          marginRight: !isMobile && drawerOpen ? `${DRAWER_WIDTH + 24}px` : 0,
+          transition: 'margin-right 0.25s ease',
+          minHeight: isMobile ? '300px' : '500px',
+          ...(isMobile ? { margin: `0 -${spacing.md}` } : {}),
+        }}>
+          {/* Preview area */}
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: demoOnDark ? colors.brand.default : colors.surface.lightDarker,
+            borderRadius: isMobile ? 0 : borderRadius.lg,
+            padding: isMobile ? spacing.md : spacing['2xl'],
+            minHeight: isMobile ? '200px' : '360px',
+            transition: 'background 0.25s ease',
+          }}>
+            <div style={{ width: '100%', maxWidth: '600px' }}>
+              <Banner
+                variant={demoVariant}
+                surface={demoSurface}
+                buttonAlignment={demoButtonAlignment}
+                title={demoTitle || undefined}
+                onDark={demoOnDark}
+                {...getActionProps()}
+              >
+                {demoMessage || undefined}
+              </Banner>
+            </div>
+          </div>
+
+          {/* Code output */}
+          <div style={{ marginTop: spacing.md, ...(isMobile ? { padding: `0 ${spacing.md}` } : {}) }}>
+            <CodeBlock>{generateCode()}</CodeBlock>
+          </div>
+
+          {/* Mobile FAB */}
+          {isMobile && !drawerOpen && (
+            <MobileFab onClick={() => setDrawerOpen(true)} />
+          )}
+        </div>
+      )}
+
+      {/* ========== SPECS TAB ========== */}
+      {activePageTab === 'specs' && (
+        <>
+          {/* Design Tokens */}
           <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
+            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
             <p style={sharedStyles.sectionDescription}>
-              Manipulate banner properties in real-time to see how they affect the component.
+              Typography, spacing, and color values used in the Banner component. Click any token to copy it.
             </p>
 
             <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: spacing['4xl'] }}>
-                {/* Preview/Code with Tabs */}
-                <div>
-                  <Playground
-                    preview={
-                      <div style={{
-                        width: '100%',
-                        padding: demoOnDark ? spacing.md : '0',
-                        background: demoOnDark ? colors.brand.default : 'transparent',
-                        borderRadius: demoOnDark ? borderRadius.md : undefined,
-                        boxSizing: 'border-box',
-                      }}>
-                        <Banner
-                          variant={demoVariant}
-                          surface={demoSurface}
-                          buttonAlignment={demoButtonAlignment}
-                          title={demoTitle || undefined}
-                          onDark={demoOnDark}
-                          {...getActionProps()}
-                        >
-                          {demoMessage || undefined}
-                        </Banner>
-                      </div>
-                    }
-                    code={generateCode()}
-                    previewPadding={`56px ${spacing.xl}`}
-                    previewMinHeight="168px"
-                  />
-                </div>
-
-                {/* Controls */}
-                <div>
-                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    {/* Variant */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Variant
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {variants.map(v => (
-                          <PillButton
-                            key={v}
-                            onClick={() => setDemoVariant(v)}
-                            isActive={demoVariant === v}
-                          >
-                            {v}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Surface */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Surface
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {surfaces.map(s => (
-                          <PillButton
-                            key={s}
-                            onClick={() => setDemoSurface(s)}
-                            isActive={demoSurface === s}
-                          >
-                            {s}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Button Alignment */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Button Alignment
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {buttonAlignments.map(a => (
-                          <PillButton
-                            key={a}
-                            onClick={() => setDemoButtonAlignment(a)}
-                            isActive={demoButtonAlignment === a}
-                          >
-                            {a}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Buttons */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Buttons
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {buttonOptions.map(opt => (
-                          <PillButton
-                            key={opt.value}
-                            onClick={() => setDemoButtonOption(opt.value)}
-                            isActive={demoButtonOption === opt.value}
-                          >
-                            {opt.label}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Title */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Title
-                      </label>
-                      <input
-                        type="text"
-                        value={demoTitle}
-                        onChange={(e) => setDemoTitle(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: spacing.xs,
-                          border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                          borderRadius: borderRadius.sm,
-                          boxSizing: 'border-box',
-                          ...typography.body.sm,
-                        }}
-                      />
-                    </div>
-
-                    {/* Message */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Description (optional)
-                      </label>
-                      <textarea
-                        value={demoMessage}
-                        onChange={(e) => setDemoMessage(e.target.value)}
-                        rows={2}
-                        placeholder="Add a description..."
-                        style={{
-                          width: '100%',
-                          padding: spacing.xs,
-                          border: `1px solid ${colors.border.lowEmphasis.onLight}`,
-                          borderRadius: borderRadius.sm,
-                          boxSizing: 'border-box',
-                          ...typography.body.sm,
-                          resize: 'vertical',
-                        }}
-                      />
-                    </div>
-
-                    {/* Toggles */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <StyledCheckbox
-                        checked={demoOnDark}
-                        onChange={setDemoOnDark}
-                        label="On Dark Background"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ========== DESIGN TOKENS ========== */}
-          <section style={sharedStyles.section}>
-            <CollapsibleSection title="Design Tokens (for custom implementations)">
-              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
-                Typography, spacing, and border values used in the banner component.
-              </p>
-
-              {/* Typography Tokens */}
-            <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Typography Tokens</h3>
               <SpecTable
-                headers={['Element', 'Token', 'Font Size', 'Line Height', 'Font Weight']}
+                stickyFirstColumn={isMobile}
+                headers={['Element', 'Font Size', 'Line Height', 'Font Weight']}
                 rows={[
-                  ['Title', <CopyableToken key="t-tok" token="banner.typography.title" />, <PixelValue key="t-fs" value="16px" />, <PixelValue key="t-lh" value="24px" />, <PixelValue key="t-fw" value="400" />],
-                  ['Description', <CopyableToken key="d-tok" token="banner.typography.message" />, <PixelValue key="d-fs" value="16px" />, <PixelValue key="d-lh" value="24px" />, <PixelValue key="d-fw" value="400" />],
-                  ['Button', <CopyableToken key="b-tok" token="banner.button.typography" />, <PixelValue key="b-fs" value="14px" />, <PixelValue key="b-lh" value="20px" />, <PixelValue key="b-fw" value="500" />],
+                  ['Title', <PixelValue key="t-fs" value="16px" />, <PixelValue key="t-lh" value="24px" />, <PixelValue key="t-fw" value="400" />],
+                  ['Description', <PixelValue key="d-fs" value="16px" />, <PixelValue key="d-lh" value="24px" />, <PixelValue key="d-fw" value="400" />],
+                  ['Button', <PixelValue key="b-fs" value="14px" />, <PixelValue key="b-lh" value="20px" />, <PixelValue key="b-fw" value="500" />],
                 ]}
               />
             </div>
 
-            {/* Spacing Tokens */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Spacing & Size Tokens</h3>
+              <h3 style={sharedStyles.cardTitle}>Spacing & Dimensions</h3>
               <SpecTable
-                headers={['Element', 'Token', 'Value', 'Description']}
-                rows={[
-                  ['Banner Height (side)', <CopyableToken key="hs" token="banner.sizing.minHeight.side" />, <PixelValue key="hsv" value="56px" />, 'Fixed height for side button alignment'],
-                  ['Banner Height (below)', <CopyableToken key="hb" token="banner.sizing.minHeight.below" />, <PixelValue key="hbv" value="100px" />, 'Min height for below button alignment'],
-                  ['Padding', <CopyableToken key="p" token="banner.padding" />, <PixelValue key="pv" value="8px" />, 'Internal padding'],
-                  ['Icon Container', <CopyableToken key="ic" token="bannerIcon.sizing.container" />, <PixelValue key="icv" value="40px" />, 'Icon container size'],
-                  ['Icon Size', <CopyableToken key="is" token="bannerIcon.sizing.icon" />, <PixelValue key="isv" value="24px" />, 'Icon inside container'],
-                  ['Content Gap', <CopyableToken key="cg" token="banner.spacing.contentGap" />, <PixelValue key="cgv" value="8px" />, 'Gap between icon and content'],
-                ]}
-              />
-            </div>
-
-            {/* Border Radius & Outline */}
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Border Radius & Outline</h3>
-              <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Element', 'Token', 'Value']}
                 rows={[
+                  ['Min Height (side)', <CopyableToken key="hs" token="banner.sizing.minHeight.side" />, <PixelValue key="hsv" value="56px" />],
+                  ['Min Height (below)', <CopyableToken key="hb" token="banner.sizing.minHeight.below" />, <PixelValue key="hbv" value="100px" />],
+                  ['Padding', <CopyableToken key="p" token="banner.padding" />, <PixelValue key="pv" value="8px" />],
+                  ['Icon Container', <CopyableToken key="ic" token="bannerIcon.sizing.container" />, <PixelValue key="icv" value="40px" />],
+                  ['Icon Size', <CopyableToken key="is" token="bannerIcon.sizing.icon" />, <PixelValue key="isv" value="24px" />],
+                  ['Content Gap', <CopyableToken key="cg" token="banner.spacing.contentGap" />, <PixelValue key="cgv" value="8px" />],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Shape</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
                   ['Banner Radius', <CopyableToken key="br" token="banner.borderRadius" />, <PixelValue key="brv" value="16px" />],
-                  ['Icon Container Radius', <CopyableToken key="icr" token="bannerIcon.borderRadius" />, <PixelValue key="icrv" value="16px" />],
+                  ['Icon Radius', <CopyableToken key="icr" token="bannerIcon.borderRadius" />, <PixelValue key="icrv" value="16px" />],
                   ['Outline Width', <CopyableToken key="ow" token="banner.outline.width" />, <PixelValue key="owv" value="2px" />],
                   ['Outline Opacity', <CopyableToken key="oo" token="banner.outline.opacity" />, <PixelValue key="oov" value="0.6" />],
                 ]}
               />
             </div>
 
-            {/* Color Tokens */}
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Color Tokens (Color Surface)</h3>
+              <h3 style={sharedStyles.cardTitle}>Colors — Color Surface</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Variant', 'Background Token', 'Icon BG Token', 'Icon Color Token']}
                 rows={[
                   ['info', <CopyableToken key="i-bg" token="banner.variants.info.color.background" />, <CopyableToken key="i-ibg" token="bannerIcon.variants.information.background" />, <CopyableToken key="i-ic" token="bannerIcon.variants.information.iconColor" />],
@@ -434,26 +392,64 @@ import { Banner } from '@/components'`}</CodeBlock>
                 ]}
               />
             </div>
-            </CollapsibleSection>
           </section>
 
+          {/* Accessibility */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
+            <p style={sharedStyles.sectionDescription}>
+              WCAG 2.2 AA compliance details for the Banner component.
+            </p>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>ARIA Attributes</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Attribute', 'When', 'Purpose']}
+                rows={[
+                  [<code key="role">role="alert"</code>, 'Error / warning variants', 'Announces critical messages immediately'],
+                  [<code key="status">role="status"</code>, 'Info / success variants', 'Announces non-critical messages politely'],
+                  [<code key="live">aria-live="polite"</code>, 'Dynamic banners', 'Announces content changes to screen readers'],
+                  [<code key="dismiss">aria-label="Dismiss"</code>, 'Dismiss button', 'Provides accessible name for dismiss action'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Visual Requirements</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Requirement', 'Standard', 'Status']}
+                rows={[
+                  ['Text contrast ratio', 'WCAG 1.4.3 — minimum 4.5:1', 'Pass'],
+                  ['Color not sole indicator', 'WCAG 1.4.1 — not only visual cue', 'Pass (icon + color + text)'],
+                  ['Action buttons focusable', 'WCAG 2.1.1 — keyboard accessible', 'Pass'],
+                  ['Reduced motion', 'WCAG 2.3.3 — prefers-reduced-motion', 'Pass'],
+                ]}
+              />
+            </div>
+          </section>
         </>
       )}
 
       {/* ========== IMPLEMENTATION TAB ========== */}
       {activePageTab === 'implementation' && (
         <>
-          {/* ========== USAGE ========== */}
+          {/* Quick Start */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
+            <div style={{ maxWidth: breakpoints.sm }}>
+              <CodeBlock>{`// Package import
+import { Banner } from '@lumen/design-system'
+
+// Or with path alias (requires tsconfig setup)
+import { Banner } from '@/components'`}</CodeBlock>
+            </div>
+          </section>
+
+          {/* Usage */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Usage</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Import</h3>
-              <CodeBlock>
-{`import { Banner } from '@/components'
-import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment } from '@/components'`}
-              </CodeBlock>
-            </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
@@ -475,14 +471,7 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>With Actions</h3>
               <CodeBlock>
-{`// Single action
-<Banner
-  variant="info"
-  title="New features available"
-  primaryAction={{ label: "Learn More", onClick: () => {} }}
-/>
-
-// Two actions
+{`// Two actions
 <Banner
   variant="warning"
   title="Subscription Expiring"
@@ -493,30 +482,12 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
             </div>
 
             <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Surface Variants</h3>
+              <h3 style={sharedStyles.cardTitle}>Surface & Alignment</h3>
               <CodeBlock>
-{`// Color surface (default) - themed background
-<Banner variant="info" surface="color" title="Color surface" />
-
-// Light surface - white background
-<Banner variant="info" surface="light" title="Light surface" />`}
-              </CodeBlock>
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Button Alignment</h3>
-              <CodeBlock>
-{`// Side alignment (default) - buttons on the right
+{`// Light surface with buttons below
 <Banner
   variant="info"
-  buttonAlignment="side"
-  title="Side aligned buttons"
-  primaryAction={{ label: "Action", onClick: () => {} }}
-/>
-
-// Below alignment - buttons below the content
-<Banner
-  variant="info"
+  surface="light"
   buttonAlignment="below"
   title="Below aligned buttons"
   primaryAction={{ label: "Action", onClick: () => {} }}
@@ -525,29 +496,30 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
             </div>
           </section>
 
-          {/* ========== PROPS ========== */}
+          {/* Props */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Props</h2>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Banner Props</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
-                  [<code>variant</code>, <code>'info' | 'success' | 'warning' | 'error'</code>, <code>'info'</code>, 'Semantic variant'],
-                  [<code>surface</code>, <code>'color' | 'light'</code>, <code>'color'</code>, 'Background surface type'],
-                  [<code>buttonAlignment</code>, <code>'side' | 'below'</code>, <code>'side'</code>, 'Button position'],
-                  [<code>title</code>, <code>string</code>, '-', 'Main heading text'],
-                  [<code>children</code>, <code>ReactNode</code>, '-', 'Description content'],
-                  [<code>primaryAction</code>, <code>{'{ label: string; onClick: () => void }'}</code>, '-', 'Primary action button'],
-                  [<code>secondaryAction</code>, <code>{'{ label: string; onClick: () => void }'}</code>, '-', 'Secondary action button'],
-                  [<code>onDark</code>, <code>boolean</code>, <code>false</code>, 'Display on dark background'],
+                  [<code key="v">variant</code>, <code key="vt">&apos;info&apos; | &apos;success&apos; | &apos;warning&apos; | &apos;error&apos;</code>, <code key="vd">&apos;info&apos;</code>, 'Semantic variant'],
+                  [<code key="s">surface</code>, <code key="st">&apos;color&apos; | &apos;light&apos;</code>, <code key="sd">&apos;color&apos;</code>, 'Background surface type'],
+                  [<code key="ba">buttonAlignment</code>, <code key="bat">&apos;side&apos; | &apos;below&apos;</code>, <code key="bad">&apos;side&apos;</code>, 'Button position'],
+                  [<code key="t">title</code>, <code key="tt">string</code>, '-', 'Main heading text'],
+                  [<code key="ch">children</code>, <code key="cht">ReactNode</code>, '-', 'Description content'],
+                  [<code key="pa">primaryAction</code>, <code key="pat">{'{ label, onClick }'}</code>, '-', 'Primary action button'],
+                  [<code key="sa">secondaryAction</code>, <code key="sat">{'{ label, onClick }'}</code>, '-', 'Secondary action button'],
+                  [<code key="od">onDark</code>, <code key="odt">boolean</code>, <code key="odd">false</code>, 'Display on dark background'],
                 ]}
               />
             </div>
           </section>
 
-          {/* ========== DESIGN GUIDANCE ========== */}
+          {/* Design Guidance */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Design Guidance</h2>
 
@@ -556,10 +528,10 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
               <SpecTable
                 headers={['Variant', 'Usage', 'Examples']}
                 rows={[
-                  [<code>info</code>, 'Neutral information, tips, or announcements', 'New features, general updates, helpful tips'],
-                  [<code>success</code>, 'Successful completion of an action', 'Data saved, upload complete, action confirmed'],
-                  [<code>warning</code>, 'Important but non-critical warnings', 'Subscription expiring, approaching limits, recommendations'],
-                  [<code>error</code>, 'Errors or critical issues requiring attention', 'Failed operations, connection errors, validation failures'],
+                  [<code key="i">info</code>, 'Neutral information, tips, or announcements', 'New features, general updates'],
+                  [<code key="s">success</code>, 'Successful completion of an action', 'Data saved, upload complete'],
+                  [<code key="w">warning</code>, 'Important but non-critical warnings', 'Subscription expiring, approaching limits'],
+                  [<code key="e">error</code>, 'Errors or critical issues', 'Failed operations, connection errors'],
                 ]}
               />
             </div>
@@ -572,22 +544,8 @@ import type { BannerProps, BannerVariant, BannerSurface, BannerButtonAlignment }
                   ['Use banners for important, timely information', 'Use banners for permanent UI elements'],
                   ['Keep messages concise and actionable', 'Write long paragraphs or multiple topics'],
                   ['Limit to 1-2 actions maximum', 'Add more than 2 action buttons'],
-                  ['Add a Dismiss action button for non-critical messages', 'Omit close options for critical error banners'],
+                  ['Add a Dismiss action for non-critical messages', 'Omit close options for info banners'],
                   ['Use consistent placement (top of content)', 'Scatter banners throughout the page'],
-                ]}
-              />
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Accessibility</h3>
-              <SpecTable
-                headers={['Feature', 'Implementation']}
-                rows={[
-                  ['Role', 'role="alert" for dynamic banners'],
-                  ['Live Region', 'aria-live="polite" for announcements'],
-                  ['Action Buttons', 'Action buttons are keyboard-accessible and focusable'],
-                  ['Color Contrast', 'All text meets WCAG AA standards'],
-                  ['Icons', 'Semantic meaning conveyed through text, not just icons'],
                 ]}
               />
             </div>

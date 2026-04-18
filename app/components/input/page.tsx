@@ -1,20 +1,22 @@
 'use client'
 
-import React, { useState } from 'react'
-import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, Playground, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData } from '../../design-system/shared'
+import React, { useState, useEffect } from 'react'
+import { StyleguideLayout, sharedStyles, CodeBlock, SpecTable, PillButton, StyledCheckbox as StyledCheckboxControl, TokenValue, CopyableToken, PixelValue, CollapsibleSection, ComponentDocumentation, ComponentDocData, PropertiesDrawer, PropertySection, MobileFab, DRAWER_WIDTH } from '../../design-system/shared'
 import { Input } from '@/components'
 import type { InputWidth } from '@/components'
 import { IconInfoFilled } from '@/components/Icons/IconInfoFilled'
-import { colors, spacing, typography, borderRadiusSemantics } from '@/styles/design-tokens'
+import { colors, spacing, typography, borderRadiusSemantics, borderRadius, breakpoints } from '@/styles/design-tokens'
+import { useColors } from '@/styles/themes'
+import { useIsMobile } from '@/hooks'
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-type PageTab = 'overview' | 'implementation' | 'documentation'
+type PageTab = 'overview' | 'specs' | 'implementation' | 'documentation'
 
 // =============================================================================
-// PAGE COMPONENT
+// DOC DATA
 // =============================================================================
 
 const inputDocData: ComponentDocData = {
@@ -79,8 +81,30 @@ const inputDocData: ComponentDocData = {
   ],
 }
 
+// =============================================================================
+// PAGE COMPONENT
+// =============================================================================
+
+const SearchIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M11 11L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+)
+
 export default function InputPage() {
+  const isMobile = useIsMobile()
+  const themeColors = useColors()
+
+  // Page tab state
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
+
+  // Properties drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  useEffect(() => {
+    setDrawerOpen(!isMobile)
+  }, [isMobile])
 
   // Playground state
   const [demoValue, setDemoValue] = useState('')
@@ -94,17 +118,18 @@ export default function InputPage() {
   const [demoShowEndAdornment, setDemoShowEndAdornment] = useState(false)
 
   const componentTabs = [
-    { id: 'overview', label: 'Overview' },
+    { id: 'overview', label: 'Playground' },
+    { id: 'specs', label: 'Specs' },
     { id: 'implementation', label: 'Implementation' },
     { id: 'documentation', label: 'Documentation' },
   ]
 
-  const SearchIcon = () => (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M11 11L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  )
+  // Generate live code string
+  const liveCode = `<Input
+  label="Label"
+  value={value}
+  onChange={setValue}${demoSize !== 'md' ? `\n  size="${demoSize}"` : ''}${demoWidth !== 'md' ? `\n  width="${demoWidth}"` : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error\n  errorMessage="This field has an error"' : ''}${demoRequired ? '\n  required' : ''}${demoShowHelper ? '\n  helperText="This is helpful text"' : ''}${demoShowAdornment ? '\n  startAdornment={<SearchIcon />}' : ''}${demoShowEndAdornment ? '\n  endAdornment={<IconInfoFilled size="sm" />}' : ''}
+/>`
 
   return (
     <StyleguideLayout
@@ -115,14 +140,223 @@ export default function InputPage() {
       tabs={componentTabs}
       activeTab={activePageTab}
       onTabChange={(id) => setActivePageTab(id as PageTab)}
+      showPanelToggle={activePageTab === 'overview' && !isMobile}
+      panelToggleExpanded={drawerOpen}
+      onPanelToggleClick={() => setDrawerOpen(!drawerOpen)}
     >
-      {/* ========== OVERVIEW TAB ========== */}
+      {/* ========== FIXED PROPERTIES DRAWER ========== */}
       {activePageTab === 'overview' && (
+        <PropertiesDrawer open={drawerOpen} isMobile={isMobile} onClose={() => setDrawerOpen(false)}>
+          {/* Height */}
+          <PropertySection title="Height">
+            <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap' }}>
+              {(['sm', 'md', 'lg'] as const).map(s => (
+                <PillButton key={s} onClick={() => setDemoSize(s)} isActive={demoSize === s}>
+                  {s}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
+
+          {/* Width */}
+          <PropertySection title="Width">
+            <div style={{ display: 'flex', gap: spacing['2xs'], flexWrap: 'wrap' }}>
+              {(['xs', 'sm', 'md', 'lg', 'full'] as InputWidth[]).map(w => (
+                <PillButton key={w} onClick={() => setDemoWidth(w)} isActive={demoWidth === w}>
+                  {w}
+                </PillButton>
+              ))}
+            </div>
+          </PropertySection>
+
+          {/* Options */}
+          <PropertySection title="Options">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+              <StyledCheckboxControl checked={demoRequired} onChange={() => setDemoRequired(!demoRequired)} label="Required" />
+              <StyledCheckboxControl checked={demoShowAdornment} onChange={() => setDemoShowAdornment(!demoShowAdornment)} label="Start Adornment" />
+              <StyledCheckboxControl checked={demoShowEndAdornment} onChange={() => setDemoShowEndAdornment(!demoShowEndAdornment)} label="End Adornment" />
+              <StyledCheckboxControl checked={demoShowHelper} onChange={() => setDemoShowHelper(!demoShowHelper)} label="Helper Text" />
+              <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
+              <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
+            </div>
+          </PropertySection>
+        </PropertiesDrawer>
+      )}
+
+      {/* ========== PLAYGROUND TAB ========== */}
+      {activePageTab === 'overview' && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          marginRight: !isMobile && drawerOpen ? `${DRAWER_WIDTH + 24}px` : 0,
+          transition: 'margin-right 0.25s ease',
+          minHeight: isMobile ? '300px' : '500px',
+          ...(isMobile ? { margin: `0 -${spacing.md}` } : {}),
+        }}>
+          {/* Preview area */}
+          <div style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: colors.surface.lightDarker,
+            borderRadius: isMobile ? 0 : borderRadius.lg,
+            padding: isMobile ? spacing.xl : spacing['4xl'],
+            minHeight: isMobile ? '200px' : '360px',
+          }}>
+            <div style={{ padding: spacing.md, width: '100%', maxWidth: '400px' }}>
+              <Input
+                label="Label"
+                value={demoValue}
+                onChange={setDemoValue}
+                size={demoSize}
+                width={demoWidth}
+                disabled={demoDisabled}
+                error={demoError}
+                errorMessage={demoError ? 'This field has an error' : undefined}
+                required={demoRequired}
+                helperText={demoShowHelper ? 'This is helpful text' : undefined}
+                startAdornment={demoShowAdornment ? <SearchIcon /> : undefined}
+                endAdornment={demoShowEndAdornment ? <IconInfoFilled size="sm" color={colors.text.lowEmphasis.onLight} /> : undefined}
+              />
+            </div>
+          </div>
+
+          {/* Code output */}
+          <div style={{ marginTop: spacing.md, ...(isMobile ? { padding: `0 ${spacing.md}` } : {}) }}>
+            <CodeBlock>{liveCode}</CodeBlock>
+          </div>
+
+          {/* Mobile FAB */}
+          {isMobile && !drawerOpen && (
+            <MobileFab onClick={() => setDrawerOpen(true)} />
+          )}
+        </div>
+      )}
+
+      {/* ========== SPECS TAB ========== */}
+      {activePageTab === 'specs' && (
         <>
-          {/* ========== QUICK START ========== */}
+          {/* Design Tokens */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Design Tokens</h2>
+            <p style={sharedStyles.sectionDescription}>
+              Spacing, color, and typography values used in the Input component. Click any token to copy it.
+            </p>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Size Specifications</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Size', 'Height', 'Font Size', 'Padding']}
+                rows={[
+                  ['sm', <PixelValue key="smh" value="36px" />, <TokenValue key="smfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />, <CopyableToken key="smp" token={`0 ${spacing.sm}`} />],
+                  ['md (default)', <PixelValue key="mdh" value="40px" />, <TokenValue key="mdfs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />, <CopyableToken key="mdp" token={`0 ${spacing.sm}`} />],
+                  ['lg', <PixelValue key="lgh" value="48px" />, <TokenValue key="lgfs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />, <CopyableToken key="lgp" token={`0 ${spacing.md}`} />],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Typography</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Element', 'Font Size', 'Font Weight', 'Line Height']}
+                rows={[
+                  ['Label', <TokenValue key="lfs" token="typography.label.sm.fontSize" value={typography.label.sm.fontSize} />, <TokenValue key="lfw" token="fontWeights.medium" value="500" />, <TokenValue key="llh" token="typography.label.sm.lineHeight" value={typography.label.sm.lineHeight} />],
+                  ['Input text (MD)', <TokenValue key="ifs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />, <TokenValue key="ifw" token="fontWeights.regular" value="400" />, <TokenValue key="ilh" token="typography.body.md.lineHeight" value={typography.body.md.lineHeight} />],
+                  ['Helper/Error text', <TokenValue key="hfs" token="typography.body.xs.fontSize" value={typography.body.xs.fontSize} />, <TokenValue key="hfw" token="fontWeights.regular" value="400" />, <TokenValue key="hlh" token="typography.body.xs.lineHeight" value={typography.body.xs.lineHeight} />],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Colors</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['State', 'Border', 'Background']}
+                rows={[
+                  ['Default', <TokenValue key="db" token="colors.border.midEmphasis.onLight" value={colors.border.midEmphasis.onLight} />, <TokenValue key="dbg" token="colors.surface.light" value={colors.surface.light} />],
+                  ['Hover', <TokenValue key="hb" token="colors.border.highEmphasis.onLight" value={colors.border.highEmphasis.onLight} />, <TokenValue key="hbg" token="colors.surface.light" value={colors.surface.light} />],
+                  ['Focus', <TokenValue key="fb" token="colors.brand.default" value={colors.brand.default} />, <TokenValue key="fbg" token="colors.surface.light" value={colors.surface.light} />],
+                  ['Error', <TokenValue key="eb" token="colors.status.important" value={colors.status.important} />, <TokenValue key="ebg" token="colors.surface.light" value={colors.surface.light} />],
+                  ['Disabled', <TokenValue key="dib" token="colors.border.lowEmphasis.onLight" value={colors.border.lowEmphasis.onLight} />, <TokenValue key="dibg" token="colors.surface.disabled.onLight" value={colors.surface.disabled.onLight} />],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Shape & Focus</h3>
+              <SpecTable
+                headers={['Property', 'Token', 'Value']}
+                rows={[
+                  ['Border width', <CopyableToken key="bw" token="1.5px (fixed)" />, <PixelValue key="bwv" value="1.5px" />],
+                  ['Border radius', <CopyableToken key="br" token="borderRadiusSemantics.input" />, <PixelValue key="brv" value={borderRadiusSemantics.input} />],
+                  ['Label gap', <CopyableToken key="lg" token="spacing['2xs']" />, <PixelValue key="lgv" value={spacing['2xs']} />],
+                  ['Focus ring', <CopyableToken key="fr" token="box-shadow: 0 0 0 1px brand.default" />, <PixelValue key="frv" value={`0 0 0 1px ${colors.brand.default}`} />],
+                ]}
+              />
+            </div>
+          </section>
+
+          {/* Accessibility */}
+          <section style={sharedStyles.section}>
+            <h2 style={sharedStyles.sectionTitle}>Accessibility</h2>
+            <p style={sharedStyles.sectionDescription}>
+              WCAG 2.2 AA compliance details for the Input component.
+            </p>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Keyboard Interaction</h3>
+              <SpecTable
+                headers={['Key', 'Action']}
+                rows={[
+                  [<kbd key="tab">Tab</kbd>, 'Move focus to / from the input'],
+                  [<kbd key="esc">Escape</kbd>, 'Clear focus (browser default)'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>ARIA Attributes</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Attribute', 'When', 'Purpose']}
+                rows={[
+                  [<code key="for">htmlFor/id</code>, 'Always', 'Associates label with input element'],
+                  [<code key="inv">aria-invalid="true"</code>, 'Error state', 'Communicates validation error'],
+                  [<code key="req">aria-required="true"</code>, 'Required', 'Indicates mandatory field'],
+                  [<code key="desc">aria-describedby</code>, 'Helper/error text', 'Links assistive text to input'],
+                ]}
+              />
+            </div>
+
+            <div style={sharedStyles.card}>
+              <h3 style={sharedStyles.cardTitle}>Visual Requirements</h3>
+              <SpecTable
+                stickyFirstColumn={isMobile}
+                headers={['Requirement', 'Standard', 'Status']}
+                rows={[
+                  ['Text contrast ratio', 'WCAG 1.4.3 — minimum 4.5:1', 'Pass'],
+                  ['Focus indicator', 'WCAG 2.4.7 — visible focus ring', 'Pass (brand color ring)'],
+                  ['Touch target size', 'WCAG 2.5.8 — minimum 44x44px', 'Pass (sm: 36px, md: 40px, lg: 48px)'],
+                  ['Error state', 'WCAG 1.4.1 — not color alone', 'Pass (error message text + red border)'],
+                  ['Required indicator', 'WCAG 1.3.1 — programmatic', 'Pass (required attribute + visual asterisk)'],
+                  ['Placeholder', 'WCAG 1.4.5 — not a label substitute', 'Guidance (always use label prop)'],
+                ]}
+              />
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ========== IMPLEMENTATION TAB ========== */}
+      {activePageTab === 'implementation' && (
+        <>
+          {/* Quick Start */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Quick Start</h2>
-            <div style={{ maxWidth: '600px' }}>
+            <div style={{ maxWidth: breakpoints.sm }}>
               <CodeBlock>{`// Package import
 import { Input } from '@lumen/design-system'
 
@@ -131,228 +365,9 @@ import { Input } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
-          {/* ========== INTERACTIVE PLAYGROUND ========== */}
-          <section style={sharedStyles.section}>
-            <h2 style={sharedStyles.sectionTitle}>Interactive Playground</h2>
-            <p style={sharedStyles.sectionDescription}>
-              Configure input properties to see how they affect the component.
-            </p>
-
-            <div style={sharedStyles.card}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px' }}>
-                {/* Preview/Code */}
-                <div>
-                  <Playground
-                    preview={
-                      <div style={{ padding: spacing.md, width: '100%' }}>
-                        <Input
-                          label="Label"
-                          value={demoValue}
-                          onChange={setDemoValue}
-                          size={demoSize}
-                          width={demoWidth}
-                          disabled={demoDisabled}
-                          error={demoError}
-                          errorMessage={demoError ? 'This field has an error' : undefined}
-                          required={demoRequired}
-                          helperText={demoShowHelper ? 'This is helpful text' : undefined}
-                          startAdornment={demoShowAdornment ? <SearchIcon /> : undefined}
-                          endAdornment={demoShowEndAdornment ? <IconInfoFilled size="sm" color={colors.text.lowEmphasis.onLight} /> : undefined}
-                        />
-                      </div>
-                    }
-                    code={`<Input
-  label="Label"
-  value={value}
-  onChange={setValue}${demoSize !== 'md' ? `\n  size="${demoSize}"` : ''}${demoWidth !== 'md' ? `\n  width="${demoWidth}"` : ''}${demoDisabled ? '\n  disabled' : ''}${demoError ? '\n  error\n  errorMessage="This field has an error"' : ''}${demoRequired ? '\n  required' : ''}${demoShowHelper ? '\n  helperText="This is helpful text"' : ''}${demoShowAdornment ? '\n  startAdornment={<SearchIcon />}' : ''}${demoShowEndAdornment ? '\n  endAdornment={<IconInfoFilled size="sm" />}' : ''}
-/>`}
-                    previewPadding={spacing.xs}
-                  />
-                </div>
-
-                {/* Controls */}
-                <div>
-                  <h3 style={{ ...sharedStyles.cardTitle, marginTop: '0' }}>Properties</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                    {/* Height */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Height
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {(['sm', 'md', 'lg'] as const).map(s => (
-                          <PillButton
-                            key={s}
-                            onClick={() => setDemoSize(s)}
-                            isActive={demoSize === s}
-                          >
-                            {s}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Width */}
-                    <div>
-                      <label style={{ ...typography.label.sm, display: 'block', marginBottom: '8px' }}>
-                        Width
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {(['xs', 'sm', 'md', 'lg', 'full'] as InputWidth[]).map(w => (
-                          <PillButton
-                            key={w}
-                            onClick={() => setDemoWidth(w)}
-                            isActive={demoWidth === w}
-                          >
-                            {w}
-                          </PillButton>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Toggles */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <StyledCheckboxControl checked={demoRequired} onChange={() => setDemoRequired(!demoRequired)} label="Required" />
-                        <StyledCheckboxControl checked={demoShowAdornment} onChange={() => setDemoShowAdornment(!demoShowAdornment)} label="Start Adornment" />
-                        <StyledCheckboxControl checked={demoShowEndAdornment} onChange={() => setDemoShowEndAdornment(!demoShowEndAdornment)} label="End Adornment" />
-                        <StyledCheckboxControl checked={demoShowHelper} onChange={() => setDemoShowHelper(!demoShowHelper)} label="Helper Text" />
-                        <StyledCheckboxControl checked={demoError} onChange={() => setDemoError(!demoError)} label="Error" />
-                        <StyledCheckboxControl checked={demoDisabled} onChange={() => setDemoDisabled(!demoDisabled)} label="Disabled" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          </section>
-
-          {/* ========== DESIGN TOKENS ========== */}
-          <section style={sharedStyles.section}>
-            <CollapsibleSection title="Design Tokens (for custom implementations)">
-              <p style={{ ...sharedStyles.sectionDescription, marginTop: 0 }}>
-                Spacing, color, and typography values used in the Input component. Click any token to copy it.
-              </p>
-
-              {/* Sizes */}
-              <div style={sharedStyles.card}>
-                <h3 style={{ ...sharedStyles.cardTitle, marginTop: 0 }}>Size Specifications</h3>
-                <SpecTable
-                  headers={['Size', 'Height', 'Font Size', 'Padding']}
-                  rows={[
-                    [
-                      'sm',
-                      <PixelValue key="smh" value="36px" />,
-                      <TokenValue key="smfs" token="typography.body.sm.fontSize" value={typography.body.sm.fontSize} />,
-                      <CopyableToken key="smp" token={`0 ${spacing.sm}`} />,
-                    ],
-                    [
-                      'md (default)',
-                      <PixelValue key="mdh" value="40px" />,
-                      <TokenValue key="mdfs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />,
-                      <CopyableToken key="mdp" token={`0 ${spacing.sm}`} />,
-                    ],
-                    [
-                      'lg',
-                      <PixelValue key="lgh" value="48px" />,
-                      <TokenValue key="lgfs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />,
-                      <CopyableToken key="lgp" token={`0 ${spacing.md}`} />,
-                    ],
-                  ]}
-                />
-              </div>
-
-              {/* Typography */}
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Typography</h3>
-                <SpecTable
-                  headers={['Element', 'Font Size', 'Font Weight', 'Line Height']}
-                  rows={[
-                    [
-                      'Label',
-                      <TokenValue key="lfs" token="typography.label.sm.fontSize" value={typography.label.sm.fontSize} />,
-                      <TokenValue key="lfw" token="fontWeights.medium" value="500" />,
-                      <TokenValue key="llh" token="typography.label.sm.lineHeight" value={typography.label.sm.lineHeight} />,
-                    ],
-                    [
-                      'Input text (MD)',
-                      <TokenValue key="ifs" token="typography.body.md.fontSize" value={typography.body.md.fontSize} />,
-                      <TokenValue key="ifw" token="fontWeights.regular" value="400" />,
-                      <TokenValue key="ilh" token="typography.body.md.lineHeight" value={typography.body.md.lineHeight} />,
-                    ],
-                    [
-                      'Helper/Error text',
-                      <TokenValue key="hfs" token="typography.body.xs.fontSize" value={typography.body.xs.fontSize} />,
-                      <TokenValue key="hfw" token="fontWeights.regular" value="400" />,
-                      <TokenValue key="hlh" token="typography.body.xs.lineHeight" value={typography.body.xs.lineHeight} />,
-                    ],
-                  ]}
-                />
-              </div>
-
-              {/* Colors */}
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Colors</h3>
-                <SpecTable
-                  headers={['State', 'Border', 'Background']}
-                  rows={[
-                    [
-                      'Default',
-                      <TokenValue key="db" token="colors.border.midEmphasis.onLight" value={colors.border.midEmphasis.onLight} />,
-                      <TokenValue key="dbg" token="colors.surface.light" value={colors.surface.light} />,
-                    ],
-                    [
-                      'Hover',
-                      <TokenValue key="hb" token="colors.border.highEmphasis.onLight" value={colors.border.highEmphasis.onLight} />,
-                      <TokenValue key="hbg" token="colors.surface.light" value={colors.surface.light} />,
-                    ],
-                    [
-                      'Focus',
-                      <TokenValue key="fb" token="colors.brand.default" value={colors.brand.default} />,
-                      <TokenValue key="fbg" token="colors.surface.light" value={colors.surface.light} />,
-                    ],
-                    [
-                      'Error',
-                      <TokenValue key="eb" token="colors.status.important" value={colors.status.important} />,
-                      <TokenValue key="ebg" token="colors.surface.light" value={colors.surface.light} />,
-                    ],
-                    [
-                      'Disabled',
-                      <TokenValue key="dib" token="colors.border.lowEmphasis.onLight" value={colors.border.lowEmphasis.onLight} />,
-                      <TokenValue key="dibg" token="colors.surface.disabled.onLight" value={colors.surface.disabled.onLight} />,
-                    ],
-                  ]}
-                />
-              </div>
-
-              {/* Other */}
-              <div style={sharedStyles.card}>
-                <h3 style={sharedStyles.cardTitle}>Other</h3>
-                <SpecTable
-                  headers={['Property', 'Token', 'Value']}
-                  rows={[
-                    ['Border width', <CopyableToken key="bw" token="1.5px (fixed)" />, <PixelValue key="bwv" value="1.5px" />],
-                    ['Border radius', <CopyableToken key="br" token="borderRadiusSemantics.input" />, <PixelValue key="brv" value={borderRadiusSemantics.input} />],
-                    ['Label gap', <CopyableToken key="lg" token="spacing['2xs']" />, <PixelValue key="lgv" value={spacing['2xs']} />],
-                    ['Focus ring', <CopyableToken key="fr" token="box-shadow: 0 0 0 1px brand.default" />, <PixelValue key="frv" value={`0 0 0 1px ${colors.brand.default}`} />],
-                  ]}
-                />
-              </div>
-            </CollapsibleSection>
-          </section>
-        </>
-      )}
-
-      {/* ========== IMPLEMENTATION TAB ========== */}
-      {activePageTab === 'implementation' && (
-        <>
-          {/* ========== USAGE ========== */}
+          {/* Usage */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Usage</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Import</h3>
-              <CodeBlock>{`import { Input } from '@/components'
-import type { InputProps } from '@/components'`}</CodeBlock>
-            </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Basic Usage</h3>
@@ -382,24 +397,25 @@ import type { InputProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
-          {/* ========== PROPS ========== */}
+          {/* Props */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Props</h2>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Input Props</h3>
               <SpecTable
+                stickyFirstColumn={isMobile}
                 headers={['Prop', 'Type', 'Default', 'Description']}
                 rows={[
                   [<code key="l">label</code>, <code key="lt">string</code>, '—', 'Label text above the input'],
                   [<code key="ht">helperText</code>, <code key="htt">string</code>, '—', 'Helper text below the input'],
                   [<code key="em">errorMessage</code>, <code key="emt">string</code>, '—', 'Error message (shows error state)'],
                   [<code key="e">error</code>, <code key="et">boolean</code>, <code key="ed">false</code>, 'Force error state without message'],
-                  [<code key="s">size</code>, <code key="st">{"'sm' | 'md' | 'lg'"}</code>, <code key="sd">{"'md'"}</code>, 'Visual size'],
-                  [<code key="fw">fullWidth</code>, <code key="fwt">boolean</code>, <code key="fwd">false</code>, 'Makes input take full container width'],
-                  [<code key="sa">startAdornment</code>, <code key="sat">ReactNode</code>, '—', 'Element before the input text'],
-                  [<code key="ea">endAdornment</code>, <code key="eat">ReactNode</code>, '—', 'Element after the input text'],
-                  [<code key="oc">onChange</code>, <code key="oct">{'(value: string, event) => void'}</code>, '—', 'Change handler'],
+                  [<code key="s">size</code>, <code key="st">&apos;sm&apos; | &apos;md&apos; | &apos;lg&apos;</code>, <code key="sd">&apos;md&apos;</code>, 'Visual size'],
+                  [<code key="fw">fullWidth</code>, <code key="fwt">boolean</code>, <code key="fwd">false</code>, 'Full container width'],
+                  [<code key="sa">startAdornment</code>, <code key="sat">ReactNode</code>, '—', 'Element before input text'],
+                  [<code key="ea">endAdornment</code>, <code key="eat">ReactNode</code>, '—', 'Element after input text'],
+                  [<code key="oc">onChange</code>, <code key="oct">(value, event) =&gt; void</code>, '—', 'Change handler (value-first)'],
                   [<code key="r">required</code>, <code key="rt">boolean</code>, <code key="rd">false</code>, 'Marks the field as required'],
                   [<code key="d">disabled</code>, <code key="dt">boolean</code>, <code key="dd">false</code>, 'Disables the input'],
                   [<code key="p">placeholder</code>, <code key="pt">string</code>, '—', 'Placeholder text'],
@@ -408,30 +424,9 @@ import type { InputProps } from '@/components'`}</CodeBlock>
             </div>
           </section>
 
-          {/* ========== DESIGN GUIDANCE ========== */}
+          {/* Design Guidance */}
           <section style={sharedStyles.section}>
             <h2 style={sharedStyles.sectionTitle}>Design Guidance</h2>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>When to Use</h3>
-              <ul style={{ paddingLeft: '20px', listStyleType: 'disc', color: colors.text.highEmphasis.onLight, lineHeight: '1.8', marginBottom: 0 }}>
-                <li>Collecting short text input (names, emails, search queries)</li>
-                <li>Form fields that need labels, validation, and error messaging</li>
-                <li>Fields with prefix/suffix adornments (currency, search icons)</li>
-              </ul>
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>When Not to Use</h3>
-              <SpecTable
-                headers={['Scenario', 'Use Instead']}
-                rows={[
-                  ['Multi-line text', 'Textarea component'],
-                  ['Selecting from predefined options', 'Select, Radio, or Checkbox'],
-                  ['Date/time input', 'DatePicker component'],
-                ]}
-              />
-            </div>
 
             <div style={sharedStyles.card}>
               <h3 style={sharedStyles.cardTitle}>Best Practices</h3>
@@ -445,19 +440,6 @@ import type { InputProps } from '@/components'`}</CodeBlock>
                   ['Group related inputs together', 'Scatter related fields across the form'],
                 ]}
               />
-            </div>
-
-            <div style={sharedStyles.card}>
-              <h3 style={sharedStyles.cardTitle}>Accessibility</h3>
-              <ul style={{ paddingLeft: '20px', listStyleType: 'disc', color: colors.text.highEmphasis.onLight, lineHeight: '1.8', marginBottom: 0 }}>
-                <li>Label associated via <code>htmlFor</code>/<code>id</code> pairing</li>
-                <li><code>aria-invalid</code> set on error state</li>
-                <li><code>aria-describedby</code> links helper text and error messages</li>
-                <li>Error messages use <code>role=&quot;alert&quot;</code> for live announcements</li>
-                <li>Required indicator uses visual asterisk plus <code>required</code> attribute</li>
-                <li>Focus ring visible for keyboard navigation</li>
-                <li>Placeholder text is supplemental — not a replacement for labels</li>
-              </ul>
             </div>
           </section>
         </>
