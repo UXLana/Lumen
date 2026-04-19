@@ -28,8 +28,26 @@ This skill accepts requirements from multiple sources:
 | **External URL** | Confluence, Notion, or other spec URLs | Fetches content and extracts requirements. |
 | **Mixed** | Any combination of the above | Merges all sources, deduplicates, and flags conflicts. |
 
+## Repo Mode Detection (REQUIRED — run before File Locations)
+
+Before deciding where to write files, detect which repo the user invoked the skill from. There are two valid contexts:
+
+| Mode | Trigger | Where to write |
+|------|---------|----------------|
+| **Embedded** | cwd is the Lumen DS repo (`package.json` `name === '@lumen/design-system'`) | Nest under `app/prototypes/[project]/` |
+| **Standalone** | cwd is a Lumen-consuming prototype (`node_modules/@lumen/design-system` exists AND `name !== '@lumen/design-system'`) — created by `/spinup-lumen-prototype` | Write at the top of `app/`. The whole repo IS the prototype. |
+
+How to detect:
+1. Read the cwd's `package.json` `name` field.
+2. If `'@lumen/design-system'` → **Embedded**.
+3. Else if `node_modules/@lumen/design-system` exists (link or install) → **Standalone**.
+4. Else → not a Lumen project. Stop and ask the user where to build.
+
+State the detected mode in your first response, e.g. *"Detected standalone mode — building at `app/`."*
+
 ## File Locations
 
+### Embedded mode (Lumen DS repo)
 | Path | Purpose |
 |------|---------|
 | `app/prototypes/[project]/` | Prototype root directory |
@@ -37,6 +55,18 @@ This skill accepts requirements from multiple sources:
 | `app/prototypes/[project]/[screen]/page.tsx` | Individual screen pages |
 | `app/prototypes/[project]/README.md` | Prototype manifest (see below) |
 | `app/prototypes/[project]/screenshots/` | Captured PNGs of each screen + state |
+
+### Standalone mode (`~/Desktop/CodeWork/[project]/`)
+| Path | Purpose |
+|------|---------|
+| `app/` | Prototype root (the whole repo is the prototype) |
+| `app/page.tsx` | Main entry screen |
+| `app/[screen]/page.tsx` | Individual screen pages |
+| `README.md` (repo root) | Prototype manifest (see below) |
+| `screenshots/` (repo root) | Captured PNGs of each screen + state |
+| `components/[Name]/[Name].tsx` | Prototype-local components (do NOT write into the linked Lumen DS) |
+
+In standalone mode, `[project]` does not appear in the path — the repo folder name already serves that role. Use `/` (not `/prototypes/[project]/`) for all routes in the README screens table and any inter-screen `<Link>`s.
 
 ### README.md Structure (Prototype Manifest)
 
