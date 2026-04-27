@@ -1,4 +1,4 @@
-# MTR Design System — Setup Guide
+# Lumen Design System — Setup Guide
 
 > Get up and running in ~15 minutes.
 
@@ -19,8 +19,8 @@
 ## 1. Clone & Install
 
 ```bash
-git clone git@github.com:UXLana/mtr-design-system.git
-cd mtr-design-system
+git clone git@github.com:UXLana/Lumen.git
+cd Lumen
 npm install
 ```
 
@@ -39,7 +39,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the design system doc
 ## 3. Project Structure
 
 ```
-mtr-design-system/
+Lumen/
 ├── app/                    # Next.js pages & component docs
 │   ├── components/         # Component documentation pages
 │   └── prototypes/         # Prototype screens
@@ -53,9 +53,9 @@ mtr-design-system/
 │   └── themes/
 │       ├── theme-interface.ts   # TypeScript interface all themes implement
 │       ├── theme-provider.tsx   # React Context: useTheme(), useColors()
-│       ├── trace.ts             # Trace product theme (Figma source of truth)
-│       ├── rid.ts               # RID theme
-│       ├── university.ts        # University theme
+│       ├── lumen.ts             # Primary light theme
+│       ├── lumen-dark.ts        # Lumen dark variant
+│       ├── eden.ts              # Coastal teal + terracotta
 │       └── ...
 ├── .claude/
 │   ├── commands/           # Claude Code skills (slash commands)
@@ -155,12 +155,15 @@ The design system supports multiple product themes. Each theme implements the `T
 
 | Theme | File | Description |
 |-------|------|-------------|
-| Trace | `trace.ts` | Primary product theme (Figma source of truth) |
-| RID | `rid.ts` | RID product theme |
-| RID Dark | `rid-dark.ts` | RID dark mode variant |
-| University | `university.ts` | Training/education theme |
-| Earth | `earth.ts` | Earth-toned variant |
-| Claude Light | `claude-light.ts` | Claude-inspired light theme |
+| Lumen | `lumen.ts` | Primary light theme |
+| Lumen Dark | `lumen-dark.ts` | Lumen dark variant |
+| Eden | `eden.ts` | Coastal teal + terracotta, full-pill controls |
+| Foliage | `foliage.ts` | Forest green + copper, editorial serif |
+| Foliage Dark | `foliage-dark.ts` | Moss + amber on charcoal |
+| Pampas | `pampas.ts` | Terracotta + sage on sandy paper |
+| Fall | `fall.ts` | Brown + slate-teal, classic serif |
+| Spring | `spring.ts` | Meadow green + ochre, airy |
+| Rainy Night | `rainy-night.ts` | Cool blue surfaces, warm orange pop |
 
 ### Token sync workflow (Figma → Code)
 
@@ -212,4 +215,4 @@ For the full agentic architecture (orchestrator, skills, council agents), see:
 
 ## Questions?
 
-Reach out to Lana Holston (@UXLana) — Design Lead, MTR Design System.
+Reach out to Lana Holston (@UXLana) — Design Lead, Lumen Design System.

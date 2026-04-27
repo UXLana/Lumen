@@ -1,13 +1,13 @@
 ---
 name: package-validator
-description: Pre-publish validation for the MTR Design System package. Runs 5 automated checks — barrel exports, token resolution, theme completeness, CLAUDE.md API accuracy, and package.json sanity — and outputs a structured PASS/WARN/FAIL report. Use this skill whenever the user mentions "validate package", "pre-publish check", "check package", "ready to publish", "publish check", "check exports", "verify package", or before any npm pack / tarball creation. Also use proactively before any package release, tarball build, or starter repo update.
+description: Pre-publish validation for the Lumen Design System package. Runs 5 automated checks — barrel exports, token resolution, theme completeness, CLAUDE.md API accuracy, and package.json sanity — and outputs a structured PASS/WARN/FAIL report. Use this skill whenever the user mentions "validate package", "pre-publish check", "check package", "ready to publish", "publish check", "check exports", "verify package", or before any npm pack / tarball creation. Also use proactively before any package release, tarball build, or starter repo update.
 ---
 
 # Package Validator
 
 $ARGUMENTS
 
-Pre-publish validation for the MTR Design System package. This skill exists because a prototype starter testing session surfaced an entire class of bugs that silently ship — hardcoded `file:` paths in package.json, tokens resolving to undefined in consumer builds, documented components that aren't actually exported, wrong prop names in CLAUDE.md. These bugs are invisible to the author but block every consumer.
+Pre-publish validation for the Lumen Design System package. This skill exists because a prototype starter testing session surfaced an entire class of bugs that silently ship — hardcoded `file:` paths in package.json, tokens resolving to undefined in consumer builds, documented components that aren't actually exported, wrong prop names in CLAUDE.md. These bugs are invisible to the author but block every consumer.
 
 Run all 5 checks below, then output the report.
 
@@ -32,12 +32,12 @@ Run all 5 checks below, then output the report.
 
 ## Check 2: Token Resolution
 
-**Why:** `tokensToVarRefs()` runs at module init and produces `var(--mtr-*)` strings. But if the function has a bug or the token structure changes, values silently resolve to `undefined`. DS-internal components work (they use the `@/` alias) but consumer imports break.
+**Why:** `tokensToVarRefs()` runs at module init and produces `var(--lumen-*)` strings. But if the function has a bug or the token structure changes, values silently resolve to `undefined`. DS-internal components work (they use the `@/` alias) but consumer imports break.
 
 **How:**
 1. Read `styles/design-tokens.ts`
 2. Check that `tokensToVarRefs()` is called and its output is exported
-3. Spot-check key token paths — verify they produce `var(--mtr-*)` strings, not raw hex or undefined:
+3. Spot-check key token paths — verify they produce `var(--lumen-*)` strings, not raw hex or undefined:
    - `colors.brand.default`
    - `colors.surface.light`
    - `colors.text.highEmphasis.onLight`
@@ -45,11 +45,11 @@ Run all 5 checks below, then output the report.
    - `colors.action.primary`
 4. Check `spacing` — should be numeric keys (`spacing[1]`, `spacing[4]`), not named (`spacing.xs`)
 5. Check `spacingSemantics` — should have named keys (`spacingSemantics.xs`, `.md`, `.xl`)
-6. Check `borderRadius` and `borderRadiusSemantics` — verify `var(--mtr-radius-*)` pattern
+6. Check `borderRadius` and `borderRadiusSemantics` — verify `var(--lumen-radius-*)` pattern
 7. Flag any exported token value that is `undefined`, empty string, or raw hex (not wrapped in `var()`)
 
 **Verdict:**
-- PASS: All spot-checked tokens resolve to `var(--mtr-*)` strings
+- PASS: All spot-checked tokens resolve to `var(--lumen-*)` strings
 - WARN: Deprecated aliases exist but map correctly
 - FAIL: Any token resolves to undefined, empty, or raw value
 
@@ -156,7 +156,7 @@ Output the report in this exact structure:
 
 ```
 ═══════════════════════════════════════════════════════
-  MTR DESIGN SYSTEM — PRE-PUBLISH VALIDATION REPORT
+  LUMEN DESIGN SYSTEM — PRE-PUBLISH VALIDATION REPORT
 ═══════════════════════════════════════════════════════
 
   Package: [name from package.json]

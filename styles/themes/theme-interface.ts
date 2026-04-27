@@ -9,7 +9,7 @@
  * vars at runtime so themes look visually distinct beyond just color.
  *
  * To create a new theme:
- * 1. Copy trace.ts as a starting point
+ * 1. Copy lumen.ts as a starting point
  * 2. Override every value in colors, typography, borderRadius, elevation, spacing, iconStyle
  * 3. Register it in theme-provider.ts
  */

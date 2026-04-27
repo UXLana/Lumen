@@ -41,7 +41,7 @@ function tokensToVarRefs(obj, prefix = '--lumen') {
 }
 
 // ---------------------------------------------------------------------------
-// 2.  Parse the trace theme structure from source (avoids TS compilation)
+// 2.  Parse the primary theme structure from source (avoids TS compilation)
 //     We only need the *keys* — tokensToVarRefs ignores the values.
 // ---------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ function tokensToVarRefs(obj, prefix = '--lumen') {
  * We run a lightweight eval after stripping TS-specific syntax.
  */
 function extractThemeStructure() {
-  const src = readFileSync(resolve(ROOT, 'styles/themes/trace.ts'), 'utf8');
+  const src = readFileSync(resolve(ROOT, 'styles/themes/lumen.ts'), 'utf8');
 
   // Extract just the colors block key-structure by parsing all leaf keys
   // We need: colors, typography, borderRadius, elevation, spacing, iconStyle, componentRadius
