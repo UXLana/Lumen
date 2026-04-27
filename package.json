@@ -48,6 +48,7 @@
   "scripts": {
     "dev": "next dev -p 3333",
     "build:pkg": "tsup",
+    "prepare": "npm run build:pkg",
     "prepublishOnly": "npm run audit:contrast && npm run build:pkg",
     "build": "next build",
     "start": "next start",
