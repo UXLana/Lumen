@@ -100,6 +100,12 @@ export interface FullScreenModalProps {
   size?: ModalSize
   /** Number of body columns: 1, 2, or 3. Responsive. */
   columns?: FullScreenModalColumns
+  /**
+   * Custom CSS `grid-template-columns` value. When provided, overrides
+   * `columns` and lets callers define asymmetric or resizable column
+   * layouts (e.g. `"280px 1fr 360px"`).
+   */
+  columnTemplate?: string
   /** Body content — use FullScreenModalPanel for structured layout */
   children: React.ReactNode
   /** 0–2 header action buttons */
@@ -120,12 +126,22 @@ export interface FullScreenModalProps {
   className?: string
 }
 
+/** Panel padding preset */
+export type FullScreenModalPanelPadding = 'default' | 'sm' | 'none'
+
 export interface FullScreenModalPanelProps {
   children: React.ReactNode
   /** Panel background: 'light' or 'muted' */
   background?: FullScreenModalPanelBackground
   /** Border side: 'left', 'right', or 'none' */
   border?: FullScreenModalPanelBorder
+  /**
+   * Inner padding preset.
+   * - `'default'` (default): `40px 48px 48px` — standard reading/form panel.
+   * - `'sm'`: `16px 20px` — compact tools/sidebar panel.
+   * - `'none'`: `0` — caller fully controls inner spacing.
+   */
+  padding?: FullScreenModalPanelPadding
   /** Additional CSS class */
   className?: string
   /** Sticky panel with independent scrolling */
@@ -251,6 +267,7 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
       variant = 'fullscreen',
       size = 'lg',
       columns = 1,
+      columnTemplate,
       children,
       headerButtons,
       closeOnEscape = true,
@@ -296,11 +313,12 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
     if (!open) return null
 
     const gridTemplateColumns =
-      columns === 3
+      columnTemplate ??
+      (columns === 3
         ? 'repeat(3, 1fr)'
         : columns === 2
           ? 'repeat(2, 1fr)'
-          : '1fr'
+          : '1fr')
 
     const sizeConfig = floatingSizeConfig[size]
 
@@ -489,7 +507,17 @@ if (typeof document !== 'undefined') {
  * ```
  */
 export const FullScreenModalPanel = forwardRef<HTMLDivElement, FullScreenModalPanelProps>(
-  ({ children, background = 'light', border = 'none', className, sticky = false }, ref) => {
+  (
+    {
+      children,
+      background = 'light',
+      border = 'none',
+      padding = 'default',
+      className,
+      sticky = false,
+    },
+    ref,
+  ) => {
     const colors = useColors()
 
     const borderStyle: React.CSSProperties =
@@ -499,9 +527,12 @@ export const FullScreenModalPanel = forwardRef<HTMLDivElement, FullScreenModalPa
           ? { borderRight: `1px solid ${colors.border.lowEmphasis.onLight}` }
           : {}
 
+    const paddingValue =
+      padding === 'none' ? 0 : padding === 'sm' ? '16px 20px' : '40px 48px 48px'
+
     const panelStyle: React.CSSProperties = {
       width: '100%',
-      padding: '40px 48px 48px',
+      padding: paddingValue,
       display: 'flex',
       flexDirection: 'column',
       transition: 'background-color 200ms',

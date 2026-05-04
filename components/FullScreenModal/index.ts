@@ -10,6 +10,7 @@ export type {
   FullScreenModalHeaderButton,
   FullScreenModalPanelBackground,
   FullScreenModalPanelBorder,
+  FullScreenModalPanelPadding,
   ModalVariant,
   ModalSize,
 } from './FullScreenModal'
