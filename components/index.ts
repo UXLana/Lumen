@@ -64,7 +64,7 @@ export type { CheckboxProps, CheckboxGroupProps, CheckboxState } from './Checkbo
 
 // Chip
 export { Chip, ChipGroup } from './Chip'
-export type { ChipProps, ChipState, ChipLeftContent, ChipGroupProps } from './Chip'
+export type { ChipProps, ChipSize, ChipState, ChipLeftContent, ChipGroupProps } from './Chip'
 
 // CommentBox
 export { CommentBox } from './CommentBox'
@@ -144,6 +144,18 @@ export type { DividerProps } from './Divider'
 export { EmptyState } from './EmptyState'
 export type { EmptyStateProps } from './EmptyState'
 
+// Filter (compound — pairs with Drawer)
+export { Filter } from './Filter'
+export type {
+  FilterProps,
+  FilterValue,
+  FilterValues,
+  FilterSectionProps,
+  FilterCheckboxProps,
+  FilterRadioProps,
+  FilterClearAllProps,
+} from './Filter'
+
 // FullScreenModal
 export { FullScreenModal, FullScreenModalPanel } from './FullScreenModal'
 export type {
@@ -153,6 +165,7 @@ export type {
   FullScreenModalHeaderButton,
   FullScreenModalPanelBackground,
   FullScreenModalPanelBorder,
+  FullScreenModalPanelPadding,
   ModalVariant,
   ModalSize,
 } from './FullScreenModal'

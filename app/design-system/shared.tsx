@@ -283,6 +283,7 @@ export const navSections: LeftNavSection[] = [
       { id: 'combobox', label: 'Combobox', href: '/components/combobox' },
       { id: 'data-table', label: 'Data Table', href: '/components/data-table' },
       { id: 'divider', label: 'Divider', href: '/components/divider' },
+      { id: 'filter', label: 'Filter', href: '/components/filter' },
       { id: 'full-screen-modal', label: 'Modal', href: '/components/full-screen-modal' },
       { id: 'image-carousel', label: 'Image Carousel', href: '/components/image-carousel' },
       { id: 'input', label: 'Input', href: '/components/input' },
