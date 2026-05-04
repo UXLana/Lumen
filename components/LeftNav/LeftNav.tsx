@@ -965,7 +965,7 @@ function LeftNavItemComponent({
 interface RailItemProps {
   section: LeftNavSection
   sectionStyle: React.CSSProperties
-  sectionRef: React.RefObject<HTMLDivElement>
+  sectionRef: React.RefObject<HTMLDivElement | null>
   showPopover: boolean
   popoverPosition: { top: number; left: number }
   activeItemId?: string
