@@ -14,13 +14,14 @@ import {
   spacing,
   borderRadius,
   transitionPresets,
+  fontWeights,
 } from '../../styles/design-tokens'
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-export type AccordionVariant = 'default' | 'filled' | 'inverted'
+export type AccordionVariant = 'default' | 'filled' | 'inverted' | 'eyebrow'
 
 export interface AccordionItemProps {
   /** Unique identifier for the item */
@@ -68,24 +69,30 @@ export interface AccordionProps {
 // ICONS
 // =============================================================================
 
-const ChevronIcon = ({ expanded }: { expanded: boolean }) => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{
-      transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
-      transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-    }}
-  >
-    <polyline points="7 5 12 10 7 15" />
-  </svg>
-)
+const ChevronIcon = ({ expanded, flip = false }: { expanded: boolean; flip?: boolean }) => {
+  // flip=true → vertical chevron that rotates 0°↔180° (down → up). Used by 'eyebrow' variant.
+  // flip=false → horizontal chevron that rotates 0°↔90° (right → down). Default for 'default'/'filled'/'inverted'.
+  const points = flip ? '5 7 10 12 15 7' : '7 5 12 10 7 15'
+  const expandedRotation = flip ? 'rotate(180deg)' : 'rotate(90deg)'
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{
+        transform: expanded ? expandedRotation : 'rotate(0deg)',
+        transition: 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+    >
+      <polyline points={points} />
+    </svg>
+  )
+}
 
 const MenuIcon = () => (
   <svg
@@ -287,6 +294,38 @@ const styles = {
     padding: `${spacing['2xs']} ${spacing.md} ${spacing.md} 36px`, // 20px icon + 8px gap + 8px extra = 36px to align under title
   },
 
+  // Eyebrow variant: uppercase low-emphasis section header with right-side chevron.
+  // Used for filter panels, settings sections, and other sub-sections inside drawers/sidebars.
+  itemEyebrow: {
+    borderBottom: `1px solid ${colors.border.lowEmphasis.onLight}`,
+    padding: `${spacing.md} 0`,
+  },
+
+  headerEyebrow: {
+    padding: `0 ${spacing.md}`,
+    color: colors.text.lowEmphasis.onLight,
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.04em',
+  },
+
+  titleEyebrow: {
+    ...typography.label.sm,
+    fontWeight: fontWeights.semibold,
+    color: colors.text.lowEmphasis.onLight,
+    margin: 0,
+    flex: 1,
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap' as const,
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.04em',
+  },
+
+  contentPaddingEyebrow: {
+    padding: `${spacing.sm} ${spacing.md} 0`,
+  },
+
   divider: {
     height: '1px',
     background: colors.border.lowEmphasis.onLight,
@@ -319,8 +358,9 @@ export function AccordionItem({
   const isExpanded = expandedIds.includes(id)
   const isFilled = variant === 'filled'
   const isInverted = variant === 'inverted'
+  const isEyebrow = variant === 'eyebrow'
   const isCardStyle = isFilled || isInverted
-  const isDefaultFullWidth = !isCardStyle && fullWidth
+  const isDefaultFullWidth = !isCardStyle && !isEyebrow && fullWidth
 
   // Measure content height when expanded or when children change
   useEffect(() => {
@@ -377,6 +417,7 @@ export function AccordionItem({
   )
 
   const getItemStyle = () => {
+    if (isEyebrow) return { ...styles.item, ...styles.itemEyebrow }
     if (isFilled) return { ...styles.item, ...styles.itemFilled }
     if (isInverted) return { ...styles.item, ...styles.itemInverted }
     return styles.item
@@ -384,11 +425,13 @@ export function AccordionItem({
 
   const getHeaderHoverStyle = () => {
     if (!isHovered || disabled) return {}
+    if (isEyebrow) return {}
     if (isInverted) return styles.headerHoverInverted
     return styles.headerHover
   }
 
   const getContentPaddingStyle = () => {
+    if (isEyebrow) return styles.contentPaddingEyebrow
     if (isCardStyle) return styles.contentPaddingFilled
     if (isDefaultFullWidth) return styles.contentPaddingDefaultFullWidth
     return styles.contentPaddingDefault
@@ -405,6 +448,7 @@ export function AccordionItem({
           ...styles.header,
           ...(isDefaultFullWidth ? styles.headerFullWidth : {}),
           ...(isCardStyle ? styles.headerFilled : {}),
+          ...(isEyebrow ? styles.headerEyebrow : {}),
           ...(disabled ? styles.headerDisabled : {}),
           ...getHeaderHoverStyle(),
         }}
@@ -414,10 +458,17 @@ export function AccordionItem({
         onMouseLeave={() => setIsHovered(false)}
       >
         <div style={styles.expander}>
-          <span style={styles.iconWrapper}>
-            {icon || <ChevronIcon expanded={isExpanded} />}
-          </span>
-          <h3 style={styles.title}>{title}</h3>
+          {!isEyebrow && (
+            <span style={styles.iconWrapper}>
+              {icon || <ChevronIcon expanded={isExpanded} />}
+            </span>
+          )}
+          <h3 style={isEyebrow ? styles.titleEyebrow : styles.title}>{title}</h3>
+          {isEyebrow && (
+            <span style={{ ...styles.iconWrapper, color: 'currentColor' }}>
+              <ChevronIcon expanded={isExpanded} flip />
+            </span>
+          )}
         </div>
 
         {value && (
@@ -484,7 +535,7 @@ export function AccordionItem({
         </div>
       </div>
 
-      {!isCardStyle && <div style={styles.divider} />}
+      {!isCardStyle && !isEyebrow && <div style={styles.divider} />}
     </div>
   )
 }
