@@ -18,7 +18,11 @@ export type ChipState = 'enabled' | 'hover' | 'disabled' | 'dragged' | 'error'
 
 export type ChipLeftContent = 'none' | 'icon' | 'avatar'
 
+export type ChipSize = 'md' | 'lg'
+
 export interface ChipProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'> {
+  /** Visual size — 'md' (32px, default) or 'lg' (56px) */
+  size?: ChipSize
   /** Whether the chip is selected */
   selected?: boolean
   /** Content to show on the left side */
@@ -49,13 +53,45 @@ export interface ChipProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'o
 // STYLE HELPERS
 // =============================================================================
 
-const CHIP_HEIGHT = 32
-const CHIP_ICON_SIZE = 18
-const CHIP_AVATAR_SIZE = 24
-const CHIP_GAP = 8
-const CHIP_PADDING_Y = 7
-const CHIP_PADDING_X = 12
-const CHIP_PADDING_X_WITH_AVATAR = 4 // smaller left padding when avatar present
+interface ChipDims {
+  height: number
+  iconSize: number
+  avatarSize: number
+  gap: number
+  paddingY: number
+  paddingX: number
+  paddingXWithAvatar: number
+  fontSize: string
+  lineHeight: string
+  fontWeight: string
+}
+
+const CHIP_SIZES: Record<ChipSize, ChipDims> = {
+  md: {
+    height: 32,
+    iconSize: 18,
+    avatarSize: 24,
+    gap: 8,
+    paddingY: 7,
+    paddingX: 12,
+    paddingXWithAvatar: 4, // smaller left padding when avatar present
+    fontSize: typography.body.sm.fontSize,
+    lineHeight: typography.body.sm.lineHeight,
+    fontWeight: fontWeights.regular,
+  },
+  lg: {
+    height: 56,
+    iconSize: 24,
+    avatarSize: 40,
+    gap: 12,
+    paddingY: 16,
+    paddingX: 20,
+    paddingXWithAvatar: 8,
+    fontSize: typography.body.md.fontSize,
+    lineHeight: typography.body.md.lineHeight,
+    fontWeight: fontWeights.medium,
+  },
+}
 
 const DRAG_SHADOW = '0px 0px 4px 0px rgba(0, 0, 0, 0.13), 0px 3px 8px 0px rgba(0, 0, 0, 0.1)'
 const ERROR_BORDER_COLOR = '#DC0C22'
@@ -69,6 +105,7 @@ function getChipStyles(
   isHovered: boolean,
   isFocusVisible: boolean,
   hasAvatar: boolean,
+  dims: ChipDims,
 ): React.CSSProperties {
   const effectiveState = state === 'enabled' && isHovered ? 'hover' : state
   const isError = state === 'error'
@@ -117,16 +154,16 @@ function getChipStyles(
     boxShadow = `0 0 0 ${FOCUS_RING_OFFSET} ${FOCUS_RING_COLOR}`
   }
 
-  const paddingLeft = hasAvatar ? CHIP_PADDING_X_WITH_AVATAR : CHIP_PADDING_X
+  const paddingLeft = hasAvatar ? dims.paddingXWithAvatar : dims.paddingX
 
   return {
     display: 'inline-flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: `${CHIP_GAP}px`,
-    height: `${CHIP_HEIGHT}px`,
-    padding: `${CHIP_PADDING_Y}px ${CHIP_PADDING_X}px ${CHIP_PADDING_Y}px ${paddingLeft}px`,
+    gap: `${dims.gap}px`,
+    height: `${dims.height}px`,
+    padding: `${dims.paddingY}px ${dims.paddingX}px ${dims.paddingY}px ${paddingLeft}px`,
     borderRadius: borderRadiusSemantics.chip,
     background,
     color: textColor,
@@ -135,9 +172,9 @@ function getChipStyles(
     opacity,
     cursor,
     fontFamily: fontFamilies.body,
-    fontSize: typography.body.sm.fontSize,
-    fontWeight: fontWeights.regular,
-    lineHeight: typography.body.sm.lineHeight,
+    fontSize: dims.fontSize,
+    fontWeight: dims.fontWeight,
+    lineHeight: dims.lineHeight,
     whiteSpace: 'nowrap',
     userSelect: 'none',
     transition: 'background 150ms ease, box-shadow 150ms ease, border-color 150ms ease',
@@ -155,9 +192,16 @@ interface ChipDeleteButtonProps {
   disabled?: boolean
   onDark?: boolean
   chipLabel?: string
+  iconSize: number
 }
 
-const ChipDeleteButton: React.FC<ChipDeleteButtonProps> = ({ onClick, disabled, onDark, chipLabel }) => {
+const ChipDeleteButton: React.FC<ChipDeleteButtonProps> = ({
+  onClick,
+  disabled,
+  onDark,
+  chipLabel,
+  iconSize,
+}) => {
   const [isHovered, setIsHovered] = useState(false)
 
   const iconColor = onDark
@@ -181,8 +225,8 @@ const ChipDeleteButton: React.FC<ChipDeleteButtonProps> = ({ onClick, disabled, 
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: `${CHIP_ICON_SIZE}px`,
-        height: `${CHIP_ICON_SIZE}px`,
+        width: `${iconSize}px`,
+        height: `${iconSize}px`,
         padding: 0,
         margin: 0,
         border: 'none',
@@ -195,8 +239,8 @@ const ChipDeleteButton: React.FC<ChipDeleteButtonProps> = ({ onClick, disabled, 
       }}
     >
       <svg
-        width="18"
-        height="18"
+        width={iconSize}
+        height={iconSize}
         viewBox="0 0 18 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -221,15 +265,16 @@ const ChipDeleteButton: React.FC<ChipDeleteButtonProps> = ({ onClick, disabled, 
 interface ChipAvatarProps {
   src: string
   alt: string
+  size: number
 }
 
-const ChipAvatar: React.FC<ChipAvatarProps> = ({ src, alt }) => (
+const ChipAvatar: React.FC<ChipAvatarProps> = ({ src, alt, size }) => (
   <img
     src={src}
     alt={alt}
     style={{
-      width: `${CHIP_AVATAR_SIZE}px`,
-      height: `${CHIP_AVATAR_SIZE}px`,
+      width: `${size}px`,
+      height: `${size}px`,
       borderRadius: '50%',
       objectFit: 'cover',
       flexShrink: 0,
@@ -257,6 +302,7 @@ const ChipAvatar: React.FC<ChipAvatarProps> = ({ src, alt }) => (
 export const Chip = forwardRef<HTMLDivElement, ChipProps>(
   (
     {
+      size = 'md',
       selected = false,
       leftContent = 'none',
       icon,
@@ -281,6 +327,8 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
     const [isHovered, setIsHovered] = useState(false)
     const [isFocusVisible, setIsFocusVisible] = useState(false)
 
+    const dims = CHIP_SIZES[size]
+
     const state: ChipState = disabled
       ? 'disabled'
       : error
@@ -288,7 +336,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
         : 'enabled'
 
     const hasAvatar = leftContent === 'avatar'
-    const chipStyles = getChipStyles(state, selected, isHovered, isFocusVisible, hasAvatar)
+    const chipStyles = getChipStyles(state, selected, isHovered, isFocusVisible, hasAvatar, dims)
 
     // Extract plain text from children for aria-label on delete button
     const labelText = typeof children === 'string' ? children : ''
@@ -376,7 +424,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
         {...props}
       >
         {leftContent === 'avatar' && avatarSrc && (
-          <ChipAvatar src={avatarSrc} alt={avatarAlt} />
+          <ChipAvatar src={avatarSrc} alt={avatarAlt} size={dims.avatarSize} />
         )}
 
         {leftContent === 'icon' && icon && (
@@ -385,8 +433,8 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: `${CHIP_ICON_SIZE}px`,
-              height: `${CHIP_ICON_SIZE}px`,
+              width: `${dims.iconSize}px`,
+              height: `${dims.iconSize}px`,
               flexShrink: 0,
             }}
           >
@@ -402,6 +450,7 @@ export const Chip = forwardRef<HTMLDivElement, ChipProps>(
             disabled={disabled}
             onDark={selected}
             chipLabel={labelText}
+            iconSize={dims.iconSize}
           />
         )}
       </div>
