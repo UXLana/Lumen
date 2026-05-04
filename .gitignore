@@ -62,5 +62,9 @@ Thumbs.db
 data/
 *.tgz
 .claude/docs/
+.claude/launch.json
+.claude/settings.json
+.claude/settings.local.json
+.playwright-mcp/
 Skills/.DS_Store
 *.tgz
