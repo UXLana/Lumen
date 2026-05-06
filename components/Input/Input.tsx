@@ -48,6 +48,14 @@ export interface InputProps
   onChange?: (value: string, event: React.ChangeEvent<HTMLInputElement>) => void
   /** Whether the field is required */
   required?: boolean
+  /**
+   * Visual appearance.
+   * - `'default'` (default): always-visible border and surface — standard form input.
+   * - `'ghost'`: transparent border and background until hover/focus. Use for
+   *   inline-editable text (e.g. modal titles, table cells) where the field
+   *   should read as plain text until the user engages with it.
+   */
+  appearance?: 'default' | 'ghost'
 }
 
 // =============================================================================
@@ -105,6 +113,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       onChange,
       required = false,
       disabled = false,
+      appearance = 'default',
       className,
       style,
       id: providedId,
@@ -129,6 +138,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const config = sizeConfig[size]
 
     // Border color
+    const isGhost = appearance === 'ghost'
     const borderColor = disabled
       ? colors.border.lowEmphasis.onLight
       : hasError
@@ -137,7 +147,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ? colors.brand.default
           : isHovered
             ? colors.border.highEmphasis.onLight
-            : colors.border.midEmphasis.onLight
+            : isGhost
+              ? 'transparent'
+              : colors.border.midEmphasis.onLight
 
     // Width resolution: explicit width prop > fullWidth > default (md)
     const resolvedWidth = widthProp
@@ -168,7 +180,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       height: config.height,
       border: `1.5px solid ${borderColor}`,
       borderRadius: borderRadiusSemantics.input,
-      backgroundColor: disabled ? colors.surface.disabled.onLight : colors.surface.light,
+      backgroundColor: disabled
+        ? colors.surface.disabled.onLight
+        : isGhost && !isFocused && !isHovered
+          ? 'transparent'
+          : colors.surface.light,
       transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
       boxShadow: isFocused && !disabled ? `0 0 0 1px ${colors.brand.default}` : undefined,
       overflow: 'hidden',

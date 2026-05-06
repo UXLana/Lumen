@@ -12,6 +12,8 @@ import {
 } from '../../styles/design-tokens'
 import { useColors } from '../../styles/themes'
 import { Button } from '../Button'
+import { Input } from '../Input'
+import { IconX, IconHome } from '../Icons'
 
 // =============================================================================
 // REDUCED MOTION HOOK
@@ -94,6 +96,26 @@ export interface FullScreenModalProps {
   title: string
   /** Optional subtitle below the title */
   subtitle?: string
+  /**
+   * Make the title inline-editable. Renders the title as an input that
+   * looks like a label until focused. Fires `onTitleChange` on blur or
+   * Enter. Pair with `onTitleChange` to receive the new value.
+   */
+  editableTitle?: boolean
+  /** Called with the new title when an editable title commits (blur/Enter). */
+  onTitleChange?: (value: string) => void
+  /**
+   * Custom content rendered on the left side of the header, between the
+   * (optional) left-positioned close button and the title. Use for back
+   * arrows, breadcrumbs, status badges, or any leading affordance.
+   */
+  leftHeaderSlot?: React.ReactNode
+  /**
+   * Custom content rendered on the right side of the header, before any
+   * `headerButtons` and the close (X) button. Use for tools, secondary
+   * controls, or anything beyond the standard 0–2 action buttons.
+   */
+  rightHeaderSlot?: React.ReactNode
   /** Display variant: 'fullscreen' takes the entire viewport, 'floating' is a centered dialog with scrim. Default: 'fullscreen'. Mobile always renders fullscreen. */
   variant?: ModalVariant
   /** Size of the floating modal. Ignored in fullscreen variant. Default: 'lg' */
@@ -122,6 +144,13 @@ export interface FullScreenModalProps {
    *   back-affordance patterns or iOS-style presentation.
    */
   closeButtonPosition?: 'left' | 'right'
+  /**
+   * Icon used in the close button.
+   * - `'close'` (default): X icon, label "Close".
+   * - `'home'`: Home icon, label "Home". Use when dismissing the modal returns
+   *   the user to a home/dashboard surface rather than the previous context.
+   */
+  closeButtonVariant?: 'close' | 'home'
   /** Additional CSS class */
   className?: string
 }
@@ -188,13 +217,14 @@ const CloseIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
 interface CloseButtonProps {
   onClose: () => void
   colors: ReturnType<typeof useColors>
+  variant?: 'close' | 'home'
 }
 
-const CloseButton: React.FC<CloseButtonProps> = ({ onClose, colors }) => (
+const CloseButton: React.FC<CloseButtonProps> = ({ onClose, colors, variant = 'close' }) => (
   <button
     type="button"
     onClick={onClose}
-    aria-label="Close"
+    aria-label={variant === 'home' ? 'Home' : 'Close'}
     style={{
       display: 'flex',
       alignItems: 'center',
@@ -204,7 +234,7 @@ const CloseButton: React.FC<CloseButtonProps> = ({ onClose, colors }) => (
       border: 'none',
       background: 'transparent',
       cursor: 'pointer',
-      color: colors.text.disabled.onLight,
+      color: colors.text.highEmphasis.onLight,
       flexShrink: 0,
       transition: 'background-color 150ms',
     }}
@@ -216,7 +246,7 @@ const CloseButton: React.FC<CloseButtonProps> = ({ onClose, colors }) => (
       ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'
     }}
   >
-    <CloseIcon size={20} />
+    {variant === 'home' ? <IconHome size="md" /> : <IconX size="md" />}
   </button>
 )
 
@@ -264,6 +294,10 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
       onClose,
       title,
       subtitle,
+      editableTitle = false,
+      onTitleChange,
+      leftHeaderSlot,
+      rightHeaderSlot,
       variant = 'fullscreen',
       size = 'lg',
       columns = 1,
@@ -273,6 +307,7 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
       closeOnEscape = true,
       closeOnBackdrop,
       closeButtonPosition = 'right',
+      closeButtonVariant = 'close',
       className,
     },
     ref,
@@ -391,22 +426,68 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
               borderRadius: isFloating ? `${borderRadius.lg} ${borderRadius.lg} 0 0` : undefined,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, minWidth: 0, flex: 1 }}>
               {closeButtonPosition === 'left' && (
-                <CloseButton onClose={onClose} colors={colors} />
+                <CloseButton onClose={onClose} colors={colors} variant={closeButtonVariant} />
               )}
-              <div style={{ minWidth: 0 }}>
-                <div
-                  style={{
-                    ...typography.label.md,
-                    color: colors.text.highEmphasis.onLight,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {title}
+              {leftHeaderSlot && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexShrink: 0 }}>
+                  {leftHeaderSlot}
                 </div>
+              )}
+              <div style={{ minWidth: 0, flex: 1, paddingRight: spacing.lg }}>
+                {editableTitle ? (
+                  <div
+                    style={{
+                      display: 'inline-grid',
+                      maxWidth: '100%',
+                      verticalAlign: 'middle',
+                    }}
+                  >
+                    {/* Hidden mirror for auto-grow sizing */}
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        gridArea: '1 / 1',
+                        visibility: 'hidden',
+                        whiteSpace: 'pre',
+                        ...typography.body.sm,
+                        padding: `0 ${spacing.sm}`,
+                        minWidth: '4ch',
+                      }}
+                    >
+                      {title || ' '}
+                    </span>
+                    <div style={{ gridArea: '1 / 1', minWidth: 0 }}>
+                      <Input
+                        size="sm"
+                        fullWidth
+                        appearance="ghost"
+                        value={title}
+                        aria-label="Edit title"
+                        onChange={(value) => onTitleChange?.(value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            ;(e.currentTarget as HTMLInputElement).blur()
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      ...typography.label.md,
+                      color: colors.text.highEmphasis.onLight,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {title}
+                  </div>
+                )}
                 {subtitle && (
                   <div
                     style={{
@@ -423,9 +504,10 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
               </div>
             </div>
 
-            {/* Right side: header action buttons + close X (when position=right) */}
-            {(closeButtonPosition === 'right' || (headerButtons && headerButtons.length > 0)) && (
+            {/* Right side: rightHeaderSlot + header action buttons + close X (when position=right) */}
+            {(closeButtonPosition === 'right' || rightHeaderSlot || (headerButtons && headerButtons.length > 0)) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexShrink: 0 }}>
+                {rightHeaderSlot}
                 {headerButtons?.map((btn, i) => (
                   <Button
                     key={i}
@@ -439,7 +521,7 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
                   </Button>
                 ))}
                 {closeButtonPosition === 'right' && (
-                  <CloseButton onClose={onClose} colors={colors} />
+                  <CloseButton onClose={onClose} colors={colors} variant={closeButtonVariant} />
                 )}
               </div>
             )}

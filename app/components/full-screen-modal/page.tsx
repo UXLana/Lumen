@@ -17,6 +17,7 @@ import {
   FullScreenModal,
   FullScreenModalPanel,
   Button,
+  IconPanelRightOpen,
 } from '@/components'
 import type {
   FullScreenModalColumns,
@@ -24,7 +25,8 @@ import type {
   ModalVariant,
   ModalSize,
 } from '@/components'
-import { colors, typography, borderRadius, shadows } from '@/styles/design-tokens'
+import { colors, typography, borderRadius, shadows, spacing, transitionPresets } from '@/styles/design-tokens'
+import { useColors } from '@/styles/themes'
 
 // =============================================================================
 // TYPES
@@ -237,6 +239,69 @@ function SampleListContent() {
 // PAGE COMPONENT
 // =============================================================================
 
+// =============================================================================
+// NAV COLLAPSE TOGGLE — same look as the LeftNav collapse button. Square,
+// rounded, filled when active. Used in the modal header slot demos.
+// =============================================================================
+
+function NavToggleButton({
+  active,
+  onClick,
+  title,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  title: string
+  children: React.ReactNode
+}) {
+  const themeColors = useColors()
+  const [hovered, setHovered] = React.useState(false)
+
+  const bg = active
+    ? themeColors.surface.lightDarker
+    : hovered
+      ? themeColors.hover?.onLight ?? 'rgba(0,0,0,0.05)'
+      : 'transparent'
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={title}
+      aria-label={title}
+      aria-pressed={active}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 32,
+        height: 32,
+        padding: 0,
+        border: 'none',
+        borderRadius: borderRadius.sm,
+        backgroundColor: bg,
+        color: themeColors.text.highEmphasis.onLight,
+        cursor: 'pointer',
+        transition: `all ${transitionPresets.fast}`,
+        flexShrink: 0,
+      }}
+    >
+      <span
+        style={{
+          display: 'inline-flex',
+          transform: active ? 'rotate(180deg)' : 'rotate(0deg)',
+          transition: `transform ${transitionPresets.default}`,
+        }}
+      >
+        {children}
+      </span>
+    </button>
+  )
+}
+
 export default function FullScreenModalPage() {
   const [activePageTab, setActivePageTab] = useState<PageTab>('overview')
 
@@ -248,6 +313,14 @@ export default function FullScreenModalPage() {
   const [demoHeaderButtons, setDemoHeaderButtons] = useState(true)
   const [demoCloseOnEscape, setDemoCloseOnEscape] = useState(true)
   const [demoCloseOnBackdrop, setDemoCloseOnBackdrop] = useState(true)
+  const [demoEditableTitle, setDemoEditableTitle] = useState(false)
+  const [demoLeftSlot, setDemoLeftSlot] = useState(false)
+  const [demoRightSlot, setDemoRightSlot] = useState(false)
+  const [demoCloseLeft, setDemoCloseLeft] = useState(false)
+  const [demoHomeButton, setDemoHomeButton] = useState(false)
+  const [playgroundTitle, setPlaygroundTitle] = useState('Edit Product')
+  const [leftNavOpen, setLeftNavOpen] = useState(true)
+  const [rightNavOpen, setRightNavOpen] = useState(true)
 
   // Modal open state for live demos
   const [singleColOpen, setSingleColOpen] = useState(false)
@@ -316,7 +389,7 @@ export default function FullScreenModalPage() {
                     code={`<FullScreenModal
   open={isOpen}
   onClose={() => setIsOpen(false)}
-  title="Edit Product"${demoVariant !== 'fullscreen' ? `\n  variant="${demoVariant}"` : ''}${demoVariant === 'floating' && demoSize !== 'lg' ? `\n  size="${demoSize}"` : ''}${demoSubtitle ? '\n  subtitle="Fill in required fields"' : ''}${demoColumns > 1 ? `\n  columns={${demoColumns}}` : ''}${!demoCloseOnEscape ? '\n  closeOnEscape={false}' : ''}${!demoCloseOnBackdrop ? '\n  closeOnBackdrop={false}' : ''}${demoHeaderButtons ? `\n  headerButtons={[\n    { label: 'Cancel', emphasis: 'low', onClick: close },\n    { label: 'Save', emphasis: 'high', onClick: save },\n  ]}` : ''}
+  title="Edit Product"${demoVariant !== 'fullscreen' ? `\n  variant="${demoVariant}"` : ''}${demoVariant === 'floating' && demoSize !== 'lg' ? `\n  size="${demoSize}"` : ''}${demoSubtitle ? '\n  subtitle="Fill in required fields"' : ''}${demoColumns > 1 ? `\n  columns={${demoColumns}}` : ''}${!demoCloseOnEscape ? '\n  closeOnEscape={false}' : ''}${!demoCloseOnBackdrop ? '\n  closeOnBackdrop={false}' : ''}${demoCloseLeft ? '\n  closeButtonPosition="left"' : ''}${demoHomeButton ? '\n  closeButtonVariant="home"' : ''}${demoEditableTitle ? '\n  editableTitle\n  onTitleChange={setTitle}' : ''}${demoLeftSlot ? `\n  leftHeaderSlot={\n    <NavToggleButton active={leftOpen} onClick={toggleLeft} title="Toggle left nav">\n      <span style={{ display: 'inline-flex', transform: 'rotate(180deg)' }}>\n        <IconPanelRightOpen />\n      </span>\n    </NavToggleButton>\n  }` : ''}${demoRightSlot ? `\n  rightHeaderSlot={\n    <NavToggleButton active={rightOpen} onClick={toggleRight} title="Toggle right nav">\n      <IconPanelRightOpen />\n    </NavToggleButton>\n  }` : ''}${demoHeaderButtons ? `\n  headerButtons={[\n    { label: 'Cancel', emphasis: 'low', onClick: close },\n    { label: 'Save', emphasis: 'high', onClick: save },\n  ]}` : ''}
 >
   <FullScreenModalPanel>
     <Form />
@@ -411,6 +484,31 @@ export default function FullScreenModalPage() {
                         checked={demoCloseOnBackdrop}
                         onChange={setDemoCloseOnBackdrop}
                         label="Close on Backdrop"
+                      />
+                      <StyledCheckbox
+                        checked={demoEditableTitle}
+                        onChange={setDemoEditableTitle}
+                        label="Editable Title"
+                      />
+                      <StyledCheckbox
+                        checked={demoLeftSlot}
+                        onChange={setDemoLeftSlot}
+                        label="Left Header Slot"
+                      />
+                      <StyledCheckbox
+                        checked={demoRightSlot}
+                        onChange={setDemoRightSlot}
+                        label="Right Header Slot"
+                      />
+                      <StyledCheckbox
+                        checked={demoCloseLeft}
+                        onChange={setDemoCloseLeft}
+                        label="Close on Left"
+                      />
+                      <StyledCheckbox
+                        checked={demoHomeButton}
+                        onChange={setDemoHomeButton}
+                        label="Home Button (vs Close)"
                       />
                     </div>
                   </div>
@@ -752,11 +850,40 @@ import type {
       <FullScreenModal
         open={playgroundOpen}
         onClose={() => setPlaygroundOpen(false)}
-        title="Edit Product"
+        title={playgroundTitle}
+        editableTitle={demoEditableTitle}
+        onTitleChange={setPlaygroundTitle}
+        closeButtonPosition={demoCloseLeft ? 'left' : 'right'}
+        closeButtonVariant={demoHomeButton ? 'home' : 'close'}
         variant={demoVariant}
         size={demoSize}
         subtitle={demoSubtitle ? 'Fill in all required fields' : undefined}
         columns={demoColumns}
+        leftHeaderSlot={
+          demoLeftSlot ? (
+            <NavToggleButton
+              active={!leftNavOpen}
+              onClick={() => setLeftNavOpen((v) => !v)}
+              title="Toggle left nav"
+            >
+              {/* Static 180° to mirror the right toggle; the button rotates +180° when active */}
+              <span style={{ display: 'inline-flex', transform: 'rotate(180deg)' }}>
+                <IconPanelRightOpen />
+              </span>
+            </NavToggleButton>
+          ) : undefined
+        }
+        rightHeaderSlot={
+          demoRightSlot ? (
+            <NavToggleButton
+              active={!rightNavOpen}
+              onClick={() => setRightNavOpen((v) => !v)}
+              title="Toggle right nav"
+            >
+              <IconPanelRightOpen />
+            </NavToggleButton>
+          ) : undefined
+        }
         headerButtons={playgroundHeaderButtons.length > 0 ? playgroundHeaderButtons : undefined}
         closeOnEscape={demoCloseOnEscape}
         closeOnBackdrop={demoCloseOnBackdrop}
