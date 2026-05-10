@@ -292,7 +292,7 @@ Run `/design-accessibility` on all new components:
 
 Use Playwright to capture each screen in each state:
 ```bash
-npx playwright screenshot http://localhost:3333/prototypes/[project]/[screen]?state=default \
+npx playwright screenshot http://localhost:3344/prototypes/[project]/[screen]?state=default \
   prototypes/[project]/screenshots/[screen]-default.png --viewport-size=1440,900
 ```
 

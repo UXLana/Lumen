@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3333](http://localhost:3333) to view the documentation site.
+Open [http://localhost:3344](http://localhost:3344) to view the documentation site.
 
 ## What's Inside
 

@@ -32,7 +32,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the design system documentation site.
+Open [http://localhost:3344](http://localhost:3344) to see the design system documentation site.
 
 ---
 

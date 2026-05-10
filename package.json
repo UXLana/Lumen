@@ -46,7 +46,7 @@
     }
   },
   "scripts": {
-    "dev": "next dev -p 3333",
+    "dev": "next dev -p 3344",
     "build:pkg": "tsup",
     "prepare": "npm run build:pkg",
     "prepublishOnly": "npm run audit:contrast && npm run build:pkg",
