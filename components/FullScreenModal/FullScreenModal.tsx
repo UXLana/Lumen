@@ -13,7 +13,7 @@ import {
 import { useColors } from '../../styles/themes'
 import { Button } from '../Button'
 import { Input } from '../Input'
-import { IconX, IconHome } from '../Icons'
+import { IconX, IconHome, IconArrowLeft } from '../Icons'
 
 // =============================================================================
 // REDUCED MOTION HOOK
@@ -149,8 +149,17 @@ export interface FullScreenModalProps {
    * - `'close'` (default): X icon, label "Close".
    * - `'home'`: Home icon, label "Home". Use when dismissing the modal returns
    *   the user to a home/dashboard surface rather than the previous context.
+   * - `'back'`: Left-arrow icon, label "Back". Use when dismissing the modal
+   *   returns the user to the previous surface (list view, parent page).
    */
-  closeButtonVariant?: 'close' | 'home'
+  closeButtonVariant?: 'close' | 'home' | 'back'
+  /**
+   * Inline content rendered to the right of the title (e.g. "Saved just now"
+   * status, version chip, dirty-state indicator). Sits in the header bar's
+   * title group, not in the action buttons. Keep short — single phrase or
+   * small chip.
+   */
+  titleAccessory?: React.ReactNode
   /** Additional CSS class */
   className?: string
 }
@@ -217,14 +226,14 @@ const CloseIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
 interface CloseButtonProps {
   onClose: () => void
   colors: ReturnType<typeof useColors>
-  variant?: 'close' | 'home'
+  variant?: 'close' | 'home' | 'back'
 }
 
 const CloseButton: React.FC<CloseButtonProps> = ({ onClose, colors, variant = 'close' }) => (
   <button
     type="button"
     onClick={onClose}
-    aria-label={variant === 'home' ? 'Home' : 'Close'}
+    aria-label={variant === 'home' ? 'Home' : variant === 'back' ? 'Back' : 'Close'}
     style={{
       display: 'flex',
       alignItems: 'center',
@@ -246,7 +255,13 @@ const CloseButton: React.FC<CloseButtonProps> = ({ onClose, colors, variant = 'c
       ;(e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'
     }}
   >
-    {variant === 'home' ? <IconHome size="md" /> : <IconX size="md" />}
+    {variant === 'home' ? (
+      <IconHome size="md" />
+    ) : variant === 'back' ? (
+      <IconArrowLeft size="md" />
+    ) : (
+      <IconX size="md" />
+    )}
   </button>
 )
 
@@ -308,6 +323,7 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
       closeOnBackdrop,
       closeButtonPosition = 'right',
       closeButtonVariant = 'close',
+      titleAccessory,
       className,
     },
     ref,
@@ -435,59 +451,65 @@ export const FullScreenModal = forwardRef<HTMLDivElement, FullScreenModalProps>(
                   {leftHeaderSlot}
                 </div>
               )}
-              <div style={{ minWidth: 0, flex: 1, paddingRight: spacing.lg }}>
-                {editableTitle ? (
-                  <div
-                    style={{
-                      display: 'inline-grid',
-                      maxWidth: '100%',
-                      verticalAlign: 'middle',
-                    }}
-                  >
-                    {/* Hidden mirror for auto-grow sizing */}
-                    <span
-                      aria-hidden="true"
+              <div
+                style={{
+                  minWidth: 0,
+                  flex: 1,
+                  paddingRight: editableTitle ? spacing.lg : spacing.md,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: spacing.sm,
+                    minWidth: 0,
+                  }}
+                >
+                  {editableTitle ? (
+                    <Input
+                      size="sm"
+                      fullWidth
+                      appearance="ghost"
+                      value={title}
+                      aria-label="Edit title"
+                      onChange={(value) => onTitleChange?.(value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          ;(e.currentTarget as HTMLInputElement).blur()
+                        }
+                      }}
+                    />
+                  ) : (
+                    <div
+                      title={title}
                       style={{
-                        gridArea: '1 / 1',
-                        visibility: 'hidden',
-                        whiteSpace: 'pre',
-                        ...typography.body.sm,
-                        padding: `0 ${spacing.sm}`,
-                        minWidth: '4ch',
+                        ...typography.label.md,
+                        color: colors.text.highEmphasis.onLight,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        minWidth: 0,
                       }}
                     >
-                      {title || ' '}
-                    </span>
-                    <div style={{ gridArea: '1 / 1', minWidth: 0 }}>
-                      <Input
-                        size="sm"
-                        fullWidth
-                        appearance="ghost"
-                        value={title}
-                        aria-label="Edit title"
-                        onChange={(value) => onTitleChange?.(value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault()
-                            ;(e.currentTarget as HTMLInputElement).blur()
-                          }
-                        }}
-                      />
+                      {title}
                     </div>
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      ...typography.label.md,
-                      color: colors.text.highEmphasis.onLight,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {title}
-                  </div>
-                )}
+                  )}
+                  {titleAccessory && (
+                    <div
+                      style={{
+                        ...typography.body.xs,
+                        color: colors.text.lowEmphasis.onLight,
+                        flexShrink: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      {titleAccessory}
+                    </div>
+                  )}
+                </div>
                 {subtitle && (
                   <div
                     style={{
