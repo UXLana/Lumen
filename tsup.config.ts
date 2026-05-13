@@ -17,7 +17,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom', 'next', /^next\//, 'recharts', 'use-sync-external-store', /^use-sync-external-store\//],
   esbuildOptions(options) {
     options.jsx = 'automatic'
   },
